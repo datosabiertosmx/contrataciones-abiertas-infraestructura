@@ -1,0 +1,32 @@
+<form id="formFindContratacion" class="form-group clearfix">
+    <div class="col-sm-5">
+        <label>Identificador OCID</label>
+        <input type="text" name="ocid" value="<%=body.ocid%>"  class="form-control" autocomplete="Off">
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-default" style="margin-top:24px">Buscar</button>
+    </div>
+</form>
+
+<%if (cp.length === 0){%>
+	<div class="alert alert-warning">
+	    <p>No se han registrado contrataciones.</p>
+	</div>
+<%} else {%>
+	<div>
+		<div id="list-contracting" >
+		    <%for (var i=0; i< cp.length;i++){%>
+		    <a class="list-group-item" data-contractingprocess_id="<%= cp[i].id %>">
+		        <h4 class="list-group-item-heading">Contratación: <%=cp[i].id%> </h4>
+		        <h4 class="list-group-item-heading">Identificador OCID: <%=cp[i].ocid%> </h4>	        
+		        
+		        <button class="btn btn-danger pull-right" data-toggle="modal" data-action="delete_contratacion" data-target="#genericModal"
+		        data-id="<%= cp[i].id %>" 
+		        type="button">Eliminar</button>
+		        <br><br>
+		    </a>
+		    <%}%>
+		    
+		</div>
+	</div>
+<%}%>

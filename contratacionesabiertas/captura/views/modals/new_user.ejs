@@ -1,0 +1,70 @@
+<form>
+    <p>
+        <label>Usuario del sistema</label><br>
+        <input type="text" class="form-control" name="username" placeholder="Ejmplo: jperez" required>
+    </p>
+    <p>
+        <label>Contraseña</label><br>
+        <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+    </p>
+    <p>
+        <label>Nombre(s)</label><br>
+        <input type="text" class="form-control" name="name" placeholder="Ejemplo: Juan" required>
+    </p>
+    <p>
+        <label>Apellido(s)</label><br>
+        <input type="text" class="form-control" name="lastname" placeholder="Ejemplo: Perez" required>
+    </p>
+    <p>
+        <label>E-mail</label><br>
+        <input type="email" class="form-control" name="email" placeholder="Ejemplo: usuario@inai.org.mx" required>
+    </p>
+    <p>
+        <label>Dirección</label><br>
+        <input type="text" class="form-control" name="address" placeholder="Ejemplo: Av. Nuevo León 210 Col. Hipódromo">
+    </p>
+    <p>
+        <label>¿Es administrador?</label><br>
+        <select class="form-control" name="isAdmin" required>
+            <option value="false">No</option>
+            <option value="true">Sí</option>
+        </select>
+    </p>
+    <p>
+        <label>¿Puede modificar estatus de procesos?</label><br>
+        <select class="form-control" name="modificaEstatus" required>
+            <option value="false">No</option>
+            <option value="true">Sí</option>
+        </select>
+    </p>
+    <hr>
+    <h4>Datos de Publicador</h4>
+    <p>
+        <label title='El nombre de la organización o departamento responsable de publicar estos datos.'>Nombre</label>
+        <input name="publisherName" class="form-control" required>
+    </p>
+    <p>
+        <label title='El esquema que contiene los identificadores únicos utilizados para identificar cada elemento.'>Esquema</label>
+        <input name="publisherScheme" class="form-control" required>
+    </p>
+    <p>
+        <label title='El identificador único para esta entidad bajo el esquema de identificación dado. Observe el uso de "uid" en lugar de "id".'>UID</label>
+        <input name="publisherUid" class="form-control" required>
+    </p>
+    <p>
+        <label title='Una URI para identificar al publicador.'>URI</label>
+        <input type="url" name="publisherUri" class="form-control">
+    </p>
+ 	<hr>
+ 	<p>
+        <label title='Indica el estatus del usuario, Activo o Inactivo.'>Estatus</label>
+        <select class="form-control" name="isActive" required>
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+    </p>
+    <br>
+    <p>
+        <button type="submit" class="btn btn-default">Crear</button>
+    </p>
+</form>

@@ -1,0 +1,11 @@
+<% for (var i=0; i < awards.length; i++){ %>
+    <a href="javascript:void(0)" class="list-group-item" data-id="<%= awards[i].id %>" data-contractingprocess_id="<%= cpid %>" data-actual="<%= awards[i].id === current %>">
+        <span class="list-group-item-heading">Adjudicación  <%= i + 1 %></span>
+        <% if(awards[i].awardid){ %>
+        <div class="list-group-item-text">
+            <%= awards[i].awardid %> <br>
+            <small><%=  awards[i].status %></small>
+        </div>
+        <% } %>
+    </a>
+<% } %>

@@ -1,0 +1,110 @@
+<style>
+    
+    #items {
+        margin-bottom: 10px;
+        max-height: 500px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    #items .close {
+        margin-right: 20px;
+    }
+
+    
+</style>
+
+<form id="newquoterequest_form">
+    <input type="hidden" name="ocid" value="<%= localid %>">
+
+    <!--<p>
+        <label title="">Identificador</label>
+        <input type="text" class="form-control" name="requestforquotes_id" required>
+    </p>-->
+
+    <p>
+        <label title="">Título</label>
+        <input type="text" class="form-control" name="title" required>
+    </p>
+
+    <p>
+        <label title="">Descripción</label>
+        <textarea class="form-control" name="description" rows="10"></textarea>
+    </p>
+
+    <label title="">
+        <h4>Periodo para recibir cotizaciones</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newquote_date1" name="period_startdate" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newquote_date2" name="period_enddate" required>
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <label title="">Proveedores invitados</label>
+        <select class="form-control" name="invitedsuppliers" multiple required>
+            <% for (var i = 0; i < suppliers.length; i++) { %>
+            <option value="<%= suppliers[i].id %>"><%= suppliers[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <label title="">
+        <h4>Ítems a ser cotizados</h4>
+    </label>
+
+    <div id="items">
+        <div class="row">
+            <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <input type="hidden" name="items[0].itemid">
+            <input type="hidden" name="items[0].item" />
+            <div class="col-sm-8">
+                <p>
+                    <label title="">Bien o servicio</label>
+                    <input type="text" class="form-control" name="items[0].itemname" required>
+                </p>
+            </div>
+            <div class="col-sm-3">
+                <p>
+                    <label title="">Cantidad</label>
+                    <input type="number" class="form-control" name="items[0].quantity" data-vregex="integer" min="0" step="1" required>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="text-right">
+        <button type="button" class="btn btn-default" data-action="add_item"><span class="fa fa-plus"></span></button>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>
+
+<div class="hide" id="itemTemplate">
+    <div class="row">
+        <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <input type="hidden" name="items[0].itemid">
+        <div class="col-sm-8">
+            <p>
+                <label title="">Bien o servicio</label>
+                <input type="text" class="form-control" name="items[0].itemname" required>
+            </p>
+        </div>
+        <div class="col-sm-3">
+            <p>
+                <label title="">Cantidad</label>
+                <input type="number" class="form-control" name="items[0].quantity" data-vregex="integer" min="0" step="1" required>
+            </p>
+        </div>
+    </div>
+</div>

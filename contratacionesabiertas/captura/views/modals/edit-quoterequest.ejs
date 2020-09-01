@@ -1,0 +1,135 @@
+<style>
+    button.multiselect {
+        text-align: left;
+    }
+
+    button.multiselect .caret {
+        position: absolute;
+        left: 97%;
+        top: 45%;
+    }
+
+    ul.multiselect-container.dropdown-menu {
+        width: 100%;
+    }
+
+    ul.multiselect-container.dropdown-menu > li label {
+        padding-left: 20px;
+    }
+
+    ul.multiselect-container.dropdown-menu > li input[type="checkbox"] {
+        display: none;
+    }
+
+    #items {
+        margin-bottom: 10px;
+        max-height: 500px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    #items .close {
+        margin-right: 20px;
+    }
+
+    .ui-autocomplete {
+        z-index: 9999 !important;
+    }
+</style>
+
+<form id="editquoterequest_form">
+    <input type="hidden" name="id" value="<%= id %>">
+
+    <!--<p>
+        <label title="">Identificador</label>
+        <input type="text" class="form-control" name="requestforquotes_id" value="<%= request.requestforquotes_id %>" required>
+    </p>-->
+
+    <p>
+        <label title="">Título</label>
+        <input type="text" class="form-control" name="title" value="<%= request.title %>" required>
+    </p>
+
+    <p>
+        <label title="">Descripción</label>
+        <textarea class="form-control" name="description" rows="10"><%= request.description %></textarea>
+    </p>
+
+    <label title="">
+        <h4>Periodo para recibir cotizaciones</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newquote_date1" name="period_startdate" value="<%= request.period_startdate_text %>" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newquote_date2" name="period_enddate" value="<%= request.period_enddate_text %>" required>
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <label title="">Proveedores invitados</label>
+        <select class="form-control" name="invitedsuppliers" multiple required>
+            <% for (var i = 0; i < suppliers.length; i++) { %>
+            <option value="<%= suppliers[i].id %>" <%= invitedSuppliers.filter(function (e) { return e.parties_id == suppliers[i].id; }).length > 0 ? 'selected' : '' %>><%= suppliers[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <label title="">
+        <h4>Ítems a ser cotizados</h4>
+    </label>
+
+    <div id="items">
+        <% for (var i = 0; i < items.length; i++) { %>
+        <div class="row">
+            <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <input type="hidden" name="items[<%= i %>].itemid" value="<%= items[i].itemid %>">
+            <input type="hidden" name="items[<%= i %>].item" value="<%=items[i].item%>" />
+            <div class="col-sm-8">
+                <p>
+                    <label title="">Bien o servicio</label>
+                    <input type="text" class="form-control" name="items[<%= i %>].itemname" value="<%= items[i].itemname %>" required>
+                </p>
+            </div>
+            <div class="col-sm-3">
+                <p>
+                    <label title="">Cantidad</label>
+                    <input type="number" class="form-control" name="items[<%= i %>].quantity" data-vregex="integer" min="0" step="1" value="<%= items[i].quantity %>" required>
+                </p>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="text-right">
+        <button type="button" class="btn btn-default" data-action="add_item"><span class="fa fa-plus"></span></button>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>
+
+<div class="hide" id="itemTemplate">
+    <div class="row">
+        <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <input type="hidden" name="items[0].itemid">
+        <div class="col-sm-8">
+            <p>
+                <label title="">Bien o servicio</label>
+                <input type="text" class="form-control" name="items[0].itemname" required>
+            </p>
+        </div>
+        <div class="col-sm-3">
+            <p>
+                <label title="">Cantidad</label>
+                <input type="number" class="form-control" name="items[0].quantity" data-vregex="integer" min="0" step="1" required>
+            </p>
+        </div>
+    </div>
+</div>

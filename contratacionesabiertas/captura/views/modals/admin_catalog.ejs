@@ -1,0 +1,37 @@
+<form id="frmAdminCatalogs" class="form-group clearfix">
+    <input type="hidden" name="page" />
+    <input type="hidden" name="pageSize" value="15" />
+    <% for(var i = 0, catalog=schema[i]; i < schema.length; i++,catalog=schema[i]) { 
+        if(!catalog.ignored) {
+        %>
+        <div class="<%= catalog.class %>">
+            <label><%= catalog.label %></label>
+            <% if(catalog.data){ %>
+                <select name="<%= catalog.field %>" class="form-control">
+                    <option value="">Seleccione una opción</option>
+                    <% for(var j = 0; j < catalog.data.length; j++) { %>
+                        <option value="<%= catalog.data[j].value %>"><%= catalog.data[j].name %></option>
+                    <% } %>
+                </select>
+            <% } else {%>
+                <input name="<%= catalog.field %>" class="form-control" />
+            <% } %>
+            
+        </div>
+    <% }} %>
+    <div class="col-sm-6">
+        <button class="btn btn-default" style="margin-top:25px">Buscar</button>
+        <button id="btnNewCatalog" type="button" class="btn btn-default" style="margin-top:25px">Agregar <%= label %></button>
+        <button id="btnImportCatalog" type="button" class="btn btn-default" style="margin-top:25px">Importar</button>
+    </div>
+</form>
+
+<section id="catalogs-result"></section>
+<div id="catalogs-pagination"></div>
+
+
+<script>
+    // se declaran variables para que las reciba el script
+    var catalog = '<%= type %>';
+</script>
+<script src="/javascript/admin-catalog.js"></script>

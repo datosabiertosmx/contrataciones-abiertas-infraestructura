@@ -1,0 +1,20 @@
+<form id="add-additional-classification_form">
+    <input type="text" name="project_id" value = "<%= projectId %>" hidden>
+    <p>
+        <label data-tooltip="crear_proceso" title='La clasificación debe ser obtenida de un esquema o una lista de códigos existente. Este campo se utiliza para indicar el esquema / lista de códigos de los que se extrae la clasificación.'>
+        Esquema</label>
+        <input name="schema" type="text" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El código de clasificación obtenido del esquema seleccionado.'>
+        Identificador</label>
+        <input name="identifier" type="text" class="form-control" required >
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Un título o descripción textual del código.'>
+        Descripción</label>
+        <input name="description" type="text" class="form-control" required>
+    </p>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+

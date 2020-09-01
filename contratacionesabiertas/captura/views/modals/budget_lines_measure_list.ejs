@@ -1,0 +1,29 @@
+<%if (data.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado momentos presupuestarios</p>
+    </div>
+<%}%>
+<% for(var measure of data) {%>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title"><%=measure.type%></h4>
+        </div>
+        <div class="panel-body">
+            <p><label>Monto:</label>
+                <%=measure.amount%>
+            </p>
+            <p><label>Moneda:</label>
+                <%=measure.currency%>
+            </p>
+            <p><label>Fecha del momento presupuestario:</label>
+                <%=measure.date%>
+            </p>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" name="edit_measure" data-budget_line_measure_id="<%= measure.id%>"><i class="fa fa-edit"></i> Editar</button>
+                    <button class="btn btn-danger" name="delete_measure" data-budget_line_measure_id="<%= measure.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<%}%>

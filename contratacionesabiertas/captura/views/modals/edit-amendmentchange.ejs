@@ -1,0 +1,25 @@
+<form id="editamendmentchange_form">
+    <input type="hidden" name="table" value="<%= table %>">
+    <input type="hidden" name="id" value="<%= change.id %>">
+
+    <p>
+        <label title='La fecha de modificación del contrato.'>Fecha de modificación</label>
+        <input type="text" class="form-control" id="newchange_date1" name="amendments_date" value="<%= change.amendments_date_text %>" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Razones por las cuales se realiza la modificación.'>
+            Justificación</label>
+        <textarea name="amendments_rationale" class="form-control" rows="5"><%= change.amendments_rationale %></textarea>
+    </p>
+    <p><label data-tooltip="crear_proceso" title='Un identificador para esta modificación. A menudo el número de la modificación'>
+            Identificador</label>
+        <input class="form-control" type="text" name="amendments_id" value="<%= change.amendments_id %>">
+    </p>
+    <p><label data-tooltip="crear_proceso" title='Una descripción en texto libre, o semi-estructurada, de los cambios realizados en esta modificación.'>
+            Descripción
+            <!--Description--></label>
+        <textarea class="form-control" name="amendments_description" rows="5"><%= change.amendments_description %></textarea>
+    </p>
+
+    <button class="btn btn-default">Guardar</button>
+</form>

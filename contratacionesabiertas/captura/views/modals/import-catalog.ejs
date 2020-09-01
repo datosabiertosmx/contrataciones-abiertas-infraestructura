@@ -1,0 +1,16 @@
+<form id="frmImportCatalogs">
+    <div class="input-group form-group">
+        <input type="file" accept=".csv" class="form-control" required />
+        <div class="input-group-btn">
+            <button class="btn btn-default">Importar</button>
+        </div>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox" name="clear" /> Eliminar registros antes de importar</label>
+    </div>
+   
+    <a href="/admin/catalog/<%= catalog %>/import/template" class="pull-right">Descargar plantilla</a>
+    <br>
+</form>
+<h4 id="spinner" class="hide text-center">Importando <span class="fa fa-refresh fa-spin"></span></h4>
+<code id="errors"></code>

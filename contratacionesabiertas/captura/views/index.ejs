@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel='stylesheet' href='/stylesheets/login.css'/>
+    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/inai-navbar/dgm-navbar.html">
+    <link rel="import" href="/inai-footer/dgm-footer.html">
+
+    <title><%= title %></title>
+
+</head>
+
+<body>
+<dgm-navbar></dgm-navbar>
+
+<div class="container login-buffer" align="center">
+    <div class="col-sm-6 col-md-offset-3">
+
+        <h1 class="title" style="color:#848484">Contrataciones Abiertas</h1>
+        <p class="title" style="color:#A4A4A4"><%= title %></p>
+
+
+        <form action="/login" method="post">
+            <p><input name="username" type="text" class="form-control" placeholder="Usuario" required value=""></p>
+            <p><input name="password" type="password" class="form-control" placeholder="Contraseña" required value=""></p>
+            <p><button type="submit" class="btn btn-success"><i class="fa fa-sign-in"></i> Iniciar sesión</button></p>
+        </form>
+
+        <% if (message !=""){%>
+        <p>
+        <div class="alert alert-danger alert-dismissible" align="left">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Atención:</strong> <%= message %> </div>
+        </p>
+        <%}%>
+    </div>
+</div>
+
+
+<dgm-footer></dgm-footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+</body>
+</html>

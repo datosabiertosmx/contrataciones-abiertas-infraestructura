@@ -1,0 +1,19 @@
+<form id="uri_form">
+    <input name = "id" type="hidden" value="<%= project_package.id %>">
+    <p>
+        <label title='Una URI para identificar el editor.'>
+        URI</label>
+        <input type="url" name="uri" class="form-control" type="text" value="<%= project_package.uri %>" readonly>
+    </p>
+    <p>
+        <label title='Es recomendable un enlace a la licencia que se aplica a los datos de este paquete. Una licencia de dedicación de dominio público o Open Definition Conformant es muy recomendable. Debe usarse el URI canónico de la licencia. Los documentos enlazados desde este archivo puden estar bajo otras condiciones de licencia.'>
+        Licencia (URL)</label>
+        <input type="url" name="license" class="form-control" type="text" value="<%= project_package.license %>" <%=  project_package.license ? 'readonly' : '' %>>
+    </p>
+	<p>
+		<label title='Un enlace al documento descrito por quienes lo publican publicationPolicy.'>
+		Politica de publicación (URL)</label>
+        <input type="url" name="publicationpolicy" class="form-control" type="text" value="<%= project_package.publicationPolicy %>" <%=  project_package.publicationPolicy ? 'readonly' : '' %>>
+    </p>
+
+</form>

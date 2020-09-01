@@ -1,0 +1,48 @@
+<form id="add_related_projects_form">
+    <p>
+        <label data-tooltip="crear_proceso" title='El tipo de relación, usando la lista de códigos abierta [relatedProjects].'>Relación</label>
+            <select class="form-control" name="relatedProject_relationship" required>
+                <option value="">Seleccione una opción</option>
+                <% for (var i = 0; i < relatedProjects.length; i++) { %>
+                    <option value="<%= relatedProjects[i].code %>"> <%= relatedProjects[i].title%></option>
+                <% } %>
+            </select>
+    </p>
+    <p>
+        <div class="row">
+            <div class="col-md-4">
+                <label data-tooltip="crear_proceso" title='El título del proyecto relacionado, donde se hace referencia a una contratación abierta para un proyecto de infraestructura, este campo debe coincidir con el campo del título en el proyecto relacionado.'>
+                    Prefijo OC4ID</label>
+                <input type="text" name="relatedProject_title" class="form-control" value="<%=prefix[0].prefix%>-" readonly>
+            </div>
+            <div class="col-md-8">
+                <label data-tooltip="crear_proceso" title='El título del proyecto relacionado, donde se hace referencia a una contratación abierta para un proyecto de infraestructura, este campo debe coincidir con el campo del título en el proyecto relacionado.'>
+                    Identificador</label>
+                <input type="text" name="relatedProject_title" class="form-control" required>
+            </div>
+        </div>
+        
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El esquema de identificación utilizado por esta referencia cruzada, utilizando la lista de códigos abierta [relatedProjectScheme].'>Esquema</label>
+        <input type="text" name="relatedProject_scheme" class="form-control" required readonly>
+            <!-- <select class="form-control" name="relatedProject_scheme" required>
+                <option value="">Seleccione una opción</option>
+                <% for (var i = 0; i < relatedProjectsScheme.length; i++) { %>
+                    <option value="<%= relatedProjectsScheme[i].code %>"> <%= relatedProjectsScheme[i].title%></option>
+                <% } %>
+            </select> -->
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador del proyecto relacionado. Si el esquema es "oc4i ID", debe ser una Contratación abierta para ID de infraestructura (oc4i ID).'>
+            Identificador</label>
+        <input type="text" name="relatedProject_identifier" class="form-control" required readonly>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Un URI que apunta a un documento, versión o paquete de registro legible por máquina que contiene el proyecto relacionado con el identificador.'>
+            URI</label>
+        <input type="url" name="relatedProject_uri" class="form-control" readonly>
+    </p>
+    <input type="text" name="project_id" value = "<%= projectId %>" hidden>
+    <button class="btn btn-primary">Guardar</button>
+</form>

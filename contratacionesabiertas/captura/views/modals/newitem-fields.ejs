@@ -1,0 +1,194 @@
+<style>
+    .ui-autocomplete {
+        z-index: 9999 !important;
+    }
+
+    .ui-menu-item:hover {
+        background-color: #0275d8;
+        color: white;
+    }
+
+    .ui-menu-item div {
+        background-color: transparent;
+    }
+
+
+    .map-container {
+        position: relative;
+    }
+
+    .map-geocoding {
+        position: absolute;
+        top: 9px;
+        right: 53px;
+        width: 80%;
+        z-index: 1;
+        height: 42px;
+    }
+
+    .map-geocoding input,
+    .map-geocoding button{
+        background: #fff;
+        height: 42px;
+    }
+
+    .map-geocoding-result {
+        position: absolute;
+        left: 0;
+        right: 39px;
+        top: 42px;
+    }
+   
+
+    #map {
+        height: 500px;
+    }
+</style>
+
+<form id ="newitem_form">
+    <input type="text" name = "table" value ="<%= table %>" hidden>
+    <input type="text" name = "localid" value = "<%= localid %>" hidden>
+    <input type="text" name="fkname" value = "<%= fkname %>" hidden>
+    <input type="text" name="fkid" value = "<%= fkid %>" hidden>
+    <input type="hidden" name="location_countryname">
+    <input type="hidden" name="location_streetaddress">
+    <input type="hidden" name="location_region">
+    <input type="hidden" name="location_locality">
+    <input type="hidden" name="latitude">
+    <input type="hidden" name="longitude">
+    
+    <!--<p><label>ID</label>
+        <input class="form-control" type="text" name="itemid" required></p>-->
+    
+    <p><label data-tooltip="crear_proceso" title='Descripción de las características de cada bien, o servicio, o de las especificaciones técnicas de la obra pública.'>
+    Descripción<!--Description--></label>
+        <input class="form-control" type="text" name="description" required></p>
+    <hr>
+    
+    <label data-tooltip="crear_proceso" title='La clasificación principal aplicable al bien, servicio u obra pública. Consulte la lista de códigos "Esquema de clasificación de ítems".'>
+    <h4>Clasificación aplicable al bien, servicio u obra pública</h4></label>
+    
+    <p><label data-tooltip="crear_proceso" title='La clasificación debe ser obtenida de un esquema o una lista de códigos existente. Este campo se utiliza para indicar el esquema / lista de códigos de los que se extrae la clasificación. Para las clasificaciones de partidas individuales, el valor debe corresponder con la lista de códigos "Esquema de clasificación de items" siempre que sea posible.'>
+    Esquema <!--Classification scheme--></label>
+    	<select name="classification_scheme" id="classification_scheme" class="form-control">
+	        <option value="CUCOP">Clasificador Único de las Contrataciones Públicas (CUCOP)</option>
+			<option value="COG">Clasificador por Objeto del Gasto (COG)</option>	        
+        	<option value="CPC">Central Product Classification</option>
+	        <option value="CPV">EC Common Procurement Vocabulary</option>
+    	    <option value="CPVS">EC Common Procurement Vocabulary - Listas de Códigos Suplementarias</option>
+        	<option value="GSIN">Goods and Services Identification Number</option>
+	        <option value="OKDP">Russian National Classification of Products by Economic Activity (1994)</option>
+    	    <option value="OKPD">Russian National Classification of Products by Economic Activity (2014)</option>
+        	<option value="UNSPSC">United Nations Standard Products and Services Code</option>
+   		</select>
+    </p>
+    
+    <p><label data-tooltip="crear_proceso" title='Número que identifica al bien, servicio u obra pública objeto del procedimiento de contratación, obtenido del esquema o lista de códigos definidos. Cuando aplique, se registrará la clave CUCOP contenida en CompraNet.'>
+    Identificador<!--Classification id--></label>
+        <input class="form-control" type="text" name="classification_id" onChange="validarIdentificador(this);" required></p>
+    
+    <p><label data-tooltip="crear_proceso" title='Descripción relacionada con la clave del bien, servicio u obra pública objeto del procedimiento de contratación, obtenido del esquema o lista de códigos definidos. Cuando aplique, se registrará la descripción de la clave CUCOP contenida en CompraNet.'>
+    Descripción<!--Classification description--></label>
+        <input class="form-control" type="text" name="classification_description" id="classification_description" readonly></p>
+  
+    <hr>
+    
+    <p><label data-tooltip="crear_proceso" title='Cantidad en número de bienes, servicios u obra pública.'>
+    Cantidad por tipo de bien, servicio u obra pública<!--Quantity--></label>
+        <input class="form-control" type="number" name="quantity" required></p>
+    
+    <hr>
+    
+    <label data-tooltip="crear_proceso" title='Unidad de medida en la que se especifica la cantidad del bien, servicio u obra pública.'>
+    <h4>Unidad de medida en la que se especifíca la cantidad de bienes, servicios u obras públicas</h4></label>
+    
+    <p><label data-tooltip="crear_proceso" title='Nombre de la unidad de medida'>
+    Nombre<!--Unit name--></label>
+        <input class="form-control" type="text" name="unit_name" readonly></p>
+    
+    <label data-tooltip="crear_proceso" title='Precio unitario.'>
+    <h4>Valor</h4></label>
+    
+    <div class="row">
+    				<div class="col-sm-4">
+                        <p>
+                          <label data-tooltip="crear_proceso" title='Monto como número.'>
+    						Monto sin impuestos</label>
+       						<input class="form-control" type="number" name="unit_value_amountNet"  step="0.01" required>  
+                        </p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>
+                          <label data-tooltip="crear_proceso" title='Monto total con impuestos incluidos (en su caso).'>
+    						Monto total<!--Unit value amount--></label>
+       						<input class="form-control" type="number" name="unit_value_amount"  step="0.01" required>  
+                        </p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>
+                          <label data-tooltip="crear_proceso" title='La moneda en formato ISO 4217 de 3 letras.'>
+    						Moneda<!--Unit value currency--></label>
+        					<select class="form-control" name="unit_value_currency">
+           					<% for ( var i = 0; i < currencies.length; i++){ %>
+            				<option value = "<%= currencies[i].alphabetic_code %>"
+            				  <%= currencies[i].alphabetic_code == 'MXN'? 'selected':null %>
+            				  >
+                			  <%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+            				</option>
+            				<%}%>
+        					</select>        				  
+                        </p>
+                    </div>
+                </div>
+
+    <hr>
+
+    <label data-tooltip="crear_proceso" title='Ubicación del item'>
+        <h4>Ubicación</h4>
+    </label>
+
+    <div class="map-container">
+            <div class="map-geocoding input-group">
+                <input  type="search" class="form-control" placeholder="Buscar dirección" />
+                <div class="input-group-btn">
+                    <button id="btnGeocoding" type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
+                </div>
+                <ul class="map-geocoding-result list-group"></ul>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+	
+	<br>
+    <p>
+        <label data-tooltip="crear_proceso" title="Código postal">Código postal</label>
+        <input type="text" class="form-control" name="location_postalcode" data-vregex="integer">
+    </p>
+
+    <br>
+
+    <button class="btn btn-default">Guardar</button>
+</form>
+<script>
+	function validarIdentificador(input){
+        input.value = input.value.trim();
+        if(document.getElementById('classification_scheme').selectedIndex == 0){
+            if(input.value.length == 8){
+                //No modifica el dato
+            }else{
+                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el esquema CUCOP consta de 8 caracteres.")
+                input.value = "";
+                document.getElementById('classification_description').value = "";
+            }
+        }else if(document.getElementById('classification_scheme').selectedIndex == 1){
+            if(input.value.length == 5){
+                //No modifica el dato
+            }else{
+                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el esquema COG consta de 5 carateres.")
+                input.value = "";
+                document.getElementById('classification_description').value = "";
+            }
+        }
+    }
+</script>
+<script src="/javascript/mapbox.js"></script>

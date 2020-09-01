@@ -1,0 +1,16 @@
+<ul class="list-group">
+    <%if(!data || data.length === 0) { %>
+        <li class="list-group-item text-center">No se han registrado juntas</li>
+    <% } %>
+    <% for(let i = 0, clarification = data[i]; i< data.length; i++, clarification = data[i]) { %>
+        <li class="list-group-item clearfix">
+            <span class="col-xs-8"><%= clarification.clarificationmeetingid%></span>
+            <div class="col-xs-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" data-editar="<%= clarification.id %>" data-contractingprocess_id="<%= clarification.contractingprocess_id %>">Editar</button>
+                    <button type="button" class="btn btn-danger"  data-eliminar="<%= clarification.id %>" data-contractingprocess_id="<%= clarification.contractingprocess_id %>">Eliminar</button>
+                </div>
+            </div>
+        </li>
+    <% } %>
+</ul>

@@ -1,0 +1,23 @@
+<form id="frmMiembro">
+    <input type="hidden" name="id" value="<%= id %>" >
+    <div class="form-group">
+        <label>Identificador</label>
+        <input type="text" name="memberofid" value="<%= memberofid %>" readonly class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Nombre</label>
+        <select name="parties_id" required class="form-control">
+            <option value="">Seleccione una opción</option>
+            <% for(var i = 0, actor = actores[i]; i < actores.length; i++, actor= actores[i]) {%>
+                <option value="<%= actor.id%>" <%= actor.id === parties_id ? 'selected' : ''  %> data-id="<%=actor.partyid%>" ><%= actor.name %></option>
+            <% } %>
+        </select>
+    </div>
+    <button class="btn btn-default">Guardar</button>
+</form>
+
+<script>
+$('#frmMiembro [name="parties_id"]').change(function() {
+    $('#frmMiembro [name="memberofid"]').val($(this).find('option:selected').data('id'));
+});
+</script>

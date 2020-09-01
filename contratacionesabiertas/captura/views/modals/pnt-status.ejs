@@ -1,0 +1,17 @@
+<%if (result.length > 0) {
+    for(var i = 0; i < result.length; i++) { 
+        if (result[i].error) {%>
+        <p class="json">
+            <div><label>Contrato: <%= result[i].contractid %>  -  Formato:  <%= result[i].format %>  -  Fecha: <%= result[i].date %></label></div>
+            <pre><%- result[i].error %></pre>
+        </p>
+    <% } 
+    }
+    if(!result.find(x => x.error)){ %>
+        <h4 class="text-center">Contratación enviada el <%= result[0].date %></h4>
+    <% }
+ } else { %>
+
+    <h4 class="text-center">No se ha realizado la conexión a PNT</h4>
+
+<%}%>

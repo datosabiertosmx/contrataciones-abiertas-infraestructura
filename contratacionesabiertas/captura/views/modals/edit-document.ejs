@@ -1,0 +1,47 @@
+<form id ="editdoc_form">
+    <input type="hidden" name="id" value="<%= document.id %>">
+    <input type="hidden" name="table" value="<%= table %>">
+
+    <p><label title='Una clasificación del documento descrito de acuerdo con la lista de códigos "Tipo de documento". Los valores proporcionados de la lista de códigos deben usarse siempre que sea posible, aunque se pueden proporcionar valores adicionales cuando la lista de códigos no tiene uno necesario.'.>Tipo de documento<!--Document type--></label>
+        <select class="form-control" name="document_type">
+            <%for ( var i = 0; i < documenttypes.length; i++){%>
+            <option value="<%= documenttypes[i].code %>" <%= documenttypes[i].code == document.document_type ? 'selected' : '' %>><%= documenttypes[i].title_esp%></option>
+            <%}%>
+        </select>
+    </p>
+    <p><label title='Titulo del documento.'>Título<!--Title--></label>
+        <input type="text" class="form-control" name = "title" value="<%= document.title %>" required></p>
+    <p><label title='Descripción corta del documento. Se recomienda no exceder 250 palabras. En el caso que el documento no esté disponible en línea, el campo podrá utilizarse para describir el proceso para acceder a una copia del mismo.'>Descripción<!--Description--></label>
+        <br><textarea class="form-control" name = "description" rows="10" required><%= document.description %></textarea></p>
+    
+    <p><label title='Enlace directo al documento o archivo adjunto. El servidor que proporciona acceso a este documento debe estar configurado para proporcionar correctamente el tipo documento (MIME type).'>URL</label>
+        <input type="url" class="form-control" name = "url" value="<%= document.url %>" required></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title='La fecha de publicación del documento. Esto es particularmente importante para documentos relevantes desde el punto de vista legal, como los avisos de licitación.'>Fecha de publicación<!--Date published--></label>
+                <input type="text" class="form-control" id= "newdoc_date1" name = "date_published" value="<%= document.date_published_text %>">
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title='Fecha en que se modificó por última vez el documento.'>Fecha de modificación<!--Date modified--></label>
+                <input type="text" class="form-control" id= "newdoc_date2" name = "date_modified" value="<%= document.date_modified_text %>">
+            </p>
+        </div>
+    </div>
+    <p><label title='El formato del documento tomado de la lista de códigos "Tipos de medios" asignados y listados por IANA (Autoridad de números asignados de Internet), con la incorporación de un valor adicional para "fuera de línea / imprimir", utilizado cuando ha sido incorporado un documento que no ha sido publicado en línea. Utilice los valores de la columna de plantilla. Los enlaces a las páginas web deben estar etiquetados como "texto / html".
+    '>Formato<!--Format--></label>
+        <input type="text" class="form-control" name = "format" value="<%= document.format %>"></p>
+    <p><label title='Especifica el idioma del documento vinculado mediante la clasificación ISO639-1 o mediante una clasificación extendida de BCP47 language tags. Se recomienda el uso de códigos con dos letras en minúsculas de la clasificación ISO639-1, a menos que exista una clara necesidad del usuario de distinguir un subtipo de idioma.'>Idioma<!--Language--></label>
+        <select class="form-control" name = "language">
+            <% for ( var i=0; i< languages.length ;i++){ %>
+            <option value="<%= languages[i].name %>" <%= languages[i].name == document.language ? 'selected' : '' %>>
+                <%= languages[i].name +" - "+ languages[i].alpha2 %>
+            </option>
+            <%}%>
+        </select>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

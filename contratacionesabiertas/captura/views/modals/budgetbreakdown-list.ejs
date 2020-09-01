@@ -1,0 +1,31 @@
+<style>
+    .panel > .panel-heading > .panel-title {
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<% if (data.length > 0) { %>
+<% for (var i = 0; i < data.length; i++) { %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <%= data[i].budgetbreakdown_id %>
+        </h4>
+    </div>
+    <div class="panel-body">
+        <p>
+            <label>Descripción:</label>
+            <%= data[i].description %>
+        </p>
+
+        <button class="btn btn-default" data-action="delete_budgetbreakdown" data-table="<%= table %>" data-id="<%= data[i].id %>">Eliminar</button>
+        <button class="btn btn-default" data-action="edit_budgetbreakdown" data-id="<%= data[i].id %>" data-ocid="<%= ocid %>" data-show="modal" data-target="#genericModal">Editar</button>
+    </div>
+</div>
+<% } %>
+<% } else { %>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado desgloses de presupuestos</div>
+<% } %>

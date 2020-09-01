@@ -1,0 +1,27 @@
+
+<div class="well">
+    <p>
+        <label>Usuarios autorizados</label>
+
+
+    </p>
+
+
+        <form id="update-permissions">
+            <input name="contractingprocess_id" type="text" value="<%= contractingprocess_id %>" hidden>
+            <ul class="list-group">
+                <%for (var i=0; i< users.length; i++){%>
+                <li class="list-group-item">
+                    <input type="checkbox" name="<%= users[i]._id %>" <%= users[i].selected?'checked':''%> /> <label> <%= users[i].name +' '+ users[i].lastname + ' ('+users[i].username+')' %> </label>
+                </li>
+                <%}%>
+
+            </ul>
+            <p>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </p>
+        </form>
+
+
+</div>
+

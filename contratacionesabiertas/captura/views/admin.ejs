@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='/stylesheets/navbar-fixed-top.css' />
+    <title><%= title %></title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
+
+</head>
+<body>
+<%- include navbar.ejs%>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">Panel de administración</div>
+        </div>
+        <div class="panel-body">
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Usuarios <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li data-toggle="modal" data-action="new_user" data-target="#adminModal"><a href="#"><i class="fa fa-user-plus"></i> Nuevo</a></li>
+                    <li data-toggle="modal" data-action="users" data-target="#adminModal"><a href="#"><i class="fa fa-users"></i> Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Contrataciones <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li data-toggle="modal" data-action="manage_process" data-target="#adminModal"><a href="#"><i class="fa fa-cubes"></i> Administrar</a></li>
+                    <li data-toggle="modal" data-action="validate_proccess" data-target="#adminModal"><a href="#"><i class="fa fa-cubes"></i> Validar</a></li>
+               <!--     <li data-toggle="modal" data-action="delete_process" data-target="#adminModal"><a href="#"><i class="fa fa-recycle"></i> Eliminar</a></li> -->
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Datos de la institución <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li data-toggle="modal" data-action="manage_ocid" data-target="#adminModal"><a href="#"><i class="fa fa-cubes"></i> Prefijo OCID</a></li>
+                    <li data-toggle="modal" data-action="manage_metadata" data-target="#adminModal"><a href="#metadata"><i class="fa fa-cubes"></i> Licencia y pólitica de publicación</a></li>
+                    
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Listas de códigos <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Lista de ítems" data-type="item"><a href="#codes"><i class="fa fa-cubes"></i> ítems</a></li>
+                    <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Estructura Programática" data-type="programaticstructure"><a href="#codes"><i class="fa fa-cubes"></i> Estructura Programática</a></li>
+                    <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Actividad MIR" data-type="activitymir"><a href="#codes"><i class="fa fa-cubes"></i> Actividad MIR</a></li>
+                    <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Partidas" data-type="departure"><a href="#codes"><i class="fa fa-cubes"></i> Partidas</a></li>
+                    <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Unidades Administrativas" data-type="administrativeunit"><a href="#codes"><i class="fa fa-cubes"></i> Unidades Administrativas</a></li>
+                 </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include modals/admin_modal.ejs %>
+<% include modals/generic_modal.ejs%>
+
+<script src="/bower_components/axios/dist/axios.min.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/handlebars/handlebars.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/locale/es.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/javascript/main.js"></script>
+<script src="/javascript/admin.js"></script>
+<script src="/javascript/paginacion.js"></script>
+</body>

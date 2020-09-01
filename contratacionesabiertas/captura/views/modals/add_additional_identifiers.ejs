@@ -1,0 +1,24 @@
+<form id="add_additional_identifiers_form">
+    
+    <label data-tooltip="crear_proceso" title='El nombre legalmente registrado de la organización.'>
+            Nombre o razón social</label>
+        <input type="text" name="additionalIdentifiers_legalName" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Los identificadores de la organización deben extraerse de una lista de identificadores de la organización existente. El campo del esquema se utiliza para indicar la lista o el registro del que se extrae el identificador. Este valor debe extraerse de la lista de códigos del esquema de identificación de la organización .'>
+            Esquema</label>
+        <input type="text" name="additionalIdentifiers_scheme" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador de la organización en el esquema seleccionado.'>
+            Identificador</label>
+        <input type="text" name="additionalIdentifiers_id" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Un URI para identificar la organización, como los proporcionados por Open Corporates o algún otro proveedor de URI relevante. Esto no es para enumerar el sitio web de la organización: eso se puede hacer a través del campo URL del punto de contacto de la organización.'>
+            URI</label>
+        <input type="url" name="additionalIdentifiers_url" class="form-control">
+    </p>
+    <input type="text" name="party_id" value = "<%= partyId %>" hidden>
+    <button class="btn btn-primary">Guardar</button>
+</form>

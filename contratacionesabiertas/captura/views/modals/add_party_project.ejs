@@ -1,0 +1,132 @@
+<form id="add_party_project_form">
+    <input type="text" name="project_id" value = "<%= project_id %>" hidden>
+    <p>
+        <label data-tooltip="crear_proceso" title='Nombre común por el que se conoce a esta persona física o moral, o del área de la institución pública en el procedimiento de contratación. El apartado de identificación provee un espacio para registrar el nombre formal o razón social, por lo que éste puede repetir ese valor o puede referirse al nombre común por el cual es conocida la organización.'>
+        Nombre común</label>
+        <input name="parties_name" type="text" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador utilizado para hacer referencias cruzadas a este actor desde otras secciones del esquema. Este campo puede ser construido de acuerdo con la siguiente estructura: {identifier.scheme} - {identifier.id} (- {department-identifier}).'>
+        Identificador del actor</label>
+        <input name="parties_id" type="text" class="form-control" readonly >
+    </p>
+    <label data-tooltip="crear_proceso" title='El identificador principal de esta organización o participante. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la organization identifier guidance para el esquema preferido y el identificador a utilizar.'>
+    <h4>Identificador principal</h4></label>
+    <p>
+        <label data-tooltip="crear_proceso" title='Nombre o razón social.'>
+        Nombre o razón social</label>
+        <input name="identifier_legalName" type="text" class="form-control">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Los identificadores de la organización deben extraerse de una lista de identificadores existente. El campo esquema se utiliza para indicar el nombre de la lista o registro del que se extrae el identificador. Este valor debe obtenerse de la lista de códigos Organization Identifier Scheme.'>
+        Esquema</label>
+        <input name="identifier_scheme" type="text" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador de la dependencia, entidad, licitante, proveedor o contratista'>
+        Identificador</label>
+        <input name="identifier_id" type="text" class="form-control" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Una URI para identificar a la organización, como las proporcionadas por [Open Corporates] (http://www.opencorporates.com) u otro proveedor de URI relevante. Este campo no se utiliza para mostrar el sitio web de la organización, lo cual se puede hacer a través del campo URL del punto de contacto de la organización.'>
+        URI</label>
+        <input name="identifier_uri" type="text" class="form-control">
+    </p>
+    <br>
+    <label data-tooltip="crear_proceso" title='Una dirección. Esta puede ser la dirección legalmente registrada de la organización, o puede ser una dirección de correspondencia para este proceso de contratación en particular.'>
+        <h4>Domicilio</h4></label>
+    <p>
+        <label data-tooltip="crear_proceso" title='Calle y número. Por ejemplo, Insurgentes Sur 1600.'>
+        Calle y número</label>
+        <input name="address_streetAddress" type="text" class="form-control">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Municipio o alcaldía. Por ejemplo, Coyoacán.'>
+        Municipio o alcaldía</label>
+        <input name="address_locality" type="text" class="form-control">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Entidad federativa. Por ejemplo, Ciudad de México.'>
+        Entidad federativa</label>
+        <input name="address_region" type="text" class="form-control">
+    </p>
+    <p><label data-tooltip="crear_proceso" title='Código postal. Por ejemplo, 03900.'>
+        Código postal </label>
+        <input type="number" class="form-control" name="address_postalCode" min="1" maxlength="5" pattern="^[0-9]+" onChange="validarSiNumero(this.value);">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='País. Por ejemplo, México.'>
+        País</label>
+        <input name="address_countryName" type="text" class="form-control">
+    </p>
+    <label data-tooltip="crear_proceso" title='Persona o área administrativa que funge como punto de contacto en relación con este procedimiento de contratación.'>
+        <h4>Punto de contacto</h4></label>
+    <p>
+        <label data-tooltip="crear_proceso" title='El nombre de la persona o área administrativa que funge como punto de contacto para recibir notificaciones en relación con este procedimiento de contratación.'>
+        Nombre</label>
+        <input name="contactPoint_name" type="text" class="form-control">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Correo electrónico del punto de contacto.'>
+        Correo electrónico</label>
+        <input name="contactPoint_email" type="text" class="form-control" onChange="validarEmail(this.value);">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El número de teléfono del punto de contacto / persona. Éste debe incluir el código de marcación internacional.'>
+        Teléfono</label>
+        <input type="number" class="form-control" name="contactPoint_telephone" min="1" maxlength="15" pattern="^[0-9]+" onChange="validarSiNumero(this.value);">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El número de fax del punto de contacto / persona. Éste debe incluir el código de marcación internacional.'>
+        Número de fax</label>
+        <input type="number" class="form-control" name="contactPoint_faxNumber" min="1" maxlength="15" pattern="^[0-9]+" onChange="validarSiNumero(this.value);">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Dirección web del punto de contacto.'>
+        URL</label>
+        <input name="contactPoint_url" pattern="^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$" title="Formato no permitido, debe ser un formato del tipo URL" type="text" class="form-control">
+    </p>
+    <label data-tooltip="crear_proceso" title='Los papeles que desempeña el actor dentro del proyecto. Los papeles deben ser tomados de la lista de códigos partyRole. Los valores de esta lista deberán ser utilizados cuando sea posible, aunque se pueden utilizar otros valores cuando la lista no contenga un código relevante.'>
+    Papeles del actor</label>
+    <div class="well">
+        <label class="checkbox-inline"><input name="buyer" type="checkbox">Área requirente</label><br>
+        <label class="checkbox-inline"><input name="reviewBody" type="checkbox">Auditor</label><br>
+        <label class="checkbox-inline"><input name="publicAuthority" type="checkbox">Autoridad pública</label><br>
+        <label class="checkbox-inline"><input name="payer" type="checkbox">Emisor del pago</label><br>     
+        <label class="checkbox-inline"><input name="procuringEntity" type="checkbox">Entidad contratante</label><br>
+        <label class="checkbox-inline"><input name="funder" type="checkbox">Financiador</label><br>
+        <label class="checkbox-inline"><input name="tenderer" type="checkbox">Licitante</label><br>
+        <label class="checkbox-inline"><input name="enquirer" type="checkbox">Persona física o moral que solicita aclaraciones</label><br>        
+        <label class="checkbox-inline"><input name="supplier" type="checkbox">Proveedor o contratista</label><br>     
+        <label class="checkbox-inline"><input name="payee" type="checkbox">Receptor de pago</label><br>
+        </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+<script>
+  function validarSiNumero(numero){
+    if (!/^([0-9])*$/.test(numero))
+      alert("Solo se permiten números");
+  }
+  
+  function validarEmail( email ) {
+    expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if ( !expr.test(email) )
+        alert("La dirección de correo " + email + " no tiene el formato correcto.");
+}
+
+    function validarVacio (input) {
+        input.value = input.value.trim();
+    }
+
+    $('[name="identifier_scheme"], [name="identifier_id"]').on('change', function() {
+        var scheme = $('[name="identifier_scheme"]').val();
+        var id = $('[name="identifier_id"]').val();
+
+        if (scheme == '' && id == '')
+            $('[name="parties_id"]').val('');
+        else
+            $('[name="parties_id"]').val(scheme + '-' + id);
+    });
+</script>
+

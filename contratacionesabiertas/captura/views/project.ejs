@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" />
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='/stylesheets/navbar-fixed-top.css' />
+    
+    <title>Project</title>
+
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" />
+    <!--<link rel='stylesheet' href='/stylesheets/buttons.css'/>-->
+    <link rel='stylesheet' href='/stylesheets/validate-process.css'/>
+    <link rel='stylesheet' href='/stylesheets/styles.css'/>
+    <link rel='stylesheet' href='/stylesheets/auxnav.css'/>
+    <!-- NO CACHE -->
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+</head>
+<body>
+<%- include project_navbar.ejs%>
+<%- include project_navbar_menu.ejs%>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="well">
+                <p>
+                    <label data-tooltip="crear_proceso" title='Un identificador globalmente único para este proyecto de infraestructura. Se compone de un prefijo de identificador del proyecto y un identificador local para el proyecto. Para más información, consulte la Guía de Identificadores de proyecto.'>
+                    <strong>Identificador de OC4IDS </strong></label></p>
+                    <input type="text" name="oc4ids" class="form-control" placeholder="OC4IDS" value="<%= prefix %>" readonly>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="well">
+                <p><strong>Proyecto</strong></p>
+                <div class="btn-group" style="margin-bottom: 4px;">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Información sobre los actores (organizaciones, operadores económicos y otros participantes) involucrados en el proyecto y sus papeles, por ejemplo: comprador, entidad contratante, proveedor, etc. Las referencias a la organización utilizadas a lo largo del esquema son utilizadas para hacer referencia con los registros de esta lista.">  
+                        Actores involucrados <i class="fa fa-users"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-action="add_party_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-user-plus"></i> Registrar</a></li>
+                        <li data-action="edit_parties_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group" style="margin-bottom: 4px;">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Los detalles de los proyectos relacionados: ejemplo de flor, si este proyecto, representado bajo un Identificador Estándar de Contratación Abierta para Infraestructura (oc4ids id). Esto se usa comúnmente para relacionar los proyectos adicionales involucrados con la misma infraestructura.">  
+                        Proyectos relacionados <i class="fa fa-link"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-action="add_related_projects" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
+                        <li data-action="edit_related_projects" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="edit_project_publisher" data-project_id="<%= projectId %>" data-toggle="modal" data-target="#genericModal" data-tooltip="crear_proceso" title="Información para identificar de forma exclusiva al editor de este paquete.">
+                    Publicador <i class="fa fa-user"></i> </button>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="edit_uris_project" data-project_id="<%= projectId %>" data-toggle="modal" data-target="#genericModal">
+                    Metadatos <i class="fa fa-link"></i> </button>
+                <div class="btn-group" style="margin-bottom: 4px;">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Se pueden proporcionar una o más clasificaciones adicionales del proyecto para describir el enfoque social o económico del proyecto. Esta clasificación debe ser tomada a partir de una lista desarrollada a nivel local, o sobre una lista de códigos global como la UN COFOG (Clasificación de las Funciones del Gobierno, por sus siglas en inglés). ">  
+                        Clasificaciones adicionales <i class="fa fa-link"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-action="add_additional_classification" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
+                        <li data-action="edit_additional_classification_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul id="pills" class="nav nav-pills nav-justified nav-pills-success">
+        <li role="presentation" class="active"><a data-toggle="pill" href="#informacionGeneral" data-tooltip="crear_proceso" title=""> INFORMACIÓN GENERAL <br></a></li>
+        <li role="presentation"><a data-toggle="pill" href="#terminacion" data-tooltip="crear_proceso" title=""> TERMINACIÓN <br><small id="tenderStatus"></small></a></li>
+    </ul>
+    <div id="all-contents" class="tab-content">
+        <!--PRIMER PESTAÑA-->
+        
+            <div id="informacionGeneral" class="tab-pane fade in active">
+                <form action="/project" method="POST" id="project_form">
+                <div class="well well-lg">
+                    <label data-tooltip="crear_proceso" title=''>
+                    <h3> INFORMACIÓN GENERAL </h3></label>
+                    <br>
+                    <div class="btn-group" style="margin-bottom: 4px;">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Documentación relacionada con este proyecto. Los registros pueden incluir un resumen breve (texto plano, HTML o Markdown), y/o un hipervínculo al acceso de un documento en específico.">  
+                            <i class="fa fa-file"></i> Documentos  <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li data-action="add_document" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
+                            <li data-action="edit_document_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group" style="margin-bottom: 4px;">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Información acerca de la ubicación en la que se está realizando el proyecto. Una o más ubicaciones pueden ser proporcionadas, y éstas pueden ser descritas de diferentes maneras, como un punto central de localización de la construcción, o una descripción de la región en la que se llevan a cabo los trabajos.">  
+                            <i class="fa fa-map-marker"></i> Ubicaciones  <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li data-action="add_location" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
+                            <li data-action="edit_location" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group col-md-4" style="margin-bottom: 4px; float: right;">
+                        <label data-tooltip="crear_proceso" title='La fase actual o estatus del proyecto, según la lista de códigos projectStatus.' class="col-xs-3 control-label">
+                            Estatus</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                 <select class="form-control" name="status">
+                                    <option value="">Seleccione una opción</option>
+                                    <% for (var i = 0; i < statuses.length; i++) { %>
+                                        <option value="<%= statuses[i].code %>" <%= (statuses[i].code === status ) ? 'selected' : '' %> > <%= statuses[i].title%></option>
+                                    <% } %>
+                                </select>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary"><span class="fa fa-save"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='Un identificador único o número de referencia para este proyecto de infraestructura.'>
+                                    Identificador </label>
+                                <input type="text" class="form-control" name="id" value="<%= identifier %>" minlength="1" maxlength="250" required >
+                            </p>
+                        </div>
+                        <div class="col-md-3" style="text-align:center;">  
+                            <br>
+                            <button 
+                            id="" class="btn btn-primary" type="button" 
+                            data-tooltip="crear_proceso" data-project_id="<%= projectId %>" data-target="#genericModal" data-action="add_related_summary_procedure_project" data-toggle="modal"
+                            title="Información resumen sobre un procedimiento de contratación, incluyendo  un registro de cambios en el tiempo."><i class="fa fa-plus"></i> Proceso de contratación</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='El título del proyecto.'>
+                                    Título del proyecto </label>
+                                <input type="text" class="form-control" name="title" value="<%= title %>" minlength="1" maxlength="250" required>
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            <div style="height: 1200px; position: absolute;">
+                                <p align="center" data-tooltip="crear_proceso" title='Contrataciones relacionadas al proyecto.'>
+                                    <strong> Contrataciones relacionadas </strong></p>
+                                <%if (relatedContractingProcesses === null){ %>
+                                    <div class="alert alert-warning" role="alert">
+                                        <p align="center">No existen contrataciones relacionas al proyecto</p>
+                                    </div>
+                                <%} else {%>
+                                    <% for(var ContractingProcess of relatedContractingProcesses) {%>
+                                        <div class="well" style="margin: 7px 0px 7px 0px; width: 100%;" >    
+                                            <div class="row" style="vertical-align: middle; display: flex; align-items: center;">
+                                                <div class="col-md-9" data-tooltip="crear_proceso" title="<%= ContractingProcess.title %>" >
+                                                    <%=ContractingProcess.ocid%>
+                                                </div>
+                                                <div class="col-md-3" style="border-left: 2px solid gray;">
+                                                    <button
+                                                    style="margin: 2px 0px 2px 0px;" 
+                                                    id="" class="btn btn-primary" type="button" 
+                                                    data-tooltip="crear_proceso" data-contracting_process_id="<%=ContractingProcess.id%>" data-target="#genericModal" data-action="edit_related_summary_procedure_project" data-toggle="modal"
+                                                    title="Editar"><i class="fa fa-pencil"></i></button>
+                                                    
+                                                    <button 
+                                                    style="margin: 2px 0px 2px 0px;"
+                                                    name="delete_related_contracting_process_project" class="btn btn-danger" type="button" 
+                                                    data-tooltip="crear_proceso" data-contracting_process_id="<%=ContractingProcess.id%>"
+                                                    title="Eliminar"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <%}%>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='Una descripción de este proyecto. Esto no debería ser más largo que un párrafo.'>
+                                    Descripción del proyecto </label>
+                                <textarea class="form-control" name="description" value="<%= descriptionB %>" rows="5" minlength="1" maxlength="900" required><%=(typeof descriptionB!= "undefined")? descriptionB : ''%></textarea>
+                            </p>
+                        </div>
+                        <div class="col-md-3">                        
+                        </div>
+                    </div>
+                    <label data-tooltip="crear_proceso" title='El periodo en el que este proyecto estará en marcha. Este puede ser actualizado conforme el proyecto se mueve a través de cada fase mientras más información se vuelve disponible para especificar, con mayor precisión, las fechas de inicio y fin.'>
+                        <h4> Periodo del proyecto </h4></label>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>
+                                            Fecha de inicio </label>
+                                        <input type="text" id="period_startDate"  class="form-control" name="period_startDate" value="<%= startDate %>" required>
+                                        
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>
+                                            Fecha de fin </label>
+                                        <input type="text" id="period_endDate" class="form-control" name="period_endDate" value="<%= endDate %>" required>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='El periodo no puede extenderse más allá de esta fecha. Este campo es opcional y puede usarse para expresar la fecha límite de extensión o renovación de este período.'>
+                                            Extensión máxima </label>
+                                        <input type="text" id="period_maxExtentDate" class="form-control" name="period_maxExtentDate" value="<%= maxExtentDate %>">
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Duración máxima de este período en días. Es posible que una interfaz de usuario desee recopilar o mostrar estos datos en meses o años, según corresponda, pero debe convertirlos en días al completar este campo. También, este campo se puede utilizar cuando no se conocen las fechas exactas. Cuando se tiene startDate y endDate, este campo es opcional y debe reflejar la diferencia entre esos dos días. Cuando se indica startDate y maxExtentDate, este campo es opcional y debe reflejar la diferencia entre startDate y maxExtentDate.'>
+                                            Duración (días) </label>
+                                        <input type="number" class="form-control" name="period_durationInDays" value="<%= durationInDays %>" min="1" pattern="^[0-9]+">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='Se debe clasificar el tipo de proyecto del que se trate. Ya sea que el principal enfoque de este proyecto sea la construcción de un nuevo activo o la rehabilitación o reemplazo de uno existente'>
+                                    Tipo de proyecto </label>
+                                <select class="form-control" name="type">
+                                    <option value="">Seleccione una opción</option>
+                                    <% for (var i = 0; i < types.length; i++) { %>
+                                    <option value="<%= types[i].code %>" <%= (types[i].code === type ) ? 'selected' : '' %> ><%= types[i].title%></option>
+                                    <% } %>
+                                </select>
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            
+                        </div>
+                    </div>
+                    <input type="hidden" name="sectorR" value="<%= sector %>">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='El principal sector al que este proyecto está relacionado. CoST sugiere que los países deben desarrollar una lista con sectores y sub-sectores relevantes para el país, basándose en la tabla PPPCert Type of Assets.'>
+                                    Sector del proyecto </label>
+                                <select class="form-control custom-select" name="sector" multiple required>
+                                    <option value="">Seleccione una opción</option>
+                                    <% for (var i = 0; i < sectors.length; i++) { %>
+                                        <%if (sector.includes(sectors[i].code)){ %>
+                                            <option value="<%= sectors[i].code %>" selected><%= sectors[i].title%></option>     
+                                        <%} else {%>
+                                            <option value="<%= sectors[i].code %>"><%= sectors[i].title%></option>     
+                                        <%}%>
+                                    <% } %>
+                                </select>  
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='El propósito socioeconómico de este proyecto.'>
+                                    Propósito del proyecto </label>
+                                <textarea class="form-control" value="<%= purposeB %>" name="purpose" rows="5"><%=(typeof purposeB!= "undefined")? descriptionB : ''%></textarea>
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            
+                        </div>
+                    </div>
+                    <label data-tooltip="crear_proceso" title='La vida útil estimada del activo después de que el proyecto esté terminado. Esto puede ser plasmado con fechas explícitas o con una duración estimada.'>
+                        <h4> Vida útil del activo </h4></label>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>
+                                            Fecha de inicio </label>
+                                        <input type="text" id="assetLifetime_startDate" class="form-control" name="assetLifetime_startDate" value="<%= startDateAssetLifeTime %>">
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>
+                                            Fecha de fin </label>
+                                        <input type="text" id="assetLifetime_endDate" class="form-control" name="assetLifetime_endDate" value="<%= endDateAssetLifeTime %>">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='El periodo no puede extenderse más allá de esta fecha. Este campo es opcional y puede usarse para expresar la fecha límite de extensión o renovación de este período.'>
+                                            Extensión máxima </label>
+                                        <input type="text" id="assetLifetime_maxExtentDate" class="form-control" name="assetLifetime_maxExtentDate" value="<%= maxExtentDateAssetLifeTime %>">
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Duración máxima de este período en días. Es posible que una interfaz de usuario desee recopilar o mostrar estos datos en meses o años, según corresponda, pero debe convertirlos en días al completar este campo. También, este campo se puede utilizar cuando no se conocen las fechas exactas. Cuando se tiene startDate y endDate, este campo es opcional y debe reflejar la diferencia entre esos dos días. Cuando se indica startDate y maxExtentDate, este campo es opcional y debe reflejar la diferencia entre startDate y maxExtentDate.'>
+                                            Duración (días) </label>
+                                        <input type="number" class="form-control" name="assetLifetime_durationInDays" value="<%= durationInDaysAssetLifeTime %>" min="1" pattern="^[0-9]+">
+                                    </p>
+                                </div>
+                            </div>
+                            </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <label data-tooltip="crear_proceso" title=''>
+                        <h4> Información del presupuesto </h4></label>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="btn-group" style="margin-bottom: 4px;">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Un desglose detallado del presupuesto organizado por periodo y/o por los financiadores participantes.">  
+                                    <i class="fa fa-money"></i> Desglose del presupuesto  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li data-action="add_budget_breakdown_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-user-plus"></i> Registrar</a></li>
+                                    <li data-action="edit_budget_breakdown_project" data-toggle="modal" data-project_id="<%= projectId %>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                        
+                    </div>
+                    <label data-tooltip="crear_proceso" title='Especificar los costos proyectados o el presupuesto asignado para el proyecto (monto y moneda). Este costo debe incluir la adquisición de terrenos y propiedades, medidas de mitigación de impacto ambiental, disposiciones de salud y seguridad, costos de clientes, consultores y contratistas, así como los impuestos aplicables. Cuando este valor incluye costos incurridos por el responsable del proyecto u otras agencias, que no están sujetas a la contratación, es posible que este valor sea mayor que la suma de todos los procedimientos de contratación relacionados. Para indicar el perfil de un presupuesto a través del tiempo, o el presupuesto proveniente de distintas fuentes, se puede utilizar la sección de Desglose de presupuesto.'>
+                        <h4> Valor total del proyecto </h4></label>
+    
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='Monto como número.'>
+                                            Monto </label>
+                                        <input type="number" class="form-control" name="budget_amount_amount" value="<%= amount %>" min="1" pattern="^[0-9]+">
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>
+                                            Moneda </label>
+                                        <select class="form-control" name="budget_amount_currency">
+                                            <option value="">Seleccione una opción</option>
+                                            <%if (is_update === true){ %>
+                                                <% for (var i = 0; i < currencies.length; i++) { %>
+                                                    <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === (currency ? currency : "MXN") ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                                                <% } %>
+                                            <%} else {%>
+                                                <% for (var i = 0; i < currencies.length; i++) { %>
+                                                    <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === 'MXN' ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                                                <% } %>
+                                            <%}%>
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='La fecha en que se solicitó el presupuesto del proyecto.'>
+                                            Fecha de solicitud </label>
+                                        <input type="text" id="budget_requestDate" class="form-control" name="budget_requestDate" value="<%= requestDate %>">
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>
+                                        <label data-tooltip="crear_proceso" title='La fecha en la que se aprobó el presupuesto de este proyecto. Cuando exista evidencia documental sobre este, puede ser incluida dentro de los documentos del proyecto y ser clasificada con el tipo budgetApproval.'>
+                                            Fecha de aprobación </label>
+                                        <input type="text" id="budget_approvalDate" class="form-control" name="budget_approvalDate" value="<%= approvalDate %>">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+                    <input type="hidden" name="project_id" value="<%= projectId %>">
+                    <input type="hidden" name="is_update" value="<%= is_update %>">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+            </div>
+        
+        
+        <!--SEGUNDA PESTAÑA-->
+        <div id="terminacion" class="tab-pane fade">
+            <form action="/completion_project" method="POST" id="completion_project_form">
+                <div class="well well-lg">
+                    <label data-tooltip="crear_proceso" title='Esta información es proporcionada en la terminación del proyecto, y refleja las fechas y valores finales relacionados con el proyecto. Las explicaciones sobre cualquier variación (aún no realizadas) entre el alcance, periodo y valor anticipados del proyecto deber ser detalladas.'>
+                    <h3> TERMINACIÓN </h3></label>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='La fecha real de terminación de este proyecto (comparado con la "Fecha de fin" del proyecto).'>
+                                    Fecha de fin </label>
+                                <input type="text" id="completion_endDate"  class="form-control" name="completion_endDate" value="<%= completion_endDate %>" required>
+                            </p>
+                        </div>     
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='Detalles relacionados con la Fecha de fin. Puede ser una justificación sobre diferencia con la fecha original de terminación de los contratos.'>
+                                    Detalles sobre la fecha de fin </label>
+                                <textarea class="form-control" name="completion_endDateDetails" value="<%= completion_endDateDetails %>" rows="5" minlength="1" maxlength="900" required><%=(typeof completion_endDateDetails != "undefined") ? completion_endDateDetails : ''%></textarea>
+                            </p>
+                        </div>     
+                    </div>
+                    <label data-tooltip="crear_proceso" title='Los costos totales de este proyecto en su terminación (comparados con el presupuesto del proyecto).'>
+                        <h4> Valor final </h4></label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='Monto como número.'>
+                                    Monto </label>
+                                <input type="number" class="form-control" name="completion_finalValue_amount" value="<%= completion_amount %>" min="1" pattern="^[0-9]+" required>
+                            </p>
+                        </div>     
+                        <div class="col-md-6">
+                            <p>
+                                <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>
+                                    Moneda </label>
+                                <select class="form-control" name="completion_finalValue_currency">
+                                    <option value="">Seleccione una opción</option>
+                                    <%if (completion_is_update === true){ %>
+                                        <% for (var i = 0; i < currencies.length; i++) { %>
+                                            <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === (completion_currency ? completion_currency : "MXN") ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                                        <% } %>
+                                    <%} else {%>
+                                        <% for (var i = 0; i < currencies.length; i++) { %>
+                                            <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === 'MXN' ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                                        <% } %>
+                                    <%}%>
+                                </select>
+                            </p>
+                        </div>
+                    </div>  
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    <label data-tooltip="crear_proceso" title='Detalles relacionados con el valor final del proyecto. Puede ser una justificación sobre diferencia con el presupuesto original de este proyecto.'>
+                                        Detalles sobre el valor final </label>
+                                    <textarea class="form-control" name="completion_finalValueDetails" value="<%= completion_finalValueDetails %>" rows="5" minlength="1" maxlength="900"><%=(typeof completion_finalValueDetails != "undefined") ? completion_finalValueDetails : ''%></textarea>
+                                </p>
+                            </div>     
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    <label data-tooltip="crear_proceso" title='Una breve descripción del alcance final del proyecto en su terminación.'>
+                                        Alcance final </label>
+                                    <input type="text" id="completion_finalScope"  class="form-control" name="completion_finalScope" value="<%= completion_finalScope %>">
+                                </p>
+                            </div>     
+                        </div>   
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    <label data-tooltip="crear_proceso" title='Una justificación sobre cualquier variación entre el alcance previsto (en comparación con el documento de projectScope) y el alcance final en la terminación. Si corresponde, se pueden incluir detalles adicionales en la sección de documentos, con un título que indique que estos documentos describirán las diferencias entre el alcance del proyecto planeado y terminado.'>
+                                        Detalles sobre el alcance final </label>
+                                    <textarea class="form-control" name="completion_finalScopeDetails" value="<%= completion_finalScopeDetails %>" rows="5" minlength="1" maxlength="900"><%=(typeof completion_finalScopeDetails != "undefined") ? completion_finalScopeDetails : ''%></textarea>
+                                </p>
+                            </div>     
+                        </div>
+                        <input type="hidden" name="project_id" value="<%= projectId %>">
+                        <input type="hidden" name="completion_is_update" value="<%= completion_is_update %>">       
+                    <button type="submit" class="btn btn-primary">Guardar</button> 
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<% include modals/admin_modal.ejs %>
+<% include modals/generic_modal.ejs%>
+
+
+<script src="/bower_components/axios/dist/axios.min.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/locale/es.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+<script src="/javascript/main.js"></script>
+<script src="/javascript/admin.js"></script>
+<script src="/javascript/validate_process.js"></script>
+<script src="/javascript/paginacion.js"></script>
+<!--MAPBOX-->
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+<script>
+    // Token de acceso para utilizar mapbox
+    const MAPBOX_TOKEN = "<%= process.env.MAPTOKEN || 'pk.eyJ1IjoiZGFya3RpbGluIiwiYSI6ImNqcHppYThxMzBjYTc0NW14cWkwcngzMGoifQ.k_XR1BRighy6BNdENDfMIA' %>";
+</script>
+</body>
+</html>
+
+<script>
+    $('#period_startDate, #period_endDate, #period_maxExtentDate, #assetLifetime_startDate, #assetLifetime_endDate, #assetLifetime_maxExtentDate, #budget_requestDate, #budget_approvalDate, #completion_endDate').datetimepicker({
+        locale: 'es',
+        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
+    });
+</script>

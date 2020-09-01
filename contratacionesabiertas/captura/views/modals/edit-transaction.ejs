@@ -1,0 +1,107 @@
+<script>
+    function setIdentifier(select, target, data) {
+        var option = select.options[select.selectedIndex];
+        document.getElementsByName(target)[0].value = option.getAttribute(data);
+    }
+</script>
+
+<form id="edittransaction_form">
+    <input type="hidden" name="table" value="<%= table %>">
+    <input type="hidden" name="id" value="<%= transaction.id %>">
+
+    <p><label data-tooltip="crear_proceso" title='Fecha en que se realiza la transacción para el pago asociado con el contrato.'>
+            Fecha de la transacción
+            <!--Date--></label>
+        <input class="form-control" id="newtrans_date1" name="implementation_date" value="<%= transaction.implementation_date_text %>" required></p>
+
+    <label data-tooltip="crear_proceso" title='El valor económico de la transacción realizada relacionada con el pago asociado con el contrato.'>
+        <h4>Valor</h4>
+    </label>
+
+    <div class="row">
+        <!--Value amountNet-->
+        <div class="col-sm-4">
+            <p>
+                <label data-tooltip="crear_proceso" title='Monto como número.'>
+                    Monto sin impuestos</label>
+                <input type="number" class="form-control" step="0.01" name="value_amountNet" value="<%= transaction.value_amountnet %>" required>
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <p>
+                <label data-tooltip="crear_proceso" title='Monto total de la transacción con impuestos incluidos (en su caso).'>
+                    Monto total</label>
+                <input type="number" class="form-control" step="0.01" name="value_amount" value="<%= transaction.value_amount %>" required>
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <p>
+                <label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>
+                    Moneda
+                    <!--Value currency--></label>
+                <select class="form-control" name="value_currency">
+                    <% for ( var i = 0; i < currencies.length; i++){ %>
+                    <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code == transaction.value_currency ? 'selected' : '' %>>
+                        <%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+                    </option>
+                    <%}%>
+                </select>
+            </p>
+        </div>
+    </div>
+    <br>
+    <p><label data-tooltip="crear_proceso" title='El método de pago utilizado para realizar la transacción. Deberán utilizarse los valores de la lista de códigos "Método de pago".'>
+            Método de pago</label>
+        <select name="payment_method" class="form-control">
+            <!--  paymentMethods -->
+            <option value="letterOfCredit" <%= transaction.payment_method == 'letterOfCredit' ? 'selected' : '' %>>Carta de crédito</option>
+            <option value="check" <%= transaction.payment_method == 'check' ? 'selected' : '' %>>Cheque</option>
+            <option value="cash" <%= transaction.payment_method == 'cash' ? 'selected' : '' %>>Efectivo</option>
+            <option value="corporateCard" <%= transaction.payment_method == 'corporateCard' ? 'selected' : '' %>>Tarjeta corporativa</option>
+            <option value="wireTransfe" <%= transaction.payment_method == 'wireTransfe' ? 'selected' : '' %>>Transferencia bancaria</option>
+        </select>
+    </p>
+
+    <hr>
+
+    <label data-tooltip="crear_proceso" title='Organización de la que provienen los fondos de la transacción.'>
+        <h4>Emisor</h4>
+    </label>
+
+        <p>
+            <label data-tooltip="crear_proceso" title=''>Nombre común</label>
+            <select name="payer_name" class="form-control" onchange="setIdentifier(this, 'payer_id', 'data-id')" required>
+                <option value="" data-id="" <%= transaction.payer_name == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                <% for(var i = 0; i < transmitters.length; i++) { %>
+                <option value="<%= transmitters[i].name %>" data-id="<%= transmitters[i].partyid %>" <%= transaction.payer_name == transmitters[i].name ? 'selected' : '' %>><%= transmitters[i].name %></option>
+                <% } %>
+            </select>
+        </p>
+        
+	    <p>
+            <label data-tooltip="crear_proceso" title=''>Identificador del actor</label>
+            <input type="text" class="form-control" name="payer_id" value="<%= transaction.payer_id %>" readonly>
+        </p>
+    <hr>
+
+    <label data-tooltip="crear_proceso" title=''>
+        <h4>Receptor</h4>
+    </label>
+
+        <p>
+            <label data-tooltip="crear_proceso" title=''>Nombre común</label>
+            <select name="payee_name" class="form-control" onchange="setIdentifier(this, 'payee_id', 'data-id')" required>
+                <option value="" data-id="" <%= transaction.payee_name == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                <% for(var i = 0; i < receivers.length; i++) { %>
+                <option value="<%= receivers[i].name %>" data-id="<%= receivers[i].partyid %>" <%= transaction.payee_name == receivers[i].name ? 'selected' : '' %>><%= receivers[i].name %></option>
+                <% } %>
+            </select>
+        </p>
+        
+	    <p>
+            <label data-tooltip="crear_proceso" title=''>Identificador del actor</label>
+            <input type="text" class="form-control" name="payee_id" value="<%= transaction.payee_id %>" readonly>
+        </p>
+    <br>
+    <button class="btn btn-default">Guardar</button>
+</form>

@@ -1,0 +1,21 @@
+<% if (data.length > 0) { %>
+<% for (var i = 0; i < data.length; i++) { %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title"><%= data[i].quotes_id %></h4>
+    </div>
+    <div class="panel-body">
+        <p>
+            <label>Solicitud:</label> <%= data[i].requesttitle %>
+        </p>
+        <p>
+            <label>Descripción:</label> <%= data[i].description %>
+        </p>
+        <button class="btn btn-default" data-action="delete_quote" data-table="quotes" data-dependencies="quotesitems" data-id="<%= data[i].id %>" data-dkey="quotes_id">Eliminar</button>
+        <button class="btn btn-default" data-action="edit_quote" data-rid="<%= data[i].requestforquotes_id %>" data-id="<%= data[i].id %>" data-show="modal" data-target="#genericModal">Editar</button>
+    </div>
+</div>
+<% } %>
+<% } else { %>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado cotizaciones</div>
+<% } %>

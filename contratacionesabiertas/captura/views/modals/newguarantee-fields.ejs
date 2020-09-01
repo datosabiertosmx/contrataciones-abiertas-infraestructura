@@ -1,0 +1,89 @@
+<form id="newguarantee_form">
+    <input type="hidden" name="table" value="<%= table %>">
+    <input type="hidden" name="ocid" value="<%= localid %>">
+    <input type="hidden" name="fkname" value="<%= fkname %>">
+    <input type="hidden" name="fkid" value="<%= fkid %>">
+
+    <p>
+        <!-- <label title="">Identificador</label> -->
+        <input type="hidden" class="form-control" name="guarantee_id" readonly>
+    </p>
+
+    <p>
+        <label title="">Forma de garantía</label>
+        <select class="form-control" name="guaranteetype" required>
+            <option value="">Seleccione una opción</option>
+            <option value="bail">Fianza</option>
+            <option value="depositSlip">Billete de depósito</option>
+            <option value="letterOfCredit">Carta de crédito</option>
+            <option value="suretyBond">Seguro de caución</option>
+            <option value="check">Cheque</option>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Fecha de la garantía</label>
+        <input type="text" class="form-control" id="newguarantee_date" name="date" required>
+    </p>
+
+    <p>
+        <label title="">Obligaciones garantizadas</label>
+        <select class="form-control" name="guaranteedobligations" required>
+            <option value="">Seleccione una opción</option>
+            <option value="fulfillment">Cumplimiento</option>
+            <option value="prepaid">Anticipo</option>
+            <option value="latentDefects">Vicios ocultos</option>
+            <option value="confidentiality">Confidencialidad</option>
+            <option value="quality">Calidad</option>
+        </select>
+    </p>
+
+    <div class="row">
+        <p  class="col-xs-6">
+            <label title="">Valor de la garantía</label>
+            <input type="number" class="form-control" name="value" data-vregex="decimal" min="0" step="0.01" required>
+        </p>
+
+        <div class="col-xs-6">
+                <p>
+                    <label title="">Moneda</label>
+                    <select class="form-control" name="currency" required>
+                        <option value="">Seleccione una opción</option>
+                        <% for (var i = 0; i < currencies.length; i++) { %>
+                        <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === 'MXN' ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                        <% } %>
+                    </select>
+                </p>
+        </div>
+    </div>
+    <p>
+        <label title="">Institución que expide la garantía</label>
+        <select class="form-control" name="guarantor" required>
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < guarantors.length; i++) { %>
+            <option value="<%= guarantors[i].id %>"><%= guarantors[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <label title="">
+        <h4>Periodo de la garantía</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newguarantee_date1" name="guaranteePeriod_startdate" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newguarantee_date2" name="guaranteePeriod_enddate" required>
+            </p>
+        </div>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

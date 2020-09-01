@@ -1,0 +1,127 @@
+<style>
+    #items {
+        margin-bottom: 10px;
+        max-height: 500px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    #items .close {
+        margin-right: 20px;
+    }
+</style>
+
+<form id="editquote_form">
+    <input type="hidden" name="id" value="<%= id %>">
+    <input type="hidden" name="requestforquotes_id" value="<%= quote.requestforquotes_id %>">
+
+    <!--<p>
+        <label title="">Identificador</label>
+        <input type="text" class="form-control" name="quotes_id" value="<%= quote.quotes_id %>" required>
+    </p>-->
+
+    <p>
+        <label title="">Solicitud cotización</label>
+        <input type="text" class="form-control" value="<%= quote.requesttitle %>" readonly>
+    </p>
+
+    <p>
+        <label title="">Descripción</label>
+        <textarea class="form-control" name="description" rows="10"><%= quote.description %></textarea>
+    </p>
+
+    <p>
+        <label title="">Fecha de la cotización</label>
+        <input type="text" class="form-control" id="newquote_date" name="date" value="<%= quote.date_text %>" required>
+    </p>
+
+    <label title="">
+        <h4>Ítems cotizados</h4>
+    </label>
+
+    <div id="items">
+        <% for (var i = 0; i < selectedItems.length; i++) { %>
+        <div class="row">
+            <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <input type="hidden" name="items[<%= i %>].item" value="<%=selectedItems[i].item%>" />
+            <div class="col-sm-8">
+                <p>
+                    <label title="">Bien o servicio</label>
+                    <select class="form-control" name="items[<%= i %>].itemid" required>
+                        <option value="">Seleccione una opción</option>
+                        <% for (var j = 0; j < items.length; j++) { %>
+                        <option value="<%= items[j].classificationid %>" <%= items[j].classificationid == selectedItems[i].itemid ? 'selected' : '' %>><%= items[j].itemname %></option>
+                        <% } %>
+                    </select>
+                </p>
+            </div>
+            <div class="col-sm-3">
+                <p>
+                    <label title="">Valor</label>
+                    <input type="number" class="form-control" name="items[<%= i %>].quantity" data-vregex="decimal" min="0" step="0.01" value="<%= selectedItems[i].quantity %>" required>
+                </p>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="text-right">
+        <button type="button" class="btn btn-default" data-action="add_item"><span class="fa fa-plus"></span></button>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-sm-offset-9">
+            <label title="">Valor total</label>
+            <input type="number" class="form-control" name="value" value="<%= quote.value %>" readonly>
+        </div>
+    </div>
+
+    <label title="">
+        <h4>Periodo de la cotización</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newquote_date1" name="quotePeriod_startdate" value="<%= quote.quoteperiod_startdate_text %>" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newquote_date2" name="quotePeriod_enddate" value="<%= quote.quoteperiod_enddate_text %>" required>
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <label title="">Proveedor emisor</label>
+        <select class="form-control" name="issuingSupplier_id" value="<%= quote.issuingsupplier_id %>" required>
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < suppliers.length; i++) { %>
+            <option value="<%= suppliers[i].id %>" <%= suppliers[i].id == quote.issuingsupplier_id ? 'selected' : '' %>><%= suppliers[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>
+
+<div class="hide" id="itemTemplate">
+    <div class="row">
+        <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div class="col-sm-8">
+            <p>
+                <label title="">Bien o servicio</label>
+                <select class="form-control" name="items[0].itemid" required>
+                    <option value="">Seleccione una opción</option>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-3">
+            <p>
+                <label title="">Valor</label>
+                <input type="number" class="form-control" name="items[0].quantity" data-vregex="decimal" min="0" step="0.01" readonly required>
+            </p>
+        </div>
+    </div>
+</div>

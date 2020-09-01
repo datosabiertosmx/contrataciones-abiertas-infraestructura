@@ -1,0 +1,63 @@
+<form id ="newmilestone_form">
+    <input type="text" name = "localid" value = "<%= localid %>" hidden>
+    <input type="text" name = "table" value="<%= table %>" hidden>
+     <input type="text" name = "fkname" value="<%= fkname %>" hidden>
+      <input type="text" name = "fkid" value="<%= fkid %>" hidden>
+
+    <!--<p><label>ID</label>
+        <input type="text" class="form-control" name="milestoneid" required></p>-->
+    
+    <p><label data-tooltip="crear_proceso" title='Denominación general que se asigne al hito.'>
+    Título<!--Title--></label>
+        <input type="text" class="form-control" name="title" required></p>
+    
+    <p><label data-tooltip="crear_proceso" title='El tipo de hito extraído de la lista de códigos "Tipo de hito".'>
+    Tipo de hito</label>
+    <select name="type" class="form-control">
+        <option value="publicNotices">Avisos a la población</option>
+        <option value="approval">Hitos de aprobación</option>
+        <option value="delivery">Hitos de entrega</option>
+        <option value="assessment">Hitos de evaluación</option>
+        <option value="financing">Hitos de financiamiento</option> 
+        <option value="engagement">Hitos de involucramiento</option>
+        <option value="reporting">Hitos de reporte</option>
+        <option value="preProcurement">Hitos previos a la contratación</option>
+    </select>
+    </p>
+    
+    <p><label data-tooltip="crear_proceso" title='Descripción del hito.'>
+    Descripción<!--Description--></label>
+        <textarea class="form-control" name="description" rows="5" required> </textarea>
+    </p>
+    
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha en que se debe cumplir el hito.'>
+                Fecha de vencimiento<!--Due date--></label>
+                <input type="text" id="newmilestone_date1" class="form-control" name="duedate">
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='La fecha en que el hito fue revisado o modificado por última vez.'>
+                Fecha de modificación<!--Date modified--></label>
+                <input type="text" id="newmilestone_date2" class="form-control" name="date_modified">
+            </p>
+        </div>
+    </div>
+    
+    <p><label data-tooltip="crear_proceso" title='El estado que se modificó o confirmó en la fecha definida en el campo "Fecha de modificación", de acuerdo con la lista de códigos de "Estatus del hito".'>
+    Estatus del hito<!--Status--></label>
+
+        <select class="form-control" name="status">
+            <option value="">Ninguno</option>
+            <option value="met">Cumplido</option>
+            <option value="notMet">No cumplido</option>
+            <option value="partiallyMet">Parcialmente cumplido</option>
+            <option value="scheduled">Programado</option>
+        </select>
+
+    </p>
+    <button class="btn btn-default">Guardar</button>
+</form>

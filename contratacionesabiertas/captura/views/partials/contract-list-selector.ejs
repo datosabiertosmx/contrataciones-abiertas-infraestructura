@@ -1,0 +1,11 @@
+<% for (var i=0; i < contracts.length; i++){ %>
+    <a href="javascript:void(0)" class="list-group-item" data-id="<%= contracts[i].id %>" data-contractingprocess_id="<%= cpid %>" data-actual="<%= contracts[i].id === current %>">
+        <span class="list-group-item-heading">Contrato  <%= i + 1 %></span>
+        <% if(contracts[i].contractid){ %>
+        <div class="list-group-item-text">
+            <%= contracts[i].contractid %> <br>
+            <small><%=  contracts[i].status %></small>
+        </div>
+        <% } %>
+    </a>
+<% } %>

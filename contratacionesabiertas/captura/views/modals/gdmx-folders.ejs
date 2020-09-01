@@ -1,0 +1,44 @@
+<button id="btnAddFolder" type="button" class="btn btn-default pull-right"><span class="fa fa-plus"></span> Agregar carpeta</button>
+<table class="table table-stripped">
+    <thead>
+        <tr>
+            <th>Ruta</th>
+            <th style="width: 100px;"></th>
+        </tr>
+    </thead>
+    <tbody id="tbodyFolders">
+        <tr class="template row-loading hide">
+            <td colspan="3" class="text-center"><span class="fa fa-refresh fa-spin"></span></td>
+        </tr>
+        <tr class="template row-form hide">
+            <td colspan="3">
+                <form id="frmCarpeta" class="form-horizontal">
+                    <input type="hidden" name="id" />
+                    <input type="hidden" name="active" />
+                    <div>
+                        <label class="col-sm-3 control-label">Ruta de la carpeta</label>
+                        <div class="col-sm-9 input-group">
+                            <input class="form-control" type="text" id="name" name="name" placeholder="Ingrese la ruta" required maxlength="100" />
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary" title="Guardar"><span class="fa fa-save"></span></button>
+                                <button type="button" id="btnCancelFolder" class="btn btn-default" title="Cancelar"><span class="fa fa-close"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <tr class="template row-no-results">
+            <td colspan="3" class="text-center">No se ha encontrado resultados</td>
+        </tr>
+        <tr class="template row-data hide">
+            <td>
+                {name}
+            </td>
+            <td>
+                <button data-action="edit" data-id="{id}" data-name="{name}" type="button" class="btn btn-default"><span class="fa fa-edit"></span></button>
+                <button data-action="delete" data-id="{id}" data-name="{name}" type="button" class="btn btn-danger"><span class="fa fa-trash"></span></button>
+            </td>
+        </tr>
+    </tbody>
+</table>

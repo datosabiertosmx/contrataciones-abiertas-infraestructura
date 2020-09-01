@@ -1,0 +1,241 @@
+<form id="add_party_form">
+
+    <input type="text" name="contractingprocess_id" value = "<%= contractingprocess_id %>" hidden>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='Nombre común por el que se conoce a esta persona física o moral, o del área de la institución pública en el procedimiento de contratación. El apartado de identificación provee un espacio para registrar el nombre formal o razón social, por lo que éste puede repetir ese valor o puede referirse al nombre común por el cual es conocida la organización.'>
+        Nombre común<!--Name--></label>
+        <input name="name" type="text" class="form-control" required>
+    </p>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador utilizado para hacer referencias cruzadas a este actor desde otras secciones del esquema. Este campo puede ser construido de acuerdo con la siguiente estructura: {identifier.scheme} - {identifier.id} (- {department-identifier}).'>
+        Identificador del actor</label>
+        <input name="partyid" type="text" class="form-control" readonly required>
+    </p>
+    
+    <p>
+        <label data-tooltip="crear_proceso" title='Cargo que ocupa el servidor público. Este campo se utiliza para definir el cargo que ocupan los servidores públicos asistentes a las juntas de aclaraciones.'>
+        Cargo</label>
+        <input name="position" type="text" class="form-control">
+    </p>
+    
+    <hr>
+    
+    <label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
+    <h4>Identificador principal</h4></label>
+    
+    <p>
+        <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si es persona física.'>¿Es persona física?</label>
+          <select class="form-control" name="naturalperson" id="naturalperson"
+           onchange="if(getElementById('naturalperson').selectedIndex == 1) 
+            {document.getElementById('givenname').disabled = false; 
+             document.getElementById('surname').disabled = false; 
+             document.getElementById('additionalsurname').disabled = false;
+             document.getElementById('identifier_legalname').disabled = true;} 
+            else
+            {document.getElementById('identifier_legalname').disabled = false;
+             document.getElementById('givenname').disabled = true; 
+             document.getElementById('surname').disabled = true; 
+             document.getElementById('additionalsurname').disabled = true;}">
+		    
+            <option value="false"
+                <% if (typeof parties !== "undefined"){%>
+              	<%=(parties.naturalperson === false) ?'selected':''%>
+                <%}%>
+                >No</option>
+            <option value="true"
+                <% if (typeof parties !== "undefined") {%>
+                <%=(parties.naturalperson) ?'selected':''%>
+                <%}%>
+                >Si</option>
+          </select>
+    </p>
+     
+    <br>
+       
+	<div class="row">
+		    
+    	<div class="col-sm-6">
+    		
+    		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
+    		<h4>Persona moral</h4></label>
+    		
+    		<p><label data-tooltip="crear_proceso" title='Nombre o razón social.'>Nombre o razón social<!--Identifier legal name--></label>
+        	<input name="identifier_legalname" id="identifier_legalname" type="text" class="form-control" required></p>
+    	</div>
+    	
+		<div class="col-sm-6">
+		
+			<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
+    		<h4>Persona física</h4></label>
+    
+    		<p>
+        	<label data-tooltip="crear_proceso">Nombre<!--Name--></label>
+        	<input name="givenname" id="givenname" type="text" class="form-control" disabled required>
+    		</p>
+
+    		<p>
+        	<label>Primer Apellido</label>
+        	<input name="surname" id="surname" type="text" class="form-control" disabled required>
+	    	</p>
+
+    		<p>
+        	<label>Segundo Apellido</label>
+        	<input name="additionalsurname" id="additionalsurname" type="text" class="form-control" disabled required>
+    		</p>
+    	</div>
+    </div>
+    
+    <br>
+
+
+
+    <!-- ########################################################################## MODIFICADO ##################################### -->
+    <p><label data-tooltip="crear_proceso" title='Los identificadores del actor deben extraerse de una lista de identificadores existente. El campo esquema se utiliza para indicar el nombre de la lista o registro del que se extrae el identificador. Este valor debe obtenerse de la lista de códigos "Esquema de identificación de la organización".'>
+    Esquema <!--Identifier scheme--></label>
+        <select name="identifier_scheme" class="form-control" onChange="validarVacio(this);" id='identifier_scheme' required>
+            <option value="">Seleccionar un esquema</option>
+            <option value="MX-RFC">MX-RFC</option>
+        </select>
+    <!-- ########################################################################## MODIFICADO ##################################### -->
+
+
+    <p><label data-tooltip="crear_proceso" title='El identificador de la persona física o moral, o del área de la institución pública.'>
+    Identificador <!--Identifier id--></label>
+        <input name="identifier_id" type="text" class="form-control" onChange="validarIdentificador(this);" required></p>
+
+    <hr>
+    
+    <label data-tooltip="crear_proceso" title='Domicilio de la persona física o moral, o del área de la institución pública.'>
+    <h4>Domicilio</h4></label>
+    
+    <p><label data-tooltip="crear_proceso" title='Calle y número. Por ejemplo, Insurgentes Sur 1600.'>
+    Calle y número<!--Address street address--></label>
+        <input name="address_streetaddress" type="text" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='Alcaldía o municipio. Por ejemplo, Coyoacán.'>
+    Alcaldía o municipio<!--Address locality--></label>
+        <input name="address_locality" type="text" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='Entidad federativa. Por ejemplo, Ciudad de México.'>
+    Entidad federativa<!--Address region--></label>
+        <input name="address_region" type="text" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='Código postal. Por ejemplo, 94043.'>
+    Código postal <!--Address postal code--></label>
+        <input name="address_postalcode" type="text" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='País. Por ejemplo, México.'>
+    País<!--Address country name--></label>
+        <input name="address_countryname" type="text" class="form-control"></p>
+    <hr>
+    
+    <label data-tooltip="crear_proceso" title='Persona o área administrativa que funge como punto de contacto en relación con este procedimiento de contratación.'>
+    <h4>Punto de contacto</h4></label>
+    
+    <p><label>Tipo de punto de contacto</label>
+        <select name="contactpoint_type" class="form-control">
+            <option value="">- Seleccionar -</option>
+            <option value="contactPoint">Punto de contacto</option>
+            <option value="attorney">Representante legal o apoderado</option>
+        </select></p>
+
+    <p><label data-tooltip="crear_proceso" title='El nombre de la persona o área administrativa que funge como punto de contacto para recibir notificaciones en relación con este procedimiento de contratación.'>
+    Nombre<!--Contact point name--></label>
+        <input name="contactpoint_givenname" type="text" class="form-control"></p>
+        
+    <p>
+        <label>
+        Primer Apellido</label>
+        <input name="contactpoint_surname" type="text" class="form-control">
+    </p>
+
+    <p>
+        <label>
+        Segundo Apellido</label>
+        <input name="contactpoint_additionalsurname" type="text" class="form-control">
+    </p>
+
+
+    <p><label data-tooltip="crear_proceso" title='Correo electrónico del punto de contacto.'>
+    Correo electrónico<!--Contact point email--></label>
+        <input name="contactpoint_email"   type="text" onChange="validarEmail(this.value);" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='El número de teléfono del punto de contacto / persona. Éste debe incluir el código de marcación internacional.'>
+    Teléfono<!--Contact point telephone--></label>
+        <input name="contactpoint_telephone"  type="text" onChange="validarSiNumero(this.value);" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='El número de fax del punto de contacto / persona. Éste debe incluir el código de marcación internacional.'>
+    Número de fax<!--Contact point fax number--></label>
+        <input name="contactpoint_faxnumber"    type="text" class="form-control"></p>
+        
+    <p><label data-tooltip="crear_proceso" title='Dirección web del punto de contacto.'>
+    URL<!--Contact point URL--></label>
+        <input name="contactpoint_url" type="url" class="form-control"></p>
+        
+        <hr>
+    <label data-tooltip="crear_proceso" title='El papel(es) que desempeña el actor involucrado en el procedimiento de contratación. Estos papeles deben ser tomados de la lista de códigos "Papeles de los actores". Los valores de la lista de códigos proporcionada deben usarse siempre que sea posible, aunque se pueden proporcionar otros valores si la lista de códigos no tiene uno pertinente.'>
+    Papeles del actor</label>
+    
+    <div class="well">
+        <label class="checkbox-inline"><input name="contractingunit" type="checkbox">Área contratante</label><br>
+        <label class="checkbox-inline"><input name="requestingunit" type="checkbox">Área requirente</label><br>
+        <label class="checkbox-inline"><input name="technicalunit" type="checkbox">Área técnica</label><br>
+        <label class="checkbox-inline"><input name="responsibleunit" type="checkbox">Área responsable de la ejecución</label><br>
+        <label class="checkbox-inline"><input name="attendee" type="checkbox">Asistente a junta de aclaraciones</label><br>
+        <label class="checkbox-inline"><input name="reviewBody" type="checkbox">Auditor</label><br>
+        <label class="checkbox-inline"><input name="payer" type="checkbox">Emisor del pago</label><br>     
+        <label class="checkbox-inline"><input name="buyer" type="checkbox">Entidad compradora</label><br>
+        <label class="checkbox-inline"><input name="procuringEntity" type="checkbox">Entidad contratante</label><br>
+        <label class="checkbox-inline"><input name="guarantor" type="checkbox">Institución que expide la garantía</label><br>
+        <label class="checkbox-inline"><input name="tenderer" type="checkbox">Licitante</label><br>
+        <label class="checkbox-inline"><input name="enquirer" type="checkbox">Persona física o moral que solicita aclaraciones</label><br>        
+        <label class="checkbox-inline"><input name="issuingSupplier" type="checkbox">Persona física o moral que envía cotización (investigación de mercado)</label><br>
+        <label class="checkbox-inline"><input name="invitedSupplier" type="checkbox">Persona física o moral invitada a cotizar (investigación de mercado)</label><br>
+        <label class="checkbox-inline"><input name="supplier" type="checkbox">Proveedor o contratista</label><br>     
+        <label class="checkbox-inline"><input name="payee" type="checkbox">Receptor de pago</label><br>
+        <label class="checkbox-inline"><input name="official" type="checkbox">Servidor público asistente a junta de aclaraciones</label><br>
+    </div>
+
+    <button type="submit" class="btn btn-default">Crear</button>
+</form>
+
+<script>
+  function validarSiNumero(numero){
+    if (!/^([0-9])*$/.test(numero))
+      alert("Solo se permiten números");
+  }
+  
+  function validarEmail( email ) {
+    expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if ( !expr.test(email) )
+        alert("La dirección de correo " + email + " no tiene el formato correcto.");
+}
+
+    function validarVacio (input) {
+        input.value = input.value.trim();
+    }
+
+    function validarIdentificador(input){
+        input.value = input.value.trim();
+        if(document.getElementById('identifier_scheme').selectedIndex == 1){
+            if(input.value.length == 12 || input.value.length ==13){
+                //No modifica el dato
+            }else{
+                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el RFC consta de 12 caracteres en caso de personas físicas y 13 en caso de personas morales.")
+                input.value = "";
+            }
+        }
+    }
+
+    $('[name="identifier_scheme"], [name="identifier_id"]').on('change', function() {
+        var scheme = $('[name="identifier_scheme"]').val();
+        var id = $('[name="identifier_id"]').val();
+
+        if (scheme == '' && id == '')
+            $('[name="partyid"]').val('');
+        else
+            $('[name="partyid"]').val(scheme + '-' + id);
+    });
+</script>

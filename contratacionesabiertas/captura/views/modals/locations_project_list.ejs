@@ -1,0 +1,26 @@
+<%if (data.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado ubicaciones</p>
+    </div>
+<%}%>
+<% for(var location of data) {%>
+
+    <div class="panel panel-default">
+        
+        <div class="panel-body">
+            <%if (location.description !== null){ %>
+            <p><label>Descripción:</label> <%= location.description%></p>
+            <%}%>
+            <%if (location.description !== null){ %>
+                <p><label>Tipo:</label> <%= location.type%></p>
+                <%}%>            
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" name="edit_location_project" data-location_id="<%= location.id%>"><i class="fa fa-edit"></i> Editar</button>
+                    <button class="btn btn-danger" name="delete_location_project" data-location_id="<%= location.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+<%}%>

@@ -1,0 +1,34 @@
+<%
+    function replace(text, obj) {
+        Object.keys(obj).forEach(function(v, i) {
+            text = text.replace(new RegExp('{' + v + '}', 'g'), obj[v]);
+        });
+
+        return text;
+    }
+%>
+
+<form id="frmCatalog">
+    <input type="hidden" name="id" value="<%= item.id %>" />
+
+    <% for(var i = 0, catalog=schema[i]; i < schema.length; i++,catalog=schema[i]) { %>
+        <% if(catalog.hidden) { %>
+            <input type="hidden" name="<%= catalog.field %>" value="<%= item[catalog.field] %>">
+        <% } else { %>
+            <div class="form-group">
+                <label><%= catalog.label %></label>
+                <% if(catalog.data){ %>
+                    <select name="<%= catalog.field %>" class="form-control" required="<%= catalog.required || false  %>" >
+                        <option value="" <%= item[catalog.field] === '' ? 'selected' : '' %>>Seleccione una opción</option>
+                        <% for(var j = 0; j < catalog.data.length; j++) {  %>
+                            <option value="<%= catalog.data[j].value %>" <%= item[catalog.field] === catalog.data[j].value ? 'selected' : '' %> <%= catalog.prop != null ? replace(catalog.prop, catalog.data[j]) : '' %>><%= catalog.data[j].name || '----' %></option>
+                        <% } %>
+                    </select>
+                <% } else {%>
+                    <input name="<%= catalog.field %>" class="form-control" required="<%= catalog.required || false  %>" value="<%= item[catalog.field] %>" <%= catalog.readonly ? 'readonly' : ''  %> />
+                <% } %>
+            </div>
+        <% } %>
+    <% } %>
+    <button class="btn btn-default">Guardar</button>
+</form>

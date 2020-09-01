@@ -1,0 +1,15 @@
+<form id="updatepub_form">
+    <input type="text" name="id" value="<%= data.id %>" hidden>
+    <p><label title='El nombre de la organización o departamento responsable de publicar estos datos.' >
+    Nombre<!--Name--></label>
+        <input name="name" class="form-control" value="<%= data.name %>" <%= data.name ? 'readonly' : '' %>></p>
+    <p><label title='El esquema que contiene los identificadores únicos utilizados para identificar cada elemento.'>
+    Esquema<!--Scheme--></label>
+        <input name="scheme" class="form-control" value="<%= data.scheme %>" <%= data.scheme ? 'readonly' : '' %>></p>
+    <p><label title='El identificador único para esta entidad bajo el esquema de identificación dado. Observe el uso de "uid" en lugar de "id".'>
+    UID</label>
+        <input name="uid" class="form-control" value="<%= data.uid %>" <%= data.uid ? 'readonly' : '' %>></p>
+    <% if (!data.name || !data.scheme || !data.uid) { %>
+        <button class="btn btn-default">Guardar</button>
+    <% } %>
+</form>

@@ -1,0 +1,94 @@
+<nav class="navbar navbar-default barra-menus navbar-fixed-top">
+  <div class="container-fluid">
+      <ul class="nav navbar-nav navbar-collapse collapse">
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Contrataciones
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="modal" data-target="#genericModal" data-action="search" data-user_id = "<%= user.id %>"> <i class="fa fa-search"></i> Buscar</a></li>
+                <li id="create_process"><a href="#"><i class="fa fa-plus"></i> Nueva</a></li>
+                <% if (user.isAdmin === true){%>
+                    <li data-toggle="modal" data-action="manage_process" data-target="#adminModal"><a href="#"><i class="fa fa-tasks"></i> Administrar</a></li>
+                    <li data-toggle="modal" data-action="validate_proccess" data-target="#adminModal"><a href="#"><i class="fa fa-check"></i> Validar</a></li>
+                 <!--  <li data-toggle="modal" data-action="delete_process" data-target="#adminModal"><a href="#"><i class="fa fa-recycle"></i> Eliminar</a></li> -->
+                <%}%>            
+                <li role="separator" class="divider"></li>
+                <li><a href="#" data-toggle="modal" data-target="#genericModal" data-action="manual"> <i class="fa fa-book"></i> Manual</a></li>
+            </ul>
+          </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Proyectos
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <!-- <li><a href="#"> <i class="fa fa-search"></i> Buscar</a></li> -->
+            <li id="create_project"><a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li><a href="#"><i class="fa fa-book"></i> Manual</a></li> -->
+          </ul>
+        </li>
+        <% if (user.isAdmin === true){%>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Herramientas
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu multi-level">
+                    <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-database"></i> Datos de la institución</a>
+                        <ul class="dropdown-menu">
+                            <li data-toggle="modal" data-action="manage_ocid" data-target="#adminModal"><a href="#"><i class="fa fa-cubes"></i> Prefijo OCID</a></li>
+                            <li data-toggle="modal" data-action="manage_oc4ids" data-target="#adminModal"><a href="#"><i class="fa fa-cubes"></i> Prefijo OC4IDS</a></li>
+                        <li data-toggle="modal" data-action="manage_metadata" data-target="#adminModal"><a href="#metadata"><i class="fa fa-cubes"></i> Licencia y pólitica de publicación</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-code"></i> Listas de códigos</a>
+                        <ul class="dropdown-menu">
+                            <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Lista de ítems" data-type="item"><a href="#codes"><i class="fa fa-cubes"></i> ítems</a></li>
+                            <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Estructura Programática" data-type="programaticstructure"><a href="#codes"><i class="fa fa-cubes"></i> Estructura Programática</a></li>
+                            <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Actividad MIR" data-type="activitymir"><a href="#codes"><i class="fa fa-cubes"></i> Actividad MIR</a></li>
+                            <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Partidas" data-type="departure"><a href="#codes"><i class="fa fa-cubes"></i> Partidas</a></li>
+                            <li data-toggle="modal" data-action="manage_catalog" data-target="#adminModal" data-title="Unidades Administrativas" data-type="administrativeunit"><a href="#codes"><i class="fa fa-cubes"></i> Unidades Administrativas</a></li>
+                        </ul>
+                    </li>               
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li data-toggle="modal" data-action="new_user" data-target="#adminModal"><a href="#"><i class="fa fa-user-plus"></i> Nuevo</a></li>
+                    <li data-toggle="modal" data-action="users" data-target="#adminModal"><a href="#"><i class="fa fa-users"></i> Editar</a></li>
+                </ul>
+              </li>
+        <%}%>
+        
+      </ul>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <% if ( typeof cp != 'undefined' && tender && tender.tenderid){%>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Descarga de datos <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="<%= '/release/'+ cp.ocid  %>"  download="<%= 'release_'+cp.id+'.json'%>"> <i class="fa fa-download"></i> Entrega (Release) </a></li>
+                    <li><a href="<%= '/release-package/'+ cp.ocid %>" download="<%= 'release-package_'+ cp.id+'.json'%>"> <i class="fa fa-download"></i> Paquete de Entregas (Release package) </a></li>
+                    <li><a href="<%= '/record/'+ cp.ocid  %>" download="<%= 'record_'+cp.id+'.json'%>"><i class="fa fa-download"></i> Registro (Record)</a> </li>
+                    <li><a href="<%= '/record-package/'+ cp.ocid  %>" download="<%= 'record-package_'+cp.id+'.json'%>"><i class="fa fa-download"></i> Paquete de Registros (Record Package)</a> </li>
+                    <li><a id="testter" data-id="<%= cp.ocid %>" href="javascript:void(0)"><i class="fa fa-download"></i> Paquete de Registros Por Período (Record Package)</a> </li>
+                    <li><a href="<%= '/release-package-all/'+ cp.ocid %>" download="<%= 'release-package_all_'+ cp.id+'.json'%>"> <i class="fa fa-download"></i> Paquete de Entregas Completo (Release package) </a></li>
+                </ul>
+            </li>
+            <%}%>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= user.name %> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-action="edit_user" data-user_id="<%= user.id %>" data-toggle="modal" data-target="#genericModal"><i class="fa fa-user"></i> Actualizar información </a></li>
+                    <li><a href="#" data-action="update_password" data-user_id="<%= user.id %>" data-toggle="modal" data-target="#genericModal"><i class="fa fa-key"></i> Cambiar contraseña</a></li>
+                    <li role="separator" class="divider"></li>
+                    <!--<li class="dropdown-header">Nav header</li>-->
+                    <li><a href="/signout"><i class="fa fa-sign-out"></i> Salir </a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    </div>
+  </nav>
+

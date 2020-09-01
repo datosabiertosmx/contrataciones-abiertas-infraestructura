@@ -1,0 +1,153 @@
+<form id="editbudgetclassification_form">
+    <input type="hidden" name="id" value="<%= id %>">
+    <input type="hidden" name="budget_id" value="<%= classification.budgetbreakdown_id %>">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Año</label>
+                <select class="form-control" name="year" required>
+                    <option value="" <%= classification.year == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                    <% for (var i = 0; i < years.length; i++) { %>
+                    <option value="<%= years[i].value %>" <%= classification.year == years[i].value ? 'selected' : '' %>><%= years[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label>Trimestre</label>
+                <input type="text" class="form-control" name="trimester" data-source="programaticstructure" value="<%= classification.trimester %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-sm-6">
+            <p>
+                <label title="">Ramo</label>
+                <input type="text" class="form-control" name="branch" data-source="programaticstructure" value="<%= classification.branch %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Unidad responsable</label>
+                <input type="text" class="form-control" name="responsibleunit" data-source="programaticstructure" value="<%= classification.responsibleunit %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Finalidad</label>
+                <input type="text" class="form-control" name="finality" data-source="programaticstructure" value="<%= classification.finality %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Función</label>
+                <input type="text" class="form-control" name="function" data-source="programaticstructure" value="<%= classification.function %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Subfunción</label>
+                <input type="text" class="form-control" name="subfunction" data-source="programaticstructure" value="<%= classification.subfunction %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Actividad institucional</label>
+                <input type="text" class="form-control" name="institutionalactivity" data-source="programaticstructure" value="<%= classification.institutionalactivity %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+    	<div class="col-sm-6">
+            <p>
+                <label title="">Programa presupuestario</label>
+                <input type="text" class="form-control" name="budgetprogram" data-source="programaticstructure" value="<%= classification.budgetprogram %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Objetivo estratégico</label>
+                <input type="text" class="form-control" name="strategicobjective" data-source="programaticstructure" value="<%= classification.strategicobjective %>" readonly>
+            </p>
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-sm-12">
+            <p>
+                <label title="">Unidad requiriente</label>
+                <select class="form-control" name="requestingunit" required>
+                    <option value="" <%= classification.requestingunit == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                    <% for (var i = 0; i < units.length; i++) { %>
+                    <option value="<%= units[i].value %>" <%= classification.requestingunit == units[i].value ? 'selected' : '' %>><%= units[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Actividad MIR</label>
+                <select class="form-control" name="specificactivity" required>
+                    <option value="" <%= classification.specificactivity == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                    <% for (var i = 0; i < activities.length; i++) { %>
+                    <option value="<%= activities[i].value %>" <%= classification.specificactivity == activities[i].value ? 'selected' : '' %>><%= activities[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Partida</label>
+                <select class="form-control" name="spendingobject" required>
+                    <option value="" <%= classification.spendingobject == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                    <% for (var i = 0; i < departures.length; i++) { %>
+                    <option value="<%= departures[i].value %>" <%= classification.spendingobject == departures[i].value ? 'selected' : '' %> data-spendingtype="<%= departures[i].spendingtype %>" data-budgetsource="<%= departures[i].budgetsource %>"><%= departures[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Tipo de gasto</label>
+                <input type="text" class="form-control" name="spendingtype" data-source="departure" value="<%= classification.spendingtype %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fuente de financiamiento</label>
+                <input type="text" class="form-control" name="budgetsource" data-source="departure" value="<%= classification.budgetsource %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Entidad federativa</label>
+                <input type="text" class="form-control" name="region" data-source="programaticstructure" value="<%= classification.region %>" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Clave de cartera</label>
+                <input type="text" class="form-control" name="portfoliokey" data-source="programaticstructure" value="<%= classification.portfoliokey %>" readonly>
+            </p>
+        </div>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

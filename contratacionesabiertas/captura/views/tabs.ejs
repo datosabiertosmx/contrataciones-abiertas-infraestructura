@@ -1,0 +1,821 @@
+<%
+function getMString ( fecha ){
+    return (
+            fecha.getFullYear() + "-"+
+            ( (fecha.getMonth() + 1 < 10)?("0"+(fecha.getMonth()+1)):(fecha.getMonth() + 1) )+ "-" + // 0 - 11
+            ( (fecha.getDate() < 10)?("0"+(fecha.getDate())):(fecha.getDate()) ) +" "+ // 1 - 31
+            ( (fecha.getHours() < 9)?("0"+fecha.getHours()):fecha.getHours() )+":"+ //0 - 23
+            ( (fecha.getMinutes() < 9 )?("0"+fecha.getMinutes()):fecha.getMinutes() ) + ":" +
+            ( (fecha.getSeconds() < 9 )?("0"+ fecha.getSeconds()):fecha.getSeconds() )
+    );
+}
+
+// Carga el estatus actual de la etapa
+function getStatus(catalog, value, cValue, cText) {
+    var status = catalog.find(e => e[cValue] == value);
+    console.log(catalog);
+    return status != null ? status[cText] : '';
+}
+
+// Catalogo de estatus de licitacion
+var estatusLicitacion = [
+    { value: 'planning' , text: 'En planeación' },
+    { value: 'planned' , text: 'Planeada' },
+    { value: 'active' , text: 'Activa' },
+    { value: 'cancelled' , text: 'Cancelada' },
+    { value: 'unsuccessful' , text: 'No exitosa' },
+    { value: 'complete' , text: 'Concluida' },
+    { value: 'withdrawn' , text: 'Retirada' },
+    { value: 'direct' , text: 'Directa' }
+];
+
+// Catalogo de estatus de adjudicacion
+var estatusAdjudicacion = [
+    { value: 'pending' , text: 'Pendiente' },
+    { value: 'active' , text: 'Activo' },
+    { value: 'cancelled' , text: 'Cancelado' },
+    { value: 'unsuccessful' , text: 'No exitoso' }
+];
+
+// Catalogo de estatus de contrato
+var estatusContrato = [
+    { value: 'pending' , text: 'Pendiente' },
+    { value: 'active' , text: 'Activo' },
+    { value: 'cancelled' , text: 'Cancelado' },
+    { value: 'terminated' , text: 'Terminado' }
+];
+
+%>
+
+<ul id="pills" class="nav nav-pills nav-justified nav-pills-success">
+    <li role="presentation" class="active"><a data-toggle="pill" href="#home" data-tooltip="crear_proceso" title="Información de la etapa de planeación del procedimiento de contratación. Considerar que, en una publicación de un procedimiento que se encuentra en planeación, es posible capturar información adicional en los campos apropiados ubicados a través de las otras secciones del esquema.">1. PLANEACIÓN <br></a></li>
+    <li role="presentation"><a data-toggle="pill" href="#menu1" data-tooltip="crear_proceso" title="Actividades llevadas a cabo para celebrar una contratación.">2. LICITACIÓN <br><small id="tenderStatus"><%= getStatus(estatusLicitacion, tender.status, 'value', 'text') %></small></a></li>
+    <li role="presentation"><a data-toggle="pill" href="#menu2" data-tooltip="crear_proceso" title="Una adjudicación para una contratación determinada. Puede haber más de una adjudicación por licitación, por ejemplo, porque se pueden adjudicar a varios proveedores.">3. ADJUDICACIÓN <br><small id="awardStatus"><%= getStatus(estatusAdjudicacion, cp.awardstatus, 'value', 'text') %></small></a></li>
+    <li role="presentation"><a data-toggle="pill" href="#menu3" data-tooltip="crear_proceso" title="Información sobre el contrato firmado entre el comprador y el/los proveedor/es.">4. CONTRATO <br><small id="contractStatus"><%= getStatus(estatusContrato, cp.contractstatus, 'value', 'text') %></small></a></li>
+    <li role="presentation"><a data-toggle="pill" href="#menu4" data-tooltip="crear_proceso" title="Información relacionada con la ejecución del contrato de conformidad con las obligaciones establecidas en el mismo.">5. EJECUCIÓN <br><small id="implementationStatus"><%= getStatus(implementation_status,  cp.implementationstatus, 'code', 'title_esp') %></small></a></li>
+</ul>
+<br>
+<div id="all-contents" class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+
+        <div class="well well-lg">
+        
+            <label data-tooltip="crear_proceso" title='Información de la etapa de planeación del procedimiento de contratación. Considerar que, en una publicación de un procedimiento que se encuentra en planeación, es posible capturar información adicional -que no se encuentra en esta etapa- en los campos apropiados ubicados a través de las otras secciones del esquema. Esta información probablemente se refiera a estimaciones, por ejemplo 'TotalValue' del procedimiento de contratación.'>
+            <h3>1. PLANEACIÓN</h3></label>
+            <br>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Lista de documentos relacionados con la etapa de planeación del procedimiento de contratación.">
+                    <!-- Documents-->Documentos <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_document" data-stage="1" data-table="planningdocuments" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_documents" data-stage="1" data-table="planningdocuments" data-contractingprocess_id="<%=cp.id%>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una lista de las solicitudes de cotizaciones relacionadas con la etapa de planeación.">
+                    Solicitudes de cotizaciones <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_quote_request" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_quote_requests" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una lista de cotizaciones relacionadas con la etapa de planeación.">
+                    Cotizaciones <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_quote" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_quotes" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <form id="planning_form" >
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Justificación de la contratación. Razones por las cuales resulta necesaria la adquisición o arrendamiento de bienes muebles, la contratación de servicios, de obras públicas o de servicios relacionados con las mismas.'>
+                    Justificación<!--Rationale--></label>
+                    <textarea class="form-control" name="rationale" rows="5"><%=(typeof planning!= "undefined")? planning.rationale : ''%></textarea>
+                </p>
+				<p>
+                    <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si hubo cotizaciones.'>¿Hubo cotizaciones?</label>
+                    <select class="form-control" name="hasquotes" required>
+                    	<option value ="">Seleccione una opción</option>
+                        <option value="true"
+                                <% if (typeof planning !== "undefined") {%>
+                                <%=(planning.hasquotes == true) ?'selected':''%>
+                                <%}%>
+                        >Sí</option>
+                        <option value="false"
+                                <% if (typeof planning !== "undefined"){%>
+                                <%=(planning.hasquotes == false) ?'selected':''%>
+                                <%}%>
+                        >No</option>
+                    </select>
+                </p>
+                <p>
+                    <label data-tooltip="crear_proceso" title='La autoridad que en la dependencia o entidad solicita o requiere formalmente la adquisición o el arrendamiento de bienes o la provisión de servicios, o quién los usará'>Unidad administrativa requirente</label>
+                    <select class="form-control" name="requestingunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
+                        <% for (var i = 0; i < requestingunit.length; i++) { %>
+                            <%if (requestingunit_selected.includes(requestingunit[i].partyid +"-"+ requestingunit[i].name)){ %>
+                                <option value="<%= requestingunit[i].partyid%>/<%= requestingunit[i].name%>" selected><%= requestingunit[i].partyid%> - <%= requestingunit[i].name%></option>     
+                            <%} else {%>
+                                <option value="<%= requestingunit[i].partyid%>/<%= requestingunit[i].name%>"><%= requestingunit[i].partyid%> - <%= requestingunit[i].name%></option>
+                            <%}%>
+                        <% } %>
+                    </select>
+                </p>
+                <p>
+                    <label data-tooltip="crear_proceso" title='La autorizada en la dependencia o entidad para llevar a cabo procedimientos de contratación con el fin de adquirir o arrendar bienes o contratar la prestación de servicios requeridos por la dependencia o entidad en cuestión.'>Unidad administrativa contratante</label>
+                    <select class="form-control" name="contractingunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
+                        <% for (var i = 0; i < contractingunit.length; i++) { %>
+                            <%if (contractingunit_selected.includes(contractingunit[i].partyid +"-"+ contractingunit[i].name)){ %>
+                                <option value="<%= contractingunit[i].partyid%>/<%= contractingunit[i].name%>" selected><%= contractingunit[i].partyid%> - <%= contractingunit[i].name%></option>     
+                            <%} else {%>
+                                <option value="<%= contractingunit[i].partyid%>/<%= contractingunit[i].name%>"><%= contractingunit[i].partyid%> - <%= contractingunit[i].name%></option>
+                            <%}%>
+                        <% } %>
+                    </select>
+                </p>
+                <p>
+                    <label data-tooltip="crear_proceso" title='Área responsable de la ejecución: El área responsable de la ejecución del contrato.'>Unidad administrativa responsable de la ejecución</label>
+                    <select class="form-control" name="responsibleunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
+                        <% for (var i = 0; i < responsibleunit.length; i++) { %>
+                            <%if (responsibleunit_selected.includes(responsibleunit[i].partyid +"-"+ responsibleunit[i].name)){ %>
+                                <option value="<%= responsibleunit[i].partyid%>/<%= responsibleunit[i].name%>" selected><%= responsibleunit[i].partyid%> - <%= responsibleunit[i].name%></option>     
+                            <%} else {%>
+                                <option value="<%= responsibleunit[i].partyid%>/<%= responsibleunit[i].name%>"><%= responsibleunit[i].partyid%> - <%= responsibleunit[i].name%></option>
+                            <%}%>
+                        <% } %>
+                    </select>
+                </p>
+               <hr>
+                           
+               	<label data-tooltip="crear_proceso" title='Esta sección contiene información del presupuesto asignado para el procedimiento de contratación, incluye información sobre la(s) clave(s) presupuestaria(s).'>
+                   <h3>Información del presupuesto</h3></label>
+                
+                <div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Detalles del desglose presupuestario de la planeación.">
+                            <i class="fa fa-money"></i> Desglose del presupuesto <span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-action="new_budgetbreakdown" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                            <li><a href="#" data-toggle="modal" data-action="edit_budgetbreakdowns" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Editar</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <br>
+
+                <input type="text" name="contractingprocess_id" value ="<%= cp.id %>" hidden>
+                
+                <br>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button class="btn btn-primary" type="button" data-toggle="modal" data-contractingprocess_id="<%= cp.id %>" data-action="import" data-stage="1" data-target="#genericModal">Importar datos</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="menu1" class="tab-pane fade">
+        <div class="well well-lg">
+        
+            <form id="frmTenderStatus" class="form-horizontal form-group col-xs-4 pull-right" style="margin-top:20px">
+                <input type="hidden" name="cpid" value="<%= cp.id %>" />
+                <input type="hidden" name="type" value="tender" />
+                <input type="hidden" name="stage" value="2" />
+                <label data-tooltip="crear_proceso" title='El estado actual del procedimiento de contratación obtenido de la lista de códigos "Estatus de la licitación.' class="col-xs-3 control-label">Estatus</label>
+                <div class="col-sm-9 input-group">
+                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                        <option value ="" <%= (tender.status == null)?'selected':''%> >Seleccione una opción</option>
+                        <option value="planning" <%= tender.status == 'planning'?'selected':''%> >En planeación</option>
+                        <option value="planned" <%= tender.status == 'planned'?'selected':''%> >Planeada</option>
+                        <option value="active" <%= tender.status == 'active'?'selected':''%> >Activa</option>
+                        <option value="cancelled" <%= tender.status == 'cancelled'?'selected':''%> >Cancelada</option>
+                        <option value="unsuccessful" <%= tender.status == 'unsuccessful'?'selected':''%> >No exitosa</option>
+                        <option value="complete" <%= tender.status == 'complete'?'selected':''%> >Concluida</option>
+                        <option value="withdrawn" <%= tender.status == 'withdrawn'?'selected':''%> >Retirada</option>
+                    </select>
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %> ><span class="fa fa-save"></span></button>
+                    </div>
+                </div>  
+            </form>
+
+            <label data-tooltip="crear_proceso" title='Actividades llevadas a cabo para celebrar una contratación.'>
+            <h3>2. LICITACIÓN</h3></label>
+
+            <br>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Todos los documentos y anexos relacionados con la contratación, incluidos los avisos. Consulte la lista de códigos "Tipo de documento" para obtener detalles de los posibles documentos a incluir.'>
+                    Documentos<!-- Documents--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_document" data-stage="2" data-table="tenderdocuments" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_documents" data-stage="2" data-table="tenderdocuments" data-contractingprocess_id="<%=cp.id%>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una lista de eventos relevantes y/o entregables asociados a la licitación, incluyendo su ejecución.">
+                    Hitos <!--Milestones--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_milestone" data-table="tendermilestone" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_milestones" data-table="tendermilestone" data-contractingprocess_id="<%=cp.id%>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Bienes, servicios u obra pública de la licitación. Los ítems no se deben duplicar, en su lugar se deberá especificar la cantidad, ejemplo: 3.'>
+                    Ítems de la licitación<!--Items--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_item" data-table="tenderitem" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_items" data-table="tenderitem" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una modificación de la licitación es un cambio formal o extensión de una licitación.">
+                    Modificaciones<!--Changes--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_change" data-table="tenderamendmentchanges" data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal" data-fkname="tender_id" data-fkid="<%= tender.id %>">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_changes" data-table="tenderamendmentchanges" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal" data-fkname="tender_id" data-fkid="<%= tender.id %>">Editar</a></li>
+                </ul>
+            </div>
+
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una junta de aclaraciones se utiliza para resolver las dudas que los licitantes pudieran llegar a tener sobre aspectos relacionados con la convocatoria.">
+                    Juntas de aclaraciones<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_clarification"  data-contractingprocess_id="<%= cp.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_clarification" data-contractingprocess_id="<%=cp.id%>" data-target="#genericModal">Editar</a></li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <form id="tender_form" role="form" >
+                <input type="text" name="contractingprocess_id" hidden value ="<%= (typeof tender != "undefined")? tender.contractingprocess_id:''%>" >
+
+               
+                <p><label data-tooltip="crear_proceso" title='Identificador de la licitación.
+					En el caso de los procedimientos de contratación realizados a través de CompraNet, corresponde al código del expediente que asigna este sistema.
+					En el caso de procedimientos de contratación financiados con recursos de Organismos Financieros Internacionales, respecto de los procedimientos de lista corta, comparación de precios y adjudicación directa, se señala el número de procedimiento que le asigne la dependencia o entidad correspondiente.'><!--ID-->
+					Identificador de la licitación</label>
+                    <br>
+                    <input type="text" class="form-control" name="tenderid" value="<%= tender.tenderid %>" required>
+                </p>
+                
+                <p><label data-tooltip="crear_proceso" title='Denominación del procedimiento de contratación que las dependencias y entidades señalan en CompraNet, en su caso.
+					En el caso de procedimientos de contratación financiados con recursos de Organismos Financieros Internacionales, respecto de los procedimientos de lista corta, comparación de precios y adjudicación directa, se señala la denominación del procedimiento que le asigne la dependencia o entidad correspondiente.'>
+					Denominación de la licitación<!--Title--></label>
+                    <br>
+                    <input type="text" class="form-control" name = "title" value="<%= (typeof tender != "undefined")? tender.title:''%>" required>
+                </p>
+                
+                <p><label data-tooltip="crear_proceso" title='Objeto de la licitación.'>Objeto de la licitación<!--Description--></label>
+                    <br>
+                    <textarea class="form-control" name = "description" rows="5" required><%= (typeof tender != "undefined")? tender.description:''%></textarea>
+                </p>
+                	
+               	<label data-tooltip="crear_proceso" title='El valor estimado de la contratación. En caso de contrataciones abiertas, se señala el presupuesto máximo que podría ejercerse en la ejecución del contrato.'>
+               	<h4>Valor</h4></label>	
+                
+                <div class="row">
+                <!--Value amount-->
+                    <div class="col-sm-6">
+                        <p><label data-tooltip="crear_proceso" title='Monto como número.'>Monto</label>
+                    	<br>
+                    		<input type="number" step="0.01" class="form-control" name= "value_amount" value = "<%= (typeof tender != "undefined")? tender.value_amount:''%>" required>
+                		</p> 
+                    </div>
+                <!--Value currency-->
+                    <div class="col-sm-6">
+                        <p><label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
+                    		<select class="form-control" name="value_currency">
+                        		<% for ( var i = 0; i < currencies.length; i++){ %>
+                        		<option value = "<%= currencies[i].alphabetic_code %>"
+                                <% if (tender.value_currency == null && currencies[i].alphabetic_code=='MXN' ) {%>
+                                <%= 'selected' %>
+                                <%} else if (currencies[i].alphabetic_code == tender.value_currency){%>
+                                <%= 'selected' %>
+                                <%}%>
+                        			>
+                            		<%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+                        		</option>
+                        	<%}%>
+                    		</select>
+                		</p>
+                    </div>
+                </div>
+   
+               	<label data-tooltip="crear_proceso" title='El valor mínimo estimado de la contratación. En caso de contrataciones abiertas, se señala el presupuesto mínimo (que debería ejercerse en la ejecución del contrato).'>
+               	<h4>Valor mínimo del procedimiento de licitación</h4></label>
+                
+                <div class="row">
+                <!--Min value amount-->
+                    <div class="col-sm-6">
+                        <p><label data-tooltip="crear_proceso" title='Monto como número.'>Monto</label>
+                   			<br>
+                  			<input type="number" step="0.01" class="form-control" name = "minvalue_amount" value = "<%= (typeof tender != "undefined")? tender.minvalue_amount:''%>">
+                		</p>
+                    </div>
+                <!--Min value currency-->
+                    <div class="col-sm-6">
+                        <p><label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
+                    		<select class="form-control" name="minvalue_currency">
+                        	<% for ( var i = 0; i < currencies.length; i++){ %>
+                        	<option value = "<%= currencies[i].alphabetic_code %>"
+                                <% if (tender.minvalue_currency == null && currencies[i].alphabetic_code=='MXN' ) {%>
+                                <%= 'selected' %>
+                                <%} else if (currencies[i].alphabetic_code == tender.minvalue_currency){%>
+                                <%= 'selected' %>
+                                <%}%>
+                        		>
+                            <%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+                       		</option>
+                      		  <%}%>
+                    		</select>
+             			</p>
+                    </div>
+                </div>
+
+				<br>
+				<p>
+                    <label data-tooltip="crear_proceso" title='Especifica el método de contratación utilizando la lista de códigos "Método de contratación". Esta es una lista de códigos cerrada. Los tipos de procedimiento de contratación locales deberán relacionarse a uno de los valores de esta lista. La información más específica de los tipos de procedimiento de contratación locales, diferentes a los valores de la lista cerrada, deberán especificarse en el campo "Detalles del método de contratación".'>Método de contratación<!--Procurement method--></label>
+                    <br>
+                    <input type="hidden" name="procurementmethod" value="<%= tender.procurementmethod %>">
+                    <select name = "procurementmethod_select" class="form-control" required disabled>
+                        <option value =""></option>
+                        <option value="open" <%= tender.procurementmethod == 'open'?'selected':''%> >Abierta</option>
+                        <option value="direct" <%= tender.procurementmethod == 'direct'?'selected':''%> >Directa</option>
+                        <option value="selective" <%= tender.procurementmethod == 'selective'?'selected':''%> >Selectiva</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Provee detalles adicionales sobre el método de contratación. Este campo puede ser utilizado para definir nombres locales del tipo de procedimiento de contratación que se utiliza.'>Detalles del método de contratación<!--Procurement method details--></label>
+                    <br>
+                    
+                    <select name = "procurementmethod_details" class="form-control" onchange="setRelation(metodosContratacion, this, 'procurementmethod'); loadCatalog(justificacionContratacion, this.value, 'procurementmethod_rationale_id'); clearField('procurementmethod_rationale');" required>
+                        <option value = "">Seleccione una opción</option>
+                        <option value = "Adjudicación directa" <%= tender.procurementmethod_details == 'Adjudicación directa'?'selected':''%> >Adjudicación directa</option>
+                        <option value = "Invitación a cuando menos tres personas" <%= tender.procurementmethod_details == 'Invitación a cuando menos tres personas'?'selected':''%> >Invitación a cuando menos tres personas</option>
+                        <option value = "Licitación pública" <%= tender.procurementmethod_details == 'Licitación pública'?'selected':'' %> >Licitación pública</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Justificación del método de contratación. Esto es especialmente importante para los casos en los que se utilicen los métodos de contratación: limitada, directa y selectiva. 
+                        Por ejemplo, en el caso de procedimientos de contratación por invitación a cuando menos tres personas o adjudicación directa, se señalan de manera general las razones por las cuáles resulta procedente la excepción a la licitación pública.'>Justificación del método de contratación<!--Procurement method rationale--></label>
+                    <br>
+                    <textarea class="form-control" name= "procurementmethod_rationale" rows="5"><%= (typeof tender != "undefined")? tender.procurementmethod_rationale:''%></textarea>
+                </p>
+                
+                <br>
+				<p>
+                    <label data-tooltip="crear_proceso" title='Categoría primaria que describe el objeto principal del procedimiento de contratación.'>Categoría principal de la contratación</label>
+                    <br>
+                    <input type="hidden" name="mainprocurementcategory" value="<%= tender.mainprocurementcategory %>">
+                    <select name = "mainprocurementcategory_select" class="form-control" required disabled>
+                        <option value=""></option>
+                        <option value="goods" <%= tender.mainprocurementcategory == 'goods'?'selected':''%> >Bienes</option>
+                        <option value="services" <%= tender.mainprocurementcategory == 'services'?'selected':''%> >Servicios</option>
+                        <option value="works" <%= tender.mainprocurementcategory == 'works'?'selected':''%> >Obra pública</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Cualquier categoría adicional que describa los objetos de este procedimiento de contratación.'>Categorías adicionales de contratación</label>
+                    <br>
+                    
+                    <select name = "additionalprocurementcategories" class="form-control" onchange="setRelation(categoriaContratacion, this, 'mainprocurementcategory');" required>
+                        <option value = "">Seleccione una opción</option>
+                        <option value = "Adquisición de bienes" <%= tender.additionalprocurementcategories == 'Adquisición de bienes'?'selected':''%> >Adquisición de bienes</option>
+                        <option value = "Arrendamiento de bienes" <%= tender.additionalprocurementcategories == 'Arrendamiento de bienes'?'selected':''%> >Arrendamiento de bienes</option>
+                        <option value = "Servicios" <%= tender.additionalprocurementcategories == 'Servicios'?'selected':'' %> >Servicios</option>
+                        <option value = "Servicios relacionados con obras públicas" <%= tender.additionalprocurementcategories == 'Servicios relacionados con obras públicas'?'selected':''%> >Servicios relacionados con obras públicas</option>
+                        <option value = "Obras públicas" <%= tender.additionalprocurementcategories == 'Obras públicas'?'selected':'' %> >Obras públicas</option>
+                    </select>
+                 
+                </p> 
+                    
+                <br>
+                <p><label data-tooltip="crear_proceso" title='Especifica los criterios de evaluación de proposiciones para el procedimiento de contratación, utilizando los criterios de adjudicación, obtenidos de la lista de códigos "Criterio de adjudicación".'>Criterio de evaluación de proposiciones<!--Award criteria--></label>
+                     <select name = "awardcriteria" class="form-control">
+                        <option value ="">Seleccione una opción</option>
+                        <option value="priceOnly" <%= tender.awardcriteria == 'priceOnly'?'selected':''%> >Binario</option>
+                        <option value="bestValueToGovernment" <%= tender.awardcriteria == 'bestValueToGovernment'?'selected':''%> >Costo beneficio</option>
+                        <option value="ratedCriteria" <%= tender.awardcriteria == 'ratedCriteria'?'selected':''%> >Puntos y porcentajes</option>
+                        <option value="singleBidOnly" <%= tender.awardcriteria == 'singleBidOnly'?'selected':''%> >Única oferta</option>
+                    </select>               
+                </p>
+                
+                <p><label data-tooltip="crear_proceso" title='Descripción del mecanismo de evaluación de proposiciones a utilizar en el procedimiento de contratación de que se trate.'>Detalles sobre el criterio de evaluación de proposiciones<!--Award criteria details--></label>
+                    <br>
+                    <textarea name = "awardcriteria_details" rows="5" class="form-control" ><%= (typeof tender != "undefined")? tender.awardcriteria_details:''%></textarea>
+                </p>
+                
+                
+                <p><label data-tooltip="crear_proceso" title='Especifica el método por el cual las ofertas deben ser enviadas, presencial, electrónica o ambas. Utilizando la lista de códigos "Método de envío".'>Medios para la recepción de las proposiciones<!--Submission method--></label>
+                     <select name = "submissionmethod" class="form-control">
+                        <option value ="">Seleccione una opción</option>
+                        <option value="electronicSubmission" <%= tender.submissionmethod == 'electronicSubmission'?'selected':''%> >Electrónica</option>
+                        <option value="written" <%= tender.submissionmethod == 'written'?'selected':''%> >Mixto</option>
+                        <option value="inPerson" <%= tender.submissionmethod == 'inPerson'?'selected':''%> >Presencial</option>
+                        <option value="electronicAuction" <%= tender.submissionmethod == 'electronicAuction'?'selected':''%> >Subasta eletrónica</option>
+                        </select>               
+                </p>
+                
+                <p><label data-tooltip="crear_proceso" title='Información detallada sobre el método sobre el cuál se recibirán las proposiciones. Esto podría incluir el domicilio, correo electronico o servicio en línea en donde se pueden enviar las proposiciones, así como requerimientos adicionales.'>Descripción de los medios para la recepción de las proposiciones<!--Submission method details--></label>
+                    <input type="text" class="form-control" name="submissionmethod_details" value = "<%= (typeof tender != "undefined")? tender.submissionmethod_details:''%>" >
+                </p>
+					
+               	<label data-tooltip="crear_proceso" title='Fechas que comprenden el inicio y cierre del plazo para la presentación de proposiciones en las licitaciones públicas e invitación a cuando menos tres personas.'>
+               	<h4>Período de entrega de proposiciones</h4></label>                	
+                
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>Fecha de inicio<!--Tender period start date--></label>
+                            <input type="text" class="form-control" id="lici_date1" name="tenderperiod_startdate"
+                                    <% if (typeof tender != "undefined") {%>
+                                   value = "<%= (tender.tenderperiod_startdate != null)? getMString(tender.tenderperiod_startdate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>Fecha fin<!--Tender period end date--></label>
+                            <input type="text" class="form-control" id="lici_date2" name="tenderperiod_enddate"
+                                    <% if (typeof tender != "undefined") {%>
+                                   value = "<%= (tender.tenderperiod_enddate != null)? getMString(tender.tenderperiod_enddate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+                </div>
+	
+               	<label data-tooltip="crear_proceso" title='Periodo para solicitar aclaraciones, según se trate de procedimientos de contratación en materia de adquisiciones, arrendamientos y servicios; obras públicas y servicios relacionados con las mismas, y contrataciones financiadas con créditos externos.'>
+               	<h4>Período para presentar solicitudes de aclaración</h4></label> 	
+                
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>Fecha de inicio<!--Enquiry period start date--></label>
+                            <input type="text" class="form-control" id="lici_date3" name= "enquiryperiod_startdate"
+                                    <% if (typeof tender != "undefined") {%>
+                                   value = "<%= (tender.enquiryperiod_startdate != null)? getMString(tender.enquiryperiod_startdate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>Fecha fin<!--Enquiry period end date--></label>
+                            <input type="text" class="form-control" id="lici_date4" name= "enquiryperiod_enddate"
+                                    <% if (typeof tender != "undefined") {%>
+                                   value = "<%= (tender.enquiryperiod_enddate != null)? getMString(tender.enquiryperiod_enddate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+                </div>
+                <br>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si hubo solicitudes de aclaración.'>¿Hubo solicitudes de aclaración?<!--Has enquiries--></label>
+                    <select class="form-control" name="hasenquiries">
+                    	<option value ="">Seleccione una opción</option>
+                        <option value="true"
+                                <% if (typeof tender !== "undefined") {%>
+                                <%=(tender.hasenquiries) ?'selected':''%>
+                                <%}%>
+                        >Si</option>
+                        <option value="false"
+                                <% if (typeof tender !== "undefined"){%>
+                                <%=(tender.hasenquiries === false) ?'selected':''%>
+                                <%}%>
+                        >No</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Requisitos y condiciones que deben cumplir los interesados para participar en el procedimiento de contratación.'>Criterios de elegibilidad<!--Elegibility criteria--></label>
+                    <br>
+                    <textarea name="eligibilitycriteria" rows="3" class="form-control" ><%= (typeof tender != "undefined")? tender.eligibilitycriteria:''%></textarea>
+                </p>
+
+               	<label data-tooltip="crear_proceso" title='El plazo para la toma de decisiones respecto a la adjudicación del contrato. La fecha de finalización debe ser la fecha en la que se da el fallo de adjudicación. La fecha de inicio es opcional y puede utilizarse para indicar el inicio de un período de evaluación.'>
+               	<h4>Período de evaluación y adjudicación</h4></label>                
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>Fecha de inicio<!--Award period start date--></label>
+                            <input type="text" class="form-control" id="lici_date5" name="awardperiod_startdate"
+                                    <%if (typeof tender != "undefined"){%>
+                                   value = "<%= (tender.awardperiod_startdate != null)? getMString(tender.awardperiod_startdate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>Fecha fin<!--Award period end date--></label>
+                            <input type="text" class="form-control" id="lici_date6" name="awardperiod_enddate"
+                                    <%if(typeof tender != "undefined"){%>
+                                   value = "<%= (tender.awardperiod_enddate != null)? getMString(tender.awardperiod_enddate):''%>"
+                                    <%}%> >
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Número total de proposiciones recibidas en el procedimiento de licitación pública o de invitación a cuando menos tres personas.'>Número de licitantes <!--Number of tenderers--></label>
+                    <input type="number" class="form-control" name="numberoftenderers" value = "<%= (typeof tender != "undefined")? tender.numberoftenderers:''%>" required readonly>
+                </p>
+				<br>
+                <br>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button class="btn btn-primary" type="button" data-toggle="modal" data-contractingprocess_id="<%= cp.id %>" data-action="import" data-stage="2" data-target="#genericModal">Importar datos</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="menu2" class="tab-pane fade">
+        <div class="well well-lg clearfix">
+            <form id="frmAwardStatus" class="form-horizontal form-group col-xs-6 pull-right" style="margin-top:20px">
+                <input type="hidden" name="cpid" value="<%= cp.id %>" />
+                <input type="hidden" name="id" />
+                <input type="hidden" name="type" value="award" />
+                <input type="hidden" name="stage" value="3" />
+                <label data-tooltip="crear_proceso" title='El estado actual de la adjudicación obtenido de la lista de códigos "Estatus de la adjudicación".' class="col-xs-3 control-label">
+                    Estatus</label>
+                    <div class="col-xs-9">
+                     <div class="input-group">
+                        <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>> 
+                            <option value="">Seleccione una opción</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="active">Activo</option>
+                            <option value="cancelled">Cancelado</option>
+                            <option value="unsuccessful">No exitoso</option>
+                        </select>
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary" <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>><span class="fa fa-save"></span></button>
+                        </div>
+                    </div>
+                    </div>
+            </form> <!-- status global -->
+
+            <label data-tooltip="crear_proceso" title='Una adjudicación para una contratación determinada. Puede haber más de una adjudicación por licitación, por ejemplo, porque se pueden adjudicar a varios proveedores.'>
+            <h3>3. ADJUDICACIÓN</h3></label>
+            
+            <hr >
+            <div style="align-items:stretch; display: flex;">
+                <div  style="border-right: 1px solid #fff; padding: 0 15px; max-width: 250px;" class="text-center">
+                    <button id="btnAddAward" class="btn btn-primary" type="button" data-contractingprocess_id="<%= cp.id %>">Agregar Adjudicación</button>
+                    <hr>
+                    <div id="list-awards" class="list-group">
+                        <% for (var i=0; i < awards.length; i++){ %>
+                        <a href="#" class="list-group-item" data-id="<%= awards[i].id %>" data-contractingprocess_id="<%= cp.id %>" data-actual="<%= awards[i].id === award.id%>">
+                            <span class="list-group-item-heading">Adjudicación  <%= i + 1 %></span>
+                            <% if(awards[i].awardid){ %>
+                            <div class="list-group-item-text">
+                                <%= awards[i].awardid %> <br>
+                                <small><%= getStatus(estatusAdjudicacion,  awards[i].status , 'value', 'text') || '' %></small>
+                            </div>
+                           <% } %>
+                        </a>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="award"  class="col-xs-10"  data-actual=""><h3 class="text-center">Seleccione o agregue una nueva adjudicación</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu3" class="tab-pane fade">
+        <div class="well well-lg">
+
+            <form id="frmContractStatus" class="form-horizontal form-group col-xs-6 pull-right" style="margin-top:20px">
+                <input type="hidden" name="cpid" value="<%= cp.id %>" />
+                <input type="hidden" name="id" />
+                <input type="hidden" name="type" value="contract" />
+                <input type="hidden" name="stage" value="4" />
+                <label data-tooltip="crear_proceso" title='Estado actual del contrato.' class="col-xs-3 control-label">Estatus</label>
+                <div class="col-sm-9 input-group">
+                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                            <option value="">Seleccione una opción</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="active">Activo</option>
+                            <option value="cancelled">Cancelado</option>
+                            <option value="terminated">Terminado</option>
+                        </select>
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>><span class="fa fa-save"></span></button>
+                    </div>
+                </div>  
+            </form>
+			<label data-tooltip="crear_proceso" title='Información sobre el contrato firmado entre el comprador y el/los proveedor/es.'>
+            <h3>4. CONTRATO</h3></label>
+            <hr>
+            <div style="align-items:stretch; display: flex;">
+                <div  style="border-right: 1px solid #fff; padding: 0 15px; max-width: 250px;" class="text-center">
+                    <button id="btnAddContract" class="btn btn-primary" type="button" data-contractingprocess_id="<%= cp.id %>">Agregar Contrato</button>
+                    <hr>
+                    <div id="list-contracts" class="list-group">
+                        <% for (var i=0; i < contracts.length; i++){ %>
+                        <a href="#" class="list-group-item" data-id="<%= contracts[i].id %>" data-contractingprocess_id="<%= cp.id %>" data-actual="<%= contracts[i].id === contract.id%>">
+                            <span class="list-group-item-heading">Contrato <%= i+1%></span>   
+                            <% if(contracts[i].contractid){ %>
+                            <div class="list-group-item-text">
+                                <%= contracts[i].contractid %> <br>
+                                <small><%= getStatus(estatusContrato,  contracts[i].status , 'value', 'text') || '' %></small>
+                            </div>
+                           <% } %>                      
+                        </a>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="contract" class="col-xs-10" data-actual=""><h3 class="text-center">Seleccione o agregue un nuevo contrato</h3></div>
+            </div> 
+        </div>
+    </div>
+
+    <div id="menu4" class="tab-pane fade">
+        <div class="well well-lg">
+            
+            <form id="frmImplementationStatus" class="form-horizontal form-group col-xs-6 pull-right" style="margin-top:20px">
+                <input type="hidden" name="cpid" value="<%= cp.id %>" />
+                <input type="hidden" name="id" />
+                <input type="hidden" name="type" value="implementation" />
+                <input type="hidden" name="stage" value="5" />
+                <label data-tooltip="crear_proceso" title='Estado actual de la ejecución.' class="col-xs-3 control-label">Estatus</label>
+                <div class="col-sm-9 input-group">
+                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                            <option value="">Seleccione una opción</option>
+                            <option value="planning">En planeación</option>
+                            <option value="ongoing">En progreso</option>
+                            <option value="concluded">Terminado</option>
+                    </select>
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>><span class="fa fa-save"></span></button>
+                    </div>
+                </div>  
+            </form>
+
+
+            <label data-tooltip="crear_proceso" title='Información relacionada con la ejecución del contrato de conformidad con las obligaciones establecidas en el mismo.'>
+            <h3>5. EJECUCIÓN</h3></label>
+            <hr>
+            <div style="align-items:stretch; display: flex;">
+                <div  style="border-right: 1px solid #fff; padding: 0 15px; max-width: 250px;" class="text-center">
+                    <label>Contratos</label>
+                    <div id="list-implementations" class="list-group">
+                        <% for (var i=0; i < implementations.length; i++){ %>
+                        <a href="#" class="list-group-item" data-id="<%= implementations[i].id %>" data-contractingprocess_id="<%= cp.id %>" data-actual="<%= implementations[i].id === implementation.id%>">
+                            <span class="list-group-item-heading"> Ejecución <%= i + 1%></span>
+                            
+                            <div class="list-group-item-text">
+                             <% if(contracts[i].contractid){ %>
+                                <%= contracts[i].contractid %> <br>
+                                 <% } %>   
+                                <small><%= getStatus(implementation_status,  implementations[i].status , 'code', 'title_esp') || '' %></small>
+                            </div>
+                          
+                        </a>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="implementation" class="col-xs-10" data-actual=""><h3 class="text-center">Debe agregar un nuevo contrato</h3></div>
+            </div> 
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+<script>
+    // Relacion de metodos de contratacion
+    var metodosContratacion = [
+        { value: 'open', id: 'Licitación pública' },
+        { value: 'direct', id: 'Adjudicación directa' },
+        { value: 'selective', id: 'Invitación a cuando menos tres personas' }
+    ];
+
+    // Relacion de categorias de contratacion
+    var categoriaContratacion = [
+        { value: 'goods', id: 'Arrendamiento de bienes' },
+        { value: 'goods', id: 'Adquisición de bienes' },
+        { value: 'services', id: 'Servicios' },
+        { value: 'services', id: 'Servicios relacionados con obras públicas' },
+        { value: 'works', id: 'Obras públicas' }
+    ];
+
+    // Catalogos hijos (si se actualiza esta lista tambien se debe actualizar en import.js)
+    var justificacionContratacion = [
+        { id: 'Invitación a cuando menos tres personas', value: [
+            { text: 'Artículo 41 fracción I RAAS ITP', value: 'Artículo 41 fracción I RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción I del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción II RAAS ITP', value: 'Artículo 41 fracción II RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción II del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción III RAAS ITP', value: 'Artículo 41 fracción III RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción III del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción IV RAAS ITP', value: 'Artículo 41 fracción IV RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción IV del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción V RAAS ITP', value: 'Artículo 41 fracción V RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción V del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VI RAAS ITP', value: 'Artículo 41 fracción VI RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción VI del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VII RAAS ITP', value: 'Artículo 41 fracción VII RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción VII del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VIII RAAS ITP', value: 'Artículo 41 fracción VIII RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción VIII del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción IX RAAS ITP', value: 'Artículo 41 fracción IX RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción IX del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción X RAAS ITP', value: 'Artículo 41 fracción X RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción X del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción XI RAAS ITP', value: 'Artículo 41 fracción XI RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción XI del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción XII RAAS ITP', value: 'Artículo 41 fracción XII RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 41 fracción I del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 42 RAAS ITP', value: 'Artículo 42 RAAS ITP', data: 'Se propone que se realice un procedimiento de contratación de invitación a cuando menos tres personas, de conformidad con lo dispuesto en el artículo 42 del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' }
+        ] },
+        { id: 'Adjudicación directa', value: [
+            { text: 'Artículo 41 fracción I RAAS AD', value: 'Artículo 41 fracción I RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción I del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción II RAAS AD', value: 'Artículo 41 fracción II RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción II del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción III RAAS AD', value: 'Artículo 41 fracción III RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción III del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción IV RAAS AD', value: 'Artículo 41 fracción IV RAAS AD', data: 'Se propone que se realice un procedimiento de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción IV del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción V RAAS AD', value: 'Artículo 41 fracción V RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción V del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VI RAAS AD', value: 'Artículo 41 fracción VI RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción VI del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VII RAAS AD', value: 'Artículo 41 fracción VII RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción VII del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción VIII RAAS AD', value: 'Artículo 41 fracción VIII RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción VIII del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción IX RAAS AD', value: 'Artículo 41 fracción IX RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción IX del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción X RAAS AD', value: 'Artículo 41 fracción X RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción X del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción XI RAAS AD', value: 'Artículo 41 fracción XI RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción XI del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 41 fracción XII RAAS AD', value: 'Artículo 41 fracción XII RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 41 fracción XII del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' },
+            { text: 'Artículo 42 RAAS AD', value: 'Artículo 42 RAAS AD', data: 'Se propone que se realice un procedimiento de contratación de adjudicación directa, de conformidad con lo dispuesto en el artículo 42 del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' }
+        ] },
+        { id: 'Licitación pública', value: [
+            { text: 'Artículo 26 fracción I RAAS', value: 'Artículo 26 fracción I RAAS', data: 'Se propone que se realice un procedimiento de contratación de licitación pública, de conformidad con lo dispuesto en el artículo 26 fracción I del Reglamento de Adquisiciones, Arrendamientos y Servcios del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales' }
+        ] }
+    ];
+
+    // Cambia los valores en base a la relacion
+    function setRelation(catalog, origin, target) {
+        var selected = origin.value;
+        var c = catalog.find(e => e.id == selected);
+
+        document.getElementsByName(target)[0].value = c != null ? c.value : '';
+        document.getElementsByName(target + '_select')[0].value = c != null ? c.value : '';
+    }
+
+    // Carga los catalogos relacionados
+    function loadCatalog(catalog, value, target, callback) {
+        var t = document.getElementsByName(target)[0];
+        
+        t.innerHTML = '';
+
+        var doption = document.createElement('option');
+        doption.value = '';
+        doption.innerHTML = 'Seleccione una opción';
+        doption.setAttribute('data-text', '');
+        t.appendChild(doption);
+
+        var c = catalog.find(e => e.id == value);
+        if (c != null) {
+            c.value.forEach(e => {
+                var option = document.createElement('option');
+                option.value = e.value;
+                option.innerHTML = e.text;
+                option.setAttribute('data-text', e.data);
+                t.appendChild(option);
+            });
+        }
+
+        if (callback) {
+            callback();
+        }
+    }
+
+    // Carga el valor deacuerdo a la relacion
+    function setIdentifier(select, target, data) {
+        var option = select.options[select.selectedIndex];
+        document.getElementsByName(target)[0].value = option.getAttribute(data);
+    }
+
+    // Limpia el campo
+    function clearField(target) {
+        document.getElementsByName(target)[0].value = '';
+    }
+
+    loadCatalog(justificacionContratacion, '<%= tender.procurementmethod_details %>', 'procurementmethod_rationale_id', function() {
+        document.getElementsByName('procurementmethod_rationale_id')[0].value = '<%= tender.procurementmethod_rationale_id %>';
+    });
+</script>

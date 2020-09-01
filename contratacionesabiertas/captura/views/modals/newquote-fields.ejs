@@ -1,0 +1,123 @@
+<style>
+    #items {
+        margin-bottom: 10px;
+        max-height: 500px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    #items .close {
+        margin-right: 20px;
+    }
+</style>
+
+<form id="newquote_form">
+    <input type="hidden" name="ocid" value="<%= localid %>">
+
+    <!--<p>
+        <label title="">Identificador</label>
+        <input type="text" class="form-control" name="quotes_id" required>
+    </p>-->
+
+    <p>
+        <label title="">Solicitud cotización</label>
+        <select class="form-control" name="requestforquotes_id" required>
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < quoteRequests.length; i++) { %>
+            <option value="<%= quoteRequests[i].id %>"><%= quoteRequests[i].title %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Descripción</label>
+        <textarea class="form-control" name="description" rows="10"></textarea>
+    </p>
+
+    <p>
+        <label title="">Fecha de la cotización</label>
+        <input type="text" class="form-control" id="newquote_date" name="date" required>
+    </p>
+
+    <label title="">
+        <h4>Ítems cotizados</h4>
+    </label>
+
+    <div id="items">
+        <div class="row">
+            <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="col-sm-8">
+                <p>
+                    <label title="">Bien o servicio</label>
+                    <select class="form-control" name="items[0].itemid" required>
+                        <option value="">Seleccione una opción</option>
+                    </select>
+                </p>
+            </div>
+            <div class="col-sm-3">
+                <p>
+                    <label title="">Valor</label>
+                    <input type="number" class="form-control" name="items[0].quantity" data-vregex="decimal" min="0" step="0.01" readonly required>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="text-right">
+        <button type="button" class="btn btn-default" data-action="add_item"><span class="fa fa-plus"></span></button>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-sm-offset-9">
+            <label title="">Valor total</label>
+            <input type="number" class="form-control" name="value" value="0.00" readonly>
+        </div>
+    </div>
+
+    <label title="">
+        <h4>Periodo de la cotización</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newquote_date1" name="quotePeriod_startdate" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newquote_date2" name="quotePeriod_enddate" required>
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <label title="">Proveedor emisor</label>
+        <select class="form-control" name="issuingSupplier_id" required>
+            <option value="">Seleccione una opción</option>
+        </select>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>
+
+<div class="hide" id="itemTemplate">
+    <div class="row">
+        <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <input type="hidden" name="items[0].item"  />
+        <div class="col-sm-8">
+            <p>
+                <label title="">Bien o servicio</label>
+                <select class="form-control" name="items[0].itemid" required>
+                    <option value="">Seleccione una opción</option>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-3">
+            <p>
+                <label title="">Valor</label>
+                <input type="number" class="form-control" name="items[0].quantity" data-vregex="decimal" min="0" step="0.01" readonly required>
+            </p>
+        </div>
+    </div>
+</div>

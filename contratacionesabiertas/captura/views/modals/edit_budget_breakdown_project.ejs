@@ -1,0 +1,96 @@
+<form id="update_budget_breakdown_project_form">
+    <input type="text" name="budget_breakdown_id" value = "<%= data.id %>" hidden>
+    <div class="btn-group" style="margin-bottom: 4px;">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="A list of the budget lines associated to this party.">
+            Líneas presupuestarias  <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-action="add_budget_lines" data-id="<%= data.id %>"><a href="javascript:void(0)"> Nuevo </a></li>
+            <li data-action="edit_budget_lines" data-id="<%= data.id %>"><a href="javascript:void(0)"> Editar </a></li>
+        </ul>
+    </div>
+    <p>
+        <label data-tooltip="crear_proceso" title='Una descripción de texto corto libre sobre este registro de presupuesto.'>
+            Descripción</label>
+        <textarea class="form-control" name="budget_budgetBreakdown_description" rows="5" minlength="1" maxlength="900" value ="<%= data.description %>"><%=(typeof data.description!= "undefined")? data.description : ''%></textarea>
+    </p>
+    <label data-tooltip="crear_proceso" title='El valor de esta línea presupuestaria.'>
+        <h4> Monto </h4></label>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Monto como número.'>
+                    Monto</label>
+                <input name="budget_budgetBreakdown_amount_amount" type="number" class="form-control" min="1" pattern="^[0-9]+" value="<%= data.amount %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p> 
+                <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>
+                    Moneda </label> 
+                <select class="form-control" name="budget_budgetBreakdown_amount_currency">
+                    <option value="">Seleccione una opción</option>
+                    <% for (var i = 0; i < currencies.length; i++) { %>
+                        <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === data.currency ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+    </div>
+    <p>
+        <label data-tooltip="crear_proceso" title='Una URI apuntando directamente a la información legible por máquinas sobre esta entrada de presupuesto.'>
+            Información presupuestal relacionada</label>
+        <input name="budget_budgetBreakdown_uri" type="url" class="form-control" value="<%= data.uri %>" >
+    </p>
+    <label data-tooltip="crear_proceso" title='El periodo cubierto por este registro de presupuesto.'>
+        <h4> Periodo del presupuesto </h4></label>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>
+                    Fecha de inicio </label>
+                <input type="text" id="budget_budgetBreakdown_period_startDate" class="form-control" name="budget_budgetBreakdown_period_startDate" value="<%= data.startDate %>" required>
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>
+                    Fecha de término </label>
+                <input type="text" id="budget_budgetBreakdown_period_endDate" class="form-control" name="budget_budgetBreakdown_period_endDate" value="<%= data.endDate %>" required>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='El periodo no puede extenderse más allá de esta fecha. Este campo es opcional y puede usarse para expresar la fecha límite de extensión o renovación de este período.'>
+                    Extensión máxima </label>
+                <input type="text" id="budget_budgetBreakdown_period_maxExtentDate" class="form-control" name="budget_budgetBreakdown_period_maxExtentDate" value="<%= data.maxExtentDate %>" >
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Duración máxima de este período en días. Es posible que una interfaz de usuario desee recopilar o mostrar estos datos en meses o años, según corresponda, pero debe convertirlos en días al completar este campo. También, este campo se puede utilizar cuando no se conocen las fechas exactas. Cuando se tiene startDate y endDate, este campo es opcional y debe reflejar la diferencia entre esos dos días. Cuando se indica startDate y maxExtentDate, este campo es opcional y debe reflejar la diferencia entre startDate y maxExtentDate.'>
+                    Duración (días) </label>
+                <input type="number" class="form-control" name="budget_budgetBreakdown_period_durationInDays" min="1" pattern="^[0-9]+" value="<%= data.durationInDays %>">
+            </p>
+        </div>
+    </div>
+    <p>
+        <label data-tooltip="crear_proceso" title='La organización u otro actor relacionado con este registro de presupuesto. Si el monto es positivo, indica que existe un flujo de recursos desde el actor al procedimiento de contratación. Si el monto es negativo, indica un pago desde el procedimiento de contratación hacia este actor.'>
+            Actor fuente</label>
+        <select class="form-control" name="budget_budgetBreakdown_sourceParty" required>
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < parties.length; i++) { %>
+            <option value="<%= parties[i].id %>"<%= (parties[i].title === data.sourceParty[0].name ) ? 'selected' : '' %> ><%= parties[i].title %></option>
+            <% } %>
+        </select>
+    </p>
+    <button class="btn btn-default">Actualizar</button>
+</form>
+<script>
+    $('#budget_budgetBreakdown_period_startDate, #budget_budgetBreakdown_period_endDate, #budget_budgetBreakdown_period_endDate,#budget_budgetBreakdown_period_maxExtentDate').datetimepicker({
+        locale: 'es',
+        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
+    });
+</script>

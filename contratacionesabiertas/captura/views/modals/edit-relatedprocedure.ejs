@@ -1,0 +1,49 @@
+<form id="editrelatedprocedure_form">
+    <input type="hidden" name="id" value="<%= id %>">
+    <input type="hidden" name="relatedprocedure_id" value="<%= procedure.relatedprocedure_id %>">
+
+    <!--<p>
+        <label title="">ID</label>
+        <input type="text" class="form-control" name="relatedprocedure_id" value="<%= procedure.relatedprocedure_id %>" required readonly>
+    </p>-->
+
+    <p>
+        <label title="">El procedimiento a relacionar es:</label>
+        <select class="form-control" name="relationship_type" required>
+            <option value="" <%= procedure.relationship_type == '' ? 'selected' : '' %>>Seleccione una opción</option>
+            <option value="framework" <%= procedure.relationship_type == 'framework' ? 'selected' : '' %>>Framework: El contrato marco al que pertenece</option>
+            <option value="planning" <%= procedure.relationship_type == 'planning' ? 'selected' : '' %>>El proceso de planeación</option>
+            <option value="parent" <%= procedure.relationship_type == 'parent' ? 'selected' : '' %>>El contrato principal</option>
+            <option value="prior" <%= procedure.relationship_type == 'prior' ? 'selected' : '' %>>Un procedimiento previo</option>
+            <option value="unsuccessfulProcess" <%= procedure.relationship_type == 'unsuccessfulProcess' ? 'selected' : '' %>>Un procedimiento anterior sin éxito</option>
+            <option value="subContract" <%= procedure.relationship_type == 'subContract' ? 'selected' : '' %>>Un subcontrato del presente procedimiento</option>
+            <option value="replacementProcess" <%= procedure.relationship_type == 'replacementProcess' ? 'selected' : '' %>>Un procedimiento de reemplazo al presente</option>
+            <option value="renewalProcess" <%= procedure.relationship_type == 'renewalProcess' ? 'selected' : '' %>>Un procedimiento de renovación al presente</option>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Título</label>
+        <input type="text" class="form-control" name="title" value="<%= procedure.title %>" required>
+    </p>
+
+    <p>
+        <label title="">Esquema de identificación</label>
+        <select class="form-control" name="identifier_scheme" required>
+            <option value="" <%= procedure.identifier_scheme == '' ? 'selected' : '' %>>Seleccione una opción</option>
+            <option value="ocid" <%= procedure.identifier_scheme == 'ocid' ? 'selected' : '' %>>Open Contracting ID</option>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Identificador del proceso relacionado</label>
+        <input type="text" class="form-control" name="relatedprocedure_identifier" value="<%= procedure.relatedprocedure_identifier %>" required>
+    </p>
+
+    <p>
+        <label title="">URI</label>
+        <input type="url" class="form-control" name="url" value="<%= procedure.url %>" required readonly>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

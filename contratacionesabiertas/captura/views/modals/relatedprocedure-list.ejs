@@ -1,0 +1,33 @@
+<% if (data.length > 0) { %>
+<% for (var i = 0; i < data.length; i++) { %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <%= data[i].title %>
+        </h4>
+    </div>
+    <div class="panel-body">
+        <p>
+            <label>Identificador:</label>
+            <%= data[i].relatedprocedure_id %>
+        </p>
+        <p>
+            <label>Procedimiento a relaciónar:</label>
+            <% if (data[i].relationship_type == '') { %> <% } %>
+            <% if (data[i].relationship_type == 'framework') { %> Framework: El contrato marco al que pertenece <% } %>
+            <% if (data[i].relationship_type == 'planning') { %> El proceso de planeación <% } %>
+            <% if (data[i].relationship_type == 'parent') { %> El contrato principal <% } %>
+            <% if (data[i].relationship_type == 'prior') { %> Un procedimiento previo <% } %>
+            <% if (data[i].relationship_type == 'unsuccessfulProcess') { %> Un procedimiento anterior sin éxito <% } %>
+            <% if (data[i].relationship_type == 'subContract') { %> Un subcontrato del presente procedimiento <% } %>
+            <% if (data[i].relationship_type == 'replacementProcess') { %> Un procedimiento de reemplazo al presente <% } %>
+            <% if (data[i].relationship_type == 'renewalProcess') { %> Un procedimiento de renovación al presente <% } %>
+        </p>
+        <button class="btn btn-default" data-action="delete_relatedprocedure" data-table="<%= table %>" data-id="<%= data[i].id %>">Eliminar</button>
+        <button class="btn btn-default" data-action="edit_relatedprocedure" data-table="<%= table %>" data-id="<%= data[i].id %>" data-ocid="<%= ocid %>" data-show="modal" data-target="#genericModal">Editar</button>
+    </div>
+</div>
+<% } %>
+<% } else { %>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado procedimientos relacionados</div>
+<% } %>

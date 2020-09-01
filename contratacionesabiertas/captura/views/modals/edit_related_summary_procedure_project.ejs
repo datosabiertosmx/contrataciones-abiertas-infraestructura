@@ -1,0 +1,18 @@
+<form id="update_related_summary_procedure_project_form">
+    <p>
+        <label data-tooltip="crear_proceso" title='Un identificador para este proceso de contratación. Si a este proceso de contacto se le ha asignado un Identificador de Contratación Abierta (OCID) por una plataforma externa (por ejemplo, el sistema nacional de adquisiciones), esa OCID debe registrarse aquí. Si la información sobre este proceso de contratación se ha ingresado manualmente, o desde un sistema que no es OCDS, entonces los datos del sistema pueden crear un identificador, siguiendo la guía para crear identificadores del proceso de contratación.'>Identificador de Contrataciones Abiertas (OCID)</label>
+        <input type="text" class="form-control" name="relatedprocedure_identifier" value="<%= contractingProcess.ocid %>" required>
+    </p>
+    
+    <p>
+        <label data-tooltip="crear_proceso" title='El nombre formal de este procedimiento de contratación. Esto puede desprenderse del título de liberación, de licitación, de adjudicación o del contrato. Una vez establecido, no debería ser cambiado.'>Título</label>
+        <input type="text" class="form-control" name="title" value="<%= contractingProcess.title %>" readonly>
+    </p>
+
+    <input type="text" name="contracting_process_id" value = "<%= contractingProcessId %>" hidden>
+    <input type="hidden" name="contractingprocess_id"> 
+    <input type="hidden" name="tender_id"> 
+
+    <button class="btn btn-primary">Actualizar</button>
+
+</form>

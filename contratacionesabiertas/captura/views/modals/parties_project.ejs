@@ -1,0 +1,30 @@
+<%if (parties.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado partes</p>
+    </div>
+<%}%>
+    
+<% for(var partie of parties) {%>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Nombre común:</strong> <%= partie.name%></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Identificador del actor:</strong> <%= partie.identifier %></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p><strong>Papeles del actor:</strong> <%= partie.roles%></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default" name="edit_party_project" data-parties_id="<%= partie.id%>"><i class="fa fa-edit"></i> Editar</button>
+                <button class="btn btn-danger" name="delete_party_project" data-parties_id="<%= partie.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+<%}%>
+

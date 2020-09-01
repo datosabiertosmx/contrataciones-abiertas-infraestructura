@@ -1,0 +1,21 @@
+<%
+if ( data.length > 0 ){
+for (var i=0; i< data.length; i++){%>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p><label>Fecha de modificación:</label> <%= data[i].amendments_date%></p>
+        <p><label>Justificación:</label> <%= data[i].amendments_rationale%></p>
+        <p><label>Identificador:</label> <%= data[i].amendments_id%></p>
+        <p><label>Descripción:</label> <%= data[i].amendments_description%></p>
+        
+        <button data-action="delete_change" data-table="<%= table %>" data-id="<%= data[i].id %>" class="btn btn-default">Eliminar</button>
+        <button data-show="modal" data-target="#genericModal" data-action="edit_change" data-table="<%= table %>" data-id="<%= data[i].id %>" class="btn btn-default">Editar</button>
+    </div>
+</div>
+<%}
+} else {
+%>
+
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado cambios</div>
+<%}
+%>

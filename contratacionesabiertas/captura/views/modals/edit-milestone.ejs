@@ -1,0 +1,64 @@
+<form id="editmilestone_form">
+    <input type="hidden" name="table" value="<%= table %>">
+    <input type="hidden" name="id" value="<%= milestone.id %>">
+
+    <p><label data-tooltip="crear_proceso" title='Denominación general que se asigne al hito.'>
+            Título
+            <!--Title--></label>
+        <input type="text" class="form-control" name="title" value="<%= milestone.title %>" required></p>
+
+    <p><label data-tooltip="crear_proceso" title='El tipo de hito extraído de la lista de códigos "Tipo de hito".'>
+            Tipo de hito</label>
+        <select name="type" class="form-control">
+            <option value="publicNotices" <%= milestone.type == 'publicNotices' ? 'selected' : '' %>>Avisos a la población</option>
+            <option value="approval" <%= milestone.type == 'approval' ? 'selected' : '' %>>Hitos de aprobación</option>
+            <option value="delivery" <%= milestone.type == 'delivery' ? 'selected' : '' %>>Hitos de entrega</option>
+            <option value="assessment" <%= milestone.type == 'assessment' ? 'selected' : '' %>>Hitos de evaluación</option>
+            <option value="financing" <%= milestone.type == 'financing' ? 'selected' : '' %>>Hitos de financiamiento</option>
+            <option value="engagement" <%= milestone.type == 'engagement' ? 'selected' : '' %>>Hitos de involucramiento</option>
+            <option value="reporting" <%= milestone.type == 'reporting' ? 'selected' : '' %>>Hitos de reporte</option>
+            <option value="preProcurement" <%= milestone.type == 'preProcurement' ? 'selected' : '' %>>Hitos previos a la contratación</option>
+        </select>
+    </p>
+
+    <p><label data-tooltip="crear_proceso" title='Descripción del hito.'>
+            Descripción
+            <!--Description--></label>
+        <textarea class="form-control" name="description" rows="5" required><%= milestone.description %></textarea>
+    </p>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha en que se debe cumplir el hito.'>
+                    Fecha de vencimiento
+                    <!--Due date--></label>
+                <input type="text" id="newmilestone_date1" class="form-control" name="duedate" value="<%= milestone.duedate_text %>">
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='La fecha en que el hito fue revisado o modificado por última vez.'>
+                    Fecha de modificación
+                    <!--Date modified--></label>
+                <input type="text" id="newmilestone_date2" class="form-control" name="date_modified" value="<%= milestone.date_modified_text %>">
+            </p>
+        </div>
+    </div>
+
+    <p><label data-tooltip="crear_proceso" title='El estado que se modificó o confirmó en la fecha definida en el campo "Fecha de modificación", de acuerdo con la lista de códigos de "Estatus del hito".'>
+            Estatus del hito
+            <!--Status--></label>
+
+        <select class="form-control" name="status">
+            <option value="" <%= milestone.status == '' ? 'selected' : '' %>>Ninguno</option>
+            <option value="met" <%= milestone.status == 'met' ? 'selected' : '' %>>Cumplido</option>
+            <option value="notMet" <%= milestone.status == 'notMet' ? 'selected' : '' %>>No cumplido</option>
+            <option value="partiallyMet" <%= milestone.status == 'partiallyMet' ? 'selected' : '' %>>Parcialmente cumplido</option>
+            <option value="scheduled" <%= milestone.status == 'scheduled' ? 'selected' : '' %>>Programado</option>
+        </select>
+
+    </p>
+
+    <button class="btn btn-default">Guardar</button>
+</form>

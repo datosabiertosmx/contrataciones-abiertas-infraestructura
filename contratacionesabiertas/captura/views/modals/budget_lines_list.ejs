@@ -1,0 +1,25 @@
+<%if (data.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado lineas presupuestarias</p>
+    </div>
+<%}%>
+<% for(var budgetLine of data) {%>
+    <%if (budgetLine.c.length !== 0){ %>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"> <%= budgetLine.c[0].responsibleUnit %> - <%= budgetLine.c[0].year %></h4>
+            </div>
+            <div class="panel-body">
+                <p><label>Línea presupuestaria:</label>
+                    <%=budgetLine.c[0].year%><%=budgetLine.c[0].kBranch%><%=budgetLine.c[0].kResponsibleUnit%><%=budgetLine.c[0].kFinality%><%=budgetLine.c[0].kFunction%><%=budgetLine.c[0].kSubFunction%><%=budgetLine.c[0].kInstAct%><%=budgetLine.c[0].kBudgetProgram%><%=budgetLine.c[0].kSpendingObject%><%=budgetLine.c[0].kSpendingType%><%=budgetLine.c[0].kBudgetSource%><%=budgetLine.c[0].kRegion%><%=budgetLine.c[0].kPortfolio%>
+                </p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-default" name="edit_budget_line" data-budget_line_component_id="<%= budgetLine.c[0].id%>"><i class="fa fa-edit"></i> Editar</button>
+                        <button class="btn btn-danger" name="delete_budget_line" data-budget_line_id="<%= budgetLine.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <%}%>
+<%}%>

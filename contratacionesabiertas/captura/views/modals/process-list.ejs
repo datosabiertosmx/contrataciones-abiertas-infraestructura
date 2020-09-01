@@ -1,0 +1,23 @@
+<% if (data.length > 0){%>
+<div class="list-group">
+
+    <% for (var i=0;i< data.length;i++){%>
+    <a href="<%= '/main/'+ data[i].id %>" class="list-group-item">
+        <h4 class="list-group-item-heading"> Proceso <%= data[i].id %> </h4>
+         <% if (data[i].tender_name) {%>
+        <p class="list-group-item-text"><strong>Denominación de la licitación:</strong> <%= data[i].tender_name.length > 50 ? data[i].tender_name.substring(0,50) + '...' : data[i].tender_name %></p>
+        <%} %>
+        <p class="list-group-item-text"> <strong> ID de contratación (OCID):</strong> <%=data[i].ocid %> <% if(data[i].fecha_creacion) { %>- Creado el <%= data[i].fecha_creacion.toLocaleDateString() %> a las <%= data[i].hora_creacion%> </p> <% } %>
+        <% if (data[i].tenderid) {%>
+        <p class="list-group-item-text"><strong>Identificador de la licitación:</strong> <%=data[i].tenderid%></p>
+        <%} %>
+        <% if (data[i].requestingunit_name) {%>
+        <p class="list-group-item-text"><strong>Unidad administrativa:</strong> <%=data[i].requestingunit_name%></p>
+        <%} %>
+    </a>
+    <%}%>
+</div>
+<%}else {%>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> La búsqueda no ha regresado resultados</div>
+<%}%>
+

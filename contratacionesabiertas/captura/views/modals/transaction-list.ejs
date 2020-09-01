@@ -1,0 +1,50 @@
+<%
+if ( data.length > 0 ){
+for (var i=0; i< data.length; i++){%>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>
+            <label>Fecha:</label> <%= data[i].implementation_date.toLocaleString() %>
+        </p>        
+        <p>
+            <label>Monto total:</label> <%= data[i].value_amount %>
+        </p>
+        <p>
+            <label>Moneda:</label> <%= data[i].value_currency %>
+        </p>
+        <p>
+            <label>Método de pago:</label>
+            	<% if(data[i].payment_method == 'letterOfCredit') {%>Carta de crédito<% } %>
+            	<% if(data[i].payment_method == 'check') {%>Cheque<% } %>
+            	<% if(data[i].payment_method == 'cash') {%>Efectivo<% } %>
+            	<% if(data[i].payment_method == 'corporateCard') {%>Tarjeta corporativa<% } %>
+            	<% if(data[i].payment_method == 'wireTransfe') {%>Transferencia bancaria<% } %>            
+        </p>
+        <hr>
+        <h4>Emisor</h4></label>
+        <p>
+            <label>Nombre común:</label> <%= data[i].payer_name %>
+        </p>
+        <p>            
+            <label>Identificador del actor:</label> <%= data[i].payer_id %>
+        </p>
+        <hr>
+        <h4>Receptor</h4></label>
+        <p>
+            <label>Nombre común:</label> <%= data[i].payee_name %>
+        </p>
+        <p>
+            <label>Identificador del actor:</label> <%= data[i].payee_id %>
+        </p>
+
+        <button data-action="delete_transaction" data-table="<%= table %>" data-id="<%= data[i].id %>" class="btn btn-default">Eliminar</button>
+        <button data-show="modal" data-target="#genericModal" data-action="edit_transaction" data-table="<%= table %>" data-id="<%= data[i].id %>" data-ocid="<%= data[i].contractingprocess_id %>" class="btn btn-default">Editar</button>
+    </div>
+</div>
+<%}
+} else {
+%>
+
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado transacciones</div>
+<%}
+%>

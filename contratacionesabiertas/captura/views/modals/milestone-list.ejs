@@ -1,0 +1,25 @@
+<%
+if ( data.length > 0 ){
+for (var i=0; i< data.length; i++){%>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title"><%= data[i].title %></h4>
+    </div>
+    <div class="panel-body">
+        <p><label>ID:</label> <%= data[i].milestoneid %></p>
+        <p><label>Descripción<!--Description:--></label> <%= data[i].description %></p>
+        <p><label>Fecha de vencimiento:<!--Due date:--></label> <%= data[i].duedate %></p>
+        <p><label>Fecha de modificación:<!--Date modified:--></label> <%= data[i].date_modified %></p>
+        <p><label>Estatus:<!--Status:--></label> <%= data[i].status %></p>
+
+        <button data-action="delete_milestone" data-table="<%= table %>" data-id="<%= data[i].id %>" class="btn btn-default">Eliminar</button>
+        <button data-show="modal" data-target="#genericModal" data-action="edit_milestone" data-table="<%= table %>" data-id="<%= data[i].id %>" class="btn btn-default">Editar</button>
+    </div>
+</div>
+<%}
+} else {
+%>
+
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado hitos</div>
+<%}
+%>

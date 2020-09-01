@@ -1,0 +1,33 @@
+<form id="frmClarification">
+    <input type="hidden" name="id" value="<%= id %>" />
+    <input type="hidden" name="contractingprocess_id" value="<%= contractingprocess_id %>" />
+    <!--<div class="form-group">
+        <label title="Un identificador para esta junta de aclaraciones, único dentro de este bloque">Identificador</label>
+        <input type="text" name="clarificationmeetingid" value="<%= clarificationmeetingid %>" class="form-control" required />
+    </div>-->
+     <div class="form-group">
+        <label title="La fecha en que se realizó esta junta de aclaraciones.">Fecha de realización de la junta</label>
+        <input type="text" name="date" value="<%= date_text %>" class="form-control" required />
+    </div>
+    <div class="form-group clearfix">
+        <label title="Los licitantes u otros actores asistentes a la junta de aclaraciones.">Asistentes a la junta</label>
+        <select name="attenders" multiple="multiple" class="form-control">
+            <%for(let i = 0, attender = listAttenders[i]; listAttenders && i < listAttenders.length; i++, attender = listAttenders[i]) { %>
+                <option value="<%= attender.id%>" <%= attenders.indexOf(attender.id) !== -1 ? 'selected' : '' %> >
+                    <%= attender.name %>
+                </option>
+            <% } %>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Servidores públicos asistentes a la junta de aclaraciones</label>
+        <select name="officials" multiple="multiple" class="form-control">
+            <%for(let i = 0, official = listOfficials[i]; listOfficials && i < listOfficials.length; i++, official = listOfficials[i]) {%>
+                <option value="<%= official.id%>" <%= officials.indexOf(official.id) !== -1 ? 'selected' : ''  %> >
+                    <%= official.name %> - <%= official.position %>
+                </option>
+            <% } %>
+        </select>
+    </div>
+    <button class="btn btn-default">Guardar</button>
+</form>

@@ -1,0 +1,198 @@
+<div id="validation-results">
+    <h3><%= message %></h3>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#capture" aria-controls="capture" role="tab" data-toggle="tab">Validación de Captura</a></li>
+    <li role="presentation"><a href="#resume" aria-controls="resume" role="tab" data-toggle="tab">Resumen</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="capture"><pre><%- capture %></pre></div>
+    <div role="tabpanel" class="tab-pane" id="data"><pre><%- data %></pre></div>
+    <div role="tabpanel" class="tab-pane" id="resume">
+        <table class="table table-stripped table-bordered text-center">
+            <tr>
+                <th>Registro</th>
+                <th>Unidad Administrativa</th>
+                <th>Identificador</th>
+                <th>Fecha</th>
+            <tr>
+            <tr>
+                <td><%= resume.registry%></td>
+                <td><%= resume.unitAdministrative%></td>
+                <td><%= resume.identifier%></td>
+                <td><%= resume.date%></td>
+            </tr>
+        </table>
+
+        <table class="table table-stripped table-bordered text-center">
+            <tr>
+                <th>Nombre del procedimiento</th>
+            <tr>
+            <tr>
+                <td><%= resume.name%></td>
+            </tr>
+        </table>
+
+        <div class="col-xs-6">
+                <table class="table table-stripped table-bordered text-center">
+                    <tr>
+                        <th>Tipo de procedimiento</th>
+                    <tr>
+                    <tr>
+                        <td><%= resume.type%></td>
+                    </tr>
+                </table>
+        </div>
+        <div class="col-xs-6">
+                <table class="table table-stripped table-bordered text-center">
+                    <tr>
+                        <th>Elementos contratados</th>
+                    <tr>
+                    <tr>
+                        <td><%= resume.element%></td>
+                    </tr>
+                </table>
+        </div>
+        <table class="table table-stripped table-bordered text-center">
+            <tr>
+                <th>Datos faltantes</th>
+                <th>Datos con errores</th>
+                <th>Datos totales</th>
+                <th>Etapa de captura</th>
+            <tr>
+            <tr>
+                <td><%= resume.missing%></td>
+                <td><%= resume.errors%></td>
+                <td><%= resume.total%></td>
+                <td><%= resume.status%></td>
+            </tr>
+        </table>
+
+        <table class="table table-stripped table-bordered text-center">
+            <tr>
+                <th>Estatus de la licitación</th>
+                <th>Estatus de la adjudicación</th>
+                <th>Estatus del contrato</th>
+                <th>Estatus de la implementación</th>
+            <tr>
+            <tr>
+                <td><%= resume.stagesStatus.tender%></td>
+                <td><%= resume.stagesStatus.award%></td>
+                <td><%= resume.stagesStatus.contract%></td>
+                <td><%= resume.stagesStatus.implementation%></td>
+            </tr>
+        </table>
+
+        <table class="table table-stripped table-bordered">
+            <tr>
+                <th colspan="2">Documentos</th>
+            <tr>
+            <tr>
+                <td><b>Estudio de mercado</b></td>
+                <td class=" text-center"><%= resume.documents.marketStudies%></td>
+            </tr>
+            <tr>
+                <td><b>Justificación de la contratación</b></td>
+                <td class=" text-center"><%= resume.documents.needsAssessment%></td>
+            </tr>
+            <tr>
+                <td><b>Plan de proyecto (PAAAS)</b></td>
+                <td class=" text-center"><%= resume.documents.projectPlan%></td>
+            </tr>
+            <tr>
+                <td><b>Actas de juntas de aclaraciones</b></td>
+                <td class=" text-center"><%= resume.documents.clarifications%></td>
+            </tr>
+            <tr>
+                <td><b>Anexo técnico (adjudicación directa)</b></td>
+                <td class=" text-center"><%= resume.documents.technicalSpecifications%></td>
+            </tr>
+            <tr>
+                <td><b>Convocatoria</b></td>
+                <td class=" text-center"><%= resume.documents.tenderNotice%></td>
+            </tr>
+            <tr>
+                <td><b>Fallo o notificación de la adjudicación</b></td>
+                <td class=" text-center"><%= resume.documents.awardNotice%></td>
+            </tr>
+            <tr>
+                <td><b>Contrato firmado</b></td>
+                <td class=" text-center"><%= resume.documents.contractSigned%></td>
+            </tr>
+            <tr>
+                <td><b>Documento en el que conste la conclusión de la contratación</b></td>
+                <td class=" text-center"><%= resume.documents.completionCertificate%></td>
+            </tr>
+        </table>
+
+    <div class="col-xs-6">
+            <table class="table table-stripped table-bordered">
+                <tr>
+                    <th colspan="2">Actores</th>
+                <tr>
+                <tr>
+                    <td><b>Entidad contratante</b></td>
+                    <td class=" text-center"><%= resume.parties.procuringEntity%></td>
+                </tr>
+                <tr>
+                    <td><b>Entidad compradora</b></td>
+                    <td class=" text-center"><%= resume.parties.buyer%></td>
+                </tr>
+                <tr>
+                    <td><b>Proveedor</b></td>
+                    <td class=" text-center"><%= resume.parties.supplier%></td>
+                </tr>
+                <tr>
+                    <td><b>Emisor de pago</b></td>
+                    <td class=" text-center"><%= resume.parties.payer%></td>
+                </tr>
+                <tr>
+                    <td><b>Receptor de pago</b></td>
+                    <td class=" text-center"><%= resume.parties.payee%></td>
+                </tr>
+                <tr>
+                    <td><b>Licitante</b></td>
+                    <td class=" text-center"><%= resume.parties.tenderer%></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-xs-6">
+            <table class="table table-stripped table-bordered">
+                <tr>
+                    <th colspan="2">Ítems</th>
+                <tr>
+                <tr>
+                    <td><b>Ítem de la licitación</b></td>
+                    <td class=" text-center"><%= resume.items.tender%></td>
+                </tr>
+                <%for(var i = 0; i < resume.items.contracts.length; i++) { %>
+                    <tr>
+                        <td><b>Ítem del contrato</b></td>
+                        <td class=" text-center"><%= resume.items.contracts[i]%></td>
+                    </tr>
+                <% } %>
+            </table>
+
+            <table class="table table-stripped table-bordered">
+                <tr>
+                    <th colspan="2">Transacciones</th>
+                <tr>
+            
+                    <tr>
+                        <td><b>Suma de pagos</b></td>
+                        <td class=" text-center"><%= resume.pago_amount%></td>
+                    </tr>
+               
+            
+                <tr>
+                    <td><b>Saldo por pagar</b></td>
+                    <td class=" text-center"><%= resume.amount%></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,9 @@
+<form id="uploadfile_form" enctype="multipart/form-data" method="post" action="/upload-stage">
+    <input type="text" value="<%= localid %>" name="localid" hidden>
+    <input type="text" value="<%= stage %>" name="stage" hidden>
+    <input type="text" value="<%= id %>" name="id" hidden>
+    <p><label>Seleccione un archivo</label>
+        <input type="file" name="datafile" class="form-control" required>
+    </p>
+    <button class="btn btn-default">Importar</button>
+</form>

@@ -1,0 +1,150 @@
+<form id="newbudgetclassification_form">
+    <input type="hidden" name="budget_id" value="<%= budgetid %>">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Año</label>
+                <select class="form-control" name="year" required>
+                    <option value="">Seleccione una opción</option>
+                    <% for (var i = 0; i < years.length; i++) { %>
+                    <option value="<%= years[i].value %>"><%= years[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label>Trimestre</label>
+                <input type="text" class="form-control" name="trimester" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Ramo</label>
+                <input type="text" class="form-control" name="branch" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Unidad responsable</label>
+                <input type="text" class="form-control" name="responsibleunit" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Finalidad</label>
+                <input type="text" class="form-control" name="finality" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Función</label>
+                <input type="text" class="form-control" name="function" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Subfunción</label>
+                <input type="text" class="form-control" name="subfunction" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Actividad institucional</label>
+                <input type="text" class="form-control" name="institutionalactivity" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Programa presupuestario</label>
+                <input type="text" class="form-control" name="budgetprogram" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Objetivo estratégico</label>
+                <input type="text" class="form-control" name="strategicobjective" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                <label title="">Unidad requiriente</label>
+                <select class="form-control" name="requestingunit" required>
+                    <option value="">Seleccione una opción</option>
+                    <% for (var i = 0; i < units.length; i++) { %>
+                    <option value="<%= units[i].value %>"><%= units[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>        
+    </div>
+
+    <div class="row">
+    	<div class="col-sm-6">
+            <p>
+                <label title="">Actividad MIR</label>
+                <select class="form-control" name="specificactivity" required>
+                    <option value="">Seleccione una opción</option>
+                    <% for (var i = 0; i < activities.length; i++) { %>
+                    <option value="<%= activities[i].value %>"><%= activities[i].name %></option>
+                    <% } %>
+                </select>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Partida</label>
+                <select class="form-control" name="spendingobject" required>
+                    <option value="">Seleccione una opción</option>
+                </select>
+            </p>
+        </div>        
+    </div>
+
+    <div class="row">
+    	<div class="col-sm-6">
+            <p>
+                <label title="">Tipo de gasto</label>
+                <input type="text" class="form-control" name="spendingtype" data-source="departure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fuente de financiamiento</label>
+                <input type="text" class="form-control" name="budgetsource" data-source="departure" readonly>
+            </p>
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Entidad federativa</label>
+                <input type="text" class="form-control" name="region" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Clave de cartera</label>
+                <input type="text" class="form-control" name="portfoliokey" data-source="programaticstructure" readonly>
+            </p>
+        </div>
+    </div>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

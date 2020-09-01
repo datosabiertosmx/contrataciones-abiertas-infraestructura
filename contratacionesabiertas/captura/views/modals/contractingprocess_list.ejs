@@ -1,0 +1,45 @@
+<form id="frmBusquedaContratacion" class="form-group clearfix">
+    <!--<div class="col-sm-3">
+        <label>ID de contratación (OCID)</label>
+        <input type="text" name="ocid" value="<%=body.ocid%>"  class="form-control" autocomplete="Off">
+    </div>-->
+    <div class="col-sm-3">
+        <label>Identificador de la licitación</label>
+        <input type="text" name="tender_id" value="<%=body.tender_id%>"  class="form-control" autocomplete="Off">
+    </div>
+    <div class="col-sm-4">
+        <label>Denominación de la licitación</label>
+        <input type="text" name="tender_name" value="<%=body.tender_name%>" class="form-control"  autocomplete="Off">
+    </div>
+    <div class="col-sm-3">
+        <label>Unidad Administrativa</label>
+        <input type="text" name="requestingunit_name" value="<%=body.requestingunit_name%>"  class="form-control"  autocomplete="Off">
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-default" style="margin-top:24px">Buscar</button>
+    </div>
+    
+</form>
+
+<%if (cp.length === 0){%>
+<div class="alert alert-warning">
+    <p>No se han registrado contrataciones.</p>
+</div>
+<%} else {%>
+<div id="list-contracting" class="list-group">
+    <%for (var i=0; i< cp.length;i++){%>
+    <a href="#" class="list-group-item" data-contractingprocess_id="<%= cp[i].id%>">
+        <h4 class="list-group-item-heading"><%=cp[i].ocid%></h4>
+        <% if (cp[i].tender_name) {%>
+        <p class="list-group-item-text">Denominación de la licitación: <%= cp[i].tender_name.length > 100 ? cp[i].tender_name.substring(0,100) + '...' : cp[i].tender_name %></p>
+        <%} %>
+        <% if (cp[i].tender_id) {%>
+        <p class="list-group-item-text">Identificador de la licitación: <%= cp[i].tender_id %></p>
+        <%} %>
+        <% if (cp[i].requestingunit_name) {%>
+        <p class="list-group-item-text">Unidad administrativa: <%=cp[i].requestingunit_name%></p>
+        <%} %>
+    </a>
+    <%}%>
+</div>
+<%}%>

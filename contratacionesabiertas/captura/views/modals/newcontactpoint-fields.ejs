@@ -1,0 +1,50 @@
+<form id="newcontactpoint_form">
+    <input type="hidden" name="party_id" value="<%= partyid  %>">
+
+    <p>
+        <label>Tipo de punto de contacto</label>
+        <select name="type" class="form-control" required>
+            <option value="">- -</option>
+            <option value="contactPoint">Punto de contacto</option>
+            <option value="attorney">Abogado</option>
+        </select>
+    </p>
+    <p>
+        <label>Nombre</label>
+        <input type="text" name="givenname" class="form-control" required>
+    </p>
+    <p>
+        <label>Primer Apellido</label>
+        <input type="text" name="surname" class="form-control" required>
+    </p>
+    <p>
+        <label>Segundo Apellido</label>
+        <input type="text" name="additionalsurname" class="form-control">
+    </p>
+    <p>
+        <label>Correo electrónico</label>
+        <input type="text" name="email" class="form-control">
+    </p>
+    <p>
+        <label>Teléfono</label>
+        <input type="text" name="telephone" class="form-control">
+    </p>
+    <p>
+        <label>Número de fax</label>
+        <input type="text" name="faxnumber" class="form-control">
+    </p>
+    <p>
+        <label>URL</label>
+        <input type="url" name="url" class="form-control">
+    </p>
+    <p>
+        <label>Idioma(s) disponible(s)</label>
+        <select name="language" class="form-control" multiple>
+            <% for(var i = 0; i < languages.length; i++) { %>
+            <option value="<%= languages[i].name %>"><%= languages[i].name + ' - ' + languages[i].alpha2 %></option>
+            <% } %>
+        </select>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

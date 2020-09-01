@@ -1,0 +1,28 @@
+<% if ( data.length > 0 ){%>
+
+<% for (var i=0; i< data.length; i++){ %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title"> <%= data[i].title %></h4>
+    </div>
+
+    <div class="panel-body">
+        <p><label>Tipo:</label> <%= data[i].document_type%></p>
+        <p><label>ID:</label> <%= data[i].documentid %></p>
+        <p><label>Descripción:<!--Description--> </label> <%= data[i].description %></p>
+        <p><label>URL: <!--URL:--></label> <%= data[i].url%></p>
+        <p><label>Fecha de publicación:</label> <%= data[i].date_published %></p>
+        <p><label>Fecha de modificación:</label> <%= data[i].date_modified %></p>
+        <p><label>Formato:</label> <%= data[i].format %></p>
+        <p><label>Idioma:</label> <%= data[i].language %></p>
+
+        <button data-action="delete_document" data-table="<%= table %>" data-id="<%= data[i].id %>" data-stage="<%= stage %>" class="btn btn-default">Eliminar</button>
+        <button data-show="modal" data-target="#genericModal" data-action="edit_document" data-table="<%= table %>" data-id="<%= data[i].id %>" data-stage="<%= stage %>" class="btn btn-default">Editar</button>
+    </div>
+
+</div>
+<%}%>
+
+<%} else { %>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado documentos</div>
+<%} %>

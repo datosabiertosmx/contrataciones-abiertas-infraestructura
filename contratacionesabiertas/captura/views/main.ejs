@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" />
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='/stylesheets/navbar-fixed-top.css' />
+
+    <title><%= title %></title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" />
+    <!--<link rel='stylesheet' href='/stylesheets/buttons.css'/>-->
+    <link rel='stylesheet' href='/stylesheets/validate-process.css'/>
+    <link rel='stylesheet' href='/stylesheets/styles.css'/>
+    <link rel='stylesheet' href='/stylesheets/auxnav.css'/>
+</head>
+<body>
+<%- include navbar.ejs%>
+<%- include navbar_menu.ejs%>
+
+
+<div class="container">
+    <% if (typeof cp != "undefined"){%>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="well">
+                <p>
+                    <label data-tooltip="crear_proceso" title='Un identificador único para este procedimiento de contratación. Se compone de un prefijo del editor y un identificador para el procedimiento de contratación.'>
+                    <strong>Identificador OCID</strong></label></p>
+                    <input type="text" name="ocid" class="form-control" placeholder="OCID" value="<%= cp.ocid %>"  readonly>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="well">
+                <p><strong>Contratación</strong></p>
+                <div class="btn-group" style="margin-bottom: 4px;">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Información sobre los actores involucrados en el procedimiento de contratación y los papeles que desempeñan.">  
+                        Actores involucrados <i class="fa fa-users"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-action="add_party" data-toggle="modal" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal"> <a href="#"><i class="fa fa-user-plus"></i> Registrar</a></li>
+                        <li data-action="edit_parties" data-toggle="modal" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal"> <a href="#"><i class="fa fa-edit"></i> Editar</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group" style="margin-bottom: 4px;">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Información sobre los procedimientos relacionados registrados en la contratación.">  
+                        Procedimientos relacionados <i class="fa fa-link"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-action="new_relatedprocedure" data-toggle="modal" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal"> <a href="#">Nuevo</a></li>
+                        <li data-action="edit_relatedprocedures" data-toggle="modal" data-contractingprocess_id="<%= cp.id%>" data-target="#genericModal"> <a href="#">Editar</a></li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="edit_publisher" data-contractingprocess_id="<%= cp.id %>" data-toggle="modal" data-target="#genericModal" data-tooltip="crear_proceso" title="Información para identificar de forma exclusiva al editor de este paquete.">
+                    Publicador <i class="fa fa-user"></i> </button>                
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="edit_uris" data-contractingprocess_id="<%= cp.id %>" data-toggle="modal" data-target="#genericModal">
+                    Metadatos <i class="fa fa-link"></i> </button>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="show_logs" data-contractingprocess_id="<%= cp.id %>" data-toggle="modal" data-target="#genericModal">
+                    Historial <i class="fa fa-history"></i></button>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="validate_process" data-contractingprocess_id="<%= cp.id %>"  data-tooltip="crear_proceso" title="Realizar proceso de validación de la contratación.">
+                    Validar <i class="fa fa-check-square-o"></i></button>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="import" data-contractingprocess_id="<%= cp.id %>"  data-toggle="modal" data-target="#genericModal" data-tooltip="crear_proceso" title="Importar contratación.">
+                    Importar <i class="fa fa-upload"></i></button>
+                <button class="btn btn-primary" style="margin-bottom: 4px;" data-action="data_pnt" data-contractingprocess_id="<%= cp.id %>"  data-toggle="modal" data-target="#genericModal" data-tooltip="crear_proceso" title="Datos PNT">
+                    Datos PNT </button>
+            </div>
+        </div>
+    </div>
+
+    <%- include tabs.ejs %>
+
+    <%} else {%>
+
+    <% if (typeof error!= "undefined"){%>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Atención:</strong> <%= error %>
+        </p>
+    </div>
+    <%}%>
+
+    <div class="jumbotron" style="text-align: justify">
+        <h1>Contrataciones abiertas</h1>
+        <br>
+        <p>Bienvenido al sistema de captura de datos de contrataciones abiertas. Esta herramienta facilita que entidades gubernamentales
+            abran los procesos de contratación pública que conducen, publicando la información correspondiente bajo el <strong><font color="#2E9AFE">Estándar de Datos de Contrataciones Abiertas en México.</font></strong>
+            Este estándar se compone de un conjunto de aproximadamente 500 datos de una contratación, desde su planeación hasta su implementación y evaluación. </p>
+
+        <p>
+            Presiona
+            <a href="http://standard.open-contracting.org/latest/es/schema/release/#id1">aquí</a>
+            para obtener más información sobre el Estándar de Datos de Contrataciones Abiertas.</p>
+        <p>
+            <button id = "nuevo_jumbo" class="btn btn-primary"><i class="fa fa-plus"></i> Nueva contratación </button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#genericModal" data-action="search" data-user_id="<%= user.id %>"> <i class="fa fa-search"></i> Buscar contratación </button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#genericModal" data-action="manual"> <i class="fa fa-book"></i> Manual</button>
+        </p>
+    </div>
+    <%}%>
+</div>
+
+<% include modals/admin_modal.ejs %>
+<% include modals/generic_modal.ejs%>
+
+<script src="/bower_components/axios/dist/axios.min.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/bower_components/moment/locale/es.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+<script src="/javascript/main.js"></script>
+<script src="/javascript/admin.js"></script>
+<script src="/javascript/validate_process.js"></script>
+<script src="/javascript/paginacion.js"></script>
+<!--MAPBOX-->
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+<script>
+    // Token de acceso para utilizar mapbox
+    const MAPBOX_TOKEN = "<%= process.env.MAPTOKEN || 'pk.eyJ1IjoiamFtZzE0IiwiYSI6ImNqdTM4cW04aDBrbnQ0NG83ZnM4cWVnOGgifQ.d6L_McpNmO9s_MsPk5loOw' %>";
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<% if (data.length > 0) { %>
+<% for (var i = 0; i < data.length; i++) { %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <%= data[i].unitname + ' - ' + data[i].year %>
+        </h4>
+    </div>
+    <div class="panel-body">
+        <button class="btn btn-default" data-action="delete_budgetclassification" data-id="<%= data[i].id %>">Eliminar</button>
+        <button class="btn btn-default" data-action="edit_budgetclassification" data-id="<%= data[i].id %>">Editar</button>
+    </div>
+</div>
+<% } %>
+<% } else { %>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> No se han registrado clasificaciónes de presupuestos</div>
+<% } %>

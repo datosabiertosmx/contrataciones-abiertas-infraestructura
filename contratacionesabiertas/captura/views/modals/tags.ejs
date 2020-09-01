@@ -1,0 +1,39 @@
+<form id="tags_form">
+    <input type="hidden" name="tags_id" value="<%= id %>">
+    <input type="hidden" name="tags_stage" value="<%= stage %>">
+
+    <div class="well">
+        <% if (stage == 1) { %>
+            <label class="checkbox-inline"><input name="tags_planning" type="checkbox">En planeación</label><br>
+            <!--<label class="checkbox-inline"><input name="planningUpdate" type="checkbox">Actualización de la planeación</label>-->
+        <% } %>
+        <% if (stage == 2) { %>
+            <label class="checkbox-inline"><input name="tags_tender" type="checkbox">Licitación</label><br>
+            <label class="checkbox-inline"><input name="tags_tenderAmendment" type="checkbox">Modificación a la convocatoria o invitación</label><br>
+            <label class="checkbox-inline"><input name="tags_tenderUpdate" type="checkbox">Actualización de licitación</label><br>
+            <label class="checkbox-inline"><input name="tags_tenderCancellation" type="checkbox">Cancelación de la licitación</label>
+        <% } %>
+        <% if (stage == 3) { %>
+            <label class="checkbox-inline"><input name="tags_award" type="checkbox">Adjudicación</label><br>
+            <label class="checkbox-inline"><input name="tags_awardUpdate" type="checkbox">Actualización de la adjudicación</label><br>
+            <label class="checkbox-inline"><input name="tags_awardCancellation" type="checkbox">Cancelación de la adjudicación</label>
+        <% } %>
+        <% if (stage == 4) { %>
+            <label class="checkbox-inline"><input name="tags_contract" type="checkbox">Contrato</label><br>
+            <label class="checkbox-inline"><input name="tags_contractUpdate" type="checkbox">Actualización del contrato</label><br>
+            <label class="checkbox-inline"><input name="tags_contractAmendment" type="checkbox">Modificación del Contrato</label><br>
+            <label class="checkbox-inline"><input name="tags_contractTermination" type="checkbox">Terminación del contrato</label>
+        <% } %>
+        <% if (stage == 5) { %>
+            <label class="checkbox-inline"><input name="tags_implementation" type="checkbox">Ejecución</label><br>
+            <label class="checkbox-inline"><input name="tags_implementationUpdate" type="checkbox">Actualización de la ejecución</label>
+        <% } %>
+        <% if (stage == 6) { %>
+            <label class="checkbox-inline"><input name="tags_compiled" type="checkbox">Registro compilado</label>
+        <% } %>
+    </div>
+
+    <p>
+        <button type="submit" class="btn btn-default">Guardar</button>
+    </p>
+</form>

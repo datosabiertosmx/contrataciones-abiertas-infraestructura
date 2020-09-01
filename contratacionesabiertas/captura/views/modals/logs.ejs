@@ -1,0 +1,63 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Versión</th>
+            <th>Fecha de Actualización</th>
+            <th>Publicador</th>
+            <th>Cambios</th>
+            <th>Records</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if(logs.length > 0) { %>
+        <% for(let i = 0; i < logs.length; i++) { %>
+        <tr>
+            <td>V<%= logs[i].version %></td>
+            <td><%= logs[i].update_date_text %></td>
+            <td><%= logs[i].publisher %></td>
+            <!--<td><a href="<%= `/version/${logs[i].version}/${logs[i].release_file}`%>" download>Ver</a></td>
+            <td><a href="<%= `/record/${logs[i].version}/${logs[i].release_file}`%>" download>Ver</a></td>-->
+            <td><a href="javascript:void(0)" data-type="version" data-version="<%= logs[i].version %>" data-file="<%= logs[i].release_file %>">Ver</a></td>
+            <td><a href="javascript:void(0)" data-type="record" data-version="<%= logs[i].version %>" data-file="<%= logs[i].release_file %>">Ver</a></td>
+        </tr>
+        <% } %>
+        <% } else { %>
+        <tr>
+            <td colspan="5" class="text-center">No se encontraron registros</td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+
+<script>
+    function syntaxHighlight(json) {
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    $('[data-type]').click(function() {
+        let modal = $('#genericModal');
+        let data = $(this).data();
+
+        modal.find('.modal-title').html('Vista Previa: ' + data.file);
+
+        $.get(`/${data.type}/${data.version}/${data.file}`, req => {
+            modal.find('.modal-dialog').css('width', '80%');
+            modal.find('#modal_content').html('<pre>' + syntaxHighlight(JSON.stringify(req, undefined, 4)) + '</pre>');
+            modal.modal('show');
+        });
+    });
+</script>

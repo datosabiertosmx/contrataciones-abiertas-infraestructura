@@ -1,0 +1,30 @@
+<%if (relatedProjects.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado proyectos relacionados</p>
+    </div>
+<%}%>
+    
+<% for(var project of relatedProjects) {%>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Nombre del proyecto:</strong> <%= project.title%></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Identificador:</strong> <%= project.identifier %></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p><strong>Relación:</strong> <%= project.relationship%></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default" name="edit_related_projects" data-related_projects_id="<%= project.id%>"><i class="fa fa-edit"></i> Editar</button>
+                <button class="btn btn-danger" name="delete_related_projects" data-related_projects_id="<%= project.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+<%}%>
+

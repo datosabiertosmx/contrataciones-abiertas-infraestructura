@@ -1,0 +1,37 @@
+<form id="add_budget_line_measure_form">
+    <p>
+        <label data-tooltip="crear_proceso" title='ID para identificar el momento de acumulación específico en el que se expresará el valor del presupuesto.'>
+            Tipo de momento presupuestario </label>
+        <select class="form-control" name="budget_budgetBreakdown_budgetLines_measures_type">
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < budgetTypes.length; i++) { %>
+            <option value="<%= budgetTypes[i].code %>"><%= budgetTypes[i].title%></option>
+            <% } %>
+        </select>
+    </p>
+    <label data-tooltip="crear_proceso" title='Valor del presupuesto.'>
+        <h4> Valor </h4></label>
+    <br>
+    <p>
+        <label data-tooltip="crear_proceso" title='Monto como número.'>
+            Monto </label>
+        <input type="text" name="budget_budgetBreakdown_budgetLines_measures_amount" class="form-control" min="1" pattern="^[0-9]+">
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>
+            Moneda </label>
+        <select class="form-control" name="budget_budgetBreakdown_budgetLines_measures_currency">
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < currencies.length; i++) { %>
+                <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code === 'MXN' ? 'selected' : '' %> ><%= currencies[i].currency + ' - ' + currencies[i].alphabetic_code %></option>
+            <% } %>
+        </select>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Fecha del momento presupuestario.'>
+            Fecha del momento presupuestario </label>
+        <input type="text" id="budget_measureDate" class="form-control" name="budget_budgetBreakdown_budgetLines_measures_update">
+    </p>
+    <input type="text" name="budget_line_id" value = "<%= budgetLineId %>" hidden>
+    <button class="btn btn-primary">Guardar</button>
+</form>

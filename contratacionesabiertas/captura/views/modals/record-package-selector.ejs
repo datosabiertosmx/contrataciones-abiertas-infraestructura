@@ -1,0 +1,30 @@
+<form id="frmPackage">
+    <input type="hidden" name="ocid" value="<%= ocid %>" >
+    <div class="form-group">
+        <label>Modo de generación</label>
+        <select name="mode" class="form-control" required>
+            <option value="trimester">Trimestre</option>
+            <option value="year">Año</option>
+            <option value="all">Todos</option>
+        </select>
+    </div>
+    <div id="year"  class="form-group">
+        <label>Año</label>
+        <select name="year" class="form-control" required>
+            <% for(var i = 0; i < years.length; i++){ %>
+                <option><%= years[i].year %></option>
+            <% } %>
+        </select>
+    </div>
+    <div id="trimester"  class="form-group">
+        <label>Trimestre</label>
+        <select name="trimester" class="form-control" required>
+            <option value="1">Primero</option>
+            <option value="2">Segundo</option>
+            <option value="3">Tercero</option>
+            <option value="4">Cuarto</option>
+        </select>
+    </div>
+    <button class="btn btn-default">Generar</button>
+    
+</form>

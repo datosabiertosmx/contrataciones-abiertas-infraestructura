@@ -1,0 +1,107 @@
+<style>
+    .error {
+        border-color: #66afe9;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+    }
+</style>
+
+<form id="newbudgetbreakdown_form">
+    <input type="hidden" name="ocid" value="<%= localid %>">
+
+    <div class="row col-sm-12">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Líneas presupuestarias <span class="caret"></span>
+        </button>
+
+        <ul class="dropdown-menu">
+            <li data-action="new_budgetclassification"><a href="javascript:void(0)">Nuevo</a></li>
+        </ul>
+    </div>
+    <br><br><br>
+    <p>
+        <label title="">Identificador</label>
+        <input type="text" class="form-control" name="budgetbreakdown_id" readonly>
+    </p>
+
+    <p>
+        <label title="">Descripción</label>
+        <textarea class="form-control" name="description" rows="10"></textarea>
+    </p>
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                <label data-tooltip="crear_proceso" title='Origen de los recursos públicos que serán utilizados para financiar la contratación. Tomado de la lista de códigos "Origen".'>Origen de los recursos públicos * </label>
+                <select class="form-control" name="origin" data-source="programaticstructure">
+                    <option value="">Seleccione una opción</option>
+                    <% for (var i = 0; i < origins.length; i++) { %>
+                    <option value="<%= origins[i].value %>"><%= origins[i].value %></option>
+                    <% } %>
+                </select> 
+            </p>
+        </div>
+        <div class="col-sm-12">
+            <p>
+                <label data-tooltip="crear_proceso" title='Descripción del tipo de fondo de participación o aportación respectiva, en su caso.'>Tipo de fondo de participación o aportación respectiva</label>
+                <input type="text" class="form-control" name="fundType" data-source="programaticstructure" minlength="1" maxlength="250" >
+            </p>
+        </div>
+    </div>
+
+    <label title="">
+        <h4>Valor</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Monto</label>
+                <input type="number" class="form-control" name="amount" data-vregex="decimal" min="0" step="0.01" value="0.00" required readonly>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Moneda</label>
+                <select class="form-control" name="currency" required>
+        		<% for ( var i = 0; i < currencies.length; i++){ %>
+        		<option value = "<%= currencies[i].alphabetic_code %>"
+                <%= currencies[i].alphabetic_code == 'MXN'? 'selected':null %>
+        		>
+            	<%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+        		</option>
+        		<%}%>
+    			</select>
+            </p>
+        </div>
+    </div>
+
+    <label title="">
+        <h4>Periodo del presupuesto</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de inicio</label>
+                <input type="text" class="form-control" id="newbudgetbreakdown_date1" name="budgetbreakdownPeriod_startdate" required>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label title="">Fecha de término</label>
+                <input type="text" class="form-control" id="newbudgetbreakdown_date2" name="budgetbreakdownPeriod_enddate" required>
+            </p>
+        </div>
+    </div>
+
+    <p>
+        <label title="">Fuente del presupuesto</label>
+        <select class="form-control" name="source_id" required>
+            <option value="">Seleccione una opción</option>
+            <% for (var i = 0; i < sources.length; i++) { %>
+            <option value="<%= sources[i].id %>"><%= sources[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+	<br>
+    <button class="btn btn-primary">Guardar</button>
+</form>

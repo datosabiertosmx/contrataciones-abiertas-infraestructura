@@ -1,0 +1,43 @@
+<form id="frmSearchValidations">
+    <div class="col-sm-2">
+        <label class="label-control">Registro<label>
+        <input type="number" name="id" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <label class="label-control">Identificador OCID<label>
+        <input type="text" name="ocid" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <label class="label-control">Publicador<label>
+        <input type="text" name="publisher" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-default" style="margin-top:20px">Buscar</button>
+    </div>
+</form>
+<table id="tValidationSearch" class="table table-stripped table-condenced" style="zoom:0.8">
+    <thead>
+        <tr>
+            <th>Registro</th>
+            <th>Indicador OCID</th>
+            <th>Publicador</th>
+            <th style="width:250px">Estatus</th>
+            <th style="width:80px">Fecha de publicación</th>
+            <th style="width:80px">Versión pública</th>
+            <th style="width:80px">Fecha de la última modificación</th>
+            <th style="width:80px">Ultima versión</th>
+            <th style="width:80px">Estatus PNT</th>
+            <th style="width:80px">Publicación PNT</th>
+            <th style="width:80px">Versión PNT</th>
+            <th style="width:300px"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-center" colspan="12">No se encontraron resultados</td>
+        </tr>
+    </tbody>
+</table>
+
+<script src="/javascript/validate_process.js"></script>
+<link rel="stylesheet" href="/stylesheets/validate-process.css"/>

@@ -1,0 +1,17 @@
+<ul class="list-group clearfix">
+    <% if (!members || members.length === 0) { %>
+        <li class="list-group-item"><h4 class="text-center">No se han encontrado resultados</h4></li>
+    <% } %>
+<% for(var i = 0, member=members[i]; i < members.length; i++, member=members[i]) {%>
+    <li class="list-group-item clearfix">
+        <div class="col-xs-8">
+        <b>Identificador: </b><%= member.memberofid %> <br />
+        <b>Nombre: </b><%= member.name %>
+        </div>
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-default" data-editar="<%= member.id %>">Editar</button>
+            <button type="button" class="btn btn-danger" data-eliminar="<%= member.id %>">Eliminar</button>
+        </div>
+    </li>
+<% } %>
+</ul>

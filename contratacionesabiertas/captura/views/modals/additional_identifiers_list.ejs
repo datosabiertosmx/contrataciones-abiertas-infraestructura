@@ -1,0 +1,28 @@
+<%if (data.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado identificadores adicionales</p>
+    </div>
+<%}%>
+<% for(var identifier of data) {%>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Nombre o razón social:</strong> <%= identifier.legalName%></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Esquema:</strong> <%= identifier.scheme %></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p><strong>Identificador:</strong> <%= identifier.identifier%></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default" name="edit_additional_identifiers" data-identifier_id="<%= identifier.id%>"><i class="fa fa-edit"></i> Editar</button>
+                <button class="btn btn-danger" name="delete_additional_identifiers" data-identifier_id="<%= identifier.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+<%}%>

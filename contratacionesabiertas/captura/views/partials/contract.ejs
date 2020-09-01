@@ -1,0 +1,273 @@
+   
+<% 
+    function getMString ( fecha ){
+        return (
+                fecha.getFullYear() + "-"+
+                ( (fecha.getMonth() + 1 < 10)?("0"+(fecha.getMonth()+1)):(fecha.getMonth() + 1) )+ "-" + // 0 - 11
+                ( (fecha.getDate() < 10)?("0"+(fecha.getDate())):(fecha.getDate()) ) +" "+ // 1 - 31
+                ( (fecha.getHours() < 9)?("0"+fecha.getHours()):fecha.getHours() )+":"+ //0 - 23
+                ( (fecha.getMinutes() < 9 )?("0"+fecha.getMinutes()):fecha.getMinutes() ) + ":" +
+                ( (fecha.getSeconds() < 9 )?("0"+ fecha.getSeconds()):fecha.getSeconds() )
+        );
+    }
+
+%>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Todos los documentos y anexos relacionados con el contrato.'>
+                    Documentos<!--Documents--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_document" data-stage="4" data-table="contractdocuments" data-contractingprocess_id="<%= cpid %>" data-fkname="contract_id" data-fkid="<%= contract.id %>" data-target="#genericModal">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_documents" data-stage="4" data-table="contractdocuments" data-contractingprocess_id="<%=cpid%>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Editar</a></li>
+                </ul>
+            </div>
+
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Bienes, servicios u obra pública objetos del contrato. Nota: Si los ítems son los mismos que aquellos listados en la adjudicación, no repetir.'>
+                    Ítems del contrato<!--Items--> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_item" data-table="contractitem" data-contractingprocess_id="<%= cpid %>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_items" data-table="contractitem" data-contractingprocess_id="<%= cpid%>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Una modificación del contrato es un cambio formal o extensión de un contrato.'>
+                     Modificaciones<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_change" data-table="contractamendmentchanges" data-contractingprocess_id="<%= cpid %>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_changes" data-table="contractamendmentchanges" data-contractingprocess_id="<%=cpid%>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Editar</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title='Garantías del contrato.'>
+                    Garantías <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-toggle="modal" data-action="new_guarantee" data-table="guarantees" data-contractingprocess_id="<%= cpid %>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Nuevo</a></li>
+                    <li><a href="#" data-toggle="modal" data-action="edit_guarantees" data-table="guarantees" data-contractingprocess_id="<%= cpid %>" data-target="#genericModal" data-fkname="contract_id" data-fkid="<%= contract.id %>">Editar</a></li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <form id="contract_form" role="form">
+                <input type="hidden" name="id" value="<%= contract.id %>">
+                <input type="hidden" name="status" value="<%= contract.status %>">
+                <input type="text" name="contractingprocess_id" hidden value ="<%=  contract? contract.contractingprocess_id :''%>" >
+                <h4 id="actual-text"></h4>
+
+                <p><label data-tooltip="crear_proceso" title="El identificador del contrato. Debe ser único y no puede cambiar dentro del procedimiento de contratación abierto (definido por un solo ocid). Para más detalles ver la "Guía de identificador".">
+                	Identificador del contrato</label>
+                    <input type="text" class="form-control" name="contractid" value="<%= contract.contractid %>" required>
+                </p>
+                
+                <p><label data-tooltip="crear_proceso" title='Identificador de la adjudicación en el cual se encuentra este contrato.'>
+                	Identificador de la adjudicación<!--Award ID--></label>
+                    <select name="awardid" class="form-control" required>
+                        <option value="" <%= contract != null && contract.awardid == null ? 'selected' : '' %>>Seleccione una opción</option>
+                        <% for(var i = 0; i < awards.length; i++) { %>
+                        <option value="<%= awards[i].id %>" <%= contract != null && (contract.awardid == awards[i].id || contract.awardid == awards[i].awardid) ? 'selected' : '' %>><%= awards[i].awardid %></option>
+                        <% } %>
+                    </select>
+                </p>
+                <p>
+                    <label data-tooltip="crear_proceso" title='Título del contrato.'>
+                    Título del contrato<!--Title--></label>
+                    <input type="text" class="form-control" name = "title" value=" <%=  contract? contract.title:''%>" >
+                </p>
+                <p>
+                    <label data-tooltip="crear_proceso" title='Objeto del contrato.'>
+                    Objeto del contrato<!--Description--></label>
+                    <textarea class="form-control" name = "description" rows="5"><%=  contract? contract.description:''%></textarea>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title='Mecanismos de vigilancia.'>Mecanismos de vigilancia</label>
+                    <select name="surveillanceMechanisms" class="form-control">
+                        <option value="" <%= contract != null && contract.surveillancemechanisms == '' ? 'selected' : '' %>>Seleccione una opción</option>
+                        <option value="socialWitness" <%= contract != null && contract.surveillancemechanisms == 'socialWitness' ? 'selected' : '' %>>Testigo social</option>
+                        <option value="citizenComptroller" <%= contract != null && contract.surveillancemechanisms == 'citizenComptroller' ? 'selected' : '' %>>Contraloría social</option>
+                        <option value="internalControlUnit" <%= contract != null && contract.surveillancemechanisms == 'internalControlUnit' ? 'selected' : '' %>>Órgano Interno de control</option>
+                        <option value="externalAuditor" <%= contract != null && contract.surveillancemechanisms == 'externalAuditor' ? 'selected' : '' %>>Auditor externo</option>
+                    </select>
+                </p>
+
+				<label data-tooltip="crear_proceso" title='Fecha de inicio y fecha fin del contrato.'>
+                <h4>Vigencia</h4></label>
+            
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>Fecha de inicio<!--Period start date--></label>
+                            <input type="text" id= "cont_date1" name  = "period_startdate" class="form-control" value="<%= contract.period_startdate != null ? getMString(contract.period_startdate):''%>">
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>
+                            <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>Fecha fin<!--Period end date--></label>
+                            <input type="text" id= "cont_date2" class="form-control" name= "period_enddate" value = "<%= (contract.period_enddate != null)? getMString(contract.period_enddate):''%>">
+                        </p>
+                    </div>
+                </div>
+
+                
+                <label data-tooltip="crear_proceso" title='Valor económico del contrato.'>
+                <h4>Valor</h4></label>
+                
+                <div class="row">
+                	<!--Value amountNet-->
+                    <div class="col-sm-4">
+                        <p>
+                    		<label data-tooltip="crear_proceso" title='Monto como número.'>Monto sin impuestos</label>
+                    		<input type="number" step="0.01" class="form-control" name="value_amountnet" 
+                    		value = "<%= (typeof contract != "undefined")? contract.value_amountnet:''%>" required>
+                		</p> 
+                    </div>
+                    
+      			<script>      			    						
+					function multiplicarMX(){
+					m1 = document.getElementById("value_amount").value;
+					m2 = 1;								
+					r = m1*m2;
+					document.getElementById("exchangerate_amount").value = r;
+					document.getElementById("exchangerate_amount_1").value = r;
+					}
+      			</script>
+			 	
+                    <div class="col-sm-4">
+                        <p>
+                			<label data-tooltip="crear_proceso" title='Monto total del contrato con impuestos incluidos (en su caso).'>Monto total</label>
+                			<input type="number" step="0.01" class="form-control" name="value_amount" id="value_amount" value = "<%= (typeof contract != "undefined")? contract.value_amount:''%>" required
+                			onChange="multiplicarMX();" >
+                		</p>
+                    </div>
+                          
+                    <div class="col-sm-4">
+                        <p><label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
+                   			<select class="form-control" name="value_currency" 
+                   			onchange="if(this.value_currency !== 'MXN') {document.getElementById('exchangerate_rate').disabled = false} else {document.getElementById('exchangerate_rate').disabled = true}">
+		                        <% for ( var i = 0; i < currencies.length; i++){ %>
+		                        	<option value = "<%= currencies[i].alphabetic_code %>"
+		                                <% if (contract.value_currency == null && currencies[i].alphabetic_code=='MXN' ) {%>
+		                            		<%= 'selected' %>
+		                                <%} else if (currencies[i].alphabetic_code == contract.value_currency){%>
+		                           			<%= 'selected' %>
+		                                <%}%>
+		                        		>
+		                            	<%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+		                        	</option>
+		                      	<%}%>
+                    		</select>
+						</p>
+                    </div>
+                </div>
+				<br>
+						
+			<!--TASA DE CAMBIO-->
+			 <script>
+				function multiplicar(){
+				if(document.getElementById("exchangerate_rate").value =="")
+				{
+				document.getElementById("exchangerate_rate").value = 1;
+				}
+				
+				m1 = document.getElementById("value_amount").value;
+				m2 = document.getElementById("exchangerate_rate").value;				
+				r = m1*m2;
+				document.getElementById("exchangerate_amount").value = r.toFixed(2);
+				document.getElementById("exchangerate_amount_1").value = r.toFixed(2);
+				}
+				
+				window.onload=multiplicar;
+    		 </script>
+			 				 
+						<label data-tooltip="crear_proceso" title='Tasa de cambio aplicada al monto especificado.'>
+		                <h4>Tasa de cambio</h4></label>
+		                
+		                <div class="row">
+		                     <div class="col-sm-4">
+		                        <p>
+		                    		<label data-tooltip="crear_proceso" title='Valor en número de la tasa utilizada'>Tasa</label>
+		                    		<input type="number" step="0.01" class="form-control" name="exchangerate_rate" id="exchangerate_rate" 
+		                    		value = "<%= (typeof contract != "undefined")? contract.exchangerate_rate:''%>" disabled 
+		                    		onChange="multiplicar(); 
+		                    		if(this.exchangerate_rate !== null) {
+		                    			document.getElementById('exchangerate_source').disabled = false
+		                    			} else {
+		                    			document.getElementById('exchangerate_source').disabled = true
+		                    			} ">
+		                		</p> 
+		                    </div>
+		                    <div class="col-sm-4">
+		                        <p>
+		                			<label data-tooltip="crear_proceso" title=''>Monto en MXN</label>
+		                			<input type="hidden" class="form-control" name="exchangerate_amount" id="exchangerate_amount" 
+		                			value = "<%= (typeof contract != "undefined")?'selected':''%>" >		                			
+		                			<input class="form-control" id="exchangerate_amount_1" 
+		                			value = "<%= (typeof contract != "undefined")? contract.exchangerate_amount:''%>" 
+		                			onkeypress="return false;" 
+		                			style="pointer-events: none; background-color: #eee; caret-color: #eee;" 
+		                			required>  
+		                		</p>		                		
+		                    </div>
+		                    <div class="col-sm-4">
+		                        <p><label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
+		                    		<input type="hidden" class="form-control" name="exchangerate_currency"               		
+		                    		value="MXN" >
+		                    		<input type="text" class="form-control"                 		
+		                    		value="MXN" disabled>
+								</p>
+		                    </div>
+		                </div>
+						<br>
+						
+						<div class="col-sm-6">
+		                    <p>
+		                        <label data-tooltip="crear_proceso" title='La fuente de donde se obtuvo esta tasa de cambio.'>Fuente</label>
+				                    <select class="form-control" name="exchangerate_source" id="exchangerate_source" disabled 
+				                    onchange="if(this.exchangerate_source !== 'null') {document.getElementById('cont_date3').disabled = false} 
+		                            		  else {document.getElementById('cont_date3').disabled = true} ">
+				                        <option value="" <%= (contract.exchangerate_source == null)?'selected':''%> >Seleccione una opción</option>
+				                        <option value="centralBank" <%= (contract.exchangerate_source == 'centralBank')?'selected':''%> >Banxico</option>
+				                        <option value="contract" <%= (contract.exchangerate_source == 'contract')?'selected':''%> >Contrato</option>
+				                        <option value="others" <%= (contract.exchangerate_source == 'others')?'selected':''%> >Otras</option>
+				                    </select>          
+		                    </p>
+		                </div>
+		                <div class="col-sm-6">
+		                    <p>
+			                    <label data-tooltip="crear_proceso" title='Fecha en que se fijó la tasa de cambio.'>Fecha de la tasa de cambio</label>
+		                        <input type="text" id="cont_date3" class="form-control" name="exchangerate_date"    		                            
+		                            value = "<%= (contract.exchangerate_date != null)? getMString(contract.exchangerate_date):''%>" disabled>
+		                	</p>
+		                <br>
+		                <hr>
+		                </div>
+         <!-- FIN TASA DE CAMBIO-->
+				
+                <div>
+                    <p>
+                        <label data-tooltip="crear_proceso" title='Fecha establecida en el contrato, la cual será aquélla en que el proveedor o contratista hubiere firmado.'>Fecha de firma del contrato<!--Date signed--></label>
+                        <input type="text" id="cont_date3" class="form-control" name="datesigned" value = "<%= (contract.datesigned != null)? getMString(contract.datesigned):''%>">
+                    </p>
+                </div>
+                
+                <script>
+                	function validarVacio(){					
+						if(document.getElementById("exchangerate_amount_1").value =="")
+						{
+		                 	alert("No se ha especificado el monto contratado en moneda nacional. Verificar que el campo Monto en MXN contenga información.")
+						}
+					}
+				</script>
+
+                <button type="submit" class="btn btn-primary" onClick="multiplicar()">Guardar</button>
+                <button class="btn btn-primary" type="button" data-toggle="modal" data-contractingprocess_id="<%= cpid %>" data-action="import" data-stage="4" data-target="#genericModal" data-id="<%= contract.id %>">Importar datos</button>
+                <button type="button" id="btnDeleteContract" data-id="<%= contract.id %>" data-contractingprocess_id="<%= cpid %>" class="btn btn-danger pull-right">Eliminar</button>
+            </form>

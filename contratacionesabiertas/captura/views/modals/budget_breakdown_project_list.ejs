@@ -1,0 +1,33 @@
+<%if (budgetbreakdowns.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado Desgloses de presupuestos</p>
+    </div>
+<%}%>
+<% for(var budgetbreakdown of budgetbreakdowns) {%>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title"> <%= budgetbreakdown.name %></h4>
+        </div>
+    
+        <div class="panel-body">
+            <%if (budgetbreakdown.description !== null){ %>
+            <p><label>Descripción:</label> <%= budgetbreakdown.description%></p>
+            <%}%>
+            <%if (budgetbreakdown.amount !== null){ %>
+            <p><label>Monto:</label> <%= budgetbreakdown.amount %></p>
+            <%}%>
+            <%if (budgetbreakdown.currency !== null){ %>
+            <p><label>Moneda:</label> <%= budgetbreakdown.currency %></p>
+            <%}%>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" name="edit_budgetbreakdown_project" data-budgetbreakdown_id="<%= budgetbreakdown.id%>"><i class="fa fa-edit"></i> Editar</button>
+                    <button class="btn btn-danger" name="delete_budgetbreakdown_project" data-budgetbreakdown_id="<%= budgetbreakdown.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+<%}%>

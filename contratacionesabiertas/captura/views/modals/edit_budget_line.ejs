@@ -1,0 +1,210 @@
+<form id="update_budget_line_form">
+    <div class="btn-group" style="margin-bottom: 4px;">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-tooltip="crear_proceso" title="Una lista de los momentos presupestarios en los que se expresa el valor del presupuesto.">
+            Momentos presupuestarios  <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-action="add_budget_line_measure" data-id="<%= data.id %>"><a href="javascript:void(0)">Nuevo</a></li>
+            <li data-action="edit_budget_line_measure" data-id="<%= data.id %>"><a href="javascript:void(0)">Editar</a></li>
+        </ul>
+    </div>
+    <p>
+        <label data-tooltip="crear_proceso" title='Año del ejercicio fiscal.'>
+            Año </label>
+        <input type="number" name="budget_budgetBreakdown_budgetLines_components_year" class="form-control" min="1" max="9999" pattern="^[0-9]+" value = "<%= data.year %>" required>
+    </p>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de ramo</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_branch" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= data.kBranch %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Es el elemento de la estructura programática con el mayor nivel de agregación para las previsiones de gasto correspondientes al Presupuesto de Egresos.'>
+                    Ramo</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_branch" class="form-control" value = "<%= data.branch %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de unidad responsable</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_resposibleUnit" class="form-control" min="1" max="999" pattern="^[0-9]+" value = "<%= data.kResponsibleUnit %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Área administrativa de los Poderes Legislativo y Judicial, los entes autónomos, las dependencias y, en su caso, las entidades que está obligada a la rendición de cuentas sobre los recursos humanos, materiales y financieros que administra para contribuir al cumplimiento de los programas comprendidos en la estructura programática autorizada al ramo o entidad.'>
+                    Unidad responsable</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_resposibleUnit" class="form-control" value = "<%= data.responsibleUnit %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de finalidad</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_finality" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= data.kFinality %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='El gasto programable se clasifica en tres finalidades: Gobierno, Desarrollo Social y Desarrollo Económico; adicionalmente, se incluye otra finalidad para ubicar las funciones no clasificadas en las finalidades anteriores'>
+                    Finalidad</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_finality" class="form-control" value = "<%= data.finality %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de función</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_function" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= data.kFunction %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Los gastos se agrupan por función de acuerdo con los propósitos a que están destinados con el objetivo de presentar una descripción que permita informar sobre la naturaleza de los servicios gubernamentales y la proporción de los gastos públicos que se destinen a cada tipo de servicio.'>
+                    Función</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_function" class="form-control" value = "<%= data.function %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de subfunción</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_subFunction" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= data.kSubFunction %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Los gastos se agrupan por subfunción perteneciendo a alguna función de acuerdo con los propósitos a que están destinados con el objetivo de presentar una descripción que permita informar sobre la naturaleza de los servicios gubernamentales y la proporción de los gastos públicos que se destinen a cada tipo de servicio.'>
+                    Subfunción</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_subFunction" class="form-control" value = "<%= data.subFunction %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de actividad institucional</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_institutionalActivity" class="form-control" min="1" max="999" pattern="^[0-9]+" value = "<%= data.kInstAct %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Son las acciones sustantivas o de apoyo que realizan los ejecutores de gasto con el fin de dar cumplimiento a los objetivos y metas contenidas en los programas, de conformidad con las atribuciones que les señala su respectiva ley orgánica o el ordenamiento jurídico que les es aplicable, en línea con las categorías de las funciones y programas a los que pertenecen.'>
+                    Actividad institucional</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_institutionalActivity" class="form-control" value = "<%= data.instAct %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de programa presupuestario</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_budgetProgram" class="form-control" min="1" max="9999" pattern="^[0-9]+" value = "<%= data.kBudgetProgram %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Categoría programática que permite organizar, en forma representativa y homogénea, las asignaciones de recursos de los programas federales y del gasto federalizado a cargo de los ejecutores del gasto público federal para el  cumplimiento de sus objetivos y metas, así como del gasto no programable.'>
+                    Programa presupuestario</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_budgetProgram" class="form-control" value = "<%= data.budgetProgram %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de objeto del gasto</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_spendingObject" class="form-control" min="1" max="99999" pattern="^[0-9]+" value = "<%= data.kSpendingObject %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Corresponde al cuarto nivel de desagregación más específico del Clasificador por Objeto de Gasto, que con los tres niveles (capitulo, concepto y partida genérica) se conforma de cinco dígitos, y que describe los bienes o servicios de un mismo género.'>
+                    Objeto del gasto</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_spendingObject" class="form-control" value = "<%= data.spendingObject %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de tipo de gasto</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_spendingType" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= data.kSpendingType %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Iidentifica las asignaciones conforme a su naturaleza, en erogaciones corrientes o de capital, pensiones y jubilaciones y participaciones.'>
+                    Tipo de gasto</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_spendingType" class="form-control" value = "<%= data.spendingType %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de fuente de financiamiento</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_budgetSource" class="form-control" min="1" max="9999" pattern="^[0-9]+" value = "<%= data.kBudgetSource %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Identifica las asignaciones a partir del origen de su financiamiento.'>
+                    Fuente de financiamiento</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_budgetSource" class="form-control" value = "<%= data.budgetSource %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de entidad federativa</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_region" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= data.kRegion %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Estados libres y soberanos en su régimen interior pero unidos a la Federación y cuya forma de gobierno es republicana, representativa y popular.'>
+                    Entidad federativa</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_region" class="form-control" value = "<%= data.region %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Clave que identifica los programas y proyectos de inversión en proceso de realización, así como aquéllos que se consideren susceptibles de realizar en años futuros.'>
+                    Clave de cartera</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_key_portfolio" class="form-control" min="1" max="99999999999" pattern="^[0-9]+" value = "<%= data.kPortfolio %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Cartera</label>
+                <input type="text" name="budget_budgetBreakdown_budgetLines_components_portfolio" class="form-control" value = "<%= data.portfolio %>">
+            </p>
+        </div>
+        <input type="text" name="budget_line_component_id" value = "<%= data.id %>" hidden>
+    </div>
+	<button class="btn btn-primary">Actualizar</button>
+</form>

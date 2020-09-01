@@ -1,0 +1,40 @@
+<form id="update_related_project_form">
+    <input type="text" name="related_project_id" value = "<%= data.id %>" hidden>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='El tipo de relación, usando la lista de códigos abierta [relatedProjects].'>Relación</label>
+            <select class="form-control" name="relatedProject_relationship" required>
+                <option value="">Seleccione una opción</option>
+                <% for (var i = 0; i < relatedProjects.length; i++) { %>
+                    <option value="<%= relatedProjects[i].code %>" <%= (relatedProjects[i].code === data.relationship ) ? 'selected' : '' %> > <%= relatedProjects[i].title%></option>
+                <% } %>
+            </select>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El título del proyecto relacionado, donde se hace referencia a una contratación abierta para un proyecto de infraestructura, este campo debe coincidir con el campo del título en el proyecto relacionado.'>
+            Nombre del proyecto</label>
+        <input type="text" name="relatedProject_title" class="form-control" value = "<%= data.title %>" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El esquema de identificación utilizado por esta referencia cruzada, utilizando la lista de códigos abierta [relatedProjectScheme].'>Esquema</label>
+            <select class="form-control" name="relatedProject_scheme" required>
+                <option value="">Seleccione una opción</option>
+                <% for (var i = 0; i < relatedProjectsScheme.length; i++) { %>
+                    <option value="<%= relatedProjectsScheme[i].code %>" <%= (relatedProjectsScheme[i].code === data.scheme ) ? 'selected' : '' %>> <%= relatedProjectsScheme[i].title%></option>
+                <% } %>
+            </select>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='El identificador del proyecto relacionado. Si el esquema es "oc4i ID", debe ser una Contratación abierta para ID de infraestructura (oc4i ID).'>
+            Identificador</label>
+        <input type="text" name="relatedProject_identifier" class="form-control" value = "<%= data.identifier %>" required>
+    </p>
+    <p>
+        <label data-tooltip="crear_proceso" title='Un URI que apunta a un documento, versión o paquete de registro legible por máquina que contiene el proyecto relacionado con el identificador.'>
+            URI</label>
+        <input type="url" name="relatedProject_uri" class="form-control" value = "<%= data.uri %>" readonly>
+    </p>
+    
+    
+    <button type="submit" class="btn btn-default">Actualizar</button>
+</form>

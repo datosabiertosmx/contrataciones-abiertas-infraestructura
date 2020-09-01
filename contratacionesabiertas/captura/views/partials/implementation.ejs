@@ -1,0 +1,51 @@
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-tooltip="crear_proceso" title='Se pueden adjuntar enlaces o descripciones de documentos externos dentro del estándar. Los documentos pueden ser de apoyo a la información, avisos formales, formularios descargables, o cualquier otro tipo de recurso que debe hacerse público como parte de la contratación.'>
+        Documentos
+        <!--Documents--> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-action="new_document" data-stage="5" data-table="implementationdocuments"
+                data-contractingprocess_id="<%= cpid %>" data-fkname="implementation_id" data-fkid="<%= implementation.id %>"  data-target="#genericModal">Nuevo</a></li>
+        <li><a href="#" data-toggle="modal" data-action="edit_documents" data-stage="5" data-table="implementationdocuments"
+                data-contractingprocess_id="<%=cpid%>"  data-fkname="implementation_id" data-fkid="<%= implementation.id %>" data-target="#genericModal">Editar</a></li>
+    </ul>
+</div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-tooltip="crear_proceso" title='Lista de las transacciones relacionadas con los pagos efectuados en este contrato.'>
+        Transacciones
+        <!--Transactions--> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-action="new_transaction" data-contractingprocess_id="<%= cpid %>"  data-fkname="implementation_id" data-fkid="<%= implementation.id %>"
+                data-target="#genericModal">Nuevo</a></li>
+        <li><a href="#" data-toggle="modal" data-action="edit_transactions" data-table="implementationtransactions"  data-fkname="implementation_id" data-fkid="<%= implementation.id %>"
+                data-contractingprocess_id="<%= cpid %>" data-target="#genericModal">Editar</a></li>
+    </ul>
+</div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-tooltip="crear_proceso" title='A medida que se concluyen los hitos, éstos deben documentarse.'>
+        Hitos
+        <!--Milestones--> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-action="new_milestone" data-table="implementationmilestone"  data-fkname="implementation_id" data-fkid="<%= implementation.id %>"
+                data-contractingprocess_id="<%= cpid %>" data-target="#genericModal">Nuevo</a></li>
+        <li><a href="#" data-toggle="modal" data-action="edit_milestones" data-table="implementationmilestone"  data-fkname="implementation_id" data-fkid="<%= implementation.id %>"
+                data-contractingprocess_id="<%=cpid%>" data-target="#genericModal">Editar</a></li>
+    </ul>
+</div>
+
+<hr>
+<form id="implementation_form">
+    <input type="hidden" name="id" value="<%= implementation.id%>" />
+    <input type="hidden" name="contractid" value="<%= implementation.contract_id%>" />
+    <input type="hidden" name="contractingprocess_id" hidden value="<%= implementation.contractingprocess_id %>">
+    <input type="hidden" name="status" value="<%= implementation.status %>">
+    <h4 id="actual-text"></h4>
+
+</form>

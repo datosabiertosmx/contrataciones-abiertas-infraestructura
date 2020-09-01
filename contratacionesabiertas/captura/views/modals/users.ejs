@@ -1,0 +1,62 @@
+<%if (users.length === 0){%>
+<div class="alert alert-warning">
+    <p>No se han registrado usuarios además del administrador.</p>
+</div>
+<%} else {%>
+	<div>
+		<div class="row">
+	       	<div class="col-md-4" style="text-align:center;">
+	    	    <p class="list-group-item-heading">
+	         	   <h4><strong>Usuario</strong></h4>
+	            </p>
+	        </div>
+	        <div class="col-md-4" style="text-align:center;">
+	            <p class="list-group-item-text">
+	               <h4><strong>Correo</strong></h4>
+	            </p>
+	        </div>
+	        <div class="col-md-2" style="text-align:center;">
+	            <p class="list-group-item-text">
+	               <h4><strong>Estatus</strong></h4>
+	            </p>
+	        </div>
+	        <div class="col-md-1">                 
+	        </div>
+		</div>
+	</div>
+	<div class="list-group">
+	    <%for (var i=0; i< users.length;i++){%>
+	    <a href="#" class="list-group-item">
+	        <div class="row">
+	            <div class="col-md-4">
+	                <p class="list-group-item-heading">
+	                    <%=users[i].name%>
+	                    <%=users[i].lastname%>
+	                </p>
+	            </div>
+	            <div class="col-md-4">
+	                <p class="list-group-item-text">
+	                    <%=users[i].email%>
+	                </p>
+	            </div>
+	            <div class="col-md-2" style="text-align:center;">
+	                <p class="list-group-item-text">
+	                    <% if(users[i].isActive == true) { %>
+				            Activo
+				            <%}%>
+				        <% if(users[i].isActive == false) { %>
+				            Inactivo
+				        <% } %>
+	                </p>
+	            </div>
+	            <div class="col-md-2">
+	                <button class="btn btn-default" data-toggle="modal" data-action="edit_user" data-target="#genericModal"
+	                    data-user_id="<%= users[i].id%>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+	                <button class="btn btn-danger" data-toggle="modal" data-action="delete_user" data-target="#genericModal"
+	                    data-user_id="<%= users[i].id%>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	            </div>
+	        </div>
+	    </a>
+	    <%}%>
+	</div>
+<%}%>

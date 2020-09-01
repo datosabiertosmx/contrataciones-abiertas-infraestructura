@@ -1,0 +1,47 @@
+<%if (data.length === 0){ %>
+    <div class="alert alert-warning" role="alert">
+        <p>No se han registrado documentos</p>
+    </div>
+<%}%>
+<% for(var document of data) {%>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title"> <%= document.title %></h4>
+        </div>
+    
+        <div class="panel-body">
+            <%if (document.documentType !== null){ %>
+            <p><label>Tipo:</label> <%= document.documentType%></p>
+            <%}%>
+            <%if (document.id !== null){ %>
+            <p><label>ID:</label> <%= document.id %></p>
+            <%}%>
+            <%if (document.description !== null){ %>
+            <p><label>Descripción:</label> <%= document.description %></p>
+            <%}%>
+            <%if (document.url !== null){ %>
+            <p><label>URL:</label> <%= document.url%></p>
+            <%}%>
+            <%if (document.datePublished !== null){ %>
+            <p><label>Fecha de publicación:</label> <%= document.datePublished %></p>
+            <%}%>
+            <%if (document.dateModified !== null){ %>
+            <p><label>Fecha de modificación:</label> <%= document.dateModified %></p>
+            <%}%>
+            <%if (document.format !== null){ %>
+            <p><label>Formato:</label> <%= document.format %></p>
+            <%}%>
+            <%if (document.language !== null){ %>
+            <p><label>Idioma:</label> <%= document.language %></p>
+            <%}%>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" name="edit_document_project" data-document_id="<%= document.id%>"><i class="fa fa-edit"></i> Editar</button>
+                    <button class="btn btn-danger" name="delete_document_project" data-document_id="<%= document.id%>"><i class="fa fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+<%}%>

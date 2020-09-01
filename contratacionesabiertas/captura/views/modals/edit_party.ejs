@@ -1,0 +1,228 @@
+<form id="update_party_form">
+    <input type="text" name="contractingprocess_id" value = "<%= data.contractingprocess_id %>" hidden>
+    <input type="text" name="parties_id" value = "<%= data.id %>" hidden>
+
+     <div class="row col-xs-12">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Miembro de <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-action="new_memberof"  data-id="<%= data.id %>"><a href="javascript:void(0)">Nuevo</a></li>
+            <li data-action="edit_memberof" data-id="<%= data.id %>"><a href="javascript:void(0)">Editar</a></li>
+        </ul>
+    </div>
+
+    <p><br><br><br>
+        <label>Nombre común<!--Name--></label>
+        <input name="name" type="text" class="form-control" value="<%= data.name %>"></p>
+
+    <p>
+        <label>Identificador del actor</label>
+        <input name="partyid" type="text" class="form-control" value="<%= data.partyid %>" readonly required>
+    </p>
+    
+    <p>
+        <label>Cargo</label>
+        <input name="position" type="text" class="form-control" value="<%= data.position %>">
+    </p>
+    
+    <hr>
+    <h4>Identificador principal</h4>
+    
+    <p>
+        <label data-tooltip="crear_proceso">¿Es persona física?</label>
+        <select name="naturalperson" id="naturalperson" class="form-control" required
+        onchange="esPersonaFisica($('#naturalperson').val());">
+
+            <option value="<%= data.naturalperson %>"
+              	parties.naturalperson === 'selected'
+                > <%= data.naturalperson? 'Si':'No' %> </option>
+            <option value="<%= !data.naturalperson %>"
+                parties.naturalperson === 'selected'
+                > <%= data.naturalperson? 'No':'Si' %> </option>
+        </select>
+    </p>
+    
+    <br>
+    
+    <div class="row">
+		    
+    	<div class="col-sm-6">
+    		
+    		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
+    		<h4>Persona moral</h4></label>
+    		
+    		<p><label>Nombre o razón social<!--Identifier legal name--></label>
+        <input id="identifier_legalname" name = "identifier_legalname" class="form-control" type="text" value="<%= data.identifier_legalname %>" required <%= data.naturalperson? 'disabled' : '' %>></p>
+        
+        </div>
+    	
+		<div class="col-sm-6">
+		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
+    		<h4>Persona física</h4></label>
+     <p>
+        <label>Nombre<!--Name--></label>
+        <input id= "givenname" name="givenname" type="text" class="form-control" value="<%= data.givenname %>" required <%= !data.naturalperson ? 'disabled' : '' %>></p>
+
+    <p>
+    <p>
+        <label>
+        Primer Apellido</label>
+        <input id="surname" name="surname" type="text" class="form-control"  value="<%= data.surname %>" required <%= !data.naturalperson ? 'disabled' : '' %>>
+    </p>
+    <p>
+        <label>
+        Segundo Apellido</label>
+        <input id="additionalsurname" name="additionalsurname" type="text" class="form-control" value="<%= data.additionalsurname %>" required <%= !data.naturalperson ? 'disabled' : '' %>>
+    </p>
+    </div>
+</div>
+
+
+<!-- ########################################################################## MODIFICADO ##################################### -->
+    <p><label>Esquema <!--Identifier scheme--></label>
+        <select name="identifier_scheme" class="form-control" onChange="validarVacio(this);" id='identifier_scheme' required>
+            <option value="" <%= '' == data.identifier_scheme ? 'selected' : '' %>>Seleccionar un esquema</option>
+            <option value="MX-RFC" <%= 'MX-RFC' == data.identifier_scheme ? 'selected' : '' %>>MX-RFC</option>
+        </select>
+        <!-- <input name = "identifier_scheme" class="form-control" type="text" value="<%= data.identifier_scheme %>" onChange="validarVacio(this);" required></p> -->
+<!-- ########################################################################## MODIFICADO ##################################### -->
+
+
+    <p><label>Identificador<!--Identifier ID--></label>
+        <input name = "identifier_id" class="form-control" type="text" value="<%= data.identifier_id %>" onChange="validarIdentificador(this);" required></p>
+
+    <hr>
+    
+    <h4>Domicilio</h4>
+    <p><label>Calle y número <!--Address street address--></label>
+        <input name="address_streetaddress" type="text" class="form-control" value="<%= data.address_streetaddress %>" ></p>
+    <p><label>Alcaldía o municipio<!--Address locality--></label>
+        <input name="address_locality" type="text" class="form-control" value="<%= data.address_locality %>"></p>
+    <p><label>Entidad federativa<!--Address region--></label>
+        <input name="address_region" type="text" class="form-control" value="<%= data.address_region %>"></p>
+    <p><label>Código postal<!--Address postal code--></label>
+        <input name="address_postalcode" type="text" class="form-control" value="<%= data.address_postalcode %>"></p>
+    <p><label>País<!--Address country name--></label>
+        <input name="address_countryname" type="text" class="form-control" value="<%= data.address_countryname %>"></p>
+    <hr>
+    <h4>Punto de contacto</h4>
+    <p><label>Tipo de punto de contacto</label>
+        <select name="contactpoint_type" class="form-control">
+            <option value="" <%= '' == data.contactpoint_type ? 'selected' : '' %>>- Seleccionar -</option>
+            <option value="contactPoint" <%= 'contactPoint' == data.contactpoint_type ? 'selected' : '' %>>Punto de contacto</option>
+            <option value="attorney" <%= 'attorney' == data.contactpoint_type ? 'selected' : '' %>>Representante legal o apoderado</option>
+        </select></p>
+    <p><label>Nombre<!--Contact point name--></label>
+        <input name="contactpoint_givenname" type="text" class="form-control" value="<%= data.contactpoint_givenname || data.contactpoint_name %>"></p>
+    <p>
+        <label>
+        Primer Apellido</label>
+        <input name="contactpoint_surname" type="text" value="<%= data.contactpoint_surname %>" class="form-control">
+    </p>
+
+    <p>
+        <label>
+        Segundo Apellido</label>
+        <input name="contactpoint_additionalsurname" value="<%= data.contactpoint_additionalsurname %>" type="text" class="form-control">
+    </p>
+
+
+    <p><label>Correo electrónico<!--Contact point email--></label>
+        <input name="contactpoint_email" type="text" class="form-control" value="<%= data.contactpoint_email %>"></p>
+    <p><label>Teléfono<!--Contact point telephone--></label>
+        <input name="contactpoint_telephone"  type="text" class="form-control" value="<%= data.contactpoint_telephone %>"></p>
+    <p><label>Número de fax<!--Contact point fax number--></label>
+        <input name="contactpoint_faxnumber" type="text" class="form-control" value="<%= data.contactpoint_faxnumber %>"></p>
+    <p><label>URL<!--Contact point url--></label>
+        <input name="contactpoint_url"    type="url" class="form-control" value="<%= data.contactpoint_url %>"></p>
+
+        <hr>
+    <div class="row col-xs-12">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Punto de contacto adicional <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-action="new_contactpoint"  data-id="<%= data.id %>"><a href="javascript:void(0)">Nuevo</a></li>
+            <li data-action="edit_contactpoints" data-id="<%= data.id %>"><a href="javascript:void(0)">Editar</a></li>
+        </ul>
+    </div>
+<br><br><br>
+        <label>Papeles del actor</label>
+    <div class="well">
+        <label class="checkbox-inline"><input name="contractingunit" type="checkbox"  <%= roles.contractingunit?'checked':'' %>>Área contratante</label><br>
+        <label class="checkbox-inline"><input name="requestingunit" type="checkbox"  <%= roles.requestingunit?'checked':'' %>>Área requirente</label><br>
+        <label class="checkbox-inline"><input name="technicalunit" type="checkbox"  <%= roles.technicalunit?'checked':'' %>>Área técnica</label><br>
+        <label class="checkbox-inline"><input name="responsibleunit" type="checkbox" <%= roles.responsibleunit?'checked':'' %>>Área responsable de la ejecución</label><br>
+        <label class="checkbox-inline"><input name="attendee" type="checkbox"  <%= roles.attendee?'checked':'' %>>Asistente a junta de aclaraciones</label><br>
+        <label class="checkbox-inline"><input name="reviewBody" type="checkbox"  <%= roles.reviewbody?'checked':'' %>>Auditor</label><br>
+        <label class="checkbox-inline"><input name="payer" type="checkbox"  <%= roles.payer?'checked':'' %>>Emisor del pago</label><br>
+        <label class="checkbox-inline"><input name="buyer" type="checkbox"  <%= roles.buyer?'checked':'' %>>Entidad compradora</label><br>
+        <label class="checkbox-inline"><input name="procuringEntity" type="checkbox"  <%= roles.procuringentity?'checked':'' %>>Entidad contratante</label><br>
+        <label class="checkbox-inline"><input name="guarantor" type="checkbox"  <%= roles.guarantor?'checked':'' %>>Institución que expide la garantía</label><br>
+        <label class="checkbox-inline"><input name="tenderer" type="checkbox"  <%= roles.tenderer?'checked':'' %>>Licitante</label><br>
+        <label class="checkbox-inline"><input name="enquirer" type="checkbox"  <%= roles.enquirer?'checked':'' %>>Persona física o moral que solicita aclaraciones</label><br>
+        <label class="checkbox-inline"><input name="issuingSupplier" type="checkbox"  <%= roles.issuingsupplier?'checked':'' %>>Persona física o moral que envía cotización (investigación de mercado)</label><br>
+    	<label class="checkbox-inline"><input name="invitedSupplier" type="checkbox"  <%= roles.invitedsupplier?'checked':'' %>>Persona física o moral invitada a cotizar (investigación de mercado)</label><br>
+    	<label class="checkbox-inline"><input name="supplier" type="checkbox"  <%= roles.supplier?'checked':'' %>>Proveedor o contratista</label><br>
+    	<label class="checkbox-inline"><input name="payee" type="checkbox"  <%= roles.payee?'checked':'' %>>Receptor de pago</label><br>
+        <label class="checkbox-inline"><input name="official" type="checkbox"  <%= roles.official?'checked':'' %>>Servidor público asistente a junta de aclaraciones</label><br>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <button type="submit" class="btn btn-default">Guardar</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    function validarVacio (input) {
+        input.value = input.value.trim();
+    }
+
+    function esPersonaFisica(persona) {     
+        if(persona === 'true') {
+            $('#givenname').val(''); 
+            $('#givenname').prop( "disabled", false );
+            $('#surname').val('');
+            $('#surname').prop( "disabled", false ); 
+            $('#additionalsurname').val('');
+            $('#additionalsurname').prop( "disabled", false );
+            $('#identifier_legalname').val('');
+            $('#identifier_legalname').prop( "disabled", true );
+        } else {
+            $('#givenname').val(''); 
+            $('#givenname').prop( "disabled", true );
+            $('#surname').val('');
+            $('#surname').prop( "disabled", true ); 
+            $('#additionalsurname').val('');
+            $('#additionalsurname').prop( "disabled", true );
+            $('#identifier_legalname').val('');
+            $('#identifier_legalname').prop( "disabled", false );
+        }
+    }
+
+    function validarIdentificador(input){
+        input.value = input.value.trim();
+        if(document.getElementById('identifier_scheme').selectedIndex == 1){
+            if(input.value.length == 12 || input.value.length ==13){
+                //No modifica el dato
+            }else{
+                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el RFC consta de 12 caracteres en caso de personas físicas y 13 en caso de personas morales.")
+                input.value = "";
+            }
+        }
+    }
+
+    $('[name="identifier_scheme"], [name="identifier_id"]').on('change', function() {
+        var scheme = $('[name="identifier_scheme"]').val();
+        var id = $('[name="identifier_id"]').val();
+
+        if (scheme == '' && id == '')
+            $('[name="partyid"]').val('');
+        else
+            $('[name="partyid"]').val(scheme + '-' + id);
+    });
+</script>

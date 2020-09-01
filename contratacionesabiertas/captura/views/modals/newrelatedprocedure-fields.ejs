@@ -1,0 +1,49 @@
+<form id="newrelatedprocedure_form">
+    <input type="hidden" name="ocid" value="<%= localid %>">
+    <input type="hidden" name="relatedprocedure_id" value="<%= procedure != null ? procedure.id : 1 %>">
+
+    <!--<p>
+        <label title="">ID</label>
+        <input type="text" class="form-control" name="relatedprocedure_id" value="<%= procedure != null ? procedure.id : 1 %>" required readonly>
+    </p>-->
+
+    <p>
+        <label title="">El procedimiento a relacionar es:</label>
+        <select class="form-control" name="relationship_type" required>
+            <option value="">Seleccione una opción</option>
+            <option value="framework">Framework: El contrato marco al que pertenece</option>
+            <option value="planning">El proceso de planeación</option>
+            <option value="parent">El contrato principal</option>
+            <option value="prior">Un procedimiento previo</option>
+            <option value="unsuccessfulProcess">Un procedimiento anterior sin éxito</option>
+            <option value="subContract">Un subcontrato del presente procedimiento</option>
+            <option value="replacementProcess">Un procedimiento de reemplazo al presente</option>
+            <option value="renewalProcess">Un procedimiento de renovación al presente</option>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Título</label>
+        <input type="text" class="form-control" name="title" required>
+    </p>
+
+    <p>
+        <label title="">Esquema de identificación</label>
+        <select class="form-control" name="identifier_scheme" required>
+            <option value="">Seleccione una opción</option>
+            <option value="ocid" selected>Open Contracting ID</option>
+        </select>
+    </p>
+
+    <p>
+        <label title="">Identificador del proceso relacionado</label>
+        <input type="text" class="form-control" name="relatedprocedure_identifier" required>
+    </p>
+
+    <p>
+        <label title="">URI</label>
+        <input type="url" class="form-control" name="url" required readonly>
+    </p>
+
+    <button class="btn btn-primary">Guardar</button>
+</form>

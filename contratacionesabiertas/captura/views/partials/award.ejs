@@ -1,0 +1,171 @@
+<% 
+    function getMString ( fecha ){
+        return (
+                fecha.getFullYear() + "-"+
+                ( (fecha.getMonth() + 1 < 10)?("0"+(fecha.getMonth()+1)):(fecha.getMonth() + 1) )+ "-" + // 0 - 11
+                ( (fecha.getDate() < 10)?("0"+(fecha.getDate())):(fecha.getDate()) ) +" "+ // 1 - 31
+                ( (fecha.getHours() < 9)?("0"+fecha.getHours()):fecha.getHours() )+":"+ //0 - 23
+                ( (fecha.getMinutes() < 9 )?("0"+fecha.getMinutes()):fecha.getMinutes() ) + ":" +
+                ( (fecha.getSeconds() < 9 )?("0"+ fecha.getSeconds()):fecha.getSeconds() )
+        );
+    }
+
+%>
+
+<script>
+    function setIdentifier(select, target, data) {
+        var option = select.options[select.selectedIndex];
+        document.getElementsByName(target)[0].value = option.getAttribute(data);
+    }
+</script>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-tooltip="crear_proceso" title="Documentos y anexos relacionados con la adjudicación.">
+        Documentos
+        <!--Documents--> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-action="new_document" data-stage="3" data-table="awarddocuments"
+                data-contractingprocess_id="<%= cpid %>" data-fkid="<%= award.id %>" data-fkname="award_id" data-target="#genericModal">Nuevo</a></li>
+        <li><a href="#" data-toggle="modal" data-action="edit_documents" data-stage="3" data-table="awarddocuments"
+                data-contractingprocess_id="<%= cpid %>" data-fkid="<%= award.id %>" data-fkname="award_id" data-target="#genericModal">Editar</a></li>
+    </ul>
+</div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-tooltip="crear_proceso" title='Una modificación de adjudicación es un cambio formal o extensión de una adjudicación.'>
+         Modificaciones<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="#" data-toggle="modal" data-action="new_change" data-table="awardamendmentchanges" data-contractingprocess_id="<%= cpid %>" data-target="#genericModal" data-fkname="award_id" data-fkid="<%= award.id %>">Nuevo</a></li>
+        <li><a href="#" data-toggle="modal" data-action="edit_changes" data-table="awardamendmentchanges" data-contractingprocess_id="<%=cpid%>" data-target="#genericModal" data-fkname="award_id" data-fkid="<%= award.id %>">Editar</a></li>
+    </ul>
+</div>
+
+<hr>
+
+<form id="award_form" role="form">
+    <input type="hidden" name="id" value="<%= award.id %>">
+    <input type="hidden" name="status" value="<%= award.status %>">
+
+    <input type="text" name="contractingprocess_id" hidden value="<%= award ? award.contractingprocess_id : '' %>" >
+
+    <h4 id="actual-text"></h4>
+
+    <p><label data-tooltip="crear_proceso" title='El identificador de esta adjudicación. Debe ser único y no puede cambiar dentro del procedimiento de contratación abierto del que forma parte (definido por un solo ocid). Para obtener más detalles, consulte la "guía de identificadores".'>
+            Identificador de la adjudicación</label>
+        <input type="text" class="form-control" name="awardid" value="<%= award.awardid %>" required>
+    </p>
+
+    <p><label data-tooltip="crear_proceso" title='Título de la adjudicación.'>
+            Título
+            <!--Title--></label>
+        <input type="text" class="form-control" name="title" value=" <%= award ? award.title : '' %>" >
+    </p>
+
+    <p><label data-tooltip="crear_proceso" title='Descripción de la adjudicación.'>
+            Descripción
+            <!--Description--></label>
+        <textarea name="description" class="form-control" rows="5"><%= award ? award.description : '' %></textarea>
+    </p>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='Una breve descripción de las razones por las cuales se justifica la elección del proveedor o contratista. Detalles adicionales pueden proveerse en los documentos adjuntos.'>
+            Justificación</label>
+        <textarea name="rationale" class="form-control" rows="5"><%= award ? award.rationale: '' %></textarea>
+    </p>
+
+    <div style="position: relative">
+        <label data-tooltip="crear_proceso" title='Fecha del documento en que se determina la resolución de la adjudicación.'>Fecha
+            de la adjudicación
+            <!--Date--></label>
+        <p>
+            <input type="text" id="adju_date1" name="award_date" class="form-control" value="<%= award && award.award_date && award.award_date !== null ? getMString(award.award_date): '' %>" >
+        </p>
+    </div>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='Proveedores registrados en la contratación.'>Proveedor</label>
+        <select class="form-control" name="suppliers" multiple required>
+            <% for(var i = 0; i < suppliers.length; i++) { %>
+            <option value="<%= suppliers[i].id %>"  <%= award.suppliers.findIndex(x => x.id == suppliers[i].id) !== -1 ? 'selected' : '' %> >&lt;b&gt;Identificador: &lt;/b&gt; <%= suppliers[i].partyid %>  &lt;b&gt;Nombre común: &lt;/b&gt; <%= suppliers[i].name %></option>
+            <% } %>
+        </select>
+    </p>
+
+	<label data-tooltip="crear_proceso" title='Valor económico de la adjudicación.'>
+    <h4>Valor</h4></label>	
+
+    <div class="row">
+        <!--Value amountNet-->
+            <div class="col-sm-4">
+                <p>
+                <label data-tooltip="crear_proceso" title='Monto como número.'>Monto sin impuestos</label>
+                <input type="number" step="0.01" class="form-control" name="value_amountnet" value = "<%= (typeof award != "undefined")? award.value_amountnet:''%>" required>
+                </p> 
+            </div>
+        <!--Value amount-->
+            <div class="col-sm-4">
+                <p>
+                <label data-tooltip="crear_proceso" title='Monto total de la adjudicación con impuestos incluidos (en su caso).'>Monto total</label>
+                <input type="number" step="0.01" class="form-control" name="value_amount" value = "<%= (typeof award != "undefined")? award.value_amount:''%>" required>
+                </p> 
+            </div>
+        <!--Value currency-->
+            <div class="col-sm-4">
+                <p>
+                <label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
+                    <select class="form-control" name="value_currency">
+                        <% for ( var i = 0; i < currencies.length; i++){ %>
+                        <option value = "<%= currencies[i].alphabetic_code %>"
+                        <% if (award.value_currency == null && currencies[i].alphabetic_code=='MXN' ) {%>
+                        <%= 'selected' %>
+                        <%} else if (currencies[i].alphabetic_code == award.value_currency){%>
+                        <%= 'selected' %>
+                        <%}%>
+                            >
+                            <%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
+                        </option>
+                        <%}%>
+                    </select>
+                </p>
+            </div>
+        </div>   
+
+    <label data-tooltip="crear_proceso" title='Vigencia del contrato adjudicado.'>
+        <h4>Periodo del contrato</h4>
+    </label>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo'>Fecha de inicio
+                    <!--Contract period start date--></label>
+                <input type="text" id="adju_date2" name="contractperiod_startdate" class="form-control" <%if (typeof
+                    award !="undefined" ){%>
+                value = "
+                <%= ( award.contractperiod_startdate != null)? getMString(award.contractperiod_startdate):''%>"
+                <%}%> >
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo'>Fecha fin
+                    <!--Contract period end date--></label>
+                <input type="text" id="adju_date3" name="contractperiod_enddate" class="form-control" <%if(typeof award
+                    !="undefined" ){%>
+                value = "
+                <%= (award.contractperiod_enddate != null)? getMString(award.contractperiod_enddate):''%>"
+                <%}%> >
+            </p>
+        </div>
+    </div>
+
+   
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button class="btn btn-primary" type="button" data-toggle="modal" data-contractingprocess_id="<%= cpid %>"
+        data-action="import" data-stage="3"  data-id="<%= award.id %>" data-target="#genericModal">Importar datos</button>
+    <button type="button" id="btnDeleteAward" data-id="<%= award.id %>" class="btn btn-danger pull-right">Eliminar</button>
+</form>
