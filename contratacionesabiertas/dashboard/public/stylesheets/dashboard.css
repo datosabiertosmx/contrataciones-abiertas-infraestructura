@@ -1,0 +1,243 @@
+
+/* google charts */
+div.google-visualization-tooltip > ul > li > span {
+    font-size: 8pt !important;
+    /*line-height: 1.2em;*/
+    font-family: "Open Sans" !important;
+}
+
+div.google-visualization-tooltip {
+    background: white;
+    /*background: #f6f6f6;*/
+    font-size: 10px !important;
+    /*line-height: 1.2em;*/
+    line-height: normal;
+    border: none;
+    box-shadow: none;
+    width: 250px;
+}
+
+.jqplot-highlighter-tooltip, .jqplot-canvasOverlay-tooltip {
+    z-index: 2;
+    /*background: #f6f6f6 !IMPORTANT;*/
+    background: white;
+    font-color: black !IMPORTANT;
+    border-radius: 2px;
+    font-family: "Open Sans" !important;
+    border: white !IMPORTANT;
+}
+
+.jqplot-table-legend {
+    width: auto;
+    border-color: transparent !important;
+    background: transparent !important;
+    padding: 5px;
+}
+
+.well{
+    border: none;
+}
+.panel{
+    border: none;
+}
+.navbar{
+    border: none;
+}
+/* d3 charts */
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.x.axis path {
+    /*display: none;*/
+}
+
+/*
+.d3-tip {
+    width: 250px;
+    line-height: 1;
+    font-family: "Open Sans";
+    font-size: 11px;
+    font-color: black !important;
+    padding: 12px;
+    background: white;
+    color: black;
+    border-radius: 2px;
+}
+*/
+
+/* Creates a small triangle extender for the tooltip */
+/*
+.d3-tip:after {
+    box-sizing: border-box;
+    width: 100%;
+    line-height: 1;
+    color: white;
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}*/
+
+/* Style northward tooltips differently */
+/*
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
+*/
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+    stroke-width: 0;
+}
+
+.pill-container{
+    margin-top:20px;
+}
+
+.all-container{
+    max-width: 1070px;
+}
+
+.bgimg                          { margin-bottom: 0; height: 337px;width:100%; background-image: url('/contratacionesabiertas/static/images/banner-background.png'); margin-top: 0px; background-size: cover; }
+.bgimg h2                       { margin-bottom: 30px; }
+.bgimg h2 > span                { display: block; font-weight: 400; }
+
+.controls                       { margin-bottom: 30px; padding: 20px 0 25px; background-color: #545454; }
+.controls h3                    { margin-top: 0; margin-bottom: 20px; font-size: 14px; font-weight: 300; text-align: center; color: #fff; text-transform: uppercase; }
+.controls .nav                  { width: 420px; margin: 0 auto; padding: 0; }
+
+.statistics .well               { margin-bottom: 50px; }
+.statistics .small              { margin-bottom: 30px; }
+
+.contract-item                  { background-color: #f6f6f6; margin-bottom: 30px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; position: relative; }
+.contract-item .contract-info   { padding: 0 }
+.contract-item .inner           { padding: 10px 15px; }
+.contract-item .item-footer     { background-color: #e3e3e3; -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
+.contract-item h3               { font-weight: 700; color: #545454 /*#0c9*/; }
+.contract-item h4 > a           { font-size: 14px; font-weight: 600; color: #0c9/*#545454*/; }
+.contract-item h4 > a:hover     { font-size: 14px; font-weight: 600; color: #096/*#545454*/; }
+.contract-item p                { margin-bottom: 0; }
+.contract-item .legend          { font-size: 12px; font-weight: 600; color: #333; }
+.contract-item .stages-icons    { margin: 0; padding: 0; list-style: none; }
+.contract-item .stages-icons > li               { display: inline-block; margin-right: 5px; }
+.contract-item .stages-icons > li:last-child    { margin-right: 0; }
+.contract-item .stages-icons > li > img         { width: 20px; }
+.contract-item .contract-download               { background-color: #c0c0c0; position: absolute; right: 15px; top: 0; bottom: 0; -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
+.contract-item .contract-download > p           { padding: 20px 0px; font-family: "Open Sans"; font-size: 13px; color: #7a7a7a; text-align: center; text-transform: uppercase; }
+.contract-item .contract-download > div         { padding: 10px 0px; text-align: center; }
+.contract-item .contract-download > div > a     { display: inline-block; margin: 10px 0px; }
+
+/********************************
+    Badges Styles
+********************************/
+.dataset-format                             { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; border-radius: 0; padding: 5px 7px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.dataset-format[data-format="csv"],
+.dataset-format[data-format="CSV"]          { background-color: #ffd100; }
+.dataset-format[data-format="kml"],
+.dataset-format[data-format="KML"]          { background-color: #474747; }
+.dataset-format[data-format="geojson"],
+.dataset-format[data-format="GEOJSON"],
+.dataset-format[data-format="json"],
+.dataset-format[data-format="JSON"]         { background-color: #33ffd1; }
+.dataset-format[data-format="pdf"],
+.dataset-format[data-format="PDF"]          { background-color: #ff2200; }
+.dataset-format[data-format="arcgis"],
+.dataset-format[data-format="ARCGIS"]       { background-color: #d100FF; }
+.dataset-format[data-format="xlsx"],
+.dataset-format[data-format="xls"],
+.dataset-format[data-format="excel"],
+.dataset-format[data-format="vnd.ms-excel"],
+.dataset-format[data-format="EXCEL"],
+.dataset-format[data-format="VND.MS-EXCEL"],
+.dataset-format[data-format="XLS"],
+.dataset-format[data-format="XLSX"]         { background-color: #00d100; }
+.dataset-format[data-format="xml"],
+.dataset-format[data-format="XML"]          { background-color: #0000d1; }
+.dataset-format[data-format="oracle"],
+.dataset-format[data-format="ORACLE"]       { background-color: #55bada; }
+.dataset-format[data-format="shp"],
+.dataset-format[data-format="SHP"]          { background-color: #bada55; }
+.dataset-format[data-format="kmz"],
+.dataset-format[data-format="KMZ"]          { background-color: #55adab; }
+.dataset-format[data-format="zip"],
+.dataset-format[data-format="ZIP"]          { background-color: #669999; }
+
+.search-form > .form-control.bootstrap-select                           { display: inline-block; width: 21%; box-shadow: none; }
+.search-form > .form-control.bootstrap-select > .btn                    { border: none; text-align: center; text-transform: none; color: #9b9b9b; position: relative; left: 100%; transform: translateX(-80%); background-color: #fff; line-height: 20px; }  //Tamaño del campo Tipo de procedimiento. Lista de contrataciones
+.search-form > .form-control.bootstrap-select > .btn > .bs-caret        { display: inline-block; width: 12px; height: 8px; /*background-image: url("../assets/img/ic_arrow_down.png");*/ }
+.search-form > .form-control.bootstrap-select > .btn > .bs-caret .caret { display: compact; }
+.search-form > .form-control.bootstrap-select > .btn:hover,
+.search-form > .form-control.bootstrap-select.open > .btn,
+.search-form > .form-control.bootstrap-select.open > .btn:hover         { background-color: transparent; box-shadow: none; color: #9b9b9b; }
+.search-form > .form-control.bootstrap-select > .btn:focus              { background-color: transparent; outline: none; }
+.search-form > .form-control.bootstrap-select.open .dropdown-menu       { margin: 0 auto; }
+.search-form > .form-control.bootstrap-select .dropdown-menu            { background-color: #f6f6f6; border-radius: 0 0 5px 5px; border: none; }
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li > a > span             { color: #9b9b9b; }
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li.selected,
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li:hover,
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li.selected > a,
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li:hover > a              { background-color: #0c9; }
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li.selected > a > span,
+.search-form > .form-control.bootstrap-select .dropdown-menu.open .dropdown-menu li:hover > a > span       { color: #fff; }
+
+
+.statistics ul.chart-legend > li{
+    font-size: 16px;
+}
+
+@media only screen
+and (min-device-width: 300px)
+and (max-device-width: 736px){
+    .bgimg { height: 250px; padding: 25px 0; }
+    .bgimg h2 { font-size: 20px; margin-bottom: 10px}
+    .bgimg h4 { font-size: 12px;}
+    .bgimg .stat { font-size: 16px }
+    .bgimg {background-size: 500px 250px}
+    #datos_duros{
+        display: none;
+    }
+    #contrataciones_tiempo{ display: none;}
+    #proveedores{display: none;}
+    #busqueda_contratos{ display: none;}
+    #breadcrumb{ display: none;}
+
+    .statistics ul.chart-legend > li{
+     font-size: 14px;
+    }
+
+    .statistics h1 {font-size: 16px;}
+    .statistics p { font-size: 14px;}
+
+    .stages .stages-widget p {font-size: 14px}
+    .stages .stages-widget .content { font-size: 14px; padding-bottom: 25px}
+
+    .stages .stages-widget img {width: 25px}
+    .stages h1 {font-size: 16px}
+
+    .contract-item .contract-download { position: relative; right: 0; -webkit-border-radius: 0 0 5px 5px; -moz-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; }
+    .contract-item .contract-download > p { padding: 10px 0px 0px 0px }
+}
+
+#tablaChartDonut { padding-bottom: 20px }
+
+@media (max-width: 768px) {
+    #tablaChartDonut { padding-bottom: 0px }
+}
+
+@media (min-width: 768px) {
+    .nav-pills {
+    margin-left: 0px;
+    }
+}

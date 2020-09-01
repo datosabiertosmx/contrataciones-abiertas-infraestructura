@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
+        <!-- Bootstrap core CSS -->
+        <link href="/contratacionesabiertas/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/main.css'/>
+        <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/index.css'/>
+        <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/polymer/polymer.html">
+        <link rel="import" href="/contratacionesabiertas/static/inai-navbar/dgm-navbar.html">
+    	<link rel="import" href="/contratacionesabiertas/static/inai-footer/dgm-footer.html">
+    
+        <style>
+
+            .arc text {
+                font: 10px sans-serif;
+                text-anchor: middle;
+            }
+
+            .arc path {
+                stroke: #fff;
+            }
+
+            .container{
+
+                max-width: 1100px;
+            }
+            .menuTopBar{
+            text-align: center;
+            background-color: #00bfa5;
+            position: fixed;
+            z-index: 4;
+            top: 106.5px;
+            max-width: none;
+            width: 100%;
+            padding: 0 10% 0;
+        }
+
+        .menuTopBar a{
+            height: 52px;
+            text-decoration: none;
+            font-size: 15px;
+            vertical-align: middle;
+            color: #FFFFFF;
+        }
+        .menuTopBar .botonMenuTop:hover{
+            background-color: #008e76;
+        }
+        .menuTopBar .botonMenuTop{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background-color: #00bfa5;
+            color: #ffffff;
+        }
+        @media (max-width: 991px) {
+            body {
+                margin: 150px 0 0;
+            }
+            .menuTopBarS{
+                padding: 0 0 0;
+                background-color: black;
+            }
+        }
+
+        </style>
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-44411606-15', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+        <title>Contrataciones Abiertas</title>
+    </head>
+    <body>
+       <dgm-navbar></dgm-navbar>
+
+       <div class="menuTopBar menuTopBarS">
+            <div class="col-xs-3" style="padding: 0 0 0;">
+                <a href="/contratacionesabiertas/contratos/" class="botonMenuTop">Inicio</a>
+            </div>
+            <div class="col-xs-3" style="padding: 0 0 0;">
+                <a href="/contratacionesabiertas/politicadepublicacion" class="botonMenuTop">Política de publicación</a>
+            </div>
+            <div class="col-xs-3" style="padding: 0 0 0;">
+                <a href="/contratacionesabiertas/implementa" class="botonMenuTop">Implementa el EDCA-MX</a>
+            </div>
+            <div class="col-xs-3" style="padding: 0 0 0;">
+                <a href="https://datos.gob.mx/busca/organization/inai" class="botonMenuTop" target="_blank">Datos abiertos</a>
+            </div>
+        </div>
+
+    <div class="bgimg" style="margin-top: 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <p class="text-center" id="icono_con">
+                    <br><br><img src="/contratacionesabiertas/static/images/icono_con.png" >
+                    </p>
+                    <h2>Contrataciones Abiertas</h2>
+                    <h4>Descubre los datos abiertos, accesibles y oportunos sobre las etapas de planeación, licitación, adjudicación, <br>contratación e implementación de las contrataciones del INAI</h4>
+                </div>
+            </div>
+            <div id="datos_duros">
+                <div class="row">
+                    <div class="col-sm-4 widget">
+                        <h5>MONTO CONTRATADO EN MXN</h5>
+                        <p class="stat">$<%= ( parseInt( metadata.contract_exchangerate_amount_total) ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></p>
+                    </div>
+
+                    <div class="col-sm-4 widget">
+                        <h5>PROCEDIMIENTOS DE CONTRATACIÓN</h5>
+                        <p class="stat"><%= Number(metadata.cp_count) %></p>
+                    </div>
+
+                    <div class="col-sm-4 widget">
+                        <h5>PROVEEDORES</h5>
+                        <p class="stat"><%= Number(metadata.supplier_count) %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb-container">
+        <div class="container">
+            <div class="row" >
+                <div class="col-md-12">
+                    <h1>Conoce cómo contratan los entes públicos de Estado mexicano</h1>
+                    <p id="conoce" style="font-size: large;">Selecciona un ente público y explora las etapas de sus procedimientos de contratación</p>
+                    <div class="data-table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ente público</th>
+                                    <th>Monto transparentado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></td>
+                                    <td>$<%= ( parseInt( metadata.contract_exchangerate_amount_total) ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container stages">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Etapas del ciclo de la contratación</h1>
+                    <p style="font-size: large">Conoce la metodología de Contrataciones Abiertas</p>
+                    <div class="row">
+                        <div class="col-sm-4 stages-widget">
+                            <img src="/contratacionesabiertas/static/images/ic-planeacion.png" alt="Planeaciñon">
+                            <div class="content">
+                                <p class="title">1. Planeación</p>
+                                <p align="justify">La etapa de planeación es la fase en la que se define un proyecto y se verifica si este es viable en términos de planeación estratégica, viabilidad legal, técnica, financiera y social.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 stages-widget">
+                            <img src="/contratacionesabiertas/static/images/ic-licitacion.png" alt="Planeaciñon">
+                            <div class="content">
+                                <p class="title">2. Licitación</p>
+                                <p align="justify">La etapa de licitación es la fase en donde se selecciona a la persona o personas que entregarán los bienes, prestarán los servicios o realizarán las obras.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 stages-widget">
+                            <img src="/contratacionesabiertas/static/images/ic-adjudicacion.png" alt="Planeaciñon">
+                            <div class="content">
+                                <p class="title">3. Adjudicación</p>
+                                <p align="justify">Es la parte final del procedimiento de contratación. En esta etapa se informa quién y por qué resultó seleccionado.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 stages-widget">
+                            <img src="/contratacionesabiertas/static/images/ic-contratacion.png" alt="Planeaciñon">
+                            <div class="content">
+                                <p class="title">4. Contratación</p>
+                                <p align="justify">La sección de Contrato desagrega la información de los documentos en los que se formaliza la adjudicación, es decir, la información del contrato y sus anexos. </p>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 stages-widget">
+                            <img src="/contratacionesabiertas/static/images/ic-implementacion.png" alt="Planeaciñon">
+                            <div class="content">
+                                <p class="title">5. Implementación</p>
+                                <p align="justify">Esta etapa registrará la forma en que las partes ejecutan las obligaciones del contrato, para llevar un registro de su cumplimiento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="methodology">
+            <div class="container">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" id="ocds">Conoce la metodología</button>
+                </div>
+            </div>
+        </div>
+
+        <dgm-footer></dgm-footer>
+        <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <script>
+            $('#ocds, #me1').click(function () {
+                window.open('http://standard.open-contracting.org/latest/es/getting_started/');
+            });
+        </script>
+    </body>
+</html>

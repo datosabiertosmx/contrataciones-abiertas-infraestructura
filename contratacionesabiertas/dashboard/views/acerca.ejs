@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet">
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/main.css' />
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/style_d3bubble.css' />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/jqplot/jquery.jqplot.css" />
+    <link rel="stylesheet" href="/contratacionesabiertas/static/stylesheets/dashboard.css">
+    <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/polymer/polymer.html">
+ <!--   <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/dgm-navbar/dgm-navbar.html">
+    <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/dgm-footer/dgm-footer.html"> -->
+    
+    <link rel="import" href="/contratacionesabiertas/static/inai-navbar/dgm-navbar.html">
+    <link rel="import" href="/contratacionesabiertas/static/inai-footer/footer.html">
+
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster-follower/dist/css/tooltipster-follower.min.css" />
+
+	
+	<style no-shim>        
+        .navbar-default   { background-color: #FFFFFF; border: none; top: 106.5px; }
+        @media (max-width: 991px) {
+            body { margin: 150px 0 0 }
+        }
+    </style>
+
+    <title>contratacionesabiertas.mx</title>
+</head>
+
+<body>
+    <dgm-navbar></dgm-navbar>
+    
+    <nav class="navbar navbar-default navbar-fixed-top">              
+            <div class="container">   
+                   		<ul class="breadcrumb">
+                            <li><a href="/contratacionesabiertas/"><i class="glyphicon glyphicon-home"></i></a></li>
+                            <li><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></li>
+                            <li><a href="#">Acerca</a></li>
+                        </ul>
+            </div>               
+     </nav>
+    
+    <div class="breadcrumb-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb">
+                 <!--     <li><a href="/contratacionesabiertas/"><i class="glyphicon glyphicon-home"></i></a></li>
+                      <li><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></li>
+                      <li><a href="#">Acerca</a></li>  -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 post">
+                <div ng-bind-html="content" class="content ng-binding">
+                    <h1>Acerca de las Contrataciones Abiertas del INAI</h1>
+                    <p>En este sitio podrás visualizar y descargar los Datos Abiertos de los procedimientos de contratación del Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI), publicados gradualmente según lo establecido por el Estándar de Datos de Contrataciones Abiertas en México (EDCA-MX).</p>
+                    <p>El INAI forma parte del Grupo Impulsor de la <a href="http://contratacionesabiertas.mx" target="_blank"> Alianza para las Contrataciones Abiertas en México (ACA-MX)</a> que busca fomentar e impulsar el EDCA-MX en todos los procedimientos de contratación del sector público. Este estándar pretende ampliar y mejorar la transparencia de las contrataciones al incluir las etapas de planeación y ejecución de los contratos.</p>
+                    <p>El INAI actualiza y publica los datos y documentos de sus procedimientos de contratación en todas sus etapas según el EDCA-MX. Los datos presentados en este sitio representan un esfuerzo proactivo que retoma y expande la información publicada por el INAI sobre sus contrataciones en el Portal de Obligaciones de Transparencia, de acuerdo con la Ley General de Transparencia y Acceso a la Información Pública (LGTAIP), así como aquella publicada en el sistema electrónico de contrataciones públicas denominado "CompraNet", de acuerdo con el Reglamento de Adquisiciones, Arrendamientos y Servicios del Instituto Federal de Acceso a la Información y Protección de Datos (RAASIFAI).</p>
+                    <p>La publicación de estos datos es un proceso continuo que comprende licitaciones públicas, invitaciones a cuando menos tres proveedores, adjudicaciones directas (según los artículos 41 y 42 del RAASIFAI), y excepciones al reglamento.</p>
+                    <p>Esta herramienta fue desarrollada por Presidencia de la República para su implementación en el Nuevo Aeropuerto de la Ciudad de México (NAICM) a través de la Estrategia Digital Nacional y publicada bajo la licencia de código abierto para fomentar su uso y reutilización. El INAI, como parte de un convenio de colaboración, retomó esta herramienta y la adaptó para publicar sus procedimientos de contratación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+	<br>
+	<br>
+
+    <dgm-footer></dgm-footer>
+    <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+</body>
+
+</html>

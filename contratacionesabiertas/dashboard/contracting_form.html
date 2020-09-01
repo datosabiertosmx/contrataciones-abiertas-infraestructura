@@ -1,0 +1,897 @@
+<%
+var icons = [
+        '/contratacionesabiertas/static/images/ic-planeacion.png',
+        '/contratacionesabiertas/static/images/ic-licitacion.png',
+        '/contratacionesabiertas/static/images/ic-adjudicacion.png',
+        '/contratacionesabiertas/static/images/ic-contratacion.png',
+        '/contratacionesabiertas/static/images/ic-implementacion.png'
+    ];
+
+    var generateIcons = (contract) => {
+        const indicadores = [
+            {
+                actual: 'implementacion',
+                texto: 'Procedimiento concluido',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3]},
+                    { url: icons[4]}
+                ]
+            },
+            {
+                actual: 'implementacion',
+                texto: 'En ejecución',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3]},
+                    { url: icons[4], clase: 'pulse'}
+                ]
+            },
+            {
+                actual: 'contratacion',
+                texto: 'En contratación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3], clase: 'pulse'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'adjudicacion',
+                texto: 'En adjudicación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2], clase: 'pulse'},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'licitacion',
+                texto: 'En licitación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1], clase: 'pulse'},
+                    { url: icons[2], clase: 'disabled'},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            }
+        ]
+
+        if(contract.implementation_status === 'concluded' || contract.implementation_status === 'terminated'){
+            return indicadores[0];
+        } else if(contract.implementation_status !== 'concluded' && contract.contract_status === 'active') {
+            return indicadores[1];
+        } else if(contract.contract_status !== 'active' && contract.award_status === 'active') {
+            return indicadores[2];
+        } else if(contract.award_status !== 'active' && contract.tender_status === 'concluded') {
+            return indicadores[3];
+        } else 
+            return indicadores[4];
+        
+    }
+    var indicador = generateIcons(header);
+%>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                font-family: 'Open Sans';
+                font-size: 10px;
+            }
+
+            .page {
+                width: calc(100% - 10px);
+                min-height: 1204px;
+                padding: 5px;
+                border: 1px solid black;
+                clear: both;
+            }
+
+                .page:not(:last-child) {
+                    page-break-after: always;
+                }
+
+            .row {
+                width: 100%;
+                clear: both;
+            }
+
+                .row:not(:first-child) {
+                    border-top: 1px solid black;
+                }
+
+            .col-1,.col-2,.col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-10,.col-11,.col-12 {
+                position: relative;
+                padding: 0px 15px;
+                float: left;
+            }
+
+            .col-1 {
+                width: calc(8.333% - 30px);
+                min-width: calc(8.333% - 30px);
+                max-width: calc(8.333% - 30px);
+            }
+
+            .col-2 {
+                width: calc(16.666% - 30px);
+                min-width: calc(16.666% - 30px);
+                max-width: calc(16.666% - 30px);
+            }
+
+            .col-3 {
+                width: calc(25% - 30px);
+                min-width: calc(25% - 30px);
+                max-width: calc(25% - 30px);
+            }
+
+            .col-4 {
+                width: calc(33.333% - 30px);
+                min-width: calc(33.333% - 30px);
+                max-width: calc(33.333% - 30px);
+            }
+
+            .col-5 {
+                width: calc(41.666% - 30px);
+                min-width: calc(41.666% - 30px);
+                max-width: calc(41.666% - 30px);
+            }
+
+            .col-6 {
+                width: calc(50% - 30px);
+                min-width: calc(50% - 30px);
+                max-width: calc(50% - 30px);
+            }
+
+            .col-7 {
+                width: calc(58.333% - 30px);
+                min-width: calc(58.333% - 30px);
+                max-width: calc(58.333% - 30px);
+            }
+
+            .col-8 {
+                width: calc(66.666% - 30px);
+                min-width: calc(66.666% - 30px);
+                max-width: calc(66.666% - 30px);
+            }
+
+            .col-9 {
+                width: calc(75% - 30px);
+                min-width: calc(75% - 30px);
+                max-width: calc(75% - 30px);
+            }
+
+            .col-10 {
+                width: calc(83.333% - 30px);
+                min-width: calc(83.333% - 30px);
+                max-width: calc(83.333% - 30px);
+            }
+
+            .col-11 {
+                width: calc(91.666% - 30px);
+                min-width: calc(91.666% - 30px);
+                max-width: calc(91.666% - 30px);
+            }
+
+            .col-12 {
+                width: calc(100% - 30px);
+                min-width: calc(100% - 30px);
+                max-width: calc(100% - 30px);
+            }
+
+            .box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+                .box > .box-title {
+                    width: calc(100% - 20px);
+                    padding: 10px;
+                    background-color: #c0c0c0;
+                    color: #ffffff;
+                }
+
+                    .box > .box-title > h4 {
+                        margin: 0px;
+                    }
+
+                .box > .box-content {
+                    width: 95%;
+                    padding: 10px;
+                }
+
+            .text-center {
+                text-align: center;
+            }
+         
+             *{
+                word-break: break-all;
+            }
+
+            .contract-item {margin-bottom: 50px; }
+            .contract-item .inner           { padding: 10px 15px; }
+            .contract-item p                { margin-bottom: 0; }
+            .contract-item .legend          { font-size: 12px; font-weight: 600; color: #333; }
+            .contract-item .stages-icons    { margin: 0; padding: 0; list-style: none; }
+            .contract-item .stages-icons > li               { display: inline-block; margin-right: 5px; }
+            .contract-item .stages-icons > li:last-child    { margin-right: 0; }
+            .contract-item .stages-icons > li > img         { width: 20px; }
+        </style>
+    </head>
+    <body>
+       
+            <div class="contract-item">
+                <div class="row">
+                    <div class="inner item-footer">
+                        <div class="col-2" style="pointer-events:none;">
+                            <p class="legend">Etapa</p>
+                            <a class="small" style="color:#000000"><%= indicador.texto %></a>
+                        </div>
+                        <div class="col-2" style="pointer-events:none;">
+                            <p class="legend">Tipo</p>
+                            <a class="small" style="color:#000000"><%= header.procurementmethod_details %></a>
+                        </div>
+                        <div class="col-3" style="pointer-events:none;">
+                            <p class="legend">Proveedor</p>
+                            <a class="small" style="color:#000000"><%= header.identifier_legalname_supplier %></a>
+                        </div>
+                        <div class="col-3" style="pointer-events:none;">
+                            <p class="legend">Área requirente</p>
+                            <a class="small" style="color:#000000"><%= header.identifier_legalname_requestingunit %></a>
+                        </div>
+                        <div class="col-2" style="pointer-events:none;">
+                            <p class="legend">Fecha de firma</p>
+                            <% if ( header.datesigned instanceof Date ){%>
+                            <a class="small" style="color:#000000">
+                                <%  fecha = header.datesigned%>
+                                <%  dia = fecha.getDate() %>
+                                <%  mes = fecha.getMonth()+1 %>
+                                <%  anio = fecha.getFullYear() %>
+                                <% 	if(dia<10)
+                                                    {
+                                                        dia='0'+dia;
+                                                    } 
+                                                    %>
+                                <% 	if(mes<10) 
+                                                    {
+                                                        mes='0'+mes;
+                                                    } 
+                                                    %>
+                                <%= formato = dia + '/' + mes + '/' + anio %>
+                            </a>
+                            <%} else {%>
+                            <a class="small" style="color:#000000">No disponible</a>
+                            <%}%>
+                        </div>                   			           	
+                    </div>
+                </div>
+            </div>
+                    
+
+        <!-- Planning -->
+        <div class="page">
+            <div class="row">
+                <div class="col-3">
+                    <p><small>Etapa</small></p>
+                    <p><strong>Planeación</strong></p>
+                </div>
+                <div class="col-3">
+                    <p class="text-center"><small>¿Hubo cotizaciones?</small></p>
+                    <p class="text-center"><%= planning.hasquotes ? 'Si' : 'No' %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p><small>Justificación</small></p>
+                    <p><%= planning.rationale %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p><small>Comprador</small></p>
+                    <p><%= planning.buyer != null ? planning.buyer : 'No disponible' %></p>
+                </div>
+				<div class="col-5">
+					<p><small>Área requirente</small></p>
+					<p><%= planning.requestingunit != null ? planning.requestingunit : 'No disponible' %></p>
+				</div>
+            </div>
+            <div class="row">
+                <p><small>Procesos</small></p>
+                <div class="box">
+                    <div class="box-title">
+                        <h4 >Desglose del presupuesto</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (planning.budgetBreakdown.length === 0) { %>
+                        No se han registrado presupuestos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < planning.budgetBreakdown.length; i++) { %>
+                        <strong class="break"><%= planning.budgetBreakdown[i].budgetbreakdown_id %></strong>
+                        <ul>
+                            <li>Descripción: <%= planning.budgetBreakdown[i].description %></li>
+                            <li>Monto: $<%= planning.budgetBreakdown[i].amount %> (<%= planning.budgetBreakdown[i].currency %>)</li>
+                            <li>Fuente del presupuesto: <%= planning.budgetBreakdown[i].source %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Cotizaciones</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (planning.quotes.length === 0) { %>
+                        No se han registrado cotizaciones en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < planning.quotes.length; i++) { %>
+                        <strong><%= planning.quotes[i].quotes_id %></strong>
+                        <ul>
+                            <li>Descripción: <%= planning.quotes[i].description %></li>
+                            <li>Proveedor: <%= planning.quotes[i].supplier %></li>
+                            <li>RFC: <%= planning.quotes[i].supplier_rfc %></li>
+                            <li>Items:
+                                <ul>
+                                    <% for (let j = 0; j < planning.quotes[i].items.length; j++) { %>
+                                    <li><%= planning.quotes[i].items[j].item %>: $<%= planning.quotes[i].items[j].quantity %> </li>
+                                    <% } %>
+                                </ul>
+                            </li>
+                            <li>Fecha de cotización: <%= planning.quotes[i].date %></li>
+                            <li>Valor: $<%= planning.quotes[i].value %></li>
+                            <li>Periodo de cotización: Del <%= planning.quotes[i].period_startdate %> al <%= planning.quotes[i].period_enddate %></li>
+                            
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Documentos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (planning.documents.length === 0) { %>
+                        No se han registrado documentos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < planning.documents.length; i++) { %>
+                        <strong><%= planning.documents[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= planning.documents[i].documentid %></li>
+                            <li>Título: <%= planning.documents[i].title %></li>
+                            <li>Descripción: <%= planning.documents[i].description %></li>
+                            <li>URL: <%= planning.documents[i].url %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tender -->
+        <div class="page">
+            <div class="row">
+                <div class="col-2">
+                    <p><small>Etapa</small></p>
+                    <p><strong>Licitación</strong></p>
+                </div>
+                <div class="col-2">
+                    <p><small>Estatus</small></p>
+                    <p><%= tender.status %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>ID de la licitación</small></p>
+                    <p class="text-center"><%= tender.tenderid %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>Período de la licitación</small></p>
+                    <p class="text-center"><%= tender.tender_startdate %> - <%= tender.tender_enddate %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <p><small>Denominación de la licitación</small></p>
+                    <p><%= tender.title %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>Monto</small></p>
+                    <p class="text-center">$<%= tender.value_amount %></p>
+                    <p class="text-center"><small>Moneda</small></p>
+                    <p class="text-center">$<%= tender.value_currency %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p><small>Objeto de la licitación</small></p>
+                    <p><%= tender.description %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <p><small>Método de contratación</small></p>
+                    <p><%= tender.procurementmethod_details %></p>
+                </div>
+                <div class="col-6">
+                    <p><small>Categoría de la contratación</small></p>
+                    <p><%= tender.additionalprocurementcategories %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p><small>Comprador</small></p>
+                    <p><%= tender.buyer != null ? tender.buyer : 'No disponible' %></p>
+                </div>
+				<div class="col-5">
+					<p><small>Área requirente</small></p>
+					<p><%= tender.requestingunit != null ? tender.requestingunit : 'No disponible' %></p>
+				</div>
+            </div>
+            <div class="row">
+                <p><small>Procesos</small></p>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Ítems</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (tender.items.length === 0) { %>
+                        No se han registrado ítems en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < tender.items.length; i++) { %>
+                        <strong><%= tender.items[i].description %></strong>
+                        <ul>
+                            <li>Identificador: <%= tender.items[i].itemid %></li>
+                            <li>Descripción: <%= tender.items[i].classification_description %></li>
+                            <li>Unidad: <%= tender.items[i].unit_name %></li>
+                            <li>Cantidad: <%= tender.items[i].quantity %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Licitantes</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (tender.tenderers.length === 0) { %>
+                        No se han registrado licitantes en esta etapa
+                        <% } else { %>
+                        <ul>
+                            <% for (let i = 0; i < tender.tenderers.length; i++) { %>
+                            <li><%= tender.tenderers[i].name %></li>
+                            <strong>RFC:</strong> <%= tender.tenderers[i].identifier_id %>
+                            <% } %>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Hitos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (tender.milestones.length === 0) { %>
+                        No se han registrado hitos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < tender.milestones.length; i++) { %>
+                        <strong><%= tender.milestones[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= tender.milestones[i].title %></li>
+                            <li>Descripción: <%= tender.milestones[i].description %></li>
+                            <% if (tender.milestones[i].duedate != null) { %>
+                            <li>Fecha de vencimiento: <%= tender.milestones[i].duedate %></li>
+                            <% } %>
+                            <% if (tender.milestones[i].date_modified != null) { %>
+                            <li>Fecha de modificación: <%= tender.milestones[i].date_modified %></li>
+                            <li>Estátus: <%= tender.milestones[i].status %></li>
+                            <% } %>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Documentos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (tender.documents.length === 0) { %>
+                        No se han registrado documentos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < tender.documents.length; i++) { %>
+                        <strong><%= tender.documents[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= tender.documents[i].documentid %></li>
+                            <li>Título: <%= tender.documents[i].title %></li>
+                            <li>Descripción: <%= tender.documents[i].description %></li>
+                            <li>URL: <%= tender.documents[i].url %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Modificaciones</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (tender.changes.length === 0) { %>
+                        No se han registrado modificaciones en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < tender.changes.length; i++) { %>
+                        <strong>Modificación <%= i %></strong>
+                        <ul>
+                            <li>Fecha de modificación: <%= tender.changes[i].amendments_date %></li>
+                            <li>Justificación: <%= tender.changes[i].amendments_rationale %></li>
+                            <li>Identificador: <%= tender.changes[i].amendments_id %></li>
+                            <li>Descripción: <%= tender.changes[i].amendments_description %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Awards -->
+        <% for (let x = 0; x < awards.length; x++) { %>
+        <div class="page">
+            <div class="row">
+                <div class="col-3">
+                    <p><small>Etapa</small></p>
+                    <p><strong>Adjudicación</strong></p>
+                </div>
+                <div class="col-2">
+                    <p><small>Estatus</small></p>
+                    <p><%= awards[x].status %></p>
+                </div>
+                <div class="col-3">
+                    <p class="text-center"><small>ID de la adjudicación</small></p>
+                    <p class="text-center"><%= awards[x].awardid %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>Fecha de la adjudicación</small></p>
+                    <p class="text-center"><%= awards[x].award_date %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9">
+                    <p><small>Título</small></p>
+                    <p><%= awards[x].title %></p>
+                </div>
+                <div class="col-3">
+                    <p class="text-center"><small>Monto</small></p>
+                    <p class="text-center">$<%= awards[x].value_amount %></p>
+                    <p class="text-center"><small>Moneda</small></p>
+                    <p class="text-center">$<%= awards[x].value_currency %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p><small>Justificación</small></p>
+                    <p><%= awards[x].rationale %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p><small>Comprador</small></p>
+                    <p><%= awards[x].buyer != null ? awards[x].buyer : 'No disponible' %></p>
+                </div>
+				<div class="col-5">
+					<p><small>Área requirente</small></p>
+					<p><%= awards[x].requestingunit != null ? awards[x].requestingunit : 'No disponible' %></p>
+				</div>
+            </div>
+            <div class="row">
+                <p><small>Procesos</small></p>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Proveedores</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (awards[x].suppliers.length === 0) { %>
+                        No se han registrado proveedores en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < awards[x].suppliers.length; i++) { %>
+                            <% if (awards[x].suppliers[i].naturalperson) { %>
+                            <strong><%= awards[x].suppliers[i].name %></strong>
+                            <ul>
+                            	<li>Nombre o razón social: <%= awards[x].suppliers[i].name %></li>
+                            	<li>Identificador: <%= awards[x].suppliers[i].identifier_id %></li>
+                            </ul>
+                            <% } else { %>
+                            <strong><%= awards[x].suppliers[i].name %></strong>
+                            <ul>
+                                <li>Nombre o razón social: <%= awards[x].suppliers[i].identifier_legalname %></li>
+                                <li>Identificador: <%= awards[x].suppliers[i].identifier_id %></li>
+                                <li>Calle y número: <%= awards[x].suppliers[i].address_streetaddress %></li>
+                                <li>Delegación o municipio: <%= awards[x].suppliers[i].address_locality %></li>
+                                <li>Entidad federativa: <%= awards[x].suppliers[i].address_region %></li>
+                                <li>Código postal: <%= awards[x].suppliers[i].address_postalcode %></li>
+                                <li>País:<%= awards[x].suppliers[i].address_countryname %></li>
+                            </ul>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Ítems</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (awards[x].items.length === 0) { %>
+                        No se han registrado ítems en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < awards[x].items.length; i++) { %>
+                        <strong><%= awards[x].items[i].description %></strong>
+                        <ul>
+                            <li>Identificador: <%= awards[x].items[i].itemid %></li>
+                            <li>Descripción: <%= awards[x].items[i].classification_description %></li>
+                            <li>Unidad: <%= awards[x].items[i].unit_name %></li>
+                            <li>Cantidad: <%= awards[x].items[i].quantity %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Documentos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (awards[x].documents.length === 0) { %>
+                        No se han registrado documentos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < awards[x].documents.length; i++) { %>
+                        <strong><%= awards[x].documents[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= awards[x].documents[i].documentid %></li>
+                            <li>Título: <%= awards[x].documents[i].title %></li>
+                            <li>Descripción: <%= awards[x].documents[i].description %></li>
+                            <li>URL: <%= awards[x].documents[i].url %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Modificaciones</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (awards[x].changes.length === 0) { %>
+                        No se han registrado modificaciones en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < awards[x].changes.length; i++) { %>
+                        <strong>Modificación <%= i %></strong>
+                        <ul>
+                            <li>Fecha de modificación: <%= awards[x].changes[i].amendments_date %></li>
+                            <li>Justificación: <%= awards[x].changes[i].amendments_rationale %></li>
+                            <li>Identificador: <%= awards[x].changes[i].amendments_id %></li>
+                            <li>Descripción: <%= awards[x].changes[i].amendments_description %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Contracts -->
+        <% for (let x = 0; x < contracts.length; x++) { %>
+        <div class="page">
+            <div class="row">
+                <div class="col-3">
+                    <p><small>Etapa</small></p>
+                    <p><strong>Contratación</strong></p>
+                </div>
+                <div class="col-2">
+                    <p><small>Estatus</small></p>
+                    <p><%= contracts[x].status %></p>
+                </div>
+                <div class="col-3">
+                    <p class="text-center"><small>ID del contrato</small></p>
+                    <p class="text-center"><%= contracts[x].contractid %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>Fecha de firma</small></p>
+                    <p class="text-center"><%= contracts[x].datesigned %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9">
+                    <p><small>Título</small></p>
+                    <p><%= contracts[x].title %></p>
+                </div>
+                <div class="col-3">
+                    <p class="text-center"><small>Monto</small></p>
+                    <p class="text-center">$<%= contracts[x].value_amount %></p>
+                    <p class="text-center"><small>Moneda</small></p>
+                    <p class="text-center">$<%= contracts[x].value_currency %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p><small>Objeto del contrato</small></p>
+                    <p><%= contracts[x].description %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p><small>Comprador</small></p>
+                    <p><%= contracts[x].buyer != null ? contracts[x].buyer : 'No disponible' %></p>
+                </div>
+				<div class="col-5">
+					<p><small>Área requirente</small></p>
+					<p><%= contracts[x].requestingunit != null ? contracts[x].requestingunit : 'No disponible' %></p>
+				</div>
+            </div>
+            <div class="row">
+                <p><small>Procesos</small></p>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Ítems</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (contracts[x].items.length === 0) { %>
+                        No se han registrado ítems en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < contracts[x].items.length; i++) { %>
+                        <strong><%= contracts[x].items[i].description %></strong>
+                        <ul>
+                            <li>Identificador: <%= contracts[x].items[i].itemid %></li>
+                            <li>Descripción: <%= contracts[x].items[i].classification_description %></li>
+                            <li>Unidad: <%= contracts[x].items[i].unit_name %></li>
+                            <li>Cantidad: <%= contracts[x].items[i].quantity %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Documentos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (contracts[x].documents.length === 0) { %>
+                        No se han registrado documentos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < contracts[x].documents.length; i++) { %>
+                        <strong><%= contracts[x].documents[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= contracts[x].documents[i].documentid %></li>
+                            <li>Título: <%= contracts[x].documents[i].title %></li>
+                            <li>Descripción: <%= contracts[x].documents[i].description %></li>
+                            <li>URL: <%= contracts[x].documents[i].url %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Modificaciones</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (contracts[x].changes.length === 0) { %>
+                        No se han registrado modificaciones en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < contracts[x].changes.length; i++) { %>
+                        <strong>Modificación <%= i %></strong>
+                        <ul>
+                            <li>Fecha de modificación: <%= contracts[x].changes[i].amendments_date %></li>
+                            <li>Justificación: <%= contracts[x].changes[i].amendments_rationale %></li>
+                            <li>Identificador: <%= contracts[x].changes[i].amendments_id %></li>
+                            <li>Descripción: <%= contracts[x].changes[i].amendments_description %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Implementations -->
+        <% for (let x = 0; x < implementations.length; x++) { %>
+        <div class="page">
+            <div class="row">
+                <div class="col-2">
+                    <p><small>Etapa</small></p>
+                    <p><strong>Ejecución</strong></p>
+                </div>
+                <div class="col-2">
+                    <p><small>Estatus</small></p>
+                    <p><%= implementations[x].status %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>ID del contrato</small></p>
+                    <p class="text-center"><%= implementations[x].contractid %></p>
+                </div>
+                <div class="col-4">
+                    <p class="text-center"><small>Fecha de firma</small></p>
+                    <p class="text-center"><%= implementations[x].datesigned %></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p><small>Comprador</small></p>
+                    <p><%= implementations[x].buyer != null ? implementations[x].buyer : 'No disponible' %></p>
+                </div>
+				<div class="col-5">
+					<p><small>Área requirente</small></p>
+					<p><%= implementations[x].requestingunit != null ? implementations[x].requestingunit : 'No disponible' %></p>
+				</div>
+            </div>
+            <div class="row">
+                <p><small>Procesos</small></p>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Hitos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (implementations[x].milestones.length === 0) { %>
+                        No se han registrado hitos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < implementations[x].milestones.length; i++) { %>
+                        <strong><%= implementations[x].milestones[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= implementations[x].milestones[i].title %></li>
+                            <li>Descripción: <%= implementations[x].milestones[i].description %></li>
+                            <% if (implementations[x].milestones[i].duedate != null) { %>
+                            <li>Fecha de vencimiento: <%= implementations[x].milestones[i].duedate %></li>
+                            <% } %>
+                            <% if (implementations[x].milestones[i].date_modified != null) { %>
+                            <li>Fecha de modificación: <%= implementations[x].milestones[i].date_modified %></li>
+                            <li>Estátus: <%= implementations[x].milestones[i].status %></li>
+                            <% } %>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Transacciones</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (implementations[x].transactions.length === 0) { %>
+                        No se han registrado transacciones en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < implementations[x].transactions.length; i++) { %>
+                        <strong>Transacción <%= i + 1 %></strong>
+                        <ul>
+                            <li>Identificador: <%= implementations[x].transactions[i].transactionid %></li>
+                            <% if (implementations[x].transactions[i].implementation_date != null) { %>
+                            <li>Fecha de la transacción: <%= implementations[x].transactions[i].implementation_date %></li>
+                            <% } %>
+                            <li>Monto: <%= implementations[x].transactions[i].value_amount %></li>
+                            <li>Moneda: <%= implementations[x].transactions[i].value_currency %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">
+                        <h4>Documentos</h4>
+                    </div>
+                    <div class="box-content">
+                        <% if (implementations[x].documents.length === 0) { %>
+                        No se han registrado documentos en esta etapa
+                        <% } %>
+                        <% for (let i = 0; i < implementations[x].documents.length; i++) { %>
+                        <strong><%= implementations[x].documents[i].title %></strong>
+                        <ul>
+                            <li>Identificador: <%= implementations[x].documents[i].documentid %></li>
+                            <li>Título: <%= implementations[x].documents[i].title %></li>
+                            <li>Descripción: <%= implementations[x].documents[i].description %></li>
+                            <li>URL: <%= implementations[x].documents[i].url %></li>
+                        </ul>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </body>
+</html>

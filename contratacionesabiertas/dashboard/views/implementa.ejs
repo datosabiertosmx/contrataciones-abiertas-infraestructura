@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet">
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/main.css' />
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/style_d3bubble.css' />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/jqplot/jquery.jqplot.css" />
+    <link rel="stylesheet" href="/contratacionesabiertas/static/stylesheets/dashboard.css">
+    <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/polymer/polymer.html">
+    <link rel="import" href="/contratacionesabiertas/static/inai-navbar/dgm-navbar.html">
+    <link rel="import" href="/contratacionesabiertas/static/inai-footer/dgm-footer.html">
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster-follower/dist/css/tooltipster-follower.min.css" />
+	
+	<style no-shim>        
+        .navbar-default   { background-color: #FFFFFF; border: none; top: 158.5px; }
+        
+        .menuTopBar{
+            text-align: center;
+            background-color: #00bfa5;
+            position: fixed;
+            z-index: 4;
+            top: 106.5px;
+            max-width: none;
+            width: 100%;
+            padding: 0 10% 0;
+        }
+        .menuTopBar a{
+            height: 52px;
+            text-decoration: none;
+            font-size: 15px;
+            vertical-align: middle;
+            color: #FFFFFF;
+        }
+        .menuTopBar .botonMenuTop:hover{
+            background-color: #008e76;
+        }
+        .menuTopBar .botonMenuTop{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background-color: #00bfa5;
+            color: #ffffff;
+        }
+        @media (max-width: 991px) {
+            body {
+                margin: 150px 0 0;
+            }
+            .menuTopBarS{
+                padding: 0 0 0;
+                background-color: black;
+            }
+        }
+    </style>
+
+    <title>EDCA-MX</title>
+</head>
+
+<body>
+    <dgm-navbar></dgm-navbar>
+    
+    <div class="menuTopBar menuTopBarS">
+        <div class="col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/contratos/" class="botonMenuTop">Inicio</a>
+        </div>
+        <div class="col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/politicadepublicacion" class="botonMenuTop">Política de publicación</a>
+        </div>
+        <div class="col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/implementa" class="botonMenuTop" style="background-color: #008e76">Implementa el EDCA-MX</a>
+        </div>
+        <div class="col-xs-3" style="padding: 0 0 0;">
+            <a href="https://datos.gob.mx/busca/organization/inai" class="botonMenuTop" target="_blank">Datos abiertos</a>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-top hidden-sm hidden-xs">              
+    	<div class="container">   
+        	<ul class="breadcrumb">
+            	<li><a href="/contratacionesabiertas/"><i class="glyphicon glyphicon-home"></i></a></li>
+                <li><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></li>
+                <li><a href="#">Implementa</a></li>
+           	</ul>
+        </div>               
+     </nav>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 post">
+                <div ng-bind-html="content" class="content ng-binding">
+					<br><br><br>
+                    <h4><strong>Primeros pasos:</strong></h4>
+                    <h4><strong>Definir el alcance del proyecto</strong></h4>
+                    <br>
+                    <div class="container">
+                        <div class="col-xs-4" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/1.png" style="height: 100px; width: 100px;">
+                            <p>Identificar los <strong>proyectos de inversión</strong> estratégicos o un <strong>paquete relevante</strong> de contrataciones.</p>
+                        </div>
+                        <div class="col-xs-4" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/2.png" style="height: 100px; width: 100px;">
+                            <p>Identificar los <strong>actores e instituciones claves</strong> para iniciar el proceso de implementación.</p>
+                            <dd>¿Qué actores producen o resguardan la información?</dd>
+                        </div>
+                        <div class="col-xs-4" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/3.png" style="height: 100px; width: 100px;">
+                            <p>Identificar el <strong>estado que guarda la información.</strong></p>
+                            <dd>¿En qué sistemas está?</dd>
+                            <dd>¿Qué tan sistematizada se encuentra?</dd>
+                            <dd>¿Hay vinculación entre sistemas?</dd>
+                        </div>
+                    </div>
+                </div>
+                
+                <div ng-bind-html="content" class="content ng-binding">
+                    <h1></h1>
+                    <div class="container">
+                        <div class="col-xs-2" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/4.png" style="height: 100px; width: 100px;">
+                        </div>
+                        <div class="col-xs-10">
+                        	<h4><strong>Primeros pasos:</strong></h4>
+			                <h4><strong>Iniciar la implementación</strong></h4>
+			                <br>
+			                <ol>
+			                    <li>Una vez identificados los sistemas y actores que resguardan la información, es posible iniciar el proceso de mapeo de los datos.</li>
+			                    <li>Para realizarlo, se puede utilizar la <a href="https://tinyurl.com/plantillademapeo" target="_blank">plantilla de mapeo</a> del Estándar de Datos de Contrataciones Abiertas en México</li>
+			                    <li>Esta plantilla permite la localización de los datos y sistemas existentes en tu organización.</li>
+			                </ol>
+			                <br>
+			                <div class="col-xs-12" style="border: 1px solid black; text-align: center;">
+			                    <p>Los implementadores pueden solicitar  asesoría por parte del equipo técnico de la INAI y OCP para guiarlos en el proceso.</p>
+			                </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div ng-bind-html="content" class="content ng-binding">
+                    <h1></h1>
+                    <div class="container">
+                        <div class="col-xs-2" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/5.png" style="height: 100px; width: 100px;">
+                        </div>
+                        <div class="col-xs-10">
+                        	<h4><strong>Publicación de los datos</strong></h4>
+			                <br>
+			                <ul type="disc">
+				                <li>En cuanto se tengan bien identificados todos los sistemas, datos y documentos que nutrirán la elaboración de JSON con la estructura EDCA-MX, es necesario comenzar el proceso de vinculación entre sistemas.</li>
+				                <li>La publicación de los datos en la web deberá seguir los <a href="https://standard.open-contracting.org/latest/es/getting_started/publication_patterns/?highlight=patterns%3f" target="_blank">patrones de publicación</a>.</li>
+				                <li>Es importante que el implementador compruebe que la estructuración de los datos es correcta en el validador de OCP.</li>
+			                	<p><a href="https://standard.open-contracting.org/review/" target="_blank">Validador de OCP</a></p>
+			                 </ul>
+                        </div>
+                    </div>
+                </div>               
+                
+                <div ng-bind-html="content" class="content ng-binding">
+                    <h1></h1>
+                    <div class="container">
+                        <div class="col-xs-2" style="text-align: center">
+                            <img src="/contratacionesabiertas/static/images/6.png" style="height: 100px; width: 100px;">
+                        </div>
+                        <div class="col-xs-10">
+                        	<h4><strong>Visualización de los datos</strong></h4>
+			                <br>
+			                <ul type="disc">
+				                <li>Es importante que el implementador considere mecanismos alternativos de publicación de datos para audiencias específicas. Actualmente el INAI implementa una herramienta de código abierto para este fin.</li>
+				                <li>Los implementadores puede utilizar y/o mejorar la herramienta de código abierto del INAI, o bien, desarrollar una propia.</li>
+				                <li>Accede al código y documentación de la herramienta del INAI <a href="//github.com/INAImexico">aquí</a>.</li>
+				            </ul>
+                        </div>
+                    </div>
+                </div> 
+                
+                <div ng-bind-html="content" class="content ng-binding">
+                    <h1></h1>
+                    <div class="container">
+                    	<div class="col-xs-3">
+                            <img src="/contratacionesabiertas/static/images/7.png" style="height: 100px; width: 100px;" align="right">
+                        </div>
+                        <div class="col-xs-3" align: "left">
+                            <p>¿Tienes preguntas? Contáctanos a <em>contratacionesabiertas@inai.org.mx</em></p>
+                        </div>
+                        <div class="col-xs-2">
+                        	<img src="/contratacionesabiertas/static/images/8.png" style="height: 100px; width: 100px;" align="right">             	
+                        </div>
+                        <div class="col-xs-3" align: "left">
+                        	<p>También puedes consultar a la mesa de ayuda en <em>data@open-contracting.org</em></p>
+                        </div>
+
+                    </div>
+                </div> 
+			                
+			                
+            </div>
+        </div>
+    </div>
+	<br>
+	<br>
+
+    <dgm-footer></dgm-footer>
+    <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</body>
+
+</html>

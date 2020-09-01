@@ -1,0 +1,173 @@
+
+<div class="tab-content">
+<% for(var j = 0; j < results.length; j++) { %>
+<% var implementation = results[j]; %>
+<div role="tabpanel" class="tab-pane <%= j === 0 ? 'active' : '' %>" id="r<%= j %>">
+<div class="row contract-stats">
+    <div class="col-md-3">
+        <p class="small">Etapa</p>
+        <p><strong>Ejecución</strong></p>
+    </div>
+    <div class="col-md-3">
+        <p class="small">Estatus</p>
+        <p class="semi-bold">
+            <% if(implementation.status == 'planning') { %> En planeación
+            <% } %>
+            <% if(implementation.status == 'ongoing') { %> En progreso
+            <% } %>
+            <% if(implementation.status == 'concluded') { %> En finiquito
+            <% } %>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align: center">
+        <p class="small">ID del contrato</p>
+        <p class="semi-bold"><%= implementation.contractid %></p>
+    </div>
+    <div class="col-md-3" style="text-align: center">
+        <p class="small">Fecha de firma</p>
+        <p class="semi-bold">
+            <% if (implementation.datesigned instanceof Date) { %>
+            <% fecha = implementation.datesigned %>
+            <% dia = fecha.getDate() %>
+            <% mes = fecha.getMonth() + 1 %>
+            <% anio = fecha.getFullYear() %>
+            <% if(dia < 10) { dia = '0' + dia; } %>
+            <% if(mes < 10) { mes = '0' + mes; } %>
+            <%= formato = dia + '/' + mes + '/' + anio %>
+            <% } %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-7">
+        <p class="small">Comprador</p>
+        <p class="semi-bold">
+            <%= buyer !== null ? buyer.identifier_legalname : "No disponible" %>
+        </p>
+    </div>
+	<div class="col-md-5">
+        <p class="small">Área requirente</p>
+        <p class="semi-bold">
+            <%= requestingunit !== null ? requestingunit.identifier_legalname : "No disponible" %>
+        </p>
+    </div>
+</div>
+<div class="row contract-stats no-border">
+    <div class="col-md-3 col-md-offset-6">
+        <% if(links != null) { %>
+        <!--    <p class="small">Descargar datos abiertos</p>  -->
+            <% if(links.json != null) { %>
+            <a href="<%= links.json %>" download="json"><span class="label" data-format="json">JSON</span></a>
+            <% } %>
+
+            <% if(links.xlsx != null) { %>
+            <a href="<%= links.xlsx %>" download="xlsx"> <span class="label" data-format="xlsx">XLSX</span></a>
+            <% } %>
+        <% } %>
+    </div>
+    <div class="col-md-3">
+        <% if(links != null && links.pdf != null) { %>
+        <a href="<%= links.pdf%>" download="pdf">
+            <p class="small">Descargar contrato</p>
+            <span class="label" data-format="pdf">PDF</span>
+        </a>
+        <% } %>
+    </div>
+</div>
+<p class="small">Procesos</p>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="padding-bottom: 60px">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne_<%= j %>">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_<%= j %>" aria-expanded="false" aria-controls="collapseOne_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Hitos
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne_<%= j %>">
+            <div class="panel-body">
+                <% var nmilestones = milestones.filter(function (e) { return e.implementation_id == implementation.id; }); %>
+                <% if(nmilestones.length == 0) { %>
+                No se han registrado hitos en esta etapa
+                <% } %>
+                <% for(var i = 0; i < nmilestones.length; i++) { %>
+                <strong><%= nmilestones[i].title %></strong>
+                <ul>
+                    <li>Identificador: <%= nmilestones[i].title %></li>
+                    <li>Descripción: <%= nmilestones[i].description %></li>
+                    <% if(nmilestones[i].duedate) { %>
+                    <li>Fecha de vencimiento: <%= nmilestones[i].duedate%></li>
+                    <% } %>
+                    <% if(nmilestones[i].date_modified) { %>
+                    <li>Fecha de modificación: <%= nmilestones[i].date_modified %></li>
+                    <li>Estátus: <%= nmilestones[i].status %></li>
+                    <% } %>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo_<%= j %>">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo_<%= j %>" aria-expanded="false" aria-controls="collapseTwo_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Transacciones
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_<%= j %>">
+            <div class="panel-body">
+                <% var ntransactions = transactions.filter(function (e) { return e.implementation_id == implementation.id; }); %>
+                <% if(ntransactions.length == 0) { %>
+                No se han registrado transacciones en esta etapa
+                <% } %>
+                <% for(var i = 0; i < ntransactions.length; i++) { %>
+                <strong>Transacción <%= i + 1 %> </strong>
+                <ul>
+                    <li>Identificador: <%= ntransactions[i].transactionid %></li>
+                    <% if(ntransactions[i].implementation_date) { %>
+                    <li>Fecha de la transacción: <%= ntransactions[i].implementation_date %></li>
+                    <% } %>
+                    <li>Monto: <%= (ntransactions[i].value_amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")%></li>
+                    <li>Moneda: <%= ntransactions[i].value_currency %></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree_<%= j %>">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree_<%= j %>" aria-expanded="false" aria-controls="collapseThree_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Documentos
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_<%= j %>">
+            <div class="panel-body">
+                <% var ndocuments = documents.filter(function (e) { return e.implementation_id == implementation.id; }); %>
+                <% if(ndocuments.length == 0) { %>
+                No se han registrado documentos en esta etapa
+                <%}%>
+                <% for(var i = 0; i < ndocuments.length; i++) { %>
+                <strong><%= ndocuments[i].title %></strong>
+                <ul>
+                    <li>Identificador: <%= ndocuments[i].documentid %></li>
+                    <li>Título: <%= ndocuments[i].title %></li>
+                    <li>Descripción: <%= ndocuments[i].description %></li>
+                    <li><a href="<%= ndocuments[i].url %>">URL</a></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<% } %>
+</div>

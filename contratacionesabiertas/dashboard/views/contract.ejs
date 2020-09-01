@@ -1,0 +1,368 @@
+<%
+    var icons = [
+        '/contratacionesabiertas/static/images/ic-planeacion.png',
+        '/contratacionesabiertas/static/images/ic-licitacion.png',
+        '/contratacionesabiertas/static/images/ic-adjudicacion.png',
+        '/contratacionesabiertas/static/images/ic-contratacion.png',
+        '/contratacionesabiertas/static/images/ic-implementacion.png'
+    ];
+
+    const sections = [
+        'planeacion',
+        'licitacion',
+        'adjudicacion',
+        'contratacion',
+        'implementacion',
+    ];
+
+    const titles = [
+        'Planeación',
+        'Licitación',
+        'Adjudicación',
+        'Contratación',
+        'Implementación',
+    ]
+
+    var generateIcons = (contract) => {
+        const indicadores = [
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2]},
+                { url: icons[3], seccion: sections[3], titulo: titles[3]},
+                { url: icons[4], seccion: sections[4], titulo: titles[4]}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2]},
+                { url: icons[3], seccion: sections[3], titulo: titles[3]},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'pulse'}
+            ],
+            [	<!--Nuevos cambios-->
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2]},
+                { url: icons[3], seccion: sections[3], titulo: titles[3]},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'pulse'}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2]},
+                { url: icons[3], seccion: sections[3], titulo: titles[3], clase: 'pulse'},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'disabled'}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2], clase: 'pulse'},
+                { url: icons[3], seccion: sections[3], titulo: titles[3], clase: 'disabled'},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'disabled'}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2]},
+                { url: icons[3], seccion: sections[3], titulo: titles[3], clase: 'disabled'},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'disabled'}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1]},
+                { url: icons[2], seccion: sections[2], titulo: titles[2], clase: 'disabled'},
+                { url: icons[3], seccion: sections[3], titulo: titles[3], clase: 'disabled'},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'disabled'}
+            ],
+            [
+                { url: icons[0], seccion: sections[0], titulo: titles[0]},
+                { url: icons[1], seccion: sections[1], titulo: titles[1], clase: 'pulse'},
+                { url: icons[2], seccion: sections[2], titulo: titles[2], clase: 'disabled'},
+                { url: icons[3], seccion: sections[3], titulo: titles[3], clase: 'disabled'},
+                { url: icons[4], seccion: sections[4], titulo: titles[4], clase: 'disabled'}
+            ],
+        ];
+
+        if(contract.implementation === 'concluded' || contract.implementation === 'terminated'){
+            return indicadores[0];
+        } else if(contract.implementation !== 'concluded' && contract.contract === 'active') {
+            return indicadores[1];
+        } else if(contract.implementation !== 'concluded' && contract.contract === 'terminated') {  <!--nuevos cambios-->
+            return indicadores[2];
+        } else if(contract.contract !== 'active' && contract.award === 'active') {
+            return indicadores[3];
+        } else if(contract.award === 'pending' && contract.tender === 'complete') {
+            return indicadores[4];
+        } else if(contract.award === 'unsuccessful' || contract.award === 'cancelled') {
+            return indicadores[5];
+        } else if(contract.tender === 'unsuccessful' || contract.tender === 'cancelled') {
+            return indicadores[6];            
+        } else 
+            return indicadores[7];        
+    }
+
+var indicador = generateIcons(status);
+%>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
+        <!-- Bootstrap core CSS -->
+        <link href="/contratacionesabiertas/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/main.css'/>
+        <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/contrato.css'/>
+        <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/polymer/polymer.html">
+        <link rel="import" href="/contratacionesabiertas/static/inai-navbar/dgm-navbar.html">
+   	    <link rel="import" href="/contratacionesabiertas/static/inai-footer/dgm-footer.html">
+
+        <style>
+            .container{
+                max-width: 1100px;
+            }
+
+            .semi-bold{
+                font-weight: 400;
+            }
+
+            .more-less {
+                float: right;
+            }
+
+            #map {
+                height: 500px;
+                width: 100%;
+            }          
+        </style>
+
+        <style>
+        /* Tooltip */
+        .implementacion + .tooltip > .tooltip-inner {
+            background-color: white;
+            color: #4a4a4a;
+            padding: 15px;
+            font-size: 10px;
+            font: 10px Open Sans;
+            pointer-events: none;
+        }
+        /* Tooltip on top */
+        .implementacion + .tooltip.top > .tooltip-arrow {
+            border-top: 0px solid green;
+        }
+        @media (max-width: 991px) {
+            body {
+                margin: 0px;
+            }
+        }
+        </style>
+
+	<style no-shim>
+              
+        .navbar-default   { background-color: #FFFFFF; border: none; top: 158.5px; }
+        .menuTopBar{
+            text-align: center;
+            background-color: #00bfa5;
+            position: fixed;
+            z-index: 4;
+            top: 106.5px;
+            max-width: none;
+            width: 100%;
+            padding: 0 10% 0;
+        }
+        .menuTopBar a{
+            height: 52px;
+            text-decoration: none;
+            font-size: 15px;
+            vertical-align: middle;
+            color: #FFFFFF;
+        }
+        .menuTopBar .botonMenuTop:hover{
+            background-color: #008e76;
+        }
+        .menuTopBar .botonMenuTop{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background-color: #00bfa5;
+            color: #ffffff;
+        }
+        .marginContent{
+            margin-top: 50px;
+        }
+        @media (max-width: 991px) {
+            body {
+                margin: 150px 0 0;
+            }
+            .menuTopBarS{
+                padding: 0 0 0;
+                background-color: black;
+            }
+            .navbar-default{
+                margin-top: 0;
+            }
+            .marginContent{
+                margin-top: 0;
+            }
+        }       
+    </style>
+
+        <title>Contrataciones Abiertas</title>
+    </head>
+    <body>
+        <dgm-navbar></dgm-navbar>
+         
+        <div class="menuTopBar menuTopBarS">
+                <div class="col-xs-3" style="padding: 0 0 0;">
+                    <a href="/contratacionesabiertas/contratos/" class="botonMenuTop">Inicio</a>
+                </div>
+                <div class="col-xs-3" style="padding: 0 0 0;">
+                    <a href="/contratacionesabiertas/politicadepublicacion" class="botonMenuTop">Política de publicación</a>
+                </div>
+                <div class="col-xs-3" style="padding: 0 0 0;">
+                    <a href="/contratacionesabiertas/implementa" class="botonMenuTop">Implementa el EDCA-MX</a>
+                </div>
+                <div class="col-xs-3" style="padding: 0 0 0;">
+                    <a href="https://datos.gob.mx/busca/organization/inai" class="botonMenuTop" target="_blank">Datos abiertos</a>
+                </div>
+        </div>
+
+       <nav class="navbar navbar-default navbar-fixed-top hidden-sm hidden-xs">              
+            <div class="container-fluid">   
+                   		<ul class="breadcrumb">
+                            <li><a href="/contratacionesabiertas/"><i class="glyphicon glyphicon-home"></i></a></li>
+                            <li><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></li>
+                            <li><a href="#">Contrato</a></li>
+                        </ul>
+            </div>               
+       </nav>  
+             
+        <br>
+        <div class="container marginContent">
+            <div class="row">
+                <div id="contract-sidebar" class="col-md-4 col-sm-4 col-xs-12 sidebar">
+                    <div class="info">
+                        <h3>Proceso de contratación</h3>
+                        <% if (info != null && typeof info.title == 'string'){%>
+                        <p class="title" style="text-align: justify"><%= (info.title.length < 251)? info.title: info.title.substring(0,249) + '...' %></p>
+                       <% }else {%>
+                        <p class="title"> No disponible</p>
+                        <%}%>
+                    </div>
+                    <div class="stages">
+                        <p><small>ETAPAS</small></p>
+                        <div class="section-container">
+                            <ul>
+                                <% for(var x = 0; x < indicador.length; x++) {%>
+                                    <li class="<%= indicador[x].clase %>">
+                                        <img class="hover-image" src="<%= indicador[x].url%>">
+                                        <% if(indicador[x].clase !== 'disabled') {%>
+                                            <a href="/contratacionesabiertas/contrato/<%= info.cpid + '/' + indicador[x].seccion %>" ><%=indicador[x].titulo %></a>
+                                        <%} else { %>
+                                            <%= indicador[x].titulo %>
+                                        <%}%>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                    <% if(current_stage == 'adjudicacion' || current_stage == 'contratacion' || current_stage == 'implementacion') { %>
+                    <div class="results">
+                        <p><small>REGISTROS</small></p>
+                        <div class="section-container">
+                            <ul id="registroTabs" class="hidden-xs">
+                                <% for(var i = 0; i < results.length; i++) { %>
+                                    <li><a href="#r<%= i %>" data-toggle="tab"><%= current_stage == 'contratacion' || current_stage == 'implementacion' ? "Contrato " + results[i].contractid : "Adjudicacion " + results[i].awardid %></a></li>
+                                <% } %>
+                            </ul>
+                            <select class="form-control visible-xs" id="registro">
+                                <% for(var i = 0; i < results.length; i++) { %>
+                                <option value="r<%= i %>"><%= current_stage == 'contratacion' || current_stage == 'implementacion' ? "Contrato " + results[i].contractid : "Adjudicacion " + results[i].awardid %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <div id="contract-content" class="col-md-8 col-sm-8 col-xs-12">
+                    <% if ( current_stage == 'licitacion') { %>
+                    <% include stages/tender %>
+                    <%} else if ( current_stage == 'adjudicacion' ) {%>
+                    <% include stages/awards %>
+                    <%} else if ( current_stage == 'contratacion'){%>
+                    <% include stages/contracts %>
+                    <%} else if ( current_stage == 'implementacion'){%>
+                    <% include stages/implementation %>
+                    <%} else {%>
+                    <% include stages/planning %>
+                    <%}%>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="mUbicacion">
+            <div class="modal-dialog" role="document" style="width: 60%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Ubicacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="map"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <dgm-footer></dgm-footer>
+        <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <!--MAPBOX-->
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+        <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+        <script>
+            // Token de acceso para utilizar mapbox
+            const MAPBOX_TOKEN = "<%= process.env.MAPTOKEN || 'pk.eyJ1IjoiamFtZzE0IiwiYSI6ImNqdTM4cW04aDBrbnQ0NG83ZnM4cWVnOGgifQ.d6L_McpNmO9s_MsPk5loOw' %>";
+        </script>
+        <script src="/contratacionesabiertas/static/javascripts/mapbox.js"></script>
+        <script type="text/javascript">
+            function toggleIcon(e) {
+                $(e.target)
+                    .prev('.panel-heading')
+                    .find(".more-less")
+                    .toggleClass('glyphicon-chevron-right glyphicon-chevron-down');
+            }
+            $('.panel-group').on('hidden.bs.collapse', toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', toggleIcon);
+        </script>
+        <script>           
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+
+                $('#registro').change(function () {
+                    $('#registroTabs a[href="#' + $('option:selected', this).val() + '"]').tab('show');
+                });
+
+                $('[data-action="ubicacion"]').on('click', function () {
+                    var latitud = parseFloat($(this).data('latitud'));
+                    var longitud = parseFloat($(this).data('longitud'));
+
+                    setTimeout(() => {
+                        initMap();
+                        addMarker({
+                            lng: longitud,
+                            lat: latitud
+                        });
+                    }, 500);
+
+                    $('#mUbicacion').modal('show');
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,137 @@
+<% var planning = results; %>
+<div class="row contract-stats">
+    <div class="col-md-3">
+        <p class="small">Etapa</p>
+        <p><strong>Planeación</strong></p>
+    </div>
+    <div class="col-md-3">
+        <p class="small" style="text-align: center">¿Hubo cotizaciones?</p>
+        <p class="semi-bold" style="text-align: center">
+            <% if(planning.hasquotes == true) { %>
+            Si
+            <%}%>
+            <% if(planning.hasquotes == false) { %>
+            No
+            <% } %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-12">
+        <p class="small">Justificación</p>
+        <p class="semi-bold" style="text-align: justify">
+            <%= planning.rationale %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-7">
+        <p class="small">Comprador</p>
+        <p class="semi-bold">
+            <%= buyer !== null ? buyer.identifier_legalname : "No disponible" %>
+        </p>
+    </div>
+	<div class="col-md-5">
+        <p class="small">Área requirente</p>
+        <p class="semi-bold">
+            <%= requestingunit !== null ? requestingunit.identifier_legalname: "No disponible" %>
+        </p>
+    </div>
+</div>
+
+<p class="small">Procesos</p>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Desglose del presupuesto
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <% if(budgetBreakdown.length == 0) { %>
+                No se han registrado presupuestos en esta etapa
+                <% } %>
+                <% for(var i = 0; i < budgetBreakdown.length; i++) { %>
+                <strong class="break"><%= budgetBreakdown[i].budgetbreakdown_id %></strong>
+                <ul>
+                    <li>Descripción: <%= budgetBreakdown[i].description %></li>
+                    <li>Monto: $<%= budgetBreakdown[i].amount %> (<%= budgetBreakdown[i].currency %>)</li>
+                    <li>Fuente del presupuesto: <%= budgetBreakdown[i].source %></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Cotizaciones
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <% if(quotes.length == 0) { %>
+                No se han registrado cotizaciones en esta etapa
+                <% } %>
+                <% for(var i = 0; i < quotes.length; i++) { %>
+                <strong><%= quotes[i].quotes_id %></strong>
+                <ul>
+                    <li>Descripción: <%= quotes[i].description %></li>
+                    <li>Proveedor: <%= quotes[i].supplier %></li>
+                    <li>RFC: <%= quotes[i].supplier_rfc %></li>
+                    <li>Items:
+                        <ul>
+                            <% let nItems = items.filter(function (e) { return e.quotes_id == quotes[i].id; }); %>
+                            <% for(var j = 0; j < nItems.length; j++) { %>
+                            <li><%= nItems[j].item %>: $<%= nItems[j].quantity %></li>
+                            <% } %> 
+                        </ul>
+                    </li>
+                    <li>Fecha de cotización: <%= quotes[i].date %></li>
+                    <li>Valor: $<%= quotes[i].value %></li>
+                    <li>Periodo de cotización: Del <%= quotes[i].period_startdate %> al <%= quotes[i].period_enddate %></li>
+                    
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true"
+                    aria-controls="collapseThree">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Documentos
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <% if(documents.length == 0) { %>
+                No se han registrado documentos en esta etapa
+                <% } %>
+                <% for(var i = 0; i < documents.length; i++) { %>
+                <strong><%= documents[i].title %></strong>
+                <ul>
+                    <li>Identificador: <%= documents[i].documentid %></li>
+                    <li>Título: <%= documents[i].title %></li>
+                    <li>Descripción: <%= documents[i].description %></li>
+                    <li><a href="<%= documents[i].url %>">URL</a></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

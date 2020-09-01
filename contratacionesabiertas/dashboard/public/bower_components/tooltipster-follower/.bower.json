@@ -1,0 +1,20 @@
+{
+  "name": "tooltipster-follower",
+  "main": [
+    "dist/js/tooltipster-follower.min.js"
+  ],
+  "dependencies": {
+    "tooltipster": ">=4.0.0"
+  },
+  "homepage": "https://github.com/louisameline/tooltipster-follower",
+  "version": "0.1.5",
+  "_release": "0.1.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.5",
+    "commit": "a254ef5b511bdf4a3ef9fb8bd60dd6e37d6d10a8"
+  },
+  "_source": "https://github.com/louisameline/tooltipster-follower.git",
+  "_target": "^0.1.5",
+  "_originalSource": "tooltipster-follower"
+}

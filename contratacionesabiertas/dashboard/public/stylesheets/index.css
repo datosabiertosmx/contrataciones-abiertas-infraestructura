@@ -1,0 +1,53 @@
+/*.bgimg                          { margin-bottom:0; background-image: url('/contratacionesabiertas/static/images/bgc.png'); }*/
+.bgimg                          { margin-bottom: 0; height: 410px; background-image: url('/contratacionesabiertas/static/images/CONTRATA.png'); background-size: cover; margin-top: 5.5em;}
+.bgimg h2                       { margin-bottom: 30px; }
+.bgimg h2 > span                { display: block; font-weight: 400; }
+
+.stages p                       { margin-bottom: 40px; }
+.stages-widget                  { margin-bottom: 30px; }
+.stages-widget img              { width: 35px; margin-right: 10px; float: left; }
+.stages-widget .content         { width: calc(100% - 45px); float: left; }
+.stages-widget .title           { margin-bottom: 20px; font-weight: 600; color: #0c9; }
+.stages-widget p                { margin-bottom: 0; font-size: 14px; }
+
+.methodology                    { background-color: #f6f6f6; margin-bottom: 30px; padding: 30px 0; }
+.methodology .btn               { display: block; margin: 0 auto 20px; }
+.methodology p                  { margin-bottom: 0; }
+
+.publications                   { margin-bottom: 50px; }
+.publications p                 { font-weight: 600; color: #0c9; }
+.publications p > span          { font-weight: 300; color: #4a4a4a; }
+.publications p > .read-more    { font-weight: 300; }
+
+.panel                          { border:none; }
+.well                           { border: none; }
+
+
+@media only screen
+and (min-device-width: 300px)
+and (max-device-width: 736px){
+    .bgimg { height: 200px; padding: 25px 0; }
+    .bgimg h2 { font-size: 20px; margin-bottom: 10px}
+    .bgimg h4 { font-size: 12px;}
+    .bgimg .stat { font-size: 16px }
+    .bgimg {background-size: 500px 200px}
+    #datos_duros{
+        display: none;
+    }
+    #icono_con{
+        display: none;
+    }
+
+
+    h1 {font-size: 16px;}
+    #conoce { font-size: 14px; line-height: normal;}
+    .statistics h1 {font-size: 16px;}
+    .statistics p { font-size: 14px;}
+
+    .stages .stages-widget p {font-size: 14px}
+    .stages .stages-widget .content { font-size: 14px; padding-bottom: 25px}
+
+    .stages .stages-widget img {width: 25px}
+    .stages h1 {font-size: 16px}
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {padding: 4px;}
+}

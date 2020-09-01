@@ -1,0 +1,213 @@
+<div class="tab-content">
+<% for(var j = 0; j < results.length; j++) { %>
+<% var award = results[j]; %>
+<div role="tabpanel" class="tab-pane <%= j === 0 ? 'active' : '' %>" id="r<%= j %>">
+<div class="row contract-stats">
+    <div class="col-md-3">
+        <p class="small">Etapa</p>
+        <p><strong>Adjudicación</strong></p>
+    </div>
+    <div class="col-md-3">
+        <p class="small">Estatus</p>
+        <p class="semi-bold">
+            <% if(award.status == 'pending') { %> Pendiente
+            <% } %>
+            <% if(award.status == 'active') { %> Realizado
+            <% } %>
+            <% if(award.status == 'cancelled') { %> Cancelado
+            <% } %>
+            <% if(award.status == 'unsuccessful') { %> No exitoso
+            <% } %>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align: center">
+        <p class="small">ID de la adjudicación</p>
+        <p class="semi-bold">
+            <%= award.awardid %>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align: center">
+        <p class="small">Fecha de la adjudicación</p>
+        <p class="semi-bold">
+            <% if (award.award_date instanceof Date) { %>
+            <% fecha = award.award_date %>
+            <% dia = fecha.getDate() %>
+            <% mes = fecha.getMonth() + 1 %>
+            <% anio = fecha.getFullYear() %>
+            <% if(dia < 10) { dia = '0' + dia; } %>
+            <% if(mes < 10) { mes = '0' + mes; } %>
+            <%= formato = dia + '/' + mes + '/' + anio %>
+            <% } %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-9">
+        <p class="small">Título</p>
+        <p class="semi-bold" style="text-align: justify">
+            <%= award.title %>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align: center">
+        <p class="small">Monto</p>
+        <p>
+            <strong>
+            <% if (!isNaN(award.value_amount) && award.value_amount > 0) { %>
+            $
+            <%= (award.value_amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>
+            <% } else { %>
+            No disponible
+            <% } %>
+            </strong>
+        </p>
+        <p class="small">Moneda</p>
+        <p class="semi-bold">
+            <%= award.value_currency %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-12">
+        <p class="small">Justificación</p>
+        <p class="semi-bold" style="text-align: justify">
+            <%= award.rationale %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats">
+    <div class="col-md-7">
+        <p class="small">Comprador</p>
+        <p class="semi-bold">
+            <%= buyer !== null ? buyer.identifier_legalname : "No disponible" %>
+        </p>
+    </div>
+	<div class="col-md-5">
+        <p class="small">Área requirente</p>
+        <p class="semi-bold">
+            <%= requestingunit !== null ? requestingunit.identifier_legalname : "No disponible" %>
+        </p>
+    </div>
+</div>
+
+<div class="row contract-stats no-border">
+    <div class="col-md-3 col-md-offset-6">
+        <% if(links != null) { %>
+        <!-- <p class="small">Descargar datos abiertos</p> -->
+            <% if(links.json != null) { %>
+            <a href="<%= links.json %>" download="json"><span class="label" data-format="json">JSON</span></a>
+            <% } %>
+
+            <% if (links.xlsx != null) { %>
+            <a href="<%= links.xlsx %>" download="xlsx"> <span class="label" data-format="xlsx">XLSX</span></a>
+            <% } %>
+        <% } %>
+    </div>
+    <div class="col-md-3">
+        <% if(links != null && links.pdf != null) { %>
+        <a href="<%= links.pdf %>" download="pdf">
+            <p class="small">Descargar contrato</p>
+            <span class="label" data-format="pdf">PDF</span>
+        </a>
+        <% } %>
+    </div>
+</div>
+<p class="small">Procesos</p>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne_<%= j %>">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_<%= j %>" aria-expanded="true" aria-controls="collapseOne_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Proveedores
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne_<%= j %>">
+            <div class="panel-body">
+                <% if(award.suppliers.length == 0) { %>
+                No se han registrado proveedores en esta etapa
+                <% } %>
+                <% for(var i = 0; i < award.suppliers.length; i++) { %>
+                    <% if(award.suppliers[i].naturalperson == true) { %>
+                    <strong><%=award.suppliers[i].name %></strong>
+                    <ul>
+                    	<li>Nombre o razón social: <%= award.suppliers[i].name %></li>
+                    	<li>Identificador: <%= award.suppliers[i].identifier_id %></li>
+                    </ul> 
+                    <% } else { %>
+                    <strong><%= award.suppliers[i].name %></strong>
+                    <ul>
+                        <li>Nombre o razón social: <%= award.suppliers[i].identifier_legalname %></li>
+                        <li>Identificador: <%= award.suppliers[i].identifier_id %></li>
+                        <li>Calle y número: <%= award.suppliers[i].address_streetaddress %></li>
+                        <li>Delegación o municipio: <%= award.suppliers[i].address_locality %></li>
+                        <li>Entidad federativa: <%= award.suppliers[i].address_region %></li>
+                        <li>Código postal: <%= award.suppliers[i].address_postalcode %> </li>
+                        <li>País:<%= award.suppliers[i].address_countryname %></li>
+                    </ul>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree_<%= j %>">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree_<%= j %>" aria-expanded="false" aria-controls="collapseThree_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Documentos
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_<%= j %>">
+            <div class="panel-body">
+                <% if(award.documents.length == 0) { %>
+                No se han registrado documentos en esta etapa
+                <% } %>
+                <% for(var i = 0; i < award.documents.length; i++) { %>
+                <strong><%= award.documents[i].title %></strong>
+                <ul>
+                    <li>Identificador: <%= award.documents[i].documentid %></li>
+                    <li>Título: <%= award.documents[i].title %></li>
+                    <li>Descripción: <%= award.documents[i].description %></li>
+                    <li><a href="<%= award.documents[i].url %>">URL</a></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFour_<%= j %>">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour_<%= j %>" aria-expanded="false" aria-controls="collapseFour_<%= j %>">
+                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
+                    Modificaciones
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour_<%= j %>">
+            <div class="panel-body">
+                <% if(award.changes.length == 0) { %>
+                No se han registrado modificaciones en esta etapa
+                <% } %>
+                <% for(var i = 0; i < award.changes.length; i++) { %>
+                <strong>Modificación <%= i %></strong>
+                <ul>
+                    <li>Fecha de modificación: <%= award.changes[i].amendments_date %></li>
+                    <li>Justificación: <%= award.changes[i].amendments_rationale %></li>
+                    <li>Identificador: <%= award.changes[i].amendments_id %></li>
+                    <li>Descripción: <%= award.changes[i].amendments_description %></li>
+                </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<% } %>
+</div>

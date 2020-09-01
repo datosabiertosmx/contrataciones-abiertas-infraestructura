@@ -1,0 +1,70 @@
+.tooltipBubble {
+    font-family: 'Open Sans'; /*'Raleway', sans-serif;*/
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    -moz-border-radius:2px;
+    border-radius: 2px;
+    /*border: 1px solid #000;*/
+    /*background: #f6f6f6;*/
+    background: white;
+    opacity: 1;
+    /* color: #eeeeee; */
+    color: black;
+    padding: 10px;
+    width: 300px;
+    font-size: 10px;
+    z-index: 10;
+    /*text-align: center;*/
+    /*font-weight:bold;*/
+}
+
+.top_labels {
+	font-family: 'Open Sans'; /*'Raleway', sans-serif;*/
+    font-size: 20px;
+    text-anchor: middle; 
+   /* alignment-baseline: text-before-edge;  */
+}
+
+#chartWrapper {
+    position: relative;
+    margin-top: 50px;
+}
+
+.scaleCircle {
+    stroke-width: 1;
+    stroke:#999;
+    stroke-dasharray:2 2;
+    fill:none;
+}
+
+.scaleCircleLabel {
+    color: #999;
+    /*font-size:13px;*/
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 600px;
+    overflow-x: hidden;
+}
+
+.text-centrado {
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    vertical-align: top;
+    /*padding-bottom: 100%; /* aspect ratio */
+    /*overflow: inherit;*/
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}

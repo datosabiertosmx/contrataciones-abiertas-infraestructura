@@ -1,0 +1,51 @@
+
+#contract-sidebar                                       { /*position: absolute;*/ left: 0; top: 0; bottom: 0; background-color: #9b9b9b; padding-right: 0px;padding-left: 0px; }
+#contract-sidebar .info                                 { padding: 20px 15px 10px 40px; }
+#contract-sidebar .info h3                              { margin: 0; margin-bottom: 20px; font-size: 12px; font-weight: 300; text-transform: uppercase; color: #fff; }
+#contract-sidebar .info p                               { color: #fff; }
+#contract-sidebar .info p.title                         { margin-bottom: 20px; font-weight: 700; }
+#contract-sidebar .stages                               { background-color: #d8d8d8; padding-bottom: 20px; }
+#contract-sidebar .stages > p                           { position: relative; color: #fff; background-color: #9b9b9b; padding: 5px 0px 5px 40px; }
+#contract-sidebar .stages > .section-container         { padding-left: 40px; }
+#contract-sidebar .stages ul                            { margin: 0; list-style: none; border-left: 5px solid #fff; position: relative; top: -10px; }
+#contract-sidebar .stages ul > li                       { height: 50px; text-indent: 20px; font-size: 14px; font-weight: 700; line-height: 50px; color: #545454; text-transform: uppercase; position: relative; }
+#contract-sidebar .stages ul > li:last-child            { height: 27px; margin-top: 10px; line-height: 30px; }
+#contract-sidebar .stages ul > li > a                   { display: block; }
+#contract-sidebar .stages ul > li > img                 { width: 25px; position: absolute; left: -25px; top: 12.5px; }
+#contract-sidebar .stages ul > li:hover > .normal-image,
+#contract-sidebar .stages ul > li.active > .normal-image{ display: none; }
+#contract-sidebar .stages ul > li:hover > .hover-image,
+#contract-sidebar .stages ul > li.active > .hover-image { display: block; }
+#contract-sidebar .stages ul > li:last-child > img      { top: 2.5px; }
+#contract-sidebar .results                              { background-color: #d8d8d8; padding-bottom: 20px; }
+#contract-sidebar .results > p                          { position: relative; color: #fff; background-color: #9b9b9b; padding: 5px 0px 5px 40px; }
+#contract-sidebar .results > .section-container         { padding: 0px 40px 0px 40px; }
+#contract-sidebar .results ul                           { padding-left: 20px; margin: 0; list-style: none; border-left: 5px solid #fff; position: relative; top: -10px; }
+#contract-sidebar .results ul > li                      { margin-top: 15px; font-size: 14px; font-weight: 700;  color: #545454; text-transform: uppercase; position: relative; }
+
+
+#contract-content                                       { margin-top: 40px; /*margin-left: 33%;*/ }
+#contract-content .small                                { text-transform: uppercase; }
+#contract-content .contract-stats                       { padding-bottom: 10px; margin-bottom: 20px; border-bottom: 1px solid #979797; }
+#contract-content .contract-stats.no-border             { border: none; }
+#contract-content .contract-stats .small                { margin-bottom: 0; }
+#contract-content ul                                    { margin: 0; }
+#contract-content ul > li                               { font-size: 12px; font-weight: 300; }
+
+@media (max-width: 768px) {
+    #contract-sidebar                                       { left: 0; top: 0; bottom: 0; }
+    #contract-sidebar .stages                               { padding-bottom: 0px; margin-right: 0px; margin-left: 0px;}
+    #contract-content                                       { margin-top: 10px;}
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {padding: 0px;}
+}
+
+.stages li.pulse{ animation: blinker 3s linear infinite;}
+
+.stages li.disabled{filter: grayscale(100%);}
+
+@keyframes blinker {50% {opacity: 0;}}
+
+
+ *{
+    word-break: break-all;
+}

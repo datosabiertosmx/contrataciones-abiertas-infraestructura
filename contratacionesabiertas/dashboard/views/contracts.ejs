@@ -1,0 +1,280 @@
+<%
+    var icons = [
+        '/contratacionesabiertas/static/images/ic-planeacion.png',
+        '/contratacionesabiertas/static/images/ic-licitacion.png',
+        '/contratacionesabiertas/static/images/ic-adjudicacion.png',
+        '/contratacionesabiertas/static/images/ic-contratacion.png',
+        '/contratacionesabiertas/static/images/ic-implementacion.png'
+    ];
+
+    var generateIcons = (contract) => {
+        const indicadores = [
+            {
+                actual: 'implementacion',
+                texto: 'Procedimiento concluido',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3]},
+                    { url: icons[4]}
+                ]
+            },
+            {
+                actual: 'implementacion',
+                texto: 'En ejecución',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3]},
+                    { url: icons[4], clase: 'pulse'}
+                ]
+            },
+            {
+                actual: 'implementacion',
+                texto: 'En ejecución',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3]},
+                    { url: icons[4], clase: 'pulse'}
+                ]
+            },
+            {
+                actual: 'contratacion',
+                texto: 'En contratación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3], clase: 'pulse'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'adjudicacion',
+                texto: 'En adjudicación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2], clase: 'pulse'},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'adjudicacion',
+                texto: 'En adjudicación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2]},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'licitacion',
+                texto: 'En licitación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1]},
+                    { url: icons[2], clase: 'disabled'},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            },
+            {
+                actual: 'licitacion',
+                texto: 'En licitación',
+                iconos: [
+                    { url: icons[0]},
+                    { url: icons[1], clase: 'pulse'},
+                    { url: icons[2], clase: 'disabled'},
+                    { url: icons[3], clase: 'disabled'},
+                    { url: icons[4], clase: 'disabled'}
+                ]
+            }
+        ]
+
+        if(contract.implementation_status === 'concluded' || contract.implementation_status === 'terminated'){
+            return indicadores[0];
+        } else if(contract.implementation_status !== 'concluded' && contract.contract_status === 'active') {
+            return indicadores[1];
+        } else if(contract.implementation_status !== 'concluded' && contract.contract_status === 'terminated') {  <!--nuevos cambios-->
+            return indicadores[2];
+        } else if(contract.contract_status !== 'active' && contract.award_status === 'active') {
+            return indicadores[3];
+        } else if(contract.award_status === 'pending' && contract.tender_status === 'complete') {
+            return indicadores[4];
+        } else if(contract.award_status === 'unsuccessful' || contract.award_status === 'cancelled') {
+            return indicadores[5];
+        } else if(contract.tender_status === 'unsuccessful' || contract.tender_status === 'cancelled') {
+            return indicadores[6];
+        } else 
+            return indicadores[7];
+        
+    }
+
+%>
+
+<% for (var i = 0; i < contracts.length;i++){ 
+    var indicador = generateIcons(contracts[i]);
+    %>
+<div class="contract-item">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="contract-info col-md-11">
+                <div class="inner">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <%  if (!isNaN( contracts[i].exchangerate_amount ) && contracts[i].exchangerate_amount > 0 ){%>
+                            	<h3>$<%= ( parseFloat(contracts [i].exchangerate_amount).toFixed(2) ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></h3>
+	                            <%} else if (contracts[i].tender_status == 'unsuccessful' || contracts[i].award_status == 'unsuccessful') {%>
+	                            	<h3>No exitoso</h3>
+	                            	<%} else if (contracts[i].tender_status == 'cancelled' || contracts[i].award_status == 'cancelled') {%>
+	                            		<h3>Cancelado</h3>
+		                            	<%} else if (contracts[i].tender_status != 'unsuccessful' || contracts[i].award_status != 'unsuccessful') {%>
+		                            	<h3>$0.00</h3>
+			                            	<%} else if (contracts[i].tender_status != 'cancelled' || contracts[i].award_status != 'cancelled') {%>
+			                            	<h3>$0.00</h3>
+		                    <%} else {%>
+			                	<h3>No disponible</h3>
+                            <%}%>
+                        </div>
+                        <div class="col-sm-9">
+                            <a href="<%= contracts[i].planning_active || contracts[i].tender_status != null || contracts[i].award_status != null ||
+                                contracts[i].contract_status != null || contracts[i].implementation_status != null ? (
+                                    "/contratacionesabiertas/contrato/" + contracts[i].localid + "/" + indicador.actual
+                                ) : "javascript:void(0);"
+                                %>">
+                                    <h4><% if ( typeof contracts[i].title == "string" ){%>
+                                        <%= (contracts[i].title.length < 110 )? contracts[i].title: contracts[i].title.substring(0,109)+'...' %>
+                                    <%} else{%>
+                                        No disponible
+                                    <%}%></h4>
+                                    <p class="small">ID Procedimiento: <%= contracts[i].ocid %></p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="inner item-footer">
+                    <div class="row">
+                        <div class="col-sm-3" style="pointer-events:none;">
+                            <p class="legend">Etapa</p>
+	                            <a class="small" style="color:#000000"><%= indicador.texto %></a>
+                        	<ul class="stages-icons">
+                                <% for(var x = 0; x < indicador.iconos.length; x++) {%>
+                                    <li><img class="<%= indicador.iconos[x].clase %>" src="<%= indicador.iconos[x].url %>"></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style="pointer-events:none;">
+                            <p class="legend">Tipo</p>
+                            <a class="small" style="color:#000000"><%= contracts[i].procurementmethod_details %></a>
+                        </div>
+                        <div class="col-sm-3" style="pointer-events:none;">
+                            <p class="legend">Proveedor</p>                                                              
+                            <%  if (contracts[i].identifier_legalname_supplier === ''){%>                           
+                            	<%= contracts[i].name_supplier %>
+		                    <%} else {%>
+			                	<%= contracts[i].identifier_legalname_supplier %>
+                            <%}%>
+                        </div>
+                        <div class="col-sm-2" style="pointer-events:none;">
+                            <p class="legend">Área requirente</p>
+                            <a class="small" style="color:#000000"><%= contracts[i].name %></a>
+                        </div>
+                        <div class="col-sm-2" style="pointer-events:none;">
+                            <p class="legend">Fecha de firma</p>
+                            <% if ( contracts[i].datesigned instanceof Date ){%>
+                            <a class="small" style="color:#000000">
+	                            <%  fecha = contracts[i].datesigned%>
+					            <%  dia = fecha.getDate() %>
+					            <%  mes = fecha.getMonth()+1 %>
+					            <%  anio = fecha.getFullYear() %>
+					            <% 	if(dia<10)
+									{
+									    dia='0'+dia;
+									} 
+									%>
+								<% 	if(mes<10) 
+									{
+									    mes='0'+mes;
+									} 
+									%>
+					            <%= formato = dia + '/' + mes + '/' + anio %>
+					        </a>
+                            <%} else {%>
+                            <a class="small" style="color:#000000">No disponible</a>
+                            <%}%>
+                        </div>
+                    
+           <!-- Botón de descarga de json -->
+			           	
+			         </div>
+			      </div>
+			   </div>
+			   <div class="contract-download col-md-1">
+                   <p><b>Formato</b></p>
+                   <div>
+                        <a href="<%= `${process.env.CAPTURE_URL||'http://localhost:3000'}/record-package/${contracts[i].ocid}` %>" download="<%= `record-package_${contracts[i].ocid}.json` %>"><span class="dataset-format" data-format="JSON">JSON</span></a>
+                        <a href="<%= `/contratacionesabiertas/contrato/${contracts[i].localid}/download` %>" download="<%= `${contracts[i].ocid}.pdf` %>"><span class="dataset-format" data-format="PDF">PDF</span></a>
+                   </div>
+			   </div>          
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-- PAGINATION -->
+<div class="text-center">
+    <ul class="pagination">
+
+        <% if (cmetadata.current_page > 1 ){%>
+        <li>
+            <a href="#lista" data-page="<%= (cmetadata.current_page-1) %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <%}%>
+
+        <!-- previas -->
+        <% if (cmetadata.current_page <= 4){
+        for (var i=1; i < cmetadata.current_page; i++){
+        %>
+        <li><a href="#lista" data-page="<%=i%>"> <%= i %> </a></li>
+        <%}}else{ %>
+        <li><a href="#lista" data-page="<%= 1 %>"> 1 </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page - 1 %>"> ... </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page - 2 %>"> <%= cmetadata.current_page - 2 %> </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page - 1 %>"> <%= cmetadata.current_page -1 %> </a></li>
+        <%}%>
+
+        <!-- actual -->
+        <li  class="active" ><a href="#lista" data-page="<%= cmetadata.current_page%>"> <%= cmetadata.current_page %> </a></li>
+
+        <!-- siguientes -->
+        <% if ( cmetadata.page_count - cmetadata.current_page <= 4){
+        for (var i= cmetadata.current_page+1; i <= cmetadata.page_count; i++){ %>
+        <li><a href="#lista" data-page="<%=i%>"> <%= i %> </a></li>
+        <% } }else {%>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page + 1%>"> <%= cmetadata.current_page + 1 %> </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page + 2%>"> <%= cmetadata.current_page + 2 %> </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.current_page + 1%>"> ... </a></li>
+        <li><a href="#lista" data-page="<%= cmetadata.page_count %>"> <%= cmetadata.page_count %> </a></li>
+
+        <%}%>
+
+        <% if ( cmetadata.current_page < cmetadata.page_count){%>
+        <li>
+            <a href="#lista" data-page="<%= (cmetadata.current_page +1) %>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        <%}%>
+
+    </ul>
+</div>
