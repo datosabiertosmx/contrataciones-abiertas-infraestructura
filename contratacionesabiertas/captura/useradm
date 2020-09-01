@@ -1,0 +1,169 @@
+#!/usr/bin/env node
+
+if ( typeof process.argv[2] !== 'undefined'){
+    var bcrypt = require ('bcrypt-nodejs');
+    var dbConfig = require('./db.js');
+    var mongoose = require('mongoose');
+    mongoose.Promise = require('bluebird');
+    mongoose.connect(dbConfig.url,{useMongoClient: true});
+    var User = require('./models/user');
+    var db = mongoose.connection;
+
+    db.on('error', console.error.bind(console, 'connection error:'));
+
+    var prompt = require('prompt');
+    prompt.start();
+
+
+    switch ( process.argv[2]){
+        case "add":
+            if (typeof process.argv[3] !== 'undefined' ){
+
+                User.findOne({'username': process.argv[3] }, function (err, user) {
+                    if (err) return console.error(err);
+
+                    if ( user ){
+                        console.log('User already exists with username: ', process.argv[3]);
+                        mongoose.disconnect();
+                    }else{
+
+                        console.log('Está a punto de crear el usuario: ', process.argv[3]);
+
+                        var schema = {
+                            properties: {
+                                name: {
+                                    description: 'Nombre',
+                                    pattern: /^[a-zA-Z\s\-]+$/,
+                                    message: 'Nombre',
+                                    required: true
+                                },
+                                lastname: {
+                                    description: "Apellidos",
+                                    pattern: /^[a-zA-Z\s\-]+$/,
+                                    message: 'Apellidos',
+                                    required: true
+                                },
+                                password: {
+                                    hidden: true,
+                                    required: true,
+                                    description: 'Ingrese una contraseña',
+                                    replace: '*'
+                                },
+                                isAdmin: {
+                                    description: '¿El usuario es administrador? (t = Sí; f = No)',
+                                    format: "boolean",
+                                    required: true,
+                                    default: false,
+                                    message: 'Propocione una respuesta válida (t = Sí; f = No)'
+                                },
+                                email: {
+                                    description: 'Ingrese su email',
+                                    format: 'email',
+                                    required: true,
+                                    message: 'Ingrese un email válido'
+                                },
+                                address: {
+                                    description: 'Proporcione su dirección',
+                                    required: true,
+                                    message: 'Debe proporcinar una dirección'
+                                }
+                            }
+                        };
+
+                        prompt.get(schema, function (error, result) {
+
+                            var u = new User({
+                                'name': result.name,
+                                'lastname': result.lastname,
+                                'username': process.argv[3],
+                                'password': bcrypt.hashSync(result.password, bcrypt.genSaltSync(10), null),
+                                'isAdmin': result.isAdmin,
+                                'email': result.email,
+                                'address': result.address
+                            });
+
+                            u.save(function (err, u) {
+                                if (err) return console.error(err);
+                                console.log('add user:\n',u);
+                                mongoose.disconnect();
+                            });
+                        });
+                    }
+                });
+            }else {
+                mongoose.disconnect();
+                console.log("Example:\n\t./useradm add <username>");
+            }
+            break;
+        case "delete":
+            if (typeof process.argv[3] !== 'undefined') {
+                console.log("Delete user:");
+                User.find({"username": process.argv[3]}, function(err, users){
+                    if (err) return console.error(err);
+                    console.log(users);
+                    for (var i =0; i< users.length ;i++){
+                        users[i].remove();
+                    }
+                    mongoose.disconnect();
+                });
+            }else {
+                mongoose.disconnect();
+                console.log('Example:\n\t./useradm delete <username>');
+            }
+            break;
+        case "chpwd":
+            if ( typeof process.argv[3] !== 'undefined') {
+
+                var schema = {
+                    properties: {
+                        password: {
+                            hidden: true,
+                            required: true,
+                            description: 'Ingrese la nueva contraseña',
+                            replace: '*'
+                        }
+                    }
+                };
+
+                prompt.get(schema, function(error, result ){
+                    User.findOne({ 'username': process.argv[3] }, function(err, user){
+                        //error
+                        if ( user ){
+                            user.password = bcrypt.hashSync(result.password, bcrypt.genSaltSync(10), null);
+                            user.save(function (err, user) {
+                                if (err) return console.error(err, user);
+                                console.log('Change user password:\n',user);
+                                mongoose.disconnect();
+                            });
+                        } else {
+                            console.log("User not found: " , process.argv[3] );
+                            mongoose.disconnect();
+                        }
+                    });
+
+                });
+
+            }else{
+                mongoose.disconnect();
+                console.log("Example:\n\t./useradm chpwd <username>");
+            }
+            break;
+        case "list":
+            console.log("User list:");
+            User.find(function (err, users) {
+                if (err) return console.error(err);
+                console.log(users);
+                mongoose.disconnect();
+            });
+            break;
+        default:
+            console.log ("Unrecognized option");
+            mongoose.disconnect();
+    }
+
+}else{
+    console.log("Usage: ./useradm <command>\n\twhere <command> is one of:\n" +
+        "\tadd, delete, chpwd, list");
+}
+
+
