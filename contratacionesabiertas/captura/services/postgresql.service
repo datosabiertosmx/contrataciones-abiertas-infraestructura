@@ -1,0 +1,21 @@
+[Unit]
+Description=PostgreSQL 9.5.4
+Documentation=https://hub.docker.com/_/postgres/
+Requires=flanneld.service
+After=flanneld.service
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+KillMode=none
+
+ExecStartPre=-/usr/bin/docker kill postgres
+ExecStartPre=-/usr/bin/docker rm postgres
+ExecStartPre=-/usr/bin/docker pull postgres:9.5.4
+ExecStart=/usr/bin/docker run \
+  --name=postgres \
+  -e POSTGRES_PASSWORD=super-secret-password \
+  -v /storage/postgres:/var/lib/postgresql/data \
+  postgres:9.5.4
+ExecStop=/usr/bin/docker stop postgres

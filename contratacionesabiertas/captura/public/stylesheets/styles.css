@@ -1,0 +1,25 @@
+button.multiselect {
+    text-align: left;
+}
+
+button.multiselect .caret {
+    position: absolute;
+    left: 97%;
+    top: 45%;
+}
+
+ul.multiselect-container.dropdown-menu {
+    width: 100%;
+}
+
+ul.multiselect-container.dropdown-menu > li label {
+    padding-left: 20px;
+}
+
+ul.multiselect-container.dropdown-menu > li input[type="checkbox"] {
+    display: none;
+}
+
+.ui-autocomplete {
+    z-index: 9999 !important;
+}

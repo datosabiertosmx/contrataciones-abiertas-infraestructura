@@ -1,0 +1,22 @@
+[Unit]
+Description=MongoDB Minimal Server
+Documentation=https://github.com/mxabierto/dockerfile/tree/master/mongodb-min
+Requires=flanneld.service
+After=flanneld.service
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+KillMode=none
+
+ExecStartPre=/bin/sh -c "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+ExecStartPre=/bin/sh -c "echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+ExecStartPre=-/usr/bin/docker kill mongodb
+ExecStartPre=-/usr/bin/docker rm mongodb
+ExecStartPre=-/usr/bin/docker pull mxabierto/mongodb-min
+ExecStart=/usr/bin/docker run \
+  --name=mongodb \
+  -v /storage/mongodb:/data/db \
+  mxabierto/mongodb-min
+ExecStop=/usr/bin/docker stop mongodb

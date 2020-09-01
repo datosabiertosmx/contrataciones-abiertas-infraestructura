@@ -1,0 +1,49 @@
+
+/***********************
+    JSON
+***********************/
+pre {padding: 5px; margin: 5px; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+
+
+
+/*******************
+    Indicador de validacion
+*******************/
+.indicator{
+    position: relative;
+    text-decoration: underline;
+}
+.indicator:after{
+    content: '';
+    height: 0;
+    width: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid #d82323;
+    position: absolute;
+    right: -10px;
+    top: 5px;
+}
+
+
+#validation-results th {
+    background-image: -webkit-linear-gradient(top,#3c3c3c 0,#222 100%);
+    background-image: -o-linear-gradient(top,#3c3c3c 0,#222 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#3c3c3c),to(#222));
+    background-image: linear-gradient(to bottom,#3c3c3c 0,#222 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+    color: #fff;
+    text-align:center;
+}
+
+#tValidationSearch th,
+#tValidationSearch td{
+    text-align: center;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "scripts",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "bcrypt-nodejs": "*.*",
+    "bluebird": "^3.4.6",
+    "csvtojson": "*.*",
+    "mongoose": "^4.4.20",
+    "pg-promise": "*.*"
+  }
+}

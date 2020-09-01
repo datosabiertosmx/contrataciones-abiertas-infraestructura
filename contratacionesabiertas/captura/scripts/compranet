@@ -1,0 +1,155 @@
+#!/usr/bin/env node
+
+if ( typeof process.argv[2] != 'undefined') {
+    var pgp = require('pg-promise')();
+    var db = pgp('postgres://tester:test@localhost/edca');
+
+//Converter Class
+    var Converter = require("csvtojson").Converter;
+    var converter = new Converter({
+        constructResult: false
+    });
+
+    console.log("CompraNet -> EDCA");
+
+    /*
+     converter.on("end_parsed", function (jsonArray) {
+     console.log(jsonArray[0]);
+     console.log('Hecho ;)');
+     });
+     */
+
+    /*
+     Ejemplo de registro de CompraNet:
+     GOBIERNO: 'APF',
+     SIGLAS: 'ASA',  //OCID
+     DEPENDENCIA: 'Aeropuertos y Servicios Auxiliares', //publisher
+     CLAVEUC: '009JZL024', //buyer
+     NOMBRE_DE_LA_UC: 'ASA-ESTACION DE COMBUSTIBLES MAZATLAN (MZT)', //buyer
+     RESPONSABLE: 'José Eduardo Ramírez Ayala', //buyer
+     CODIGO_EXPEDIENTE: 831709, //OCID
+     TITULO_EXPEDIENTE: '2015 MANTENIMIENTO SISTEMA ALUMBRADO VIALIDADES MZT', //contract
+     PLANTILLA_EXPEDIENTE: '22. Adjudicación Directa Nacional Art. 43 LOPSRM',
+     NUMERO_PROCEDIMIENTO: 'AO-009JZL024-N5-2015',
+     EXP_F_FALLO: '', //??
+     PROC_F_PUBLICACION: '2015-06-10 15:38', //tender
+     FECHA_APERTURA_PROPOSICIONES: '2015-06-10 17:00', // tender
+     CARACTER: 'Nacional',
+     TIPO_CONTRATACION: 'Servicios',  //provider -> scheme, contract -> description
+     TIPO_PROCEDIMIENTO: 'Adjudicación Directa Federal',
+     FORMA_PROCEDIMIENTO: 'Mixta',
+     CODIGO_CONTRATO: 824023, // contract id
+     TITULO_CONTRATO: '2015 MANTENIMIENTO SISTEMA ALUMBRADO VIALIDADES MZT', // contract -> title
+     FECHA_INICIO: '2015-07-15', //contract period START date -> AWARD
+     FECHA_FIN: '2015-07-17',  //contract period enddate -> AWARD
+     IMPORTE_CONTRATO: 134900,   //contract -> valor monto
+     MONEDA: 'MXN',              //contract -> valor divisa
+     ESTATUS_CONTRATO: 'Expirado', //contract status ¿?
+     ARCHIVADO: 'No', //¿?
+     RAMO: '', //??
+     CLAVE_PROGRAMA: '',//??
+     APORTACION_FEDERAL: '',//??
+     FECHA_CELEBRACION: '2015-07-14 00:00:00 GMT', //contract -> date signed
+     CONTRATO_MARCO: 0, //¿?
+     COMPRA_CONSOLIDADA: 0,//??
+     PLURIANUAL: 0,//??
+     CLAVE_CARTERA_SHCP: '', //??
+     ESTRATIFICACION_MUC: 'Micro',//??
+     FOLIO_RUPC: 35899, //??
+     PROVEEDOR_CONTRATISTA: 'MANUEL GARCIA CAVAZOS', //supplier
+     ESTRATIFICACION_MPC: 'Micro', //??
+     ESTATUS_EMPRESA: 'HABILITADO', //??
+     CUENTA_ADMINISTRADA_POR: 'PoC' //??
+     */
+
+    converter.on("record_parsed", function (jsonObj) {
+        // console.log(jsonObj);
+
+        db.tx(function (t) {
+
+            return t.one("insert into ContractingProcess (ocid, fecha_creacion, hora_creacion) values ($1, current_date, current_time) returning id", [
+                //jsonObj.SIGLAS + "-E" + jsonObj.CODIGO_EXPEDIENTE+"-C"+jsonObj.CODIGO_CONTRATO
+                jsonObj.SIGLAS+"-"+jsonObj.NUMERO_PROCEDIMIENTO
+
+            ]).then(function (process) {
+
+                var planning = t.one("insert into Planning (ContractingProcess_id) values ($1) returning id", process.id);
+                var tender = t.one("insert into Tender (ContractingProcess_id,status) values ($1, $2) returning id as tender_id", [
+                    process.id,
+                    'none'
+                ]);
+
+                var contract = t.one("insert into Contract (ContractingProcess_id, contractid, title, status, period_startdate, period_enddate, value_amount, value_currency, datesigned) " +
+                    "values ($1, $2, $3, $4,$5,$6,$7,$8,$9) returning id", [
+                    process.id,
+                    jsonObj.CODIGO_CONTRATO,
+                    jsonObj.TITULO_CONTRATO,
+                    'none',
+                    (jsonObj.FECHA_INICIO != '') ? jsonObj.FECHA_INICIO : null,
+                    (jsonObj.FECHA_FIN != '') ? jsonObj.FECHA_FIN : null,
+                    jsonObj.IMPORTE_CONTRATO,
+                    jsonObj.MONEDA,
+                    (jsonObj.FECHA_CELEBRACION != '') ? jsonObj.FECHA_CELEBRACION : null
+
+                ]);
+
+                return t.batch([process = {id: process.id}, planning, tender, contract]);
+
+            }).then(function (info) {
+
+                var process = {process_id: info[0].id};
+                var planning = {planning_id: info[1].id};
+
+                return t.batch([
+                    process,
+                    planning,
+                    t.one("insert into Budget (ContractingProcess_id, Planning_id) values ($1, $2 ) returning id as budget_id", [info[0].id, info[1].id]),
+                    t.one("insert into Buyer (ContractingProcess_id, name , identifier_scheme, identifier_id, identifier_legalname, contactpoint_name) " +
+                        "values ($1,$2,$3,$4,$5,$6) returning id as buyer_id",
+                        [
+                            info[0].id,
+                            jsonObj.DEPENDENCIA,
+                            jsonObj.SIGLAS,
+                            jsonObj.CLAVEUC,
+                            jsonObj.NOMBRE_DE_LA_UC,
+                            jsonObj.RESPONSABLE
+                        ]),
+                    t.one("insert into ProcuringEntity (contractingprocess_id, tender_id) values ($1, $2) returning id as procuringentity_id", [
+                        info[0].id,
+                        info[2].id
+                    ]),
+                    t.one("insert into Award (ContractingProcess_id,status) values ($1, $2) returning id as award_id", [info[0].id, 'none']),
+                    t.one("insert into Implementation (ContractingProcess_id, Contract_id ) values ($1, $2) returning id as implementation_id", [info[0].id, info[3].id]),
+                    t.one("insert into Publisher (ContractingProcess_id, name, scheme ) " +
+                        "values ($1,$2,$3) returning id as publisher_id",
+                        [
+                            info[0].id,
+                            jsonObj.DEPENDENCIA,
+                            jsonObj.SIGLAS
+                        ]),
+                    t.one("insert into supplier (contractingprocess_id, name, identifier_scheme ) values ($1, $2, $3) returning id as supplier_id", [
+                        info[0].id,
+                        jsonObj.PROVEEDOR_CONTRATISTA,
+                        jsonObj.TIPO_CONTRATACION
+
+                    ])
+                ])
+
+            });
+        }).then(function (data) {
+            //console.log(data);
+        }).catch(function (error) {
+            console.log("ERROR: ", error);
+
+            console.log(jsonObj.FECHA_INICIO);
+            console.log(jsonObj.FECHA_FIN);
+            console.log(jsonObj.FECHA_CELEBRACION);
+
+        });
+    });
+
+//read from file
+    require("fs").createReadStream(process.argv[2]).pipe(converter);
+}else{
+    console.log("Proporciona la ruta al archivo CSV");
+}

@@ -1,0 +1,60 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic);
+
+body{
+    background-color:#000000;
+    background: url(../images/aeropuerto.jpeg);
+    background-size: cover;
+}
+/*
+.btn {
+    padding: 4px 14px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: #00cc99;
+    color: #FFFFFF;
+}
+ 
+
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+                               }
+*/
+.title{
+    color: #FFFFFF;
+    font-weight:bold;
+}
+
+.login-text{
+    font-size-base: 20px;
+    color: #FFFFFF;
+}
+
+.login-buffer{
+    margin-top:250px;
+    margin-bottom: 200px;
+}
+
+/*
+.btn-primary {
+    background: #00cc99;
+    color: #FFFFFF;
+}
+
+.btn-primary.raised:active, .btn-primary.raised.active {
+	background: #33a6cc;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+
+ 
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background: #4d4d4d;
+}
+ 
+.btn-primary:active, .btn-primary.active {
+    background: #4d4d4d;
+    box-shadow: none;
+}*/

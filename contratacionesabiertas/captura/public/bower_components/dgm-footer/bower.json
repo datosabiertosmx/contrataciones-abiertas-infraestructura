@@ -1,0 +1,14 @@
+{
+    "name"          : "dgm-footer",
+    "version"       : "1.2.6",
+    "license"       : "MIT",
+    "main"          : "dgm-footer.html",
+    "dependencies"  : {
+        "polymer"   : "Polymer/polymer#^1.1"
+    },
+    "keywords"      : [
+        "datos.gob.mx",
+        "dgm",
+        "dgm-footer"
+    ]
+}

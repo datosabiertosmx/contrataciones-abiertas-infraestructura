@@ -1,0 +1,21 @@
+[Unit]
+Description=MXAbierto EDCA
+Documentation=https://github.com/mxabierto/EDCA
+Requires=postgresql.service
+After=postgresql.service
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=0
+KillMode=none
+
+ExecStartPre=-/usr/bin/docker kill edca
+ExecStartPre=-/usr/bin/docker rm edca
+ExecStart=/usr/bin/docker run \
+  --name=edca \
+  --link mongodb:mongodb \
+  --link postgres:postgres \
+  -p 8999:3000 \
+  mxabierto/edca
+ExecStop=/usr/bin/docker stop edca

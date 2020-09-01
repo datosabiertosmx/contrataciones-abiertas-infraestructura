@@ -1,0 +1,892 @@
+
+{
+    // B
+    "43335": {
+        "titulo": "Resultados adjudicaciones, invitaciones y licitaciones_Procedimientos de adjudicación directa",
+        "campos": [
+            {
+                "idCampo": 334233,
+                "etiqueta": "Ejercicio",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334258,
+                "etiqueta": "Fecha de inicio del periodo que se informa",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334259,
+                "etiqueta": "Fecha de término del periodo que se informa",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334270,
+                "etiqueta": "Tipo de procedimiento (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Adjudicación directa"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Otra (especificar)"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334269,
+                "etiqueta": "Materia (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Obra pública"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Servicios relacionados con obra pública"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Adquisiciones"
+                    },
+                    {
+                        "orden": 3,
+                        "descripcion": "Arrendamientos"
+                    },
+                    {
+                        "orden": 4,
+                        "descripcion": "Servicios"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334230,
+                "etiqueta": "Número de expediente, folio o nomenclatura que lo identifique",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334238,
+                "etiqueta": "Motivos y fundamentos legales aplicados para realizar la adjudicación directa",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334250,
+                "etiqueta": "Hipervínculo a la autorización del ejercicio de la opción", 
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334239,
+                "etiqueta": "Descripción de obras, bienes o servicios", 
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334271,
+                "etiqueta": "Nombre completo o razón social de las cotizaciones consideradas y monto de las mismas",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43311,
+                        "etiqueta": "Nombre(s)",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43312,
+                        "etiqueta": "Primer apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43313,
+                        "etiqueta": "Segundo apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43314,
+                        "etiqueta": "Razón social",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43315,
+                        "etiqueta": "RFC de los posibles contratantes ",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43316,
+                        "etiqueta": "Monto total de la cotización con impuestos incluidos",
+                        "tipoDato": "Moneda"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334264,
+                "etiqueta": "Nombre(s) del adjudicado",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334260,
+                "etiqueta": "Primer apellido del adjudicado",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334265,
+                "etiqueta": "Segundo apellido del adjudicado",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334266,
+                "etiqueta": "Razón social del adjudicado",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334267,
+                "etiqueta": "Registro Federal de Contribuyentes (RFC) de la persona física o moral adjudicada",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334235,
+                "etiqueta": "Área(s) solicitante(s) ",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334236,
+                "etiqueta": "Área(s) responsable(s) de la ejecución del contrato ",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334231,
+                "etiqueta": "Número que identifique al contrato",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334243,
+                "etiqueta": "Fecha del contrato",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334244,
+                "etiqueta": "Monto del contrato sin impuestos incluidos",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334245,
+                "etiqueta": "Monto total del contrato con impuestos incluidos (expresado en pesos mexicanos)",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334247,
+                "etiqueta": "Monto mínimo, en su caso",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334248,
+                "etiqueta": "Monto máximo, en su caso",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334228,
+                "etiqueta": "Tipo de moneda",
+                "tipoDato": "Texto corto",
+                "idTipoDato": 1
+            },
+            {
+                "idCampo": 334229,
+                "etiqueta": "Tipo de cambio de referencia, en su caso",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334232,
+                "etiqueta": "Forma de pago",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334240,
+                "etiqueta": "Objeto del contrato",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334246,
+                "etiqueta": "Monto total de garantías y/o contragarantías, en caso de que se otorgaran durante el procedimiento",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334241,
+                "etiqueta": "Fecha de inicio del plazo de entrega o ejecución de servicios contratados u obra pública",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334261,
+                "etiqueta": "Fecha de término del plazo de entrega o ejecución de servicios u obra pública",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334254,
+                "etiqueta": "Hipervínculo al documento del contrato y anexos, versión pública si así corresponde",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334253,
+                "etiqueta": "Hipervínculo al comunicado de suspensión, rescisión o terminación anticipada del contrato",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334234,
+                "etiqueta": "Origen de los recursos públicos",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334272,
+                "etiqueta": "Fuentes de financiamiento ",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334255,
+                "etiqueta": "Datos de la obra pública y/o servicios relacionados con la misma",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43303,
+                        "etiqueta": "Lugar donde se realizará la obra pública",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43304,
+                        "etiqueta": "Hipervínculo a estudios de impacto urbano y ambiental",
+                        "tipoDato": "Página web (url)"
+                    },
+                    {
+                        "idCampo": 43305,
+                        "etiqueta": "En su caso, observaciones dirigidas a la población",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43306,
+                        "etiqueta": "Etapa de la obra pública y/o servicio de la misma (catálogo)",
+                        "tipoDato": "Catálogo",
+                        "valor": [
+                            {
+                                "orden": 0,
+                                "descripcion": "en planeación"
+                            },
+                            {
+                                "orden": 1,
+                                "descripcion": "en ejecución"
+                            },
+                            {
+                                "orden": 2,
+                                "descripcion": "en finiquito"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "idCampo": 334273,
+                "etiqueta": "Se realizaron convenios modificatorios (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Si"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "No"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334268,
+                "etiqueta": "Datos de los convenios modificatorios de la contratación",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43307,
+                        "etiqueta": "Número de convenio modificatorio",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43308,
+                        "etiqueta": "Objeto del convenio modificatorio",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43309,
+                        "etiqueta": "Fecha de firma del convenio modificatorio",
+                        "tipoDato": "Fecha"
+                    },
+                    {
+                        "idCampo": 43310,
+                        "etiqueta": "Hipervínculo al documento del convenio",
+                        "tipoDato": "Página web (url)"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334237,
+                "etiqueta": "Mecanismos de vigilancia y supervisión contratos",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334274,
+                "etiqueta": "Hipervínculo, en su caso a los informes de avance físico en versión pública",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334251,
+                "etiqueta": "Hipervínculo a los informes de avance financiero",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334252,
+                "etiqueta": "Hipervínculo acta de recepción física de trabajos ejecutados u homóloga",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334249,
+                "etiqueta": "Hipervínculo al finiquito",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334262,
+                "etiqueta": "Área(s) responsable(s) que genera(n), posee(n), publica(n) y actualizan la información",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334242,
+                "etiqueta": "Fecha de validación",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334257,
+                "etiqueta": "Fecha de actualización",
+                "tipoDato": "Fecha Actualización"
+            },
+            {
+                "idCampo": 334263,
+                "etiqueta": "Nota",
+                "tipoDato": "Nota"
+            }
+        ]
+    },
+    // A
+    "43336": {
+        "titulo": "Resultados adjudicaciones, invitaciones y licitaciones_Procedimientos de licitación pública e invitación a cuando menos tres personas",
+        "campos": [
+            {
+                "idCampo": 334280,
+                "etiqueta": "Ejercicio",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334314,
+                "etiqueta": "Fecha de inicio del periodo que se informa",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334315,
+                "etiqueta": "Fecha de término del periodo que se informa",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334323,
+                "etiqueta": "Tipo de procedimiento (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Licitación pública"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Invitación a cuando menos tres personas"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Otro (especificar)"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334304,
+                "etiqueta": "Materia (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Obra pública"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Servicios relacionados con obra pública"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Adquisiciones"
+                    },
+                    {
+                        "orden": 3,
+                        "descripcion": "Arrendamientos"
+                    },
+                    {
+                        "orden": 4,
+                        "descripcion": "Servicios"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334277,
+                "etiqueta": "Posibles contratantes",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43317,
+                        "etiqueta": "Nombre(s)",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43318,
+                        "etiqueta": "Primer apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43319,
+                        "etiqueta": "Segundo apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43320,
+                        "etiqueta": "Razón Social",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43321,
+                        "etiqueta": "RFC de los posibles contratantes ",
+                        "tipoDato": "Texto corto"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334278,
+                "etiqueta": "Número de expediente, folio o nomenclatura",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334331,
+                "etiqueta": "Hipervínculo a la convocatoria o invitaciones emitidas",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334332,
+                "etiqueta": "Fecha de la convocatoria o invitación ",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334287,
+                "etiqueta": "Descripción de las obras, bienes o servicios",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334306,
+                "etiqueta": "Personas físicas o morales con proposición u oferta",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43322,
+                        "etiqueta": "Nombre(s)",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43323,
+                        "etiqueta": "Primer apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43324,
+                        "etiqueta": "Segundo apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43325,
+                        "etiqueta": "Denominación o razón social",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43326,
+                        "etiqueta": "RFC de las personas físicas o morales que presentaron una proposición u oferta",
+                        "tipoDato": "Texto corto"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334334,
+                "etiqueta": "Fecha en la que se celebró la junta de aclaraciones",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334307,
+                "etiqueta": "Relación de asistentes a la junta de aclaraciones",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43327,
+                        "etiqueta": "Nombre(s)",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43328,
+                        "etiqueta": "Primer apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43329,
+                        "etiqueta": "Segundo apellido",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43330,
+                        "etiqueta": "Denominación o razón social",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43331,
+                        "etiqueta": "RFC de las personas físicas o morales asistentes a la junta de aclaraciones",
+                        "tipoDato": "Texto corto"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334308,
+                "etiqueta": "Relación con los datos de los servidores públicos asistentes a la junta de aclaraciones",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43332,
+                        "etiqueta": "Nombre(s) del Servidor Público",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43333,
+                        "etiqueta": "Primer apellido del Servidor Público",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43334,
+                        "etiqueta": "Segundo apellido del Servidor Público",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43335,
+                        "etiqueta": "Cargo que ocupa el Servidor Público dentro del SO",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43336,
+                        "etiqueta": "RFC de los servidores públicos asistentes a la junta de aclaraciones",
+                        "tipoDato": "Texto corto"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334279,
+                "etiqueta": "Hipervínculo al fallo de la junta de aclaraciones o al documento correspondiente",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334335,
+                "etiqueta": "Hipervínculo al documento donde conste la presentación las propuestas",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334275,
+                "etiqueta": "Hipervínculo al (los) dictámenes, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334324,
+                "etiqueta": "Nombre(s) del contratista o proveedor ",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334316,
+                "etiqueta": "Primer apellido del contratista o proveedor",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334317,
+                "etiqueta": "Segundo apellido del contratista o proveedor",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334318,
+                "etiqueta": "Razón social del contratista o proveedor",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334325,
+                "etiqueta": "RFC de la persona física o moral contratista o proveedor ",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334326,
+                "etiqueta": "Descripción de las razones que justifican su elección",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334285,
+                "etiqueta": "Área(s) solicitante",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334284,
+                "etiqueta": "Área(s) contratante(s)",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334286,
+                "etiqueta": "Área(s) responsable de su ejecución",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334281,
+                "etiqueta": "Número que identifique al contrato ",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334290,
+                "etiqueta": "Fecha del contrato",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334295,
+                "etiqueta": "Monto del contrato sin impuestos (en MXN)",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334296,
+                "etiqueta": "Monto total del contrato con impuestos incluidos (MXN)",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334294,
+                "etiqueta": "Monto mínimo, con impuestos incluidos, en su caso",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334297,
+                "etiqueta": "Monto máximo, con impuestos incluidos, en su caso",
+                "tipoDato": "Moneda"
+            },
+            {
+                "idCampo": 334283,
+                "etiqueta": "Tipo de moneda",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334282,
+                "etiqueta": "Tipo de cambio de referencia, en su caso",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334327,
+                "etiqueta": "Forma de pago",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334288,
+                "etiqueta": "Objeto del contrato",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334292,
+                "etiqueta": "Fecha de inicio del plazo de entrega o ejecución",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334291,
+                "etiqueta": "Fecha de término del plazo de entrega o ejecución",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334301,
+                "etiqueta": "Hipervínculo al documento del contrato y anexos, en versión pública, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334302,
+                "etiqueta": "Hipervínculo al comunicado de suspensión, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334309,
+                "etiqueta": "Partida presupuestal de acuerdo con el COG",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43337,
+                        "etiqueta": "Partida Presupuestal",
+                        "tipoDato": "Texto corto"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334313,
+                "etiqueta": "Origen de los recursos públicos (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Federales"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Estatales"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Municipales"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334333,
+                "etiqueta": "Fuente de financiamiento",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334276,
+                "etiqueta": "Tipo de fondo de participación o aportación respectiva",
+                "tipoDato": "Texto corto"
+            },
+            {
+                "idCampo": 334328,
+                "etiqueta": "Lugar donde se realizará la obra pública, en su caso",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334319,
+                "etiqueta": "Breve descripción de la obra pública, en su caso",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334329,
+                "etiqueta": "Hipervínculo a los estudios de impacto urbano y ambiental, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334330,
+                "etiqueta": "Observaciones dirigidas a la población relativas a la realización de las obras públicas, en su caso",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334320,
+                "etiqueta": "Etapa de la obra pública y/o servicio de la misma (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "En planeación"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "En ejecución"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "En finiquito"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334305,
+                "etiqueta": "Se realizaron convenios modificatorios (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Si"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "No"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334310,
+                "etiqueta": "Convenios modificatorios",
+                "tipoDato": "Tabla",
+                "valor": [
+                    {
+                        "idCampo": 43338,
+                        "etiqueta": "Número de convenio modificatorio",
+                        "tipoDato": "Texto corto"
+                    },
+                    {
+                        "idCampo": 43339,
+                        "etiqueta": "Objeto del convenio modificatorio",
+                        "tipoDato": "Texto largo"
+                    },
+                    {
+                        "idCampo": 43340,
+                        "etiqueta": "Fecha de firma del convenio modificatorio",
+                        "tipoDato": "Fecha"
+                    },
+                    {
+                        "idCampo": 43341,
+                        "etiqueta": "Hipervínculo al documento del convenio",
+                        "tipoDato": "Página web (url)"
+                    }
+                ]
+            },
+            {
+                "idCampo": 334289,
+                "etiqueta": "Mecanismos de vigilancia y supervisión de la ejecución, en su caso",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334298,
+                "etiqueta": "Hipervínculo a informes de avances físicos, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334303,
+                "etiqueta": "Hipervínculo a los informes de avance financiero, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334299,
+                "etiqueta": "Hipervínculo al acta de recepción física de los trabajos ejecutados u homóloga, en su caso",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334300,
+                "etiqueta": "Hipervínculo al finiquito, en su  caso ",
+                "tipoDato": "Página web (url)"
+            },
+            {
+                "idCampo": 334321,
+                "etiqueta": "Área(s) responsable(s) que genera(n), posee(n), publica(n) y actualizan la información",
+                "tipoDato": "Texto largo"
+            },
+            {
+                "idCampo": 334293,
+                "etiqueta": "Fecha de validación",
+                "tipoDato": "Fecha"
+            },
+            {
+                "idCampo": 334312,
+                "etiqueta": "Fecha de actualización",
+                "tipoDato": "Fecha Actualización"
+            },
+            {
+                "idCampo": 334322,
+                "etiqueta": "Nota",
+                "tipoDato": "Nota"
+            }
+        ]
+    }
+}
+
+
+

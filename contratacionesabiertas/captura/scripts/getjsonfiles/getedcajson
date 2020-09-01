@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+var pgp = require('pg-promise')();
+var edca_db = pgp('postgres://tester:test@localhost/edca');
+var jsonfile = require('jsonfile');
+var ocds = require('../../io/ocds');
+
+var _data = [];
+
+edca_db.manyOrNone('select id from contractingprocess order by ocid').then(function(IDs) {
+
+    edca_db.task(function (t) {
+        for (var id of IDs) {
+            //console.log(id );
+            _data.push(ocds.getOCDSJSON(id.id , "release-package", edca_db));
+        }
+
+        return this.batch(_data);
+
+    }).then(function (data) {
+        for (let i = 0; i < data.length; i++) {
+
+            var ocid = data[i].releases[0].ocid.replace(/\//g, "_").trim();
+
+            console.log('Writing JSON: OCID -> ' + ocid);
+            var file = "output/" + ocid +
+                //"_"+data.localid+
+                ".json";
+
+            delete data[i].localid;
+
+            jsonfile.writeFileSync(file, data, {spaces: 2}, function (err) {
+                console.error("error: ", err);
+            });
+        }
+
+        console.log('Success!!!');
+        pgp.end();
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+});

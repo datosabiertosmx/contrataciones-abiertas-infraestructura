@@ -1,0 +1,33 @@
+{
+  "name": "edcamx",
+  "homepage": "https://github.com/mxabierto/EDCA",
+  "authors": [
+    "Mario Torres <mario291187@gmail.com>"
+  ],
+  "description": "Contrataciones Abiertas",
+  "main": "",
+  "keywords": [
+    "Contrataciones",
+    "Abiertas"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "^4.17.37",
+    "font-awesome": "fontawesome#^4.6.1",
+    "protobuf": "^5.0.1",
+    "dgm-navbar": "mxabierto/dgm-navbar#latest",
+    "dgm-footer": "mxabierto/dgm-footer#latest",
+    "axios": "^0.17.1",
+    "handlebars": "^4.0.11",
+    "bootstrap": "^3.3.7",
+    "jquery-ui": "1.12.1",
+    "bootstrap-multiselect": "0.9.15"
+  }
+}

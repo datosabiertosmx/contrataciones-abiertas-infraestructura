@@ -1,0 +1,10 @@
+/***********************
+    Barra de menus
+***********************/
+.barra-menus{
+    top: 50px;
+}
+
+.gradiente-navbar-menu{
+    background-image: linear-gradient(to right,#fff 0,#30bcc5 100%);
+}
