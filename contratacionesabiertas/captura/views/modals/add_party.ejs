@@ -103,7 +103,7 @@
 
     <p><label data-tooltip="crear_proceso" title='El identificador de la persona física o moral, o del área de la institución pública.'>
     Identificador <!--Identifier id--></label>
-        <input name="identifier_id" type="text" class="form-control" onChange="validarIdentificador(this);" required></p>
+        <input name="identifier_id" type="text" class="form-control" required></p>
 
     <hr>
     
@@ -215,18 +215,6 @@
 
     function validarVacio (input) {
         input.value = input.value.trim();
-    }
-
-    function validarIdentificador(input){
-        input.value = input.value.trim();
-        if(document.getElementById('identifier_scheme').selectedIndex == 1){
-            if(input.value.length == 12 || input.value.length ==13){
-                //No modifica el dato
-            }else{
-                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el RFC consta de 12 caracteres en caso de personas físicas y 13 en caso de personas morales.")
-                input.value = "";
-            }
-        }
     }
 
     $('[name="identifier_scheme"], [name="identifier_id"]').on('change', function() {

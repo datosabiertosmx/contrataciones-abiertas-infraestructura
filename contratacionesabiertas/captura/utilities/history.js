@@ -67,7 +67,7 @@ let registerLog = async (data) => {
             data.release_json = await release.generateRelease(data.ocid, name);
     
             await db_conf.edca_db.one(`insert into logs (version, update_date, publisher, release_file, contractingProcess_id, release_json)
-                values ($1, clock_timestamp(), $2, $3, $4, $5) returning id`, [
+                values ($1, clock_timestamp() AT TIME ZONE 'America/Mexico_City', $2, $3, $4, $5) returning id`, [
                 data.version,
                 data.publisher,
                 data.releaseFile,

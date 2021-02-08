@@ -149,7 +149,7 @@
                                 contracts[i].contract_status != null || contracts[i].implementation_status != null ? (
                                     "/contratacionesabiertas/contrato/" + contracts[i].localid + "/" + indicador.actual
                                 ) : "javascript:void(0);"
-                                %>">
+                                %>" target="_blank">
                                     <h4><% if ( typeof contracts[i].title == "string" ){%>
                                         <%= (contracts[i].title.length < 110 )? contracts[i].title: contracts[i].title.substring(0,109)+'...' %>
                                     <%} else{%>
@@ -176,10 +176,10 @@
                             <a class="small" style="color:#000000"><%= contracts[i].procurementmethod_details %></a>
                         </div>
                         <div class="col-sm-3" style="pointer-events:none;">
-                            <p class="legend">Proveedor</p>                                                              
-                            <%  if (contracts[i].identifier_legalname_supplier === ''){%>                           
+                            <p class="legend">Proveedor</p>                                                           
+                            <%  if (contracts[i].identifier_legalname_supplier === null){%>                      
                             	<%= contracts[i].name_supplier %>
-		                    <%} else {%>
+                            <%} else {%>
 			                	<%= contracts[i].identifier_legalname_supplier %>
                             <%}%>
                         </div>
@@ -220,7 +220,9 @@
 			   <div class="contract-download col-md-1">
                    <p><b>Formato</b></p>
                    <div>
-                        <a href="<%= `${process.env.CAPTURE_URL||'http://localhost:3000'}/record-package/${contracts[i].ocid}` %>" download="<%= `record-package_${contracts[i].ocid}.json` %>"><span class="dataset-format" data-format="JSON">JSON</span></a>
+                        <!-- <a href="<%= `${process.env.CAPTURE_URL||'http://104.192.4.109:3000'}/record-package/${contracts[i].ocid}` %>" download="<%= `record-package_${contracts[i].ocid}.json` %>"><span class="dataset-format" data-format="JSON">JSON</span></a> -->
+                        <button onclick="getCP('<%=`${contracts[i].localid}`%>')" style="color:#fff;font-weight: 700;text-transform: uppercase;padding: 5px 7px;background-color: #33ffd1;font-size: 12px;border-radius:3px;border: 0;">JSON</button>
+                        <!-- <a href="#" onclick="test(`${contracts[i].ocid}`)" style="cursor:pointer;"></a><span class="dataset-format" data-format="JSON">JSON</span></a> -->
                         <a href="<%= `/contratacionesabiertas/contrato/${contracts[i].localid}/download` %>" download="<%= `${contracts[i].ocid}.pdf` %>"><span class="dataset-format" data-format="PDF">PDF</span></a>
                    </div>
 			   </div>          
@@ -275,6 +277,27 @@
             </a>
         </li>
         <%}%>
-
+        <a id="downloadAnchorElem" style="display:none"></a>
     </ul>
 </div>
+<script type="text/javascript">
+    function getCP(ocid){
+        var uri = globals.site.url;
+        var port = globals.site.port;
+        var endPointGetContractingProcess = '/edca/cp';
+        $.ajax({
+            url: `${uri}:${port}${endPointGetContractingProcess}/${ocid}`,
+            type: 'GET',
+            success: function(data){ 
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent((JSON.stringify(data,null,4)));
+                var dlAnchorElem = document.getElementById('downloadAnchorElem');
+                dlAnchorElem.setAttribute("href",dataStr);
+                dlAnchorElem.setAttribute("download", `${ocid}.json`);
+                dlAnchorElem.click();
+            },
+            error: function(data) {
+                alert(`Proceso de contratación no encontrado.`)
+            }
+        });
+    }
+</script>

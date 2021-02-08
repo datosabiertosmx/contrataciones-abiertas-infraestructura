@@ -105,8 +105,6 @@
     <div class="col-md-4">
         <p class="small">Categoría de la contratación</p>
         <p class="semi-bold">
-            <% if(tender.additionalprocurementcategories == 'Adhesiones y membresías') { %> Adhesiones y membresías
-            <% } %>
             <% if(tender.additionalprocurementcategories == 'Adquisición de bienes') { %> Adquisición de bienes
             <% } %>
             <% if(tender.additionalprocurementcategories == 'Arrendamiento de bienes') { %> Arrendamiento de bienes
@@ -182,12 +180,29 @@
                     <li>Descripción: <%= items[i].classification_description %></li>
                     <li>Unidad: <%= items[i].unit_name %></li>
                     <li>Cantidad: <%= items[i].quantity %></li>
-                    <li>Ubicación: <a href="javascript:void(0);" data-action="ubicacion" data-latitud="<%= items[i].latitude %>" data-longitud="<%= items[i].longitude %>">Ver Ubicación</a></li>
+                    <li>Ubicación: <a data-toggle="modal" data-target="#ubicacionModal" data-action="ubicacion" data-latitud="<%= items[i].latitude %>" data-longitud="<%= items[i].longitude %>">Ver Ubicación</a></li>
                 </ul>
                 <% } %>
             </div>
         </div>
     </div>
+      
+        <!-- Modal -->
+        <div class="modal fade" id="ubicacionModal" tabindex="-1" role="dialog" aria-labelledby="ubicacionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="width: 60%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="ubicacionModalLabel">Ubicación</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="map"></div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">

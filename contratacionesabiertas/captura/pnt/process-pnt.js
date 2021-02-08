@@ -8,7 +8,7 @@ var moment = require('moment'); // require
 var dbConfig = require('../db.js');
 var mongoose = require('mongoose');
     mongoose.Promise = require('bluebird');
-    mongoose.connect(dbConfig.url,{useMongoClient: true});
+    mongoose.connect(dbConfig.url,{useNewUrlParser: true,useUnifiedTopology: true});
 var User = require('../models/user');
 
 // Conexion al api de PNT

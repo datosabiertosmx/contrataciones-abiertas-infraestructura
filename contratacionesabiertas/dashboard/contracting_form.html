@@ -318,7 +318,7 @@ var icons = [
                         No se han registrado presupuestos en esta etapa
                         <% } %>
                         <% for (let i = 0; i < planning.budgetBreakdown.length; i++) { %>
-                        <strong class="break"><%= planning.budgetBreakdown[i].budgetbreakdown_id %></strong>
+                        <strong><%= planning.budgetBreakdown[i].budgetbreakdown_id %></strong>
                         <ul>
                             <li>Descripción: <%= planning.budgetBreakdown[i].description %></li>
                             <li>Monto: $<%= planning.budgetBreakdown[i].amount %> (<%= planning.budgetBreakdown[i].currency %>)</li>
@@ -620,7 +620,7 @@ var icons = [
                         <% } %>
                     </div>
                 </div>
-                <div class="box">
+            <!--<div class="box">
                     <div class="box-title">
                         <h4>Ítems</h4>
                     </div>
@@ -638,7 +638,7 @@ var icons = [
                         </ul>
                         <% } %>
                     </div>
-                </div>
+                </div>-->
                 <div class="box">
                     <div class="box-title">
                         <h4>Documentos</h4>

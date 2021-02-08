@@ -9,15 +9,25 @@ var pdf = require('html-pdf');
 const db = require('../dash_config');
 var edca_db = db.dashboard;
 //////////////////////////////////
-
+var isAuthenticated = function (req, res, next) {
+    // if user is authenticated in the session, call the next() to call the next request handler
+    // Passport adds this method to request object. A middleware is allowed to add properties to
+    // request and response objects
+    if (req.isAuthenticated())
+        return next();
+    // if the user is not authenticated then redirect him to the login page
+    console.log('Error', 'No esta logeado')
+    res.redirect('/');
+};
 /* URL para del cdn de datos.gob.mx usado para cargar navbar y footer */
+
 process.env.CDN_URL = 'https://cdn.datos.gob.mx/qa';
 
 if (process.env.EDCA_DB){
-    console.log("EDCA_DB: ", process.env.EDCA_DB);
+    //console.log("EDCA_DB: ", process.env.EDCA_DB);
     edca_db = pgp( process.env.EDCA_DB );
 } else {
-    console.log("Warning, no hay variable de ambiente declarada \n");
+    //console.log("Warning, no hay variable de ambiente declarada \n");
     edca_db = edca_db;
 }
 
@@ -303,6 +313,10 @@ router.get('/contrato/:cpid/download', function (req, res) {
                                         (select status from award where contractingprocess_id = contractingprocess.id and status is not null order by datelastupdate desc limit 1) as award_status,
                                         (select status from contract where contractingprocess_id = contractingprocess.id and status is not null order by datelastupdate desc limit 1) as contract_status,
                                         (select status from implementation where contractingprocess_id = contractingprocess.id and status is not null order by datelastupdate desc limit 1) as implementation_status,
+                                        (select string_agg(parties.name, '; ')                            
+                                            from parties
+                                            inner join roles on roles.parties_id = parties.id
+                                            where roles.supplier = true and parties.contractingprocess_id = contractingprocess.id) as name_supplier,
                                         (select string_agg(parties.identifier_legalname, '; ')
                                             from parties
                                             inner join roles on roles.parties_id = parties.id
@@ -815,10 +829,12 @@ router.get('/contrato/:cpid/:stage',function (req, res) {
 router.post('/bubble-chart-data', function (req, res) {
 
     var query = `select t.*
-        from (select contractingprocess.id, tender.procurementmethod_details, tender.title as title,
+        from (select contractingprocess.id, tender.procurementmethod_details, tender.title as title, tender.status as estatus_tender,
                 (select datesigned from contract where contractingprocess_id = contractingprocess.id order by datesigned limit 1) as datesigned,
                 (select period_enddate - period_startdate from contract where contractingprocess_id = contractingprocess.id order by datesigned limit 1) as vigencia,
-                (select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id) as exchangerate_amount
+                (select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id) as exchangerate_amount,
+                (select status from contract where contractingprocess_id = contractingprocess.id limit 1) as estatus_con,
+				(select status from implementation where contractingprocess_id = contractingprocess.id limit 1) as estatus_imp
             from contractingprocess
             inner join tender on tender.contractingprocess_id = contractingprocess.id
             
@@ -917,11 +933,14 @@ router.post('/d3-bubble-chart-data', function (req, res) {
     (select string_agg(partyid, '; ') from parties, roles where parties.id = roles.parties_id and roles.supplier = true and parties.contractingprocess_id = contractingprocess.id) as partyid,
     (select string_agg(name, '; ') from parties, roles where parties.id = roles.parties_id and roles.supplier = true and parties.contractingprocess_id = contractingprocess.id) as name,
     (select string_agg(identifier_legalname, '; ') from parties, roles where parties.id = roles.parties_id and roles.requestingunit = true and parties.contractingprocess_id = contractingprocess.id) as identifier_legalname,
-    ocid, contract.title, tender.procurementmethod_details, tender.additionalprocurementcategories,
+    ocid, contract.title, tender.procurementmethod_details, tender.additionalprocurementcategories, 
+    (tender.status) as estatus_tender,
+    (contract.status) as estatus_contract,
+    (implementation.status) as estatus_implementation,
     concat(cast((DATE_PART('year', period_enddate) - DATE_PART('year', period_startdate)) * 12 + (DATE_PART('month', period_enddate) - DATE_PART('month', period_startdate)) as integer) / 12, ' año(s)') as vigencia,
     contract.exchangerate_amount, contract.contractingprocess_id as cpid
-    from tender, contract, contractingprocess
-    where  contractingprocess.id = contract.contractingprocess_id and contractingprocess.id = tender.contractingprocess_id
+    from tender, contract, implementation, contractingprocess
+    where  contractingprocess.id = implementation.contractingprocess_id and contractingprocess.id = contract.contractingprocess_id and contractingprocess.id = tender.contractingprocess_id
     and tender.procurementmethod_details is not null and tender.procurementmethod_details not like ''
     and tender.additionalprocurementcategories is not null and tender.additionalprocurementcategories not like ''
     and (contract.period_enddate is not null and contract.period_startdate is not null)`;
@@ -949,8 +968,72 @@ router.get('/implementa/', function (req, res ) {
     res.render ('implementa');
 });
 
+router.get('/datosabiertos/', function (req, res ) {
+    res.render ('datosabiertos');
+});
+
 router.get('/politicadepublicacion/', function(req,res){
     res.render ('politicadepublicacion');
 })
+
+/* API */
+router.post('/apiprocurementmethod',async function(req,res){
+    console.log(`api_procurementmethod ${JSON.stringify(req.body)}`)
+    var query = `select 
+        DISTINCT ON(a.contractingprocess_id) a.contractingprocess_id, 
+        cast(a.version as int) as version,
+        a.id as log_id,a.update_date,a.release_file,
+        a.release_json,a.publisher,b.name,b.scheme,b.uid,b.uri,
+        c.license,c.publicationpolicy
+        from logs as a, publisher as b, contractingprocess as c, tender as d
+        where 1 = 1
+        and a.contractingprocess_id = b.contractingprocess_id 
+        and a.contractingprocess_id = c.id 
+        and d.contractingprocess_id = c.id
+        and c.published = true 
+        and d.procurementmethod_details = '${req.body.procurementmethod}'
+        order by a.contractingprocess_id,cast(a.version as int) desc;`;
+    console.log("························· query "  + query);    
+    let data = await db_conf.edca_db.manyOrNone(query);
+    if(data.length !== 0){
+        data.forEach(element => {
+            var objReleasePackage  = new Object();
+            var objPublisher  = new Object();
+            objReleasePackage.uri = `${getHost(req)}/release-package/${element.version}/${element.release_file}`;
+            objReleasePackage.version = '1.1';
+            objReleasePackage.extensions = "_extensions";
+            if(element.update_date !== "" && element.update_date !== null)
+                objReleasePackage.publishedDate = element.update_date;
+            if(element.release_json !== "" && element.release_json !== null)
+                objReleasePackage.releases = [element.release_json];
+            if(element.name !== "" && element.name !== null)
+                objPublisher.name = element.name;
+            if(element.scheme !== "" && element.scheme !== null)
+                objPublisher.scheme = element.scheme;
+            if(element.uid !== "" && element.uid !== null)
+                objPublisher.uid = element.uid;
+            if(element.uri !== "" && element.uri !== null)
+                objPublisher.uri = element.uri;
+            if(Object.entries(objPublisher).length !== 0)
+                objReleasePackage.publisher = objPublisher;
+            if(element.license !== "" && element.license !== null)
+                objReleasePackage.license = element.license;
+            if(element.publicationpolicy !== "" && element.publicationpolicy !== null)
+                objReleasePackage.publicationPolicy = element.publicationpolicy;
+            arrayReleasePackage.push(objReleasePackage)
+        });
+        return res.status(200).json({
+                arrayReleasePackage
+            }
+        );
+    }else{
+        return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        );
+    }
+});
+
 
 module.exports = router;

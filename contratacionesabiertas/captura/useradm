@@ -5,7 +5,7 @@ if ( typeof process.argv[2] !== 'undefined'){
     var dbConfig = require('./db.js');
     var mongoose = require('mongoose');
     mongoose.Promise = require('bluebird');
-    mongoose.connect(dbConfig.url,{useMongoClient: true});
+    mongoose.connect(dbConfig.url,{useNewUrlParser: true,useUnifiedTopology: true});
     var User = require('./models/user');
     var db = mongoose.connection;
 

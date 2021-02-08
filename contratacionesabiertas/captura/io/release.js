@@ -1,4 +1,6 @@
 var User = require('../models/user');
+// moment format
+var moment = require('moment'); // require 
 
 /**
  * Generación del release 
@@ -102,22 +104,25 @@ function release(db) {
         if (host.endsWith('/')) host = host.substring(0, host.length - 1);
 
         let { uri, license, publicationpolicy } = await _db.oneOrNone('select uri, license, publicationpolicy from contractingprocess where id = $1', [log.contractingprocess_id]);
-
-        return {
-            uri: `${host}/release-package/${log.version}/${log.release_file}`,
-            version: '1.1',
-            extensions: _extensions,
-            publishedDate: log.update_date,
-            releases: [log.release_json],
-            publisher: clean({
-                name: user.name,
-                scheme: user.scheme,
-                uid: user.uid,
-                uri: user.uri
-            }),
-            license: license,
-            publicationPolicy: publicationpolicy,
-        };
+        
+        var obj = new Object();
+        var objPublisher = new Object();
+        obj.uri = `${host}/release-package/${log.version}/${log.release_file}`;
+        obj.version = '1.1';
+        obj.extensions = _extensions;
+        obj.publishedDate = moment(log.update_date).format(),
+        obj.releases = [log.release_json];
+        objPublisher.name = user.name;
+        objPublisher.scheme = user.scheme;
+        objPublisher.uid = user.uid;
+        if(uri !== '')
+        objPublisher.uri = uri;
+        obj.publisher = objPublisher;
+        if(license !== '')
+        obj.license = license;
+        if(publicationpolicy !== '')
+        obj.publicationPolicy = publicationpolicy;
+        return obj;
     }
 
     /**
@@ -137,7 +142,7 @@ function release(db) {
         return {
             uri: `${host}/release-package-all/${ocid}`,
             version: '1.1',
-            publishedDate: logs[0].update_date,
+            publishedDate: moment(logs[0].update_date).format(),
             releases: logs.map(x => x.release_json),
             publisher: clean({
                 name: user.name,
@@ -164,7 +169,7 @@ function release(db) {
         cp = clean({
             ocid: cp.ocid,
             id: this._ocidname,
-            date: cp.date_modified,
+            date: moment(cp.date_modified).format(),
             tag: await generateTags(),
             initiationType: 'tender',
             parties: await generateParties(),
@@ -350,9 +355,6 @@ function release(db) {
             additionalProcurementCategories: (() => {
                 let croc;
                 switch (tender.additionalprocurementcategories) {
-                    case 'Adhesiones y membresías':
-                        croc = 'memberships';
-                        break;
                     case 'Adquisición de bienes':
                         croc = 'goodsAcquisition';
                         break;
@@ -400,18 +402,18 @@ function release(db) {
             })(),
             submissionMethodDetails: tender.submissionmethod_details,
             tenderPeriod: clean({
-                startDate: tender.tenderperiod_startdate,
-                endDate: tender.tenderperiod_enddate
+                startDate: tender.tenderperiod_startdate == null ? '' : moment(tender.tenderperiod_startdate).format(),
+                endDate: tender.tenderperiod_enddate == null ? '' : moment(tender.tenderperiod_enddate).format()
             }),
             enquiryPeriod: clean({
-                startDate: tender.enquiryperiod_startdate,
-                endDate: tender.enquiryperiod_enddate
+                startDate: tender.enquiryperiod_startdate == null ? '' : moment(tender.enquiryperiod_startdate).format(),
+                endDate: tender.enquiryperiod_enddate == null ? '' : moment(tender.enquiryperiod_enddate).format()
             }),
             hasEnquiries: tender.hasenquiries,
             eligibilityCriteria: tender.eligibilitycriteria,
             awardPeriod: clean({
-                startDate: tender.awardperiod_startdate,
-                endDate: tender.awardperiod_enddate
+                startDate: tender.awardperiod_startdate == null ? '' : moment(tender.awardperiod_startdate).format(),
+                endDate: tender.awardperiod_enddate == null ? '' : moment(tender.awardperiod_enddate).format()
             }),
             numberOfTenderers: tender.numberoftenderers,
             tenderers: await generateOrganizationsReference('tenderer'),
@@ -429,9 +431,8 @@ function release(db) {
     let generateAwards = async function () {
         let awards = await many('award', 'contractingprocess_id', this._cpid);
 
-        if (!awards || awards.length === 0) return [];
-
-        let items = await generateItems('awarditem', 'award_id'),
+        if (awards[0].awardid !== '' && awards[0].awardid !== null){
+            let items = await generateItems('awarditem', 'award_id'),
             documents = await generateDocuments('awarddocuments', 'award_id'),
             amendments = await generateAmendments('awardamendmentchanges', 'award_id'),
             suppliers = await _db.manyOrNone(`select p.*, a.award_id awardid 
@@ -440,30 +441,33 @@ function release(db) {
                                               where p.contractingprocess_id = $1 and 
                                               p.id in (select parties_id from roles where supplier = true)`, [this._cpid]);
 
-        return awards.map(award => clean({
-            id: award.awardid,
-            title: award.title,
-            description: award.description,
-            status: award.status,
-            date: award.award_date,
-            value: clean({
-                netAmount: parseFloat(award.value_amountnet),
-                amount: parseFloat(award.value_amount),
-                currency: award.value_currency
-            }),
-            suppliers: suppliers.filter(s => s.awardid === award.id).map(s => clean({
-                name: s.name,
-                id: s.partyid,
-            })),
-            items: items[award.id] || [],
-            contractPeriod: clean({
-                startDate: award.contractperiod_startdate,
-                endDate: award.contractperiod_enddate
-            }),
-            documents: documents[award.id] || [],
-            amendments: amendments[award.id] || [],
-            rationale: award.rationale
-        }));
+            return awards.map(award => clean({
+                id: award.awardid,
+                title: award.title,
+                description: award.description,
+                status: award.status,
+                date: award.award_date == null ? '' : moment(award.award_date).format(),
+                value: clean({
+                    netAmount: parseFloat(award.value_amountnet),
+                    amount: parseFloat(award.value_amount),
+                    currency: award.value_currency
+                }),
+                suppliers: suppliers.filter(s => s.awardid === award.id).map(s => clean({
+                    name: s.name,
+                    id: s.partyid,
+                })),
+                items: items[award.id] || [],
+                contractPeriod: clean({
+                    startDate: award.contractperiod_startdate == null ? '' : moment(award.contractperiod_startdate).format(),
+                    endDate: award.contractperiod_enddate == null ? '' : moment(award.contractperiod_enddate).format()
+                }),
+                documents: documents[award.id] || [],
+                amendments: amendments[award.id] || [],
+                rationale: award.rationale
+            }));
+        } 
+
+        
     }
 
     /**
@@ -472,9 +476,8 @@ function release(db) {
     let generateContracts = async function () {
         let contracts = await many('contract', 'contractingprocess_id', this._cpid);
 
-        if (!contracts || contracts.length === 0) return [];
-
-        let items = await generateItems('contractitem', 'contract_id'),
+        if (contracts[0].contractid !== '' && contracts[0].contractid !== null){
+            let items = await generateItems('contractitem', 'contract_id'),
             documents = await generateDocuments('contractdocuments', 'contract_id'),
             amendments = await generateAmendments('contractamendmentchanges', 'contract_id'),
             awards = await _db.manyOrNone('select id, awardid from award where contractingprocess_id = $1', [this._cpid]),
@@ -487,15 +490,14 @@ function release(db) {
 
         return contracts.map(contract => {
             let exchange = clean({
-            	amount: contract.exchangerate_amount,
                 currency: contract.exchangerate_currency,
                 rate: parseFloat(contract.exchangerate_rate),
-                date: contract.exchangerate_date,
+                date: contract.exchangerate_date == null ? '' : moment(contract.exchangerate_date).format(),
                 source: contract.exchangerate_source
             });
 
             let award = awards.find(x => (x.id == contract.awardid) || (x.awardid == contract.awardid));
-  
+            
             return clean({
                 id: contract.contractid,
                 awardID: award? award.awardid : '',
@@ -503,16 +505,17 @@ function release(db) {
                 description: contract.description,
                 status: contract.status,
                 period: clean({
-                    startDate: contract.period_startdate,
-                    endDate: contract.period_enddate
+                    startDate: contract.period_startdate == null ? '' : moment(contract.period_startdate).format(),
+                    endDate: contract.period_enddate == null ? '' : moment(contract.period_enddate).format()
                 }),
                 value: clean({
                     netAmount: parseFloat(contract.value_amountnet),
                     amount: parseFloat(contract.value_amount),
-                    currency: contract.value_currency
+                    currency: contract.value_currency,
+                    exchangeRates: Object.keys(exchange).length > 0 ? [exchange] : []
                 }),
                 items: items[contract.id],
-                dateSigned: contract.datesigned,
+                dateSigned: contract.datesigned == null ? '' : moment(contract.datesigned).format(),
                 documents: documents[contract.id],
                 implementation: implementations.filter(i => i.contract_id === contract.id).map(i => {
                     return clean({
@@ -527,6 +530,7 @@ function release(db) {
                 guarantees: guarantees[contract.id]
             })
         });
+        }
     }
 
     let generatePlanningUnits = async function() {
@@ -663,11 +667,6 @@ function release(db) {
         return clean({
             name: actor.name,
             id: actor.partyid
-            // identifier: clean({
-            //     scheme: actor.identifier_scheme,
-            //     id: actor.identifier_id,
-            //     legalName: actor.identifier_legalname
-            // })
         });
     }
 
@@ -686,11 +685,6 @@ function release(db) {
         return actores.map(actor => clean({
             name: actor.name,
             id: actor.partyid
-            // identifier: clean({
-            //     scheme: actor.identifier_scheme,
-            //     id: actor.identifier_id,
-            //     legalName: actor.identifier_legalname
-            // })
         }));
     }
 
@@ -711,12 +705,6 @@ function release(db) {
         return actores.map(actor => clean({
             name: actor.name,
             id: actor.partyid
-            // identifier: clean({
-            //     scheme: actor.identifier_scheme,
-            //     id: actor.identifier_id,
-            //     legalName: actor.identifier_legalname,
-            //     position: addPosition ? actor.position : undefined
-            // })
         }));
     }
 
@@ -753,8 +741,8 @@ function release(db) {
         for (let i = 0, budget = budgets[i]; i < budgets.length; i++ , budget = budgets[i]) {
             budgets[i] = clean({
                 period: clean({
-                    startDate: budget.budgetbreakdownperiod_startdate,
-                    endDate: budget.budgetbreakdownperiod_enddate
+                    startDate: budget.budgetbreakdownperiod_startdate == null ? '' : moment(budget.budgetbreakdownperiod_startdate).format(),
+                    endDate: budget.budgetbreakdownperiod_enddate == null ? '' : moment(budget.budgetbreakdownperiod_enddate).format()
                 }),
                 id: budget.budgetbreakdown_id,
                 description: budget.description,
@@ -884,8 +872,8 @@ function release(db) {
             title: document.title,
             description: document.description,
             url: document.url,
-            datePublished: document.date_published,
-            dateModified: document.date_modified,
+            datePublished: document.date_published == null ? '' : moment(document.date_published).format(),
+            dateModified: document.date_modified == null ? '' : moment(document.date_modified).format(),
             format: document.format,
             language: document.language
         });
@@ -910,7 +898,7 @@ function release(db) {
         let gen = async guarantee => clean({
             id: guarantee.guarantee_id,
             type: guarantee.type,
-            date: guarantee.date,
+            date: guarantee.date == null ? '' : moment(guarantee.date).format(),
             obligations: guarantee.obligations,
             value: {
                 amount: parseFloat(guarantee.value),
@@ -918,8 +906,8 @@ function release(db) {
             },
             guarantor: guarantee.guarantor ? (await buildOrganizationsReference([guarantee.guarantor]))[0] : undefined,
             period: {
-                startDate: guarantee.guaranteeperiod_startdate,
-                endDate: guarantee.guaranteeperiod_enddate
+                startDate: guarantee.guaranteeperiod_startdate == null ? '' : moment(guarantee.guaranteeperiod_startdate).format(),
+                endDate: guarantee.guaranteeperiod_enddate == null ? '' : moment(guarantee.guaranteeperiod_enddate).format()
             }
         });
 
@@ -947,8 +935,8 @@ function release(db) {
             title: mil.title,
             type: mil.type,
             description: mil.description,
-            dueDate: mil.duedate,
-            dateModified: mil.date_modified,
+            dueDate: mil.duedate == null ? '' : moment(mil.duedate).format(),
+            dateModified: mil.date_modified == null ? '' : moment(mil.date_modified).format(),
             status: mil.status
         });
 
@@ -1036,7 +1024,7 @@ function release(db) {
         let amendments = await many(table, 'contractingprocess_id', this._cpid);
 
         let genamendment = amendment => clean({
-            date: amendment.amendments_date,
+            date: amendment.amendments_date == null ? '' : moment(amendment.amendments_date).format(),
             rationale: amendment.amendments_rationale,
             id: amendment.amendments_id,
             description: amendment.amendments_description,
@@ -1074,7 +1062,7 @@ function release(db) {
             result[t.implementation_id].push(clean({
                 id: t.transactionid,
                 source: t.source,
-                date: t.implementation_date,
+                date: t.implementation_date == null ? '' : moment(t.implementation_date).format(),
                 value: clean({
                     netAmount: parseFloat(t.value_amountnet),
                     amount: parseFloat(t.value_amount),
@@ -1114,8 +1102,8 @@ function release(db) {
             title: request.title,
             description: request.description,
             period: clean({
-                startDate: request.period_startdate,
-                endDate: request.period_enddate
+                startDate: request.period_startdate == null ? '' : moment(request.period_startdate).format(),
+                endDate: request.period_enddate == null ? '' : moment(request.period_enddate).format()
             }),
             items: items[request.id],
             invitedSuppliers: suppliers[request.id],
@@ -1150,14 +1138,14 @@ function release(db) {
             result[quote.requestforquotes_id].push(clean({
                 id: quote.quotes_id,
                 description: quote.description,
-                date: quote.date,
+                date: quote.date == null ? '' : moment(quote.date).format(),
                 items: items[quote.id] || [],
                 value: clean({
                     amount: parseFloat(quote.value)
                 }),
                 period: clean({
-                    startDate: quote.quoteperiod_startdate,
-                    endDate: quote.quoteperiod_enddate
+                    startDate: quote.quoteperiod_startdate == null ? '' : moment(quote.quoteperiod_startdate).format(),
+                    endDate: quote.quoteperiod_enddate == null ? '' : moment(quote.quoteperiod_enddate).format()
                 }),
                 issuingSupplier: suppliers[quote.id] ? suppliers[quote.id][0] : undefined
             }));
@@ -1251,7 +1239,7 @@ function release(db) {
 
         return positions.map(pos => clean({
             id: pos.clarificationmeetingid,
-            date: pos.date,
+            date: pos.date == null ? '' : moment(pos.date).format(),
             attendees: attenders,
             officials: officials
         }));

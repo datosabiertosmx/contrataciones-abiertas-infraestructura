@@ -26,31 +26,17 @@
     </p>
     <p>
         <label>¿Es administrador?</label><br>
-        <% if (user.isAdmin === false){%>         
-        <select disabled class="form-control" id="isAdmin" name="isAdmin" required>     
+        <select class="form-control" name="isAdmin" required <%= !user.isAdmin ? 'disabled' : '' %>>     
             <option value="false" <%= !user.isAdmin ? 'selected' : ''%>>No</option>
             <option value="true" <%= user.isAdmin ? 'selected' : ''%>>Sí</option>
-        </select>
-        <%} else {%>
-            <select class="form-control" id="isAdmin" name="isAdmin" required>     
-                <option value="false" <%= !user.isAdmin ? 'selected' : ''%>>No</option>
-                <option value="true" <%= user.isAdmin ? 'selected' : ''%>>Sí</option>
-            </select>
-        <%}%>
+        </select>        
     </p>
     <p>
         <label>¿Puede modificar estatus de procesos?</label><br>
-        <% if (user.isAdmin === false){%> 
-        <select disabled class="form-control" id="modificaEstatus" name="modificaEstatus" required>
+        <select class="form-control" id="modificaEstatus" name="modificaEstatus" required <%= !user.isAdmin ? 'disabled' : '' %>>
             <option value="false" <%= !user.modificaEstatus ? 'selected' : ''%>>No</option>
             <option value="true" <%= user.modificaEstatus ? 'selected' : ''%>>Sí</option>
         </select>
-        <%} else {%>
-            <select class="form-control" id="modificaEstatus" name="modificaEstatus" required>
-                <option value="false" <%= !user.modificaEstatus ? 'selected' : ''%>>No</option>
-                <option value="true" <%= user.modificaEstatus ? 'selected' : ''%>>Sí</option>
-            </select>
-        <%}%> 
     </p>
     <hr>
     <h4>Datos de Publicador</h4>
@@ -71,9 +57,9 @@
         <input type="url" name="publisherUri" class="form-control" value="<%= user.publisherUri %>">
     </p>
 	<hr>
- 	<p>
+    <p>
         <label title='Indica el estatus del usuario, Activo o Inactivo.'>Estatus</label>
-        <select class="form-control" name="isActive" required>
+        <select class="form-control" name="isActive" required <%= !user.isAdmin ? 'disabled' : '' %>>
             <option value="true" <%= user.isActive ? 'selected' : '' %>>Activo</option>
             <option value="false" <%= !user.isActive ? 'selected' : '' %>>Inactivo</option>
         </select>

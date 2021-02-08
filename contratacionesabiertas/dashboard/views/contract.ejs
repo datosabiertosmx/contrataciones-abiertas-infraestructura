@@ -107,6 +107,17 @@ var indicador = generateIcons(status);
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
     <head>
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNYE7DF2RM"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-KNYE7DF2RM');
+        </script>
+        <!-- End Google Analytics -->
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
         <!-- Bootstrap core CSS -->
@@ -225,7 +236,7 @@ var indicador = generateIcons(status);
                     <a href="/contratacionesabiertas/implementa" class="botonMenuTop">Implementa el EDCA-MX</a>
                 </div>
                 <div class="col-xs-3" style="padding: 0 0 0;">
-                    <a href="https://datos.gob.mx/busca/organization/inai" class="botonMenuTop" target="_blank">Datos abiertos</a>
+                    <a href="/contratacionesabiertas/datosabiertos" class="botonMenuTop">Datos abiertos</a>
                 </div>
         </div>
 
@@ -301,22 +312,7 @@ var indicador = generateIcons(status);
                 </div>
             </div>
         </div>
-        <div class="modal fade" tabindex="-1" role="dialog" id="mUbicacion">
-            <div class="modal-dialog" role="document" style="width: 60%;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Ubicacion</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div id="map"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <dgm-footer></dgm-footer>
         <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -359,8 +355,6 @@ var indicador = generateIcons(status);
                             lat: latitud
                         });
                     }, 500);
-
-                    $('#mUbicacion').modal('show');
                 });
             });
         </script>

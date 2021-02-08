@@ -1,0 +1,69 @@
+<form id="form_update_user_profile_admin">
+    <input name="id" type="text" value="<%= user._id %>" hidden>
+    <p>
+        <label>Usuario del sistema</label>
+        <input name = "username" type="text" class="form-control" value="<%= user.username %>" disabled>
+    </p>
+    <p>
+        <label>Contraseña</label><br>
+        <input type="password" class="form-control" name="password" placeholder="Contraseña">
+    </p>
+    <p>
+        <label>Nombre(s)</label>
+        <input name="name" type="text" class="form-control" value="<%= user.name %>" required>
+    </p>
+
+    <p><label>Apellido(s)</label>
+        <input name="lastname" type="text" class="form-control" value="<%= user.lastname%>" required>
+    </p>
+
+    <p><label>E-mail</label>
+        <input name="email" type="email" class="form-control" value="<%= user.email %>" placeholder="E-mail">
+    </p>
+    <p>
+        <label>Dirección</label>
+        <input class="form-control" type="text" value="<%= user.address%>" name="address">
+    </p>
+    <p>
+        <label>¿Es administrador?</label><br>
+        <select class="form-control" name="isAdmin" required>     
+            <option value="false" <%= !user.isAdmin ? 'selected' : ''%>>No</option>
+            <option value="true" <%= user.isAdmin ? 'selected' : ''%>>Sí</option>
+        </select>        
+    </p>
+    <p>
+        <label>¿Puede modificar estatus de procesos?</label><br>
+        <select class="form-control" id="modificaEstatus" name="modificaEstatus" required>
+            <option value="false" <%= !user.modificaEstatus ? 'selected' : ''%>>No</option>
+            <option value="true" <%= user.modificaEstatus ? 'selected' : ''%>>Sí</option>
+        </select>
+    </p>
+    <hr>
+    <h4>Datos de Publicador</h4>
+    <p>
+        <label title='El nombre de la organización o departamento responsable de publicar estos datos.'>Nombre</label>
+        <input name="publisherName" class="form-control" value="<%= user.publisherName %>" required>
+    </p>
+    <p>
+        <label title='El esquema que contiene los identificadores únicos utilizados para identificar cada elemento.'>Esquema</label>
+        <input name="publisherScheme" class="form-control" value="<%= user.publisherScheme %>" required>
+    </p>
+    <p>
+        <label title='El identificador único para esta entidad bajo el esquema de identificación dado. Observe el uso de "uid" en lugar de "id".'>UID</label>
+        <input name="publisherUid" class="form-control" value="<%= user.publisherUid %>" required>
+    </p>
+    <p>
+        <label title='Una URI para identificar al publicador.'>URI</label>
+        <input type="url" name="publisherUri" class="form-control" value="<%= user.publisherUri %>">
+    </p>
+	<hr>
+ 	<p>
+        <label title='Indica el estatus del usuario, Activo o Inactivo.'>Estatus</label>
+        <select class="form-control" name="isActive" required>
+            <option value="true" <%= user.isActive ? 'selected' : '' %>>Activo</option>
+            <option value="false" <%= !user.isActive ? 'selected' : '' %>>Inactivo</option>
+        </select>
+    </p>
+    <br>
+    <button type="submit" class="btn btn-default">Actualizar</button>
+</form>

@@ -59,41 +59,6 @@ div.google-visualization-tooltip {
     /*display: none;*/
 }
 
-/*
-.d3-tip {
-    width: 250px;
-    line-height: 1;
-    font-family: "Open Sans";
-    font-size: 11px;
-    font-color: black !important;
-    padding: 12px;
-    background: white;
-    color: black;
-    border-radius: 2px;
-}
-*/
-
-/* Creates a small triangle extender for the tooltip */
-/*
-.d3-tip:after {
-    box-sizing: border-box;
-    width: 100%;
-    line-height: 1;
-    color: white;
-    content: "\25BC";
-    position: absolute;
-    text-align: center;
-}*/
-
-/* Style northward tooltips differently */
-/*
-.d3-tip.n:after {
-    margin: -1px 0 0 0;
-    top: 100%;
-    left: 0;
-}
-*/
-
 .grid .tick {
     stroke: lightgrey;
     opacity: 0.7;
@@ -240,4 +205,239 @@ and (max-device-width: 736px){
     .nav-pills {
     margin-left: 0px;
     }
+}
+
+/* Actualización 14 enero 2021 */
+
+.arc text {
+    font: 10px sans-serif;
+    text-anchor: middle;
+}
+
+.arc path {
+    stroke: #fff;
+}
+
+input#cProveedor {
+    margin-left: 15px;
+    cursor: pointer;
+}
+input#cProcedimiento {
+    margin-left: 15px;
+    cursor: pointer;
+}
+input#cDestino {
+    margin-left: 15px;
+    cursor: pointer;
+}
+input#cArea {
+    margin-left: 15px;
+    cursor: pointer;
+}
+input#cVigencia {
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.nameGreen {
+    color:#00cc99; 
+    cursor:none; 
+    padding-left:15px;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.selectAll {
+    color:#00cc99; 
+    cursor:none; 
+    padding-left:5px;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.progress {
+    margin-bottom: 0;
+}
+
+.container {
+    max-width: 1100px;
+}
+
+.container-me {
+    width: 900px;
+    font-size: 12px;
+    color: #777;
+}   
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 50px;
+    padding: 8px;
+    margin-top: -20px;
+    font: 10px Open Sans;/*sans-serif;*/
+    background: white; /*#ddd;*/
+    pointer-events: none;
+}
+
+.nav-pills{
+    padding-bottom: 25px;
+    padding-top: 20px;
+}
+
+.nav-pills > li {
+    padding-bottom: 10px;
+}
+
+.tooltipster-default{
+    border-radius: 3px;
+    border: none;
+    background: white;
+}
+
+
+.tooltipster-default .tooltipster-content {
+    font: Open Sans;
+    font-size: 12px;
+    border: none;
+    color: black;
+    background: white;
+}
+
+.tooltipster-default .tooltipster-box {
+    border: none;
+}
+
+.search-form > input[type="text"] {
+    width: 37%;
+}
+
+.search-form > .form-control.bootstrap-select {
+    width: auto;
+}
+
+.search-form > .form-control.bootstrap-select > .btn {
+    left: 0;
+    transform: none;
+}
+
+.stages-icons img.pulse {
+    animation: blinker 3s linear infinite;
+}
+
+.stages-icons img.disabled {
+    filter: grayscale(100%);
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.pru2 {
+    text-align:center;
+}
+
+.pru4 h3 {
+    margin-top: 0px;
+}
+
+.no-cursor {
+    pointer-events:none;
+}
+
+.pru3 {
+    width: 98%; 
+    text-align:right;
+}
+
+@media (min-width: 991px) {
+    .pru2 {
+        width: 60%;
+    }
+
+    ul.ul-horizontal {
+        text-align: center;
+    }
+
+    ul.ul-horizontal > li {
+        display: inline;
+        margin: 0px 5px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 991px) {
+    .pru2 h3 {
+        font-size: 16px;
+    }
+}
+
+ul.ul-horizontal > li.active {
+    text-decoration: line-through;
+}
+
+.label {
+    display: inline-block;
+}
+
+.menuTopBar{
+    text-align: center;
+    background-color: #00bfa5;
+    position: fixed;
+    z-index: 4;
+    top: 106.5px;
+    max-width: none;
+    width: 100%;
+    padding: 0 10% 0;
+}
+
+.menuTopBar a{
+    height: 52px;
+    text-decoration: none;
+    font-size: 15px;
+    vertical-align: middle;
+    color: #FFFFFF;
+}
+.menuTopBar .botonMenuTop:hover{
+    background-color: #008e76;
+}
+.menuTopBar .botonMenuTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: #00bfa5;
+    color: #ffffff;
+}
+.menuTopBar select{
+    background-color: #00bfa5;
+    border-color: #ffffff;
+    color: #ffffff;
+    vertical-align: -webkit-baseline-middle;
+    margin-top: 11px;
+    width: 50%;
+    height: 30px;
+}
+
+@media (max-width: 991px) {
+    .bgMovil {
+        height: 40em;
+        background-size: cover;
+    }
+    .menuTopBar select{
+        width: 100%;
+        font-size: 0.7em;
+    }
+    .menuTopBarS{
+        padding: 0 0% 0;
+    }
+}
+
+ul.navega li {
+    display: inline;
+    padding-right: 3em;
 }

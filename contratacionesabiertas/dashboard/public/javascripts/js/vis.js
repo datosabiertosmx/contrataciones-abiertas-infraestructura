@@ -118,9 +118,7 @@ BubbleChart = (function() {
         that = this;
         this.circles.enter().append("circle").attr("r", 100).style("fill", function(d) {
             return '#00cc99';
-        })/*.attr("stroke-width", 2).attr("stroke", function(d) {
-            return '#404040';
-        })*/.attr("stroke", "none")
+        })  .attr("stroke", "none")
             .attr("id", function(d) {
             return "bubble_" + d.id;
         }).on("mouseover", function(d, i) {
@@ -128,8 +126,20 @@ BubbleChart = (function() {
         }).on("mouseout", function(d, i) {
             return that.hide_details(d, i, this);
         }).on('click', function (d, i) {
-            //redirige al detalle del contrato
-            window.open(href = '/contratacionesabiertas/contrato/'+d.original['cpid']+'/adjudicacion');
+            //redirige a la etapa del contrato
+            var estatus_implementation = d.original['Estatus_imp'];
+            var estatus_contract = d.original['Estatus_con'];
+            var estatus_tender = d.original['Estatus_ten'];
+
+            if(estatus_implementation === 'concluded' || estatus_implementation === 'ongoing' || estatus_implementation === 'planning') {
+                window.open(href = '/contratacionesabiertas/contrato/'+d.original['cpid']+'/implementacion');
+            } else if(estatus_contract === 'terminated' || estatus_contract === 'pending' || estatus_contract === 'active' || estatus_contract === 'cancelled') {
+                window.open(href = '/contratacionesabiertas/contrato/'+d.original['cpid']+'/contratacion');
+            } else if(estatus_tender === 'complete' || estatus_tender === 'planning' || estatus_tender === 'planned' || estatus_tender === 'active' || estatus_tender === 'cancelled' || estatus_tender === 'unsuccessful' || estatus_tender === 'withdrawn') {
+                window.open(href = '/contratacionesabiertas/contrato/'+d.original['cpid']+'/licitacion');
+            } else {
+                window.open(href = '/contratacionesabiertas/contrato/'+d.original['cpid']+'/planeacion');
+            }
         });
 
         this.circles.transition().duration(2000).style("fill-opacity", 0.55).attr("opacity", 2).attr("r", function(d) {
@@ -331,11 +341,11 @@ BubbleChart = (function() {
 
     BubbleChart.prototype.show_details = function(data, i, element) {
         var content, key, title, value, _ref;
-        d3.select(element)./*attr("stroke", "black").*/style("fill-opacity", 0.85).style("cursor", "pointer");
+        d3.select(element).style("fill-opacity", 0.85).style("cursor", "pointer");
 		if (data.original['Proveedor'] !== null) {
 		 	content = "<b>Nombre del contrato:</b><br>"+data.original['Producto o servicio']+ 
 				 	  "<b><br>Monto MXN:</b><br>"+data.original['Monto']+ 
-				 	  "<b><br>Proveedor:</b><br>"+data.original['Proveedor']+
+                      "<b><br>Proveedor:</b><br>"+data.original['Proveedor']+
 				 	  "<b><br>Área requirente:</b><br>"+data.original['Área requirente']+" ";
         	this.tooltip.showTooltip(content, d3.event);
 		 	}
@@ -343,7 +353,7 @@ BubbleChart = (function() {
     };
 
     BubbleChart.prototype.hide_details = function(data, i, element) {
-        d3.select(element)./*attr("stroke", "#404040").*/style("fill-opacity", 0.55);
+        d3.select(element).style("fill-opacity", 0.55);
         this.tooltip.hideTooltip();
     };
 
@@ -428,7 +438,7 @@ $(function() {
     };
 
     d3.xhr("/contratacionesabiertas/d3-bubble-chart-data").header("Content-Type", "application/json").post(JSON.stringify({
-        year: $('#yearFilter').val(),
+        year: $('#metadataYear').val(),
     }), function(error, res) {
         var result = JSON.parse(res.response);
         var data2 = [];
@@ -443,8 +453,11 @@ $(function() {
             "Área requirente": result[i].identifier_legalname,
             "Vigencia del contrato": result[i].vigencia,
             "Monto": result[i].exchangerate_amount || "0",
-            "cpid": result[i].cpid
-            });
+            "cpid": result[i].cpid,
+            "Estatus_ten": result[i].estatus_tender,             // Agregar dato para mostrar en burbujas
+            "Estatus_con": result[i].estatus_contract,
+            "Estatus_imp": result[i].estatus_implementation
+        });
       }
 
       render_vis(data2);

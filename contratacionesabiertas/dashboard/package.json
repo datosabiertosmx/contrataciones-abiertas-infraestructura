@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "nodemon --inspect ./bin/www --ignore public --ignore views "
+    "dev": "nodemon npm start "
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.3.5",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "ejs": "~2.5.5",
     "express": "^4.17.1",
@@ -16,5 +17,8 @@
     "morgan": "~1.9.1",
     "pg-promise": "^10.4.4",
     "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }

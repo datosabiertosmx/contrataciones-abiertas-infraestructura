@@ -61,7 +61,7 @@ module.exports = {
         }
     },
     createPublisherProjectPackage: async function(publisher,projectPackage){
-          if(publisher !== undefined && projectPackage !== undefined){
+        if(publisher !== undefined && projectPackage !== undefined){
             try {
                 const relPublisherProjectPackage = await db.edcapi_publisher_project_package.create({
                     edcapiPublisherId :  publisher,
@@ -73,7 +73,7 @@ module.exports = {
             } catch (error) {
                 console.log("ERROR in fuction - createPublisherProjectPackage:" + error)
             }
-          }
+        }
         return false;
     },
     createProject: async function(){
@@ -89,26 +89,25 @@ module.exports = {
     },
     createProjectPackageProject: async function(project,projectPackage, host){
         if(project !== undefined && projectPackage !== undefined){
-          try {
+            try {
                 const relProjectPackageProject = await db.edcapi_project_package_project.create({
                     project_package_id: projectPackage,
                     project_id: project,  
                     createdAt : new Date(),
                     updatedAt : new Date()
-              })    
+                })    
                 await db.edcapi_project_package.findByPk(projectPackage).then(function(value){
                     value.update({
                         uri : host+"/edcapi/projectPackage/"+project, 
                         updatedAt : new Date()
                     });
                 });
-            
-              return relProjectPackageProject;    
-          } catch (error) {
-              console.log("ERROR in fuction - createProjectPackageProject:" + error)
-          }
+            return relProjectPackageProject;    
+        } catch (error) {
+            console.log("ERROR in fuction - createProjectPackageProject:" + error)
         }
-      return false;
+    }
+    return false;
     },
     insertProject: async function(data){
         console.log("$$$$ insertProject")
@@ -1783,7 +1782,7 @@ module.exports = {
         });
         
     },
-    updatePublishedDate: async function(projectId){
+    updatePublishedDate: async function(projectId,publisher){
         console.log("%%%% updatePublishedDate")
         var project_package = await db.edcapi_project_package.findAll({
             include:[
@@ -1793,6 +1792,12 @@ module.exports = {
                     attributes: { exclude: ['createdAt','updatedAt']},
                     through: {attributes: []},
                     where: {id: projectId},
+                },
+                {
+                    model: db.edcapi_publisher,
+                    as: 'publisher', 
+                    attributes: { exclude: ['createdAt','updatedAt']},
+                    through: {attributes: []}
                 }
             ],attributes: { exclude: ['createdAt','updatedAt']}
         });
@@ -1800,6 +1805,14 @@ module.exports = {
             publishedDate: dateFortmatGMT(Date.now()),
             updatedAt : new Date()      
         });
+        project_package[0].publisher[0].update({
+            name : publisher.publisherName,
+            scheme :  publisher.publisherScheme,
+            uid : publisher.publisherUid,
+            uri :  publisher.publisherUri,
+            updatedAt : new Date()      
+        });   
+
     },
     findProjectAPI:async function(project_id){
         console.log("$$$$ findProjectAPI  X1 " + project_id)

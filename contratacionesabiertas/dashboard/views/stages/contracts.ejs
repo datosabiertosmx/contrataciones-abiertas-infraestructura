@@ -130,28 +130,29 @@
                     <li>Descripción: <%= nitems[i].classification_description %></li>
                     <li>Unidad: <%= nitems[i].unit_name %></li>
                     <li>Cantidad: <%= nitems[i].quantity %></li>
-                    <li>Ubicación: <a href="javascript:void(0);" data-action="ubicacion" data-latitud="<%= nitems[i].latitude %>" data-longitud="<%= nitems[i].longitude %>">Ver Ubicación</a></li>
+                    <li>Ubicación: <a data-toggle="modal" data-target="#ubicacionModal" data-action="ubicacion" data-latitud="<%= items[i].latitude %>" data-longitud="<%= items[i].longitude %>">Ver Ubicación</a></li>
                 </ul>
                 <% } %>
             </div>
         </div>
     </div>
 
-    <!--<div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingTwo_<%= j %>">
-            <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo_<%= j %>" aria-expanded="true" aria-controls="collapseTwo_<%= j %>">
-                    <i class="more-less glyphicon glyphicon-chevron-right"></i>
-                    Hitos
-                </a>
-            </h4>
-        </div>
-        <div id="collapseTwo_<%= j %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_<%= j %>">
-            <div class="panel-body">
-                No se han registrado hitos en esta etapa
+        <!-- Modal -->
+        <div class="modal fade" id="ubicacionModal" tabindex="-1" role="dialog" aria-labelledby="ubicacionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="width: 60%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="ubicacionModalLabel">Ubicación</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="map"></div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
             </div>
         </div>
-    </div>-->
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree_<%= j %>">

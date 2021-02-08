@@ -1,5 +1,8 @@
 const jp = require('jsonpath');
 
+// moment format
+var moment = require('moment'); // require
+
 function record(db) {
     const _db = db;
     const _cpid = null;
@@ -54,7 +57,7 @@ function record(db) {
             }),
             license: contractingprocess.license,
             publicationPolicy: contractingprocess.publicationpolicy,
-            publishedDate: log.update_date,
+            publishedDate: moment(log.update_date).format(),
             records: [log.record_json]
         };
 
@@ -132,7 +135,7 @@ function record(db) {
             }),
             license: contractingprocess.license,
             publicationPolicy: contractingprocess.publicationpolicy,
-            publishedDate: logs[0].update_date,
+            publishedDate: moment(logs[0].update_date).format(),
             records: logs.map(x => x.record_json)
         };
 
@@ -362,7 +365,7 @@ function record(db) {
                 awards: awards,
                 contracts: contracts,
                 buyer: buyer.length > 0 ? buyer[0] : {},
-                date: date,
+                date: moment(date).format(),
                 id: cp.ocid,
                 initiationType: 'tender',
                 language: 'es-mx',
@@ -391,14 +394,14 @@ function record(db) {
                 awards: versionedAwards,
                 contracts: versionedContracts,
                 language: [{
-                    releaseDate: date,
+                    releaseDate: moment(date).format(),
                     releaseID: cp.ocid,
                     releaseTag:  ['tender'],
                     value: 'es-mx'
                 }],
                 initiationType: [
                     {
-                        releaseDate: date,
+                        releaseDate: moment(date).format(),
                         releaseID: cp.ocid,
                         releaseTag: ['tender'],
                         value: 'tender'
@@ -583,7 +586,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag: tags.length === 0 ? ['planning'] : tags,
                         value: null
@@ -632,9 +635,6 @@ function record(db) {
             additionalProcurementCategories: (() => {
                 let croc;
                 switch (tender.additionalprocurementcategories){
-                    case 'Adhesiones y membresías':
-                        croc = 'memberships';
-                        break;
                     case 'Adquisición de bienes':
                         croc = 'goodsAcquisition';
                         break;
@@ -682,18 +682,18 @@ function record(db) {
             })(),
             submissionMethodDetails: tender.submissionmethod_details,
             tenderPeriod: {
-                startDate: tender.tenderperiod_startdate,
-                endDate: tender.tenderperiod_enddate
+                startDate: tender.tenderperiod_startdate == null ? '' : moment(tender.tenderperiod_startdate).format(),
+                endDate: tender.tenderperiod_enddate == null ? '' : moment(tender.tenderperiod_enddate).format()
             },
             enquiryPeriod: {
-                startDate: tender.enquiryperiod_startdate,
-                endDate: tender.enquiryperiod_enddate
+                startDate: tender.enquiryperiod_startdate == null ? '' : moment(tender.enquiryperiod_startdate).format(),
+                endDate: tender.enquiryperiod_enddate == null ? '' : moment(tender.enquiryperiod_enddate).format()
             },
             hasEnquiries: tender.hasenquiries,
             eligibilityCriteria: tender.eligibilitycriteria,
             awardPeriod: {
-                startDate: tender.awardperiod_startdate,
-                endDate: tender.awardperiod_enddate
+                startDate: tender.awardperiod_startdate == null ? '' : moment(tender.awardperiod_startdate).format(),
+                endDate: tender.awardperiod_enddate == null ? '' : moment(tender.awardperiod_enddate).format()
             },
             numberOfTenderers: tender.numberoftenderers,
             tenderers: tenderers,
@@ -714,7 +714,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag: tags.length > 0 ? tags : ['tender'],
                         value: null
@@ -758,7 +758,7 @@ function record(db) {
                     title: award.title,
                     description: award.description,
                     status: award.status,
-                    date: award.award_date,
+                    date: award.award_date == null ? '' : moment(award.award_date).format(),
                     value: {
                         amount: parseFloat(award.value_amount),
                         currency: award.value_currency
@@ -771,8 +771,8 @@ function record(db) {
                                         }}),
                     items: items[award.id],
                     contractPeriod: {
-                        startDate: award.contractperiod_startdate,
-                        endDate: award.contractperiod_enddate
+                        startDate: award.contractperiod_startdate == null ? '' : moment(award.contractperiod_startdate).format(),
+                        endDate: award.contractperiod_enddate == null ? '' : moment(award.contractperiod_enddate).format()
                     },
                     documents: documents[award.id],
                     amendments: amendments[award.id],
@@ -794,7 +794,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag: tags.length > 0 ? tags : ['award'],
                         value: null
@@ -849,8 +849,8 @@ function record(db) {
                     description: contract.description,
                     status: contract.status,
                     period: {
-                        startDate: contract.period_startdate,
-                        endDate: contract.period_enddate
+                        startDate: contract.period_startdate == null ? '' : moment(contract.period_startdate).format(),
+                        endDate: contract.period_enddate == null ? '' : moment(contract.period_enddate).format()
                     },
                     value: {
                         netAmount: parseFloat(contract.value_amountnet),
@@ -859,12 +859,12 @@ function record(db) {
                         exchangeRates: [{
                             currency: contract.exchangerate_currency,
                             rate: parseFloat(contract.exchangerate_rate),
-                            date: contract.exchangerate_date,
+                            date: contract.exchangerate_date == null ? '' : moment(contract.exchangerate_date).format(),
                             source: contract.exchangerate_source
                         }]
                     },
                     items: items[contract.id],
-                    dateSigned: contract.datesigned,
+                    dateSigned: contract.datesigned == null ? '' : moment(contract.datesigned).format(),
                     documents: documents[contract.id],
                     implementation: {
                         transactions: implementation != null ? implementationTransactions[contract.id] : [],
@@ -890,7 +890,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag:  tags.length > 0 ? tags : ['contract'],
                         value: null
@@ -947,7 +947,7 @@ function record(db) {
         if (logs != null) {
             logs.forEach((log) => {
                 releases.push({
-                    date: log.date,
+                    date: moment(log.date).format(),
                     tag: log.tag != null ? log.tag.map((e) => {
                         let nTag = validTags.find(x => x.original == e);
             
@@ -1077,8 +1077,8 @@ function record(db) {
                 title: document.title,
                 description: document.description,
                 url: document.url,
-                datePublished: document.date_published,
-                dateModified: document.date_modified,
+                datePublished: document.date_published == null ? '' : moment(document.date_published).format(),
+                dateModified: document.date_modified == null ? '' : moment(document.date_modified).format(),
                 format: document.format,
                 language: document.language
             } : {};
@@ -1100,7 +1100,7 @@ function record(db) {
     let generateAmendments = async function(table, groupby) {
         function toAmendment(amendment) {
             return amendment != null ? {
-                date: amendment.amendments_date,
+                date: amendment.amendments_date == null ? '' : moment(amendment.amendments_date).format(),
                 rationale: amendment.amendments_rationale,
                 id: amendment.amendments_id,
                 description: amendment.amendments_description
@@ -1127,8 +1127,8 @@ function record(db) {
                 title: milestone.title,
                 type: milestone.type,
                 description: milestone.description,
-                dueDate: milestone.duedate,
-                dateModified: milestone.date_modified,
+                dueDate: milestone.duedate == null ? '' : moment(milestone.duedate).format(),
+                dateModified: milestone.date_modified == null ? '' : moment(milestone.date_modified).format(),
                 status: milestone.status
             } : {};
         }
@@ -1151,7 +1151,7 @@ function record(db) {
             return transaction != null ? {
                 id: transaction.transactionid,
                 source: transaction.source,
-                date: transaction.implementation_date,
+                date: transaction.implementation_date == null ? '' : moment(transaction.implementation_date).format(),
                 value: {
                     amount: parseFloat(transaction.value_amount),
                     currency: transaction.value_currency
@@ -1196,7 +1196,7 @@ function record(db) {
         return meetings != null ? meetings.map((meeting) => {
             return {
                 id: meeting.clarificationmeetingid,
-                date: meeting.date,
+                date: meeting.date == null ? '' : moment(meeting.date).format(),
                 attendees: attenders != null && attenders.filter((x) => x.clarificationmeeting == meeting.id).length > 0 ? 
                     attenders.filter((x) => x.clarificationmeeting == meeting.id).map((x) => { return toOrganizationsReference(x); }) : [],
                 officials: officials != null && officials.filter((x) => x.clarificationmeeting == meeting.id).length > 0 ? 
@@ -1229,8 +1229,8 @@ function record(db) {
                 title: request.title,
                 description: request.description,
                 period: {
-                    startDate: request.period_startdate,
-                    endDate: request.period_enddate
+                    startDate: request.period_startdate == null ? '' : moment(request.period_startdate).format(),
+                    endDate: request.period_enddate == null ? '' : moment(request.period_enddate).format()
                 },
                 items: items[request.id],
                 invitedSuppliers: suppliers != null && suppliers.filter((x) => x.request == request.id).length > 0 ? 
@@ -1257,14 +1257,14 @@ function record(db) {
             return quote != null ? {
                 id: quote.quotes_id,
                 description: quote.description,
-                date: quote.date,
+                date: quote.date == null ? '' : moment(quote.date).format(),
                 items: items[quote.id],
                 value: {
                     amount: parseFloat(quote.value)
                 },
                 period: {
-                    startDate: quote.quoteperiod_startdate,
-                    endDate: quote.quoteperiod_enddate
+                    startDate: quote.quoteperiod_startdate == null ? '' : moment(quote.quoteperiod_startdate).format(),
+                    endDate: quote.quoteperiod_enddate == null ? '' : moment(quote.quoteperiod_enddate).format()
                 },
                 issuingSupplier: suppliers != null && suppliers.filter((x) => x.quote == quote.id).length > 0 ? 
                     suppliers.filter((x) => x.quote == quote.id).map((x) => { return toOrganizationsReference(x); }) : []
@@ -1337,8 +1337,8 @@ function record(db) {
         return breakdowns != null ? breakdowns.map((breakdown) => {
             return {
                 period: {
-                    startDate: breakdown.budgetbreakdownperiod_startdate,
-                    endDate: breakdown.budgetbreakdownperiod_enddate
+                    startDate: breakdown.budgetbreakdownperiod_startdate == null ? '' : moment(breakdown.budgetbreakdownperiod_startdate).format(),
+                    endDate: breakdown.budgetbreakdownperiod_enddate == null ? '' : moment(breakdown.budgetbreakdownperiod_enddate).format()
                 },
                 id: breakdown.budgetbreakdown_id,
                 description: breakdown.description,
@@ -1422,7 +1422,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag: ['buyer'],
                         value: null
@@ -1499,7 +1499,7 @@ function record(db) {
             if (logs != null) {
                 logs.forEach((log) => {
                     let template = {
-                        releaseDate: log.update_date,
+                        releaseDate: moment(log.update_date).format(),
                         releaseID: log.ocid,
                         releaseTag: ['party'],
                         value: null
@@ -1533,7 +1533,7 @@ function record(db) {
         if (logs != null) {
             logs.forEach((log) => {
                 let template = {
-                    releaseDate: log.update_date,
+                    releaseDate: moment(log.update_date).format(),
                     releaseID: log.ocid,
                     releaseTag: ['tag'],
                     value: null

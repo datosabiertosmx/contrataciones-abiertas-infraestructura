@@ -11,12 +11,16 @@ var cp_functions = require('../public/javascript/contracting_process_functions')
 // PostgreSQL database
 var db_conf = require('../db_conf');
 const { Op,Sequelize} = require("sequelize");
+//Swagger doc
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
+const cors = require('cors')
 
 //passport db
 var dbConfig = require('../db.js');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect(dbConfig.url, {useMongoClient: true});
+mongoose.connect(dbConfig.url, {useNewUrlParser: true,useUnifiedTopology: true});
 
 // Configuring Passport
 var passport = require('passport');
@@ -26,6 +30,7 @@ const MongoStore = require('connect-mongo')(expressSession);
 // reading csv
 var stream = require('stream');
 const csvtojsonV2=require("csvtojson/v2");
+const fs = require('fs');
 
 router.use(expressSession({secret: 'mySecretKey', resave: true, saveUninitialized: true,  store: new MongoStore({ mongooseConnection: mongoose.connection })}));
 router.use(passport.initialize());
@@ -46,7 +51,7 @@ var bCrypt = require('bcrypt-nodejs');
 // utilidades
 const {TypesOfStatus, getValueStatus} = require('../utilities/status');
 const VadalitionProcess = require('../utilities/validation-process');
-
+const converterToCSV = require('json-2-csv');
 const { fork } = require('child_process');
 
 
@@ -166,6 +171,8 @@ var isNotAuthenticated = function (req, res, next) {
     res.redirect('/main');
 };
 
+router.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+router.use(cors());
 /* * * * * * * * * * * RUTAS * * * * * * * * * * * * * */
 
 /* GET home page. */
@@ -410,7 +417,14 @@ router.get('/admin', isAuthenticated, function (req, res) {
 router.post("/user-profile/", isAuthenticated, function (req, res) {
     var id = req.body.id;
     User.findOne({ '_id' : id }).then(function (data) {
-       res.render('modals/user-profile',{user: data});
+        res.render('modals/user-profile',{user: data});
+    });
+});
+
+router.post("/user-profile-admin/", isAuthenticated, function (req, res) {
+    var id = req.body.id;
+    User.findOne({ '_id' : id }).then(function (data) {
+       res.render('modals/user-profile-admin',{user: data});
     });
 });
 
@@ -689,6 +703,66 @@ let updateHisitory = async (cpid, user, stage, host)  => {
     process.on('message', message => {
         process.kill()
     })
+}
+
+let validatedAll = async (id_cp, user, stage, host)  => {
+    console.log(`Validando... id_cp - ${id_cp}`)
+    updateHisitory(id_cp, user, stage, host);
+    let record = require('../io/record')(db_conf.edca_db);
+    await record.checkRecordIfExists(id_cp, host);           
+    const vp = new VadalitionProcess(id_cp, db_conf.edca_db);
+    const validationResult = await vp.validate();
+    let valid = validationResult.valid;
+    await db_conf.edca_db.none('update contractingprocess set valid = $1 where id = $2', [valid,id_cp]); 
+}
+
+let publishedAll = async (id_cp, publisher, host)  => {
+    console.log(`Publicando... id_cp - ${id_cp}`)
+    try{
+        let record = require('../io/record')(db_conf.edca_db);
+        await record.checkRecordIfExists(id_cp, host);
+        const vp = new VadalitionProcess(id_cp, db_conf.edca_db);
+        const validationResult = await vp.validate();
+        let v = validationResult.valid;
+        await db_conf.edca_db.none('update contractingprocess set valid = $1 where id = $2', [v,id_cp]);
+        if(validationResult.valid){
+            //  se indica cual log es el que esta publicado
+            await db_conf.edca_db.none('update logs set published = true where id in (SELECT id from logs WHERE contractingprocess_id = $1 ORDER BY update_date desc LIMIT 1 )', [id_cp]);
+
+            // actualizar historial
+            await db_conf.edca_db.none(`UPDATE contractingprocess SET
+                                            published_version = (SELECT version FROM logs WHERE contractingprocess_id = $1 AND published = true ORDER BY update_date DESC LIMIT 1),
+                                            date_published = now(),
+                                            published = true,
+                                            publisher = $2,
+                                            updated = false
+                                        WHERE id = $1`, [id_cp, publisher ? publisher.publisherName : 'Sin publicador']);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+    catch(e) {
+        console.log(e);
+        return res.status(400).json({message: 'No se ha podido publicar'});
+    }
+}
+
+let sendToPNT = async (cp)  => {
+    console.log(`Actualizando Status de PNT... id_cp - ${cp}`)
+    try{
+        // se indica que ya se actualizo en pnt
+        await db_conf.edca_db.none(`update contractingprocess set 
+                    pnt_published = true, 
+                    pnt_date= now(),
+                    pnt_version = (SELECT version FROM logs WHERE contractingprocess_id = $1 AND logs.published = true ORDER BY update_date DESC LIMIT 1) 
+                where id = $1`, [cp]);
+    }
+    catch(e) {
+        console.log(e);
+        return res.status(400).json({message: 'No se ha podido actualizar el status'});
+    }
 }
 
 let updateTags = (data) => {
@@ -1059,25 +1133,20 @@ router.post('/logs', isAuthenticated, function (req, res) {
             t.manyOrNone("select id, version, publisher, release_file, to_char(update_date, 'YYYY-MM-DD HH:MI:SS') as update_date_text from logs where contractingProcess_id = $1 and release_file is not null and publisher is not null order by id desc", [req.body.id])
         ]);
     }).then(function (data) {
-        var filters = [];
-
+        var publisher = new Object();
         data[0].map(function (e) {
-            filters.push({ $or: { id: e.publisher } });
+            publisher.id =  e.publisher;
         });
-
-        User.find(filters).then(function (result) {
+        User.find().then(function (result) {
             data[0].map(function (e) {
                 var user = result.find(function (i) { return i.id == e.publisher});
-
                 if (user != null) {
                     e.publisher = user.username;
                 } else {
                     e.publisher = '';
                 }
-
                 return e;
             });
-
             res.render('modals/logs', {
                 logs: data[0]
             });
@@ -1979,6 +2048,16 @@ router.post('/new-quote-request', function (req, res) {
     });
 });
 
+router.post('/new-admin-years', function (req, res) {
+    console.log(`/new-admin-years ${JSON.stringify(req.body)}`)
+    cp_functions.createFiscalYears(req.body).then(() =>{
+        res.json({
+            status: 'Ok',
+            description: 'Ejercicio fiscal actualizado.'
+        });
+    });
+});
+
 router.post('/newquoterequest-fields', function (req, res) {
     db_conf.edca_db.task(function (t) {
         return t.batch([
@@ -2254,10 +2333,10 @@ router.post('/new-guarantee', function (req, res) {
     let query = '';
 
     if (req.body.fkname && req.body.fkid) {
-        query = `insert into $1~ (guarantee_id, guaranteetype, date, guaranteedobligations, value, guarantor, guaranteePeriod_startdate, guaranteePeriod_enddate, contractingprocess_id, $11~, currency)
+        query = `insert into $1~ (guarantee_id, type, date, obligations, value, guarantor, guaranteePeriod_startdate, guaranteePeriod_enddate, contractingprocess_id, $11~, currency)
             values ($2, $3, $4, $5, $6, $7, $8, $9, $10, $12, $13) returning id`;
     } else {
-        query = `insert into $1~ (guarantee_id, guaranteetype, date, guaranteedobligations, value, guarantor, guaranteePeriod_startdate, guaranteePeriod_enddate, contractingprocess_id, currency)
+        query = `insert into $1~ (guarantee_id, type, date, obligations, value, guarantor, guaranteePeriod_startdate, guaranteePeriod_enddate, contractingprocess_id, currency)
             values ($2, $3, $4, $5, $6, $7, $8, $9, $10,$13) returning id`;
     }
 
@@ -2265,9 +2344,9 @@ router.post('/new-guarantee', function (req, res) {
         return t.one(query, [
             req.body.table,
             "guarantee-"+uuid(),
-            req.body.guaranteetype,
+            req.body.type,
             dateCol(req.body.date),
-            req.body.guaranteedobligations,
+            req.body.obligations,
             numericCol(req.body.value),
             req.body.guarantor,
             dateCol(req.body.guaranteePeriod_startdate),
@@ -2316,7 +2395,7 @@ router.post('/newguarantee-fields', function (req, res) {
 });
 
 router.post('/edit-guarantee', function (req, res) {
-    let query = `update $1~ set guarantee_id = $3, guaranteetype = $4, date = $5, guaranteedobligations = $6, value = $7, guarantor = $8, guaranteePeriod_startdate = $9,
+    let query = `update $1~ set guarantee_id = $3, type = $4, date = $5, obligations = $6, value = $7, guarantor = $8, guaranteePeriod_startdate = $9,
         guaranteePeriod_enddate = $10, currency = $11 where id = $2 returning id`;
 
     db_conf.edca_db.task(function (t) {
@@ -2324,9 +2403,9 @@ router.post('/edit-guarantee', function (req, res) {
             req.body.table,
             req.body.id,
             req.body.guarantee_id,
-            req.body.guaranteetype,
+            req.body.type,
             dateCol(req.body.date),
-            req.body.guaranteedobligations,
+            req.body.obligations,
             numericCol(req.body.value),
             req.body.guarantor,
             dateCol(req.body.guaranteePeriod_startdate),
@@ -2412,6 +2491,7 @@ router.post('/new-relatedprocedure', isAuthenticated, function (req, res) {
 // insert related summary procedure project
 router.post('/insert-related-summary-procedure-project', isAuthenticated, function (req, res) {
     console.log("######### /insert-related-summary-procedure-project BODY " + JSON.stringify(req.body, null,4))
+    console.log("######### /insert-related-summary-procedure-project USER " + JSON.stringify(req.user, null,4))
     project.insertRelatedContractingProcessProject(JSON.stringify(req.body)).then(function (){
         res.json({
             status: 'Ok',
@@ -2419,7 +2499,7 @@ router.post('/insert-related-summary-procedure-project', isAuthenticated, functi
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(req.body.project_id);
+        project.updatePublishedDate(req.body.project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2439,7 +2519,7 @@ router.post('/update-related-summary-procedure-project', isAuthenticated,async f
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(relRelatedProjectProject[0].project_id);
+        project.updatePublishedDate(relRelatedProjectProject[0].project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2458,7 +2538,7 @@ router.post('/insert-location-project', isAuthenticated, function (req, res) {
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(req.body.project_id);
+        project.updatePublishedDate(req.body.project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2477,7 +2557,7 @@ router.post('/insert-document-project', isAuthenticated, function (req, res) {
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(req.body.project_id);
+        project.updatePublishedDate(req.body.project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2497,7 +2577,7 @@ router.post('/insert-additional-classification', isAuthenticated, function (req,
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(req.body.project_id);
+        project.updatePublishedDate(req.body.project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2516,7 +2596,7 @@ router.post('/insert-related-projects', isAuthenticated, function (req, res) {
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(req.body.project_id);
+        project.updatePublishedDate(req.body.project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -2880,7 +2960,7 @@ router.post('/1.1/new-additional-identifiers', isAuthenticated,async function (r
         });
         return true;
     }).then(function(){
-        project.updatePublishedDate(relProjectPartyProject[0].project_id);
+        project.updatePublishedDate(relProjectPartyProject[0].project_id,req.user);
     }).catch(function(err){
         res.json({
             status: 'Error',
@@ -4449,7 +4529,7 @@ router.put('/1.1/party_project/', function (req,res) {
             });
             return true;
         }).then(function(){
-            project.updatePublishedDate(req.body.project_id);
+            project.updatePublishedDate(req.body.project_id,req.user);
         }).catch(function(err){console.log("ERROR - /1.1/party_project/ " + err)});
     }
 
@@ -4468,7 +4548,7 @@ router.put('/1.1/add_budget_breakdown_project/', function (req,res) {
                 });
                 return true;
             }).then(function(){
-                project.updatePublishedDate(req.body.project_id);
+                project.updatePublishedDate(req.body.project_id,req.user);
             }).catch(function(err){console.log("ERROR - /1.1/add_budget_breakdown_project/ " + err)});
         }else{
             res.json({
@@ -4713,7 +4793,7 @@ router.post('/1.1/party_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relPartyProject[0].project_id);
+            project.updatePublishedDate(relPartyProject[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_budgetbreakdown_project " + error);
             res.status(400).jsonp({
@@ -4744,7 +4824,7 @@ router.post('/1.1/update_budgetbreakdown_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relBudgetProject[0].project_id);
+            project.updatePublishedDate(relBudgetProject[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_budgetbreakdown_project " + error);
             res.status(400).jsonp({
@@ -4766,7 +4846,7 @@ router.post('/1.1/update_related_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relRelatedProject[0].project_id);
+            project.updatePublishedDate(relRelatedProject[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_related_project " + error);
             res.status(400).jsonp({
@@ -4798,7 +4878,7 @@ router.post('/1.1/update_additional_identifier',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relProjectPartyProject[0].project_id);
+            project.updatePublishedDate(relProjectPartyProject[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_additional_identifier " + error);
             res.status(400).jsonp({
@@ -4856,7 +4936,7 @@ router.post('/1.1/update_additional_classification',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relprojectAdditionalClassfication[0].project_id);
+            project.updatePublishedDate(relprojectAdditionalClassfication[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_additional_classification " + error);
             res.status(400).jsonp({
@@ -4877,7 +4957,7 @@ router.post('/1.1/update_location_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relprojectLocation[0].project_id);
+            project.updatePublishedDate(relprojectLocation[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error - /1.1/update_location_project " + error);
             res.status(400).jsonp({
@@ -4898,7 +4978,7 @@ router.post('/1.1/update_document_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relprojectDocument[0].project_id);
+            project.updatePublishedDate(relprojectDocument[0].project_id,req.user);
         }).catch(function (error) {
             console.log("Error /1.1/update_document_project " + error);
             res.status(400).jsonp({
@@ -4937,7 +5017,7 @@ router.delete('/1.1/party_project', isAuthenticated,async function(req, res) {
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relPartyProject[0].project_id);
+        project.updatePublishedDate(relPartyProject[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -4965,7 +5045,7 @@ router.delete('/1.1/delete_budget_breakdown_project', isAuthenticated,async func
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relBudgetProject[0].project_id);
+        project.updatePublishedDate(relBudgetProject[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -4984,7 +5064,7 @@ router.delete('/1.1/delete_related_project', isAuthenticated,async function(req,
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relprojectRelatedProjectProject[0].project_id);
+        project.updatePublishedDate(relprojectRelatedProjectProject[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5012,7 +5092,7 @@ router.delete('/1.1/delete_additional_identifier', isAuthenticated,async functio
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relProjectPartyProject[0].project_id);
+        project.updatePublishedDate(relProjectPartyProject[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5063,7 +5143,7 @@ router.delete('/1.1/delete_additional_classification', isAuthenticated,async fun
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relprojectAdditionalClassfication[0].project_id);
+        project.updatePublishedDate(relprojectAdditionalClassfication[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5082,7 +5162,7 @@ router.delete('/1.1/delete_related_contracting_process_project', isAuthenticated
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relRelatedProjectProject[0].project_id);
+        project.updatePublishedDate(relRelatedProjectProject[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5101,7 +5181,7 @@ router.delete('/1.1/delete_location_project', isAuthenticated,async function(req
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relprojectLocation[0].project_id);
+        project.updatePublishedDate(relprojectLocation[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5120,7 +5200,7 @@ router.delete('/1.1/delete_document_project', isAuthenticated,async function(req
             description: "El registro ha sido eliminado",
         });
     }).then(function(){
-        project.updatePublishedDate(relprojectDocument[0].project_id);
+        project.updatePublishedDate(relprojectDocument[0].project_id,req.user);
     }).catch(function (error) {
         console.log(error);
         res.status(400).jsonp({
@@ -5815,6 +5895,17 @@ router.post('/admin/oc4ids', isAuthenticated, async (req,res) => {
     project.updatePrefix(value.replace(/ /g,"")).then(async function(){
         return res.status(200).json({message: 'Se ha registrado el prefijo'});
     });
+});
+
+// view years to publish
+router.get('/admin/years', isAuthenticated, async (req,res) => {
+    cp_functions.getFiscalYears().then(async arrayFiscalYear => {
+        console.log(`${JSON.stringify(arrayFiscalYear)}`)
+        res.render('modals/admin_years',{
+            fiscalYear : arrayFiscalYear
+        });
+    })
+    
 });
 
 router.get('/validate/:cpid', async  (req, res) => {
@@ -6609,10 +6700,10 @@ router.post('/new-project', isAuthenticated, async function (req, res) {
                 project.createPublisherProjectPackage(values[0].id,values[1].id).then(function(){
                     return project.createProjectPackageProject(values[2].id,values[1].id,getHost(req));
                 }).catch(function(err){console.log("ERROR - " + err)});
-                res.json( { url: `/project/${values[2].id}` } );
-              }, reason => {
-                console.log("/new-project REASON " + reason)
-              });
+                    res.json( { url: `/project/${values[2].id}` } );
+                }, reason => {
+                    console.log("/new-project REASON " + reason)
+                });
         }else{
             res.json( { url: `/main/` } );
         }    
@@ -6730,14 +6821,14 @@ router.post('/project/',isAuthenticated, async (req, res) => {
         update(request).then(function(){
             return res.redirect(`/project/${form.project_id}`);
         }).then(function(){
-            project.updatePublishedDate(req.body.project_id);
+            project.updatePublishedDate(req.body.project_id,req.user);
         }).catch(async function(err){console.log("ERROR Update /project/ - " + err)});
     }else{
         console.log('············ Es nuevo proyecto')
         await project.insertProject(request).then(async function(){
             res.redirect(`/project/${form.project_id}`);
         }).then(function(){
-            project.updatePublishedDate(req.body.project_id);
+            project.updatePublishedDate(req.body.project_id,req.user);
         }).catch(async function(err){console.log("ERROR Create /project/ - " + err)});
     }
     
@@ -6753,14 +6844,14 @@ router.post('/completion_project/',isAuthenticated, async (req, res) => {
         project.updateCompletionProject(request).then(function(){
             res.redirect(`/project/${form.project_id}`);
         }).then(function(){
-            project.updatePublishedDate(req.body.project_id);
+            project.updatePublishedDate(req.body.project_id,req.user);
         }).catch(function(err){console.log("ERROR Update /completion_project/ - " + err)});
     }else{
         console.log('············ Es nuevo proyecto COMPLETO')
         project.insertCompletionProject(request).then(function(){
             res.redirect(`/project/${form.project_id}`);
         }).then(function(){
-            project.updatePublishedDate(req.body.project_id);
+            project.updatePublishedDate(req.body.project_id,req.user);
         }).catch(function(err){console.log("ERROR Create /completion_project/ - " + err)});
     }
 }),
@@ -6780,7 +6871,6 @@ router.post('/validate-project-amount/',isAuthenticated, async (req, res) => {
                 existParties = true;    
             });
         }
-          
         if(existAmount && existParties){
             res.json({
                 status: 'Ok',
@@ -6834,6 +6924,7 @@ router.get('/edcapi/project/:id', function(req, res){
     project.findRelatedContractingProcess(req.params.id).then(function(ocids){
         return project.generateRecordPackage(ocids, getHost(req));
     }).then(function(RecordPackages){
+        console.log("### RecordPackages " + JSON.stringify(RecordPackages))
         var arrayContractingProcesses = new Array(); 
         RecordPackages.forEach(element => {
             var objContractingProcess  = new Object();
@@ -6845,9 +6936,15 @@ router.get('/edcapi/project/:id', function(req, res){
         });
         return project.imprimeProjectPackage(req.params.id, arrayContractingProcesses,false);
     }).then(function(projectPackage){
-        return res.json(projectPackage)    
+        console.log("### projectPackage " + JSON.stringify(projectPackage))
+        if(Object.entries(projectPackage).length === 0){
+            return res.status(404).send();
+        }else{
+            return res.json(projectPackage)    
+        }
     }).catch(function(err){
         console.log("ERROR /edcapi/project/:id - " + err)
+        return res.status(404).send();
     });
 });
 
@@ -6898,6 +6995,254 @@ router.get('/edcapi/projectpackage/:id', function(req, res){
 router.get('/edcapi/projectpackage', function(req, res){
     project.findProjectsAPI().then((project) => {
         res.json(project)
+    });
+});
+
+router.get('/edca/contractingprocess/procurementmethod/:procurementmethod/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/procurementmethod/:procurementmethod PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getProcurementMethod(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+    })
+});
+
+router.get('/edca/contractingprocess/additionalprocurementcategories/:additionalprocurementcategories/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/additionalprocurementcategories/:additionalprocurementcategories PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getAdditionalProcurementCategories(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+    })
+});
+
+router.get('/edca/contractingprocess/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/:year PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getContractingProcess(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+    })
+});
+
+router.get('/edca/cp/:id',async function(req, res){
+    console.log("························· /edca/contractingprocess/:id PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getOneContractingProcess(req.params, getHost(req), res).then(arrayReleasePackage => {
+        console.log("arrayReleasePackage "  + JSON.stringify(arrayReleasePackage, null, 2));
+        
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+    })
+});
+
+router.get('/edca/contractingprocess/csv/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/csv/:year PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getContractingProcess(req.params, getHost(req)).then(response => {
+        if(response !== false){
+            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
+            converterToCSV.json2csv(response, (err, csv) => {
+                if (err) {
+                    throw err;
+                }
+                // print CSV string
+                // console.log(csv);
+                fs.writeFileSync('todos.csv', csv);
+                res.download('./todos.csv', function (err){
+                    if(err){
+                        console.log(`ERROR ${err}`)
+                    }else{
+                        fs.unlink('./todos.csv', (err) => {
+                            if (err) {
+                                console.error(err)
+                                return
+                            }
+                        })
+                    }    
+                })                
+            });
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        );
+        }
+        
+    })
+});
+
+router.get('/edca/contractingprocess/additionalprocurementcategories/csv/:additionalprocurementcategories/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/additionalprocurementcategories/csv/:additionalprocurementcategories/:year PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getAdditionalProcurementCategories(req.params, getHost(req), res).then(response => {
+        if(response !== false){
+            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
+            converterToCSV.json2csv(response, (err, csv) => {
+                if (err) {
+                    throw err;
+                }
+                // print CSV string
+                // console.log(csv);
+                fs.writeFileSync('todos.csv', csv);
+                res.download('./todos.csv', function (err){
+                    if(err){
+                        console.log(`ERROR ${err}`)
+                    }else{
+                        fs.unlink('./todos.csv', (err) => {
+                            if (err) {
+                                console.error(err)
+                                return
+                            }
+                        })
+                    }    
+                })                
+            });
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        );
+        }
+        
+    })
+});
+
+router.get('/edca/contractingprocess/procurementmethod/csv/:procurementmethod/:year',async function(req, res){
+    console.log("························· /edca/contractingprocess/procurementmethod/csv/:procurementmethod/:year PARAMS "  + JSON.stringify(req.params));
+    cp_functions.getProcurementMethod(req.params, getHost(req), res).then(response => {
+        if(response !== false){
+            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
+            converterToCSV.json2csv(response, (err, csv) => {
+                if (err) {
+                    throw err;
+                }
+                // print CSV string
+                // console.log(csv);
+                fs.writeFileSync('todos.csv', csv);
+                res.download('./todos.csv', function (err){
+                    if(err){
+                        console.log(`ERROR ${err}`)
+                    }else{
+                        fs.unlink('./todos.csv', (err) => {
+                            if (err) {
+                                console.error(err)
+                                return
+                            }
+                        })
+                    }    
+                })                
+            });
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        );
+        }
+        
+    })
+});
+
+router.get('/generate/releases',async function(req, res){
+    console.log("························· /generate-releases/ "  + JSON.stringify(req.user));
+    cp_functions.getAllIdContractingProcess().then(async arrayReleasePackage => {
+        var totalRegistros = arrayReleasePackage.length;
+        var contador = 0;
+        var done = false;
+        if(arrayReleasePackage){
+            arrayReleasePackage.forEach(element => {
+                id_cp = element.contractingprocess_id;
+                var publisher = new Object({
+                    _id : element.publisher,
+                    publisherName : element.name,
+                    publisherScheme : element.scheme,
+                    publisherUid : element.uid,
+                    publisherUri : element.uri
+                })
+                validatedAll(id_cp, publisher, 1, getHost(req));
+                contador++;
+                if(contador == totalRegistros)
+                done = true;
+            });
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+        if(done)
+        return res.json({status: 200,message: 'Procesos validados'});
+    })
+
+    
+});
+router.get('/generate/publishes',async function(req, res){
+    console.log("························· /generate-releases/ "  + JSON.stringify(req.user));
+    cp_functions.getAllIdContractingProcess().then(async arrayReleasePackage => {
+        var totalRegistros = arrayReleasePackage.length;
+        var contador = 0;
+        var done = false;
+        if(arrayReleasePackage){
+            arrayReleasePackage.forEach(element => {
+                id_cp = element.contractingprocess_id;
+                var publisher = new Object({
+                    _id : element.publisher,
+                    publisherName : element.name,
+                    publisherScheme : element.scheme,
+                    publisherUid : element.uid,
+                    publisherUri : element.uri
+                })
+                publishedAll(id_cp, publisher, getHost(req));
+                sendToPNT(id_cp);
+                contador++;
+                if(contador == totalRegistros)
+                done = true;
+            });
+            await require('../utilities/export2Dashboard')(id_cp);
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón resultados con el parámetro seleccionado.`
+            }
+        )}
+        if(done)
+        return res.json({status: 200,message: 'Procesos publicados'});
+    })
+});
+
+router.get('/edca/fiscalYears',async function(req, res){
+    console.log("························· /edca/fiscalYears ");
+    cp_functions.getFiscalYears().then(fiscalYears =>{
+        if(fiscalYears){
+            console.log(`RES ${JSON.stringify(fiscalYears)}`)
+            return res.status(200).json({fiscalYears});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón registros.`
+            }
+        )}
     });
 });
 

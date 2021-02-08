@@ -590,11 +590,17 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         $.ajax({
                             url: "/1.1/party",
                             method: "DELETE",
-                            data: {parties_id : $(this).data("parties_id"), contractingprocess_id: button.data("contractingprocess_id")},
+                            data: {parties_id : $(this).data("parties_id"), contractingprocess_id: button.data("contractingprocess_id")},   
                             success:  function (data) {
+                                console.log("hhhhhhhhh" + JSON.stringify(data))
                                 alert(data.description);
                                 $('[name="numberoftenderers"]').val(data.total);
-                                if (data.status === 'Ok'){ modal.modal('hide');}
+                                if (data.status === 'Ok'){ 
+                                    modal.modal('hide');
+                                }
+                            },
+                            error: function (data) {
+                                alert("No es posible eliminar el actor porque cuenta información asociada a los formularios de Solicitud de cotizaciones y Cotizaciones.");
                             }
                         })
                     }
@@ -2822,6 +2828,19 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 });
             });
             break;
+        case "edit_user_admin":
+                modal.find('.modal-title').text('Actualizar información del usuario');
+                modal.find('#modal_content').html("");
+                modal.find('#modal_content').load('/user-profile-admin', { id : button.data('user_id')}, function () {
+                    $('#form_update_user_profile_admin').submit(function (event) {
+                        $.post('/update/user', $(this).serialize()).done(function (data) {
+                            alert(data.description);
+                            if (data.status === 'Ok'){ modal.modal('hide');}
+                        });
+                        event.preventDefault();
+                    });
+                });
+                break;
         case "delete_user":
             modal.find('.modal-title').text('Eliminar usuario');
             modal.find('#modal_content').html("");

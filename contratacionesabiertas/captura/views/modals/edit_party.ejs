@@ -90,7 +90,7 @@
 
 
     <p><label>Identificador<!--Identifier ID--></label>
-        <input name = "identifier_id" class="form-control" type="text" value="<%= data.identifier_id %>" onChange="validarIdentificador(this);" required></p>
+        <input name = "identifier_id" class="form-control" type="text" value="<%= data.identifier_id %>" required></p>
 
     <hr>
     
@@ -201,18 +201,6 @@
             $('#additionalsurname').prop( "disabled", true );
             $('#identifier_legalname').val('');
             $('#identifier_legalname').prop( "disabled", false );
-        }
-    }
-
-    function validarIdentificador(input){
-        input.value = input.value.trim();
-        if(document.getElementById('identifier_scheme').selectedIndex == 1){
-            if(input.value.length == 12 || input.value.length ==13){
-                //No modifica el dato
-            }else{
-                alert("La longitud del identificador no coincide con el esquema seleccionado. Considerar que el RFC consta de 12 caracteres en caso de personas físicas y 13 en caso de personas morales.")
-                input.value = "";
-            }
         }
     }
 

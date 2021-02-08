@@ -5,6 +5,7 @@
  */
 
 var app = require('../app');
+var conf = require('../dash_config');
 var debug = require('debug')('dashboard:server');
 var http = require('http');
 
@@ -12,7 +13,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '4000');
+var port = normalizePort(process.env.PORT || conf.globals.site.port);
 app.set('port', port);
 
 /**

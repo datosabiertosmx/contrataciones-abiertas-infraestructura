@@ -1096,9 +1096,9 @@ CREATE TABLE public.guarantees (
     contractingprocess_id integer,
     contract_id integer,
     guarantee_id text,
-    guaranteetype text,
+    type text,
     date timestamp without time zone,
-    guaranteedobligations text,
+    obligations text,
     value numeric,
     guarantor integer,
     guaranteeperiod_startdate timestamp without time zone,
@@ -4711,7 +4711,7 @@ COPY public.documenttype (id, category, code, title, title_esp, description, sou
 31	intermediate	physicalProgressReport	Physical progress reports	Informe de avance físico	A report on the status of implementation, usually against key milestones.		5
 32	intermediate	marketStudies		Resultado de la investigación de mercado			1
 33	intermediate	request		Requisición			1
-34	intermediate	tenderNotice		Convocatoria			2
+34	intermediate	tenderNotice		Convocatoria o invitación			2
 35	intermediate	unsuccessfulProcedureNotice		Acta de fallo (desierto)			3
 36	intermediate	awardNotice		Notificación de la adjudicación			3
 37	intermediate	contractSigned		Contrato			4
@@ -4725,6 +4725,7 @@ COPY public.documenttype (id, category, code, title, title_esp, description, sou
 45	basic	physicalReception	Physical Reception	Acta de recepción de los trabajos ejecutados u homóloga en su caso	Documento elaborado por la entidad o dependecia en el que se procede a la recepción física  los trabajos realizados. Este documento se elabora dentro de los 15 días naturales siguientes a la debida terminación de los mismos, previa presentación de la garantía de defectos, vicios ocultos y de cualquier otra responsabilidad.		5
 46	basic	procurementMethodAuthorization	Procurement Method Authorization	Autorización del ejercicio de la opción	Autorización escrita del titular de la dependencia o entidad, o aquel servidor público en quién éste delegue dicha atribución, así como del dictamen del área respectiva, de que no se cuenta con personal capacitado o disponible para su realización.		2
 47	basic	suspensionNotice	Suspension Notice	Comunicado de la suspensión	Documento  en el que las dependencias y entidades podrán suspender temporalmente, en todo o en parte, los trabajos contratados por cualquier causa justificada. Los titulares de las dependencias y los órganos de gobierno de las entidades designarán a los servidores públicos que podrán ordenar la suspensión y determinar, en su caso, la temporalidad de ésta, la que no podrá ser indefinida.		4
+48	advanced	transferReport	Transfer Report	Reporte de transferencias	Documento de reporte de transferencias bancarias.		5
 \.
 
 
@@ -4748,7 +4749,7 @@ COPY public.gdmx_document (id, name, stage, type, tablename, identifier) FROM st
 -- Data for Name: guarantees; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.guarantees (id, contractingprocess_id, contract_id, guarantee_id, guaranteetype, date, guaranteedobligations, value, guarantor, guaranteeperiod_startdate, guaranteeperiod_enddate, currency) FROM stdin;
+COPY public.guarantees (id, contractingprocess_id, contract_id, guarantee_id, type, date, obligations, value, guarantor, guaranteeperiod_startdate, guaranteeperiod_enddate, currency) FROM stdin;
 \.
 
 

@@ -10,13 +10,13 @@
 
     <p>
         <label title="">Forma de garantía</label>
-        <select class="form-control" name="guaranteetype" required>
-            <option value="" <%= guarantee.guaranteetype == '' ? 'selected' : '' %>>Seleccione una opción</option>
-            <option value="bail" <%= guarantee.guaranteetype == 'bail' ? 'selected' : '' %>>Fianza</option>
-            <option value="depositSlip" <%= guarantee.guaranteetype == 'depositSlip' ? 'selected' : '' %>>Billete de depósito</option>
-            <option value="letterOfCredit" <%= guarantee.guaranteetype == 'letterOfCredit' ? 'selected' : '' %>>Carta de crédito</option>
-            <option value="suretyBond" <%= guarantee.guaranteetype == 'suretyBond' ? 'selected' : '' %>>Seguro de caución</option>
-            <option value="check" <%= guarantee.guaranteetype == 'check' ? 'selected' : '' %>>Cheque</option>
+        <select class="form-control" name="type" required>
+            <option value="" <%= guarantee.type == '' ? 'selected' : '' %>>Seleccione una opción</option>
+            <option value="bail" <%= guarantee.type == 'bail' ? 'selected' : '' %>>Fianza</option>
+            <option value="depositSlip" <%= guarantee.type == 'depositSlip' ? 'selected' : '' %>>Billete de depósito</option>
+            <option value="letterOfCredit" <%= guarantee.type == 'letterOfCredit' ? 'selected' : '' %>>Carta de crédito</option>
+            <option value="suretyBond" <%= guarantee.type == 'suretyBond' ? 'selected' : '' %>>Seguro de caución</option>
+            <option value="check" <%= guarantee.type == 'check' ? 'selected' : '' %>>Cheque</option>
         </select>
     </p>
 
@@ -27,13 +27,13 @@
 
     <p>
         <label title="">Obligaciones garantizadas</label>
-        <select class="form-control" name="guaranteedobligations" required>
-            <option value="" <%= guarantee.guaranteedobligations == '' ? 'selected' : '' %>>Seleccione una opción</option>
-            <option value="fulfillment" <%= guarantee.guaranteedobligations == 'fulfillment' ? 'selected' : '' %>>Cumplimiento</option>
-            <option value="prepaid" <%= guarantee.guaranteedobligations == 'prepaid' ? 'selected' : '' %>>Anticipo</option>
-            <option value="latentDefects" <%= guarantee.guaranteedobligations == 'latentDefects' ? 'selected' : '' %>>Vicios ocultos</option>
-            <option value="confidentiality" <%= guarantee.guaranteedobligations == 'confidentiality' ? 'selected' : '' %>>Confidencialidad</option>
-            <option value="quality" <%= guarantee.guaranteedobligations == 'quality' ? 'selected' : '' %>>Calidad</option>
+        <select class="form-control" name="obligations" required>
+            <option value="" <%= guarantee.obligations == '' ? 'selected' : '' %>>Seleccione una opción</option>
+            <option value="fulfillment" <%= guarantee.obligations == 'fulfillment' ? 'selected' : '' %>>Cumplimiento</option>
+            <option value="prepaid" <%= guarantee.obligations == 'prepaid' ? 'selected' : '' %>>Anticipo</option>
+            <option value="latentDefects" <%= guarantee.obligations == 'latentDefects' ? 'selected' : '' %>>Vicios ocultos</option>
+            <option value="confidentiality" <%= guarantee.obligations == 'confidentiality' ? 'selected' : '' %>>Confidencialidad</option>
+            <option value="quality" <%= guarantee.obligations == 'quality' ? 'selected' : '' %>>Calidad</option>
         </select>
     </p>
 

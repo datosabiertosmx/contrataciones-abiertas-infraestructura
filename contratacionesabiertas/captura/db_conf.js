@@ -23,6 +23,12 @@ const configDash = {
     password: process.env.POSTGRES_PASSWORD || 'p4ssw0rd'
 };
 
+const globals = {
+    site : {
+        port : 3000
+    }
+}
+
 var connectionDashboard = pgp(configDash);
 var dash_user = configDash.user;
 
@@ -31,5 +37,6 @@ module.exports = {
     pgp: pgp,
     edca_db : edca_db,
     dashboard: connectionDashboard,
-    dash_user: dash_user
+    dash_user: dash_user,
+    globals: globals
 };

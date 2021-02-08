@@ -11,10 +11,17 @@ const configDash = {
     password: process.env.POSTGRES_PASSWORD || 'p4ssw0rd'
 };
 
+const globals = {
+    site : {
+        port : 4000
+    }
+}
+
 var connectionDashboard = pgp(configDash);
 ////////////////////////////////
 
 
 module.exports = {
-    dashboard: connectionDashboard
+    dashboard: connectionDashboard,
+    globals: globals
 };

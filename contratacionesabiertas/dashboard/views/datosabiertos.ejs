@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
+
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNYE7DF2RM"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KNYE7DF2RM');
+    </script>
+    <!-- End Google Analytics -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap_4/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/contratacionesabiertas/static/bower_components/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/main.css' />
+    <link rel='stylesheet' href='/contratacionesabiertas/static/stylesheets/style_d3bubble.css' />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/jqplot/jquery.jqplot.css" />
+    <link rel="stylesheet" href="/contratacionesabiertas/static/stylesheets/dashboard.css">
+    <link rel="import" href="<%= process.env.CDN_URL %>/bower_components/polymer/polymer.html">
+    <link rel="import" href="/contratacionesabiertas/static/inai-navbar/dgm-navbar_datos.html">
+    <link rel="import" href="/contratacionesabiertas/static/inai-footer/dgm-footer.html">
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster-follower/dist/css/tooltipster-follower.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js" integrity="sha512-k8F8QynmFNURwbUJC8drKA+fo3YfNvjqKzStdydD6au+MzvxBoRnxH8E31RJXwDY9DrnEiPhh9wBoDSIxhkyHQ==" crossorigin="anonymous"></script>
+    <script src="/contratacionesabiertas/static/javascripts/common.js"></script>
+	
+	<style no-shim>        
+        .navbar-default{ 
+          background-color: #FFFFFF; 
+          border: none;
+          width: 100%;
+        }
+        
+        .menuTopBar{
+            text-align: center;
+            background-color: #00bfa5;
+            position: fixed;
+            z-index: 4;
+            top: 106.5px;
+            max-width: none;
+            width: 100%;
+            padding: 0 10% 0;
+        }
+        .menuTopBar a{
+            height: 52px;
+            text-decoration: none;
+            font-size: 15px;
+            vertical-align: middle;
+            color: #FFFFFF;
+        }
+        .menuTopBar .botonMenuTop:hover{
+            background-color: #008e76;
+            height: 52px;
+        }
+        .menuTopBar .botonMenuTop{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background-color: #00bfa5;
+            color: #ffffff;
+        }
+        @media (max-width: 991px) {
+            body {
+                margin: 150px 0 0;
+            }
+            .menuTopBarS{
+                padding: 0 0 0;
+                background-color: black;
+            }
+        }
+    </style>
+
+    <title>Datos abiertos</title>
+</head>
+
+<body>
+    <dgm-navbar></dgm-navbar>
+    
+    <div class="menuTopBar menuTopBarS row" style="margin-left: 0">
+        <div class="col-md-3 col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/contratos/" class="botonMenuTop">Inicio</a>
+        </div>
+        <div class="col-md-3 col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/politicadepublicacion" class="botonMenuTop">Política de publicación</a>
+        </div>
+        <div class="col-md-3 col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/implementa" class="botonMenuTop">Implementa el EDCA-MX</a>
+        </div>
+        <div class="col-md-3 col-xs-3" style="padding: 0 0 0;">
+            <a href="/contratacionesabiertas/datosabiertos" class="botonMenuTop" style="background-color: #008e76">Datos abiertos</a>
+        </div>
+    </div>
+    <nav class="navbar navbar-default navbar-fixed-top hidden-sm hidden-xs" style="position: fixed; z-index: 4;">
+      <div class="container"> 
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/contratacionesabiertas/"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item"><a href="/contratacionesabiertas/contratos/">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</a></li>
+          <li class="breadcrumb-item active" style="color: #00bfa5;" aria-current="page">Datos abiertos</li>
+        </ol>
+    </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 post">
+          <div ng-bind-html="content" class="content ng-binding">
+            <br><br><br>
+                <h4><strong>Descarga los datos abiertos de las contrataciones públicas</strong></h4>
+                <br>             
+          </div>
+          <div id="accordion">
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                  <h4 class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="cursor: pointer;">
+                    Descarga todos los procesos de contratación relacionados al método de contratación
+                  </h4>
+                </h5>
+              </div>
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-1">
+                      <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters1" aria-expanded="false" aria-controls="parameters1">
+                        <a class="font-weight-bold">GET</a>
+                      </button>
+                    </div>
+                    <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters1" aria-expanded="false" aria-controls="parameters1" style="cursor: pointer;">
+                      /edca/contractingprocess/procurementmethod/{procurementmethod}/{year}
+                      <p>Método para obtener datos abiertos de las contrataciones relacionadas al método de contratación solicitado.</p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="collapse multi-collapse" id="parameters1">
+                        <div class="card-body">
+                          <div class="d-flex font-weight-bold">
+                              Parámetros
+                              <a id="primero" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo()">Consultar</a>
+                              <a id="segundo" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero()">Cancelar</a>
+                          </div>
+                        </div>
+                      
+                          <script type="text/javascript">
+                            function visualiza_primero() {
+                                document.getElementById('primero').style.visibility='visible';
+                                document.getElementById('primero').style.display='block';
+                                document.getElementById('segundo').style.visibility='hidden';
+                                document.getElementById('segundo').style.display='none';
+                                document.getElementById("disabledSelect").disabled = true;
+                                document.getElementById("yearProcurementMethod").disabled = true;
+                                document.getElementById("ejecutar/limpiar").hidden = true;
+                            };
+                            function visualiza_segundo() {
+                                document.getElementById('segundo').style.visibility='visible';
+                                document.getElementById('segundo').style.display='block';
+                                document.getElementById('primero').style.visibility='hidden';
+                                document.getElementById('primero').style.display='none';
+                                document.getElementById("disabledSelect").disabled = false;
+                                document.getElementById("yearProcurementMethod").disabled = false;
+                                document.getElementById("ejecutar/limpiar").hidden = false;
+                            };
+                          </script>
+
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th style="width: 250px;" scope="col">Nombre</th>
+                              <th scope="col">Descripción</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <th >
+                                  <a class="font-weight-bold">procurementmethod <sup style="color:#FF0000">* requerido</sup></a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta de los procesos según el método de contratación utilizado. El resultado de la consulta contendrá todos los procesos publicados en este sitio, incluyendo aquellos que fueron declarados desiertos o cancelados, así como aquellos que aún no han sido formalizados.</p>
+                                  <p>Valores disponibles: Adhesiones y membresías, Adjudicación directa art.41, Adjudicación directa art.42, Convenio de colaboración, Excepciones al reglamento, Invitación a cuando menos tres personas, Licitación pública</p>
+                                  <select id="disabledSelect" name="procurementmethod" class="custom-select" size="4" style="width: 350px;" multiple required disabled>
+                                    <option value="Adhesiones y membresías">Adhesiones y membresías</option>
+                                    <option value="Adjudicación directa art.41">Adjudicación directa art.41</option>
+                                    <option value="Adjudicación directa art.42">Adjudicación directa art.42</option>
+                                    <option value="Convenio de colaboración">Convenio de colaboración</option>
+                                    <option value="Excepciones al reglamento">Excepciones al reglamento</option>
+                                    <option value="Invitación a cuando menos tres personas">Invitación a cuando menos tres personas</option>
+                                    <option value="Licitación pública">Licitación pública</option>
+                                  </select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th >
+                                  <a class="font-weight-bold">year </a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta de los procesos según la fecha de firma del contrato. Este filtro es opcional; al incluirlo en la búsqueda, el resultado contendrá solamente los procesos formalizados.</p>
+                                  <p>Registros disponibles a partir de: 2015</p>
+                                  <select id="yearProcurementMethod" name="year" class="custom-select" size="4" style="width: 350px;" multiple  disabled></select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar" hidden>
+                                <td colspan="2" style="border: white;"><button id="leyendo_1" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getProcurementMethod()">Consultar</button>
+                                <button id="leyendo_2" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
+                                  Procesando ...</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean()" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td>
+                                  <textarea id="procurementmethodRes" name="textarea" class="form-control" rows="10" cols="100" readonly></textarea>
+                                  <a id="downloadAnchorElem" style="display:none"></a>                                  
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Formatos de descargas</th>
+                                <td>
+                                  <div class="container">
+                                    <div class="row">
+                                      <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('procurementmethodRes')">Copiar contenido</button>
+                                      <button id="downlo" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('procurementmethod')">Descargar JSON</button>
+                                      <!-- <button id="downlo_6" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('procurementmethod')">Descargar CSV</button> -->
+                                      <button id="downlo_7" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('procurementmethod')">Descargar EXCEL</button>
+                                    </div>
+                                  </div>
+                                  <div id="downley" class="spinner-border" role="status" hidden>
+                                    <span class="sr-only">Loading...</span>
+                                  </div>                                  
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row" id="codeprocurementmethod">Resultado</td>
+                                <td id="desprocurementmethod">Resultado</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <h4 class="collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="cursor: pointer;">
+                      Descarga todos los procesos de contratación relacionados a la categoría de contratación
+                    </h4>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-1">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters2" aria-expanded="false" aria-controls="parameters2">
+                          <a class="font-weight-bold">GET</a>
+                        </button>
+                      </div>
+                      <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters2" aria-expanded="false" aria-controls="parameters2" style="cursor: pointer;">
+                        /edca​/contractingprocess​/additionalprocurementcategories​/{additionalprocurementcategories}/{year}
+                        <p>Método para obtener datos abiertos de las contrataciones relacionadas a la categoría de contratación solicitado.</p>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="collapse multi-collapse" id="parameters2">
+                          <div class="card-body">
+                            <div class="d-flex font-weight-bold">
+                                Parámetros
+                                <a id="primero_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_2()">Consultar</a>
+                                <a id="segundo_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_2()">Cancelar</a>
+                            </div>
+                          </div>
+                        
+                            <script type="text/javascript">
+                              function visualiza_primero_2() {
+                                  document.getElementById('primero_2').style.visibility='visible';
+                                  document.getElementById('primero_2').style.display='block';
+                                  document.getElementById('segundo_2').style.visibility='hidden';
+                                  document.getElementById('segundo_2').style.display='none';
+                                  document.getElementById("disabledSelect_2").disabled = true;
+                                  document.getElementById("yearAdditionalProcurementCategories").disabled = true;
+                                  document.getElementById("ejecutar/limpiar_2").hidden = true;
+                              };
+                              function visualiza_segundo_2() {
+                                  document.getElementById('segundo_2').style.visibility='visible';
+                                  document.getElementById('segundo_2').style.display='block';
+                                  document.getElementById('primero_2').style.visibility='hidden';
+                                  document.getElementById('primero_2').style.display='none';
+                                  document.getElementById("disabledSelect_2").disabled = false;
+                                  document.getElementById("yearAdditionalProcurementCategories").disabled = false;
+                                  document.getElementById("ejecutar/limpiar_2").hidden = false;
+                              };
+                            </script>
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th style="width: 250px;" scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th scope="row">
+                                  <a class="font-weight-bold">additionalprocurementcategories <sup style="color:#FF0000">* requerido</sup></a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta de los procesos según la categoría de contratación a la que correspondan.  El resultado de la consulta contendrá todos los procesos publicados en este sitio, incluyendo aquellos que fueron declarados desiertos o cancelados, así como aquellos que aún no han sido formalizados.</p>
+                                  <p>Valores disponibles: Adquisición de bienes, Arrendamiento de bienes, Obras públicas, Servicios, Servicios relacionados con obras públicas</p>
+                                  <select id="disabledSelect_2" name="additionalprocurementcategories" class="custom-select" size="4" style="width: 350px;" multiple required disabled>
+                                    <option value="Adquisición de bienes">Adquisición de bienes</option>
+                                    <option value="Arrendamiento de bienes">Arrendamiento de bienes</option>
+                                    <option value="Obras públicas">Obras públicas</option>
+                                    <option value="Servicios">Servicios</option>
+                                    <option value="Servicios relacionados con obras públicas">Servicios relacionados con obras públicas</option>
+                                  </select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th >
+                                  <a class="font-weight-bold">year </a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta de los procesos según la fecha de firma del contrato. Este filtro es opcional; al incluirlo en la búsqueda, el resultado contendrá solamente los procesos formalizados.</p>
+                                  <p>Registros disponibles a partir de: 2015</p>
+                                  <select id="yearAdditionalProcurementCategories" name="year" class="custom-select" size="4" style="width: 350px;" multiple  disabled></select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar_2" hidden>
+                                <td colspan="2" style="border: white;"><button id="leyendo_3" type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getAdditionalProcurementCategories()">Consultar</button>
+                                  <button id="leyendo_4" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
+                                    Procesando ...</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_2" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean_2()" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td>
+                                  <textarea id="additionalProcurementCategoriesRes" name="textarea" class="form-control" rows="10" cols="100" readonly></textarea>
+                                  <a id="downloadAnchorElem" style="display:none"></a>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Formatos de descargas</th>
+                                <td>
+                                  <div class="container">
+                                    <div class="row">
+                                      <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('additionalProcurementCategoriesRes')">Copiar contenido</button>
+                                      <button id="downlo_2" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('additionalprocurementcategories')">Descargar JSON</button>
+                                      <!-- <button id="downlo_5" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('additionalprocurementcategories')">Descargar CSV</button> -->
+                                      <button id="downlo_8" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('additionalprocurementcategories')">Descargar EXCEL</button>
+                                    </div>
+                                  </div>
+                                  <div id="downley_2" class="spinner-border" role="status" hidden>
+                                    <span class="sr-only">Loading...</span>
+                                  </div>                                  
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row" id="codeadditionalprocurementcategories">Resultado</td>
+                                <td id="desadditionalprocurementcategories">Resultado</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header" id="headingThree">
+                  <h5 class="mb-0">
+                    <h4 class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="cursor: pointer;">
+                      Descarga todos los procesos de contratación 
+                    </h4>
+                  </h5>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-1">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters3" aria-expanded="false" aria-controls="parameters3">
+                          <a class="font-weight-bold">GET</a>
+                        </button>
+                      </div>
+                      <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters3" aria-expanded="false" aria-controls="parameters3" style="cursor: pointer;">
+                        /edca​/contractingprocess​/{year}
+                        <p>Método para obtener datos abiertos de todas las contrataciones.</p>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <div class="collapse multi-collapse" id="parameters3">
+                          <div class="card-body">
+                            <div class="d-flex font-weight-bold">
+                                Parámetros
+                                <a id="primero_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_3()">Consultar</a>
+                                <a id="segundo_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_3()">Cancelar</a>
+                            </div>
+                          </div>
+                        
+                            <script type="text/javascript">
+                              function visualiza_primero_3() {
+                                  document.getElementById('primero_3').style.visibility='visible';
+                                  document.getElementById('primero_3').style.display='block';
+                                  document.getElementById('segundo_3').style.visibility='hidden';
+                                  document.getElementById('segundo_3').style.display='none';
+                                  document.getElementById("yearContractingProcess​").disabled = true;
+                                  document.getElementById("ejecutar/limpiar_3").hidden = true;
+                              };
+                              function visualiza_segundo_3() {
+                                  document.getElementById('segundo_3').style.visibility='visible';
+                                  document.getElementById('segundo_3').style.display='block';
+                                  document.getElementById('primero_3').style.visibility='hidden';
+                                  document.getElementById('primero_3').style.display='none';
+                                  document.getElementById("yearContractingProcess​").disabled = false;
+                                  document.getElementById("ejecutar/limpiar_3").hidden = false;
+                              };
+                            </script>
+  
+                          <table class="table">
+                            <tbody>
+                              <tr>
+                                <th >
+                                  <a class="font-weight-bold">year </a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta la información según el año de la fecha de firma del contrato. Este filtro es opcional, al incluirlo en la consulta el resultado mostrará solo los procesos que han sido formalizados. En caso de no seleccionar un año,  el resultado de la consulta contendrá todos los procesos publicados en este sitio, incluyendo aquellos que fueron declarados desiertos o cancelados, así como aquellos que aún no han sido formalizados.</p>
+                                  <p>Registros disponibles a partir de: 2015</p>
+                                  <select id="yearContractingProcess​" name="year" class="custom-select" size="4" style="width: 350px;" multiple disabled></select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar_3" hidden>
+                                <td colspan="2" style="border: white;"><button id="leyendo_5" type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getContractingProcess()">Consultar</button>
+                                  <button id="leyendo_6" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
+                                    Procesando ...</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_3" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean_3()" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td>
+                                  <textarea id="contractingprocessRes" name="textarea" class="form-control" rows="10" cols="100" readonly></textarea>
+                                  <a id="downloadAnchorElem" style="display:none"></a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Formatos de descargas</th>
+                                <td>
+                                  <div class="container">
+                                    <div class="row">
+                                      <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('contractingprocessRes')">Copiar contenido</button>
+                                      <button id="downlo_3" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('contractingprocess')">Descargar JSON</button>
+                                      <!-- <button id="downlo_4" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('contractingprocess')">Descargar CSV</button> -->
+                                      <button id="downlo_9" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('contractingprocess')">Descargar EXCEL</button>
+                                  </div>
+                                  <div id="downley_3" class="spinner-border" role="status" hidden>
+                                    <span class="sr-only">Loading...</span>
+                                  </div>                                  
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row" id="codecontractingprocess">Resultado</td>
+                                <td id="descontractingprocess">Resultado</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="card">
+                <div class="card-header" id="headingFour">
+                  <h5 class="mb-0">
+                    <h4 class="collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="cursor: pointer;">
+                      Buscar todos los proyectos.
+                    </h4>
+                  </h5>
+                </div>
+                <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-1">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters4" aria-expanded="false" aria-controls="parameters4">
+                          <a class="font-weight-bold">GET</a>
+                        </button>
+                      </div>
+                      <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters4" aria-expanded="false" aria-controls="parameters4" style="cursor: pointer;">
+                        /edcapi/project/
+                        <p>Método que devuelve un listado de objetos del tipo PROJECT.</p>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <div class="collapse multi-collapse" id="parameters4">
+                          <div class="card-body">
+                            <div class="d-flex font-weight-bold">
+                                Parámetros
+                                <a id="primero_4" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_4()">Consultar</a>
+                                <a id="segundo_4" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_4()">Cancelar</a>
+                            </div>
+                          </div>
+                        
+                            <script type="text/javascript">
+                              function visualiza_primero_4() {
+                                  document.getElementById('primero_4').style.visibility='visible';
+                                  document.getElementById('primero_4').style.display='block';
+                                  document.getElementById('segundo_4').style.visibility='hidden';
+                                  document.getElementById('segundo_4').style.display='none';
+                                  document.getElementById("ejecutar/limpiar_4").hidden = true;
+                              };
+                              function visualiza_segundo_4() {
+                                  document.getElementById('segundo_4').style.visibility='visible';
+                                  document.getElementById('segundo_4').style.display='block';
+                                  document.getElementById('primero_4').style.visibility='hidden';
+                                  document.getElementById('primero_4').style.display='none';
+                                  document.getElementById("ejecutar/limpiar_4").hidden = false;
+                              };
+                            </script>
+  
+                          <table class="table">
+                            <tbody>
+                              <tr>
+                                <th scope="row">
+                                  <a style="font-weight: normal;">Sin parámetros</a>
+                                <td>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar_4" hidden>
+                                <td colspan="2" style="border: white;"><button type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;">Consultar</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_4" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean_4()" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row">Resultado</td>
+                                <td>Resultado</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header" id="headingFive">
+                  <h5 class="mb-0">
+                    <h4 class="collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="cursor: pointer;">
+                      Buscar proyecto por identificador.
+                    </h4>
+                  </h5>
+                </div>
+                <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-1">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters5" aria-expanded="false" aria-controls="parameters5">
+                          <a class="font-weight-bold">GET</a>
+                        </button>
+                      </div>
+                      <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters5" aria-expanded="false" aria-controls="parameters5" style="cursor: pointer;">
+                        /edcapi​/project​/{id}
+                        <p>Método que devuelve el proyecto relacionado al identificador proporcionado.</p>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <div class="collapse multi-collapse" id="parameters5">
+                          <div class="card-body">
+                            <div class="d-flex font-weight-bold">
+                                Parámetros
+                                <a id="primero_5" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_5()">Consultar</a>
+                                <a id="segundo_5" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_5()">Cancelar</a>
+                            </div>
+                          </div>
+                        
+                            <script type="text/javascript">
+                              function visualiza_primero_5() {
+                                  document.getElementById('primero_5').style.visibility='visible';
+                                  document.getElementById('primero_5').style.display='block';
+                                  document.getElementById('segundo_5').style.visibility='hidden';
+                                  document.getElementById('segundo_5').style.display='none';
+                                  document.getElementById("id_project").disabled = true;
+                                  document.getElementById("disabledSelect_5").disabled = true;
+                                  document.getElementById("ejecutar/limpiar_5").hidden = true;
+                              };
+                              function visualiza_segundo_5() {
+                                  document.getElementById('segundo_5').style.visibility='visible';
+                                  document.getElementById('segundo_5').style.display='block';
+                                  document.getElementById('primero_5').style.visibility='hidden';
+                                  document.getElementById('primero_5').style.display='none';
+                                  document.getElementById("id_project").disabled = false;
+                                  document.getElementById("disabledSelect_5").disabled = false;
+                                  document.getElementById("ejecutar/limpiar_5").hidden = false;
+                              };
+                            </script>
+  
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th style="width: 250px;" scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <th scope="row">
+                                  <a class="font-weight-bold">id <sup style="color:#FF0000">* requerido</sup></a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">integer</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i>
+                                  <br><br>
+                                  <a class="font-weight-bold">Estatus <sup style="color:#FF0000">* requerido</sup></a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(query)</i></th>
+                                <td>
+                                  <p>Identificador del proyecto</p>                                 
+                                  <input type="text" class="form-control" id="id_project" placeholder="id - identificador del proyecto" disabled>
+                                  <br>
+                                  <p>Valores de estado que deben tenerse en cuenta para el filtro</p>
+                                  <select id="disabledSelect_5" class="custom-select" size="4" style="width: 350px;" disabled>
+                                    <option value="1">Disponible</option>
+                                    <option value="2">Pendiente</option>
+                                    <option value="3">Vendido</option>
+                                  </select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar_5" hidden>
+                                <td colspan="2" style="border: white;"><button type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;">Consultar</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_5" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean5()" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row">Resultado</td>
+                                <td>Resultado</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>  
+                  </div>
+                </div>
+              </div> -->
+            </div>  
+          </div>
+        </div>  
+      </div>    
+    </div>
+	<br>
+	<br>
+
+    <dgm-footer></dgm-footer>
+    <script src="/contratacionesabiertas/static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/contratacionesabiertas/static/bower_components/bootstrap_4/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+      var uri = globals.site.url;
+      var port = globals.site.port;
+      var endPointFiscalYear = '/edca/fiscalYears';
+      $.ajax({
+          url: `${uri}:${port}${endPointFiscalYear}`,
+          type: 'GET',
+          success: function(data){ 
+            data.fiscalYears.forEach(element => {
+                $('#yearProcurementMethod').append('<option value="'+element.year+'">'+element.year+'</option>');
+                $('#yearAdditionalProcurementCategories').append('<option value="'+element.year+'">'+element.year+'</option>');
+                $('#yearContractingProcess​').append('<option value="'+element.year+'">'+element.year+'</option>');
+            });
+          },
+          error: function(data) {
+              $('#yearProcurementMethod').append('<option value=""> Not Found </option>');
+              $('#yearAdditionalProcurementCategories').append('<option value=""> Not Found </option>');
+              $('#yearContractingProcess​').append('<option value=""> Not Found </option>');
+          }
+      });
+    });
+    </script>
+    <script type="text/javascript">
+    var uri = globals.site.url;
+    var port = globals.site.port;
+    var endPointProcurementMethod = '/edca/contractingprocess/procurementmethod/';
+    var endPointAdditionalProcurementCategories = '/edca/contractingprocess/additionalprocurementcategories/';
+    var endPointContractingProcess = '/edca/contractingprocess/';
+      function getProcurementMethod(){
+        var parametro = $("#disabledSelect").val();
+        var year = $("#yearProcurementMethod").val();
+
+        if (parametro === null){
+          alert('Selecciona al menos un tipo de contratación');
+          return;
+          } else {
+              $.ajax({
+                  url: `${uri}:${port}${endPointProcurementMethod}${parametro}/${year}`,
+                  type: 'GET',
+                  success: function(data){ 
+                    $("#procurementmethodRes").val('');
+                    $("#procurementmethodRes").val(JSON.stringify(data, null, 4));
+                    $("#codeprocurementmethod").text(200);
+                    $("#desprocurementmethod").text(`Success`);
+                    document.getElementById('leyendo_2').hidden=true;
+                    document.getElementById('clean').hidden=false;
+                  },
+                  error: function(data) {
+                    $("#procurementmethodRes").val('Not Found');
+                    $("#codeprocurementmethod").text(404);
+                    $("#desprocurementmethod").text(`Not Found`);
+                    document.getElementById('leyendo_2').hidden=true;
+                    document.getElementById('clean').hidden=false;
+                  }
+              });
+            }
+        document.getElementById('leyendo_2').style.visibility='visible';
+        document.getElementById('leyendo_2').style.display='block';
+        document.getElementById('leyendo_1').style.visibility='hidden';
+        document.getElementById('leyendo_1').style.display='none';
+        document.getElementById('leyendo_2').hidden=false;        
+      }
+      function clean() {
+        document.getElementById("procurementmethodRes").value = "";
+        $("#codeprocurementmethod").text(`Resultado`);
+        $("#desprocurementmethod").text(`Resultado`);
+        document.getElementById('clean').hidden=true;
+        document.getElementById("disabledSelect").selectedIndex=-1;
+        document.getElementById("yearProcurementMethod").selectedIndex=-1;
+        document.getElementById('leyendo_1').style.visibility='visible';
+        document.getElementById('leyendo_1').style.display='block';
+        document.getElementById('leyendo_2').style.visibility='hidden';
+        document.getElementById('leyendo_2').style.display='none';
+      }
+
+      function getAdditionalProcurementCategories(){
+        var parametro = $("#disabledSelect_2").val();
+        var year = $("#yearAdditionalProcurementCategories").val();
+        
+        if (parametro === null){
+          alert('Selecciona al menos un destino de contratación');
+          return;
+          } else {
+              $.ajax({
+                  url: `${uri}:${port}${endPointAdditionalProcurementCategories}${parametro}/${year}`,
+                  type: 'GET',
+                  success: function(data){ 
+                  $("#additionalProcurementCategoriesRes").val('');
+                    $("#additionalProcurementCategoriesRes").val(JSON.stringify(data, null, 4));
+                    $("#codeadditionalprocurementcategories").text(200);
+                    $("#desadditionalprocurementcategories").text(`Success`);
+                    document.getElementById('leyendo_4').hidden=true;
+                    document.getElementById('clean_2').hidden=false;
+                  },
+                  error: function(data) {
+                    $("#additionalProcurementCategoriesRes").val('Not Found');
+                    $("#codeadditionalprocurementcategories").text(404);
+                    $("#desadditionalprocurementcategories").text(`Not Found`);
+                    document.getElementById('leyendo_4').hidden=true;
+                    document.getElementById('clean_2').hidden=false;
+                  }
+              });
+            }
+        document.getElementById('leyendo_4').style.visibility='visible';
+        document.getElementById('leyendo_4').style.display='block';
+        document.getElementById('leyendo_3').style.visibility='hidden';
+        document.getElementById('leyendo_3').style.display='none';
+        document.getElementById('leyendo_4').hidden=false; 
+      }
+      function clean_2() {
+        document.getElementById("additionalProcurementCategoriesRes").value = "";
+        $("#codeadditionalprocurementcategories").text(`Resultado`);
+        $("#desadditionalprocurementcategories").text(`Resultado`);
+        document.getElementById('clean_2').hidden=true;
+        document.getElementById("disabledSelect_2").selectedIndex=-1;
+        document.getElementById("yearAdditionalProcurementCategories").selectedIndex=-1;
+        document.getElementById('leyendo_3').style.visibility='visible';
+        document.getElementById('leyendo_3').style.display='block';
+        document.getElementById('leyendo_4').style.visibility='hidden';
+        document.getElementById('leyendo_4').style.display='none';
+      }
+
+      function getContractingProcess(){
+        var year = $("#yearContractingProcess​").val();
+        $.ajax({
+              url: `${uri}:${port}${endPointContractingProcess}${year}`,
+              type: 'GET',
+              success: function(data){ 
+                $("#contractingprocessRes").val('');
+                $("#contractingprocessRes").val(JSON.stringify(data, null, 4));
+                $("#codecontractingprocess").text(200);
+                $("#descontractingprocess").text(`Success`);
+                document.getElementById('leyendo_6').hidden=true;
+                document.getElementById('clean_3').hidden=false;
+              },
+              error: function(data) {
+                $("#contractingprocessRes").val('Not Found');
+                $("#codecontractingprocess").text(404);
+                $("#descontractingprocess").text(`Not Found`);
+                document.getElementById('leyendo_6').hidden=true;
+                document.getElementById('clean_3').hidden=false;
+              }
+          });
+
+        document.getElementById('leyendo_6').style.visibility='visible';
+        document.getElementById('leyendo_6').style.display='block';
+        document.getElementById('leyendo_5').style.visibility='hidden';
+        document.getElementById('leyendo_5').style.display='none';
+        document.getElementById('leyendo_6').hidden=false;
+      }
+      function clean_3() {
+        document.getElementById("contractingprocessRes").value = "";
+        $("#codecontractingprocess").text(`Resultado`);
+        $("#descontractingprocess").text(`Resultado`);
+        document.getElementById('clean_3').hidden=true;
+        document.getElementById("yearContractingProcess​").selectedIndex=-1;
+        document.getElementById('leyendo_5').style.visibility='visible';
+        document.getElementById('leyendo_5').style.display='block';
+        document.getElementById('leyendo_6').style.visibility='hidden';
+        document.getElementById('leyendo_6').style.display='none';
+      }
+      
+      function downloadJSON(endpoint){
+        switch (endpoint) {
+          case 'procurementmethod':
+            var parametro = $("#disabledSelect").val();
+            var year = $("#yearProcurementMethod").val();
+            var uri_endpoint = `${uri}:${port}${endPointProcurementMethod}${parametro}/${year}`;
+            document.getElementById('downley').hidden=false;
+            document.getElementById('downlo').hidden=true;
+            break;
+          case 'additionalprocurementcategories':
+            var parametro = $("#disabledSelect_2").val();
+            var year = $("#yearAdditionalProcurementCategories").val();
+            var uri_endpoint = `${uri}:${port}${endPointAdditionalProcurementCategories}${parametro}/${year}`;
+            document.getElementById('downley_2').hidden=false;
+            document.getElementById('downlo_2').hidden=true;
+            break;
+          case 'contractingprocess':
+            var year = $("#yearContractingProcess​").val();
+            var uri_endpoint = `${uri}:${port}${endPointContractingProcess}${year}`;
+            document.getElementById('downley_3').hidden=false;
+            document.getElementById('downlo_3').hidden=true;
+            break;
+          default:
+            break;
+        }
+        $.get(uri_endpoint).done(function (data) {
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent((JSON.stringify(data,null,4)));
+            var dlAnchorElem = document.getElementById('downloadAnchorElem');
+            dlAnchorElem.setAttribute("href",dataStr);
+            dlAnchorElem.setAttribute("download", `${uri_endpoint}.json`);
+            dlAnchorElem.click();
+            document.getElementById('downley').hidden=true;
+            document.getElementById('downlo').hidden=false;
+            document.getElementById('downley_2').hidden=true;
+            document.getElementById('downlo_2').hidden=false;
+            document.getElementById('downley_3').hidden=true;
+            document.getElementById('downlo_3').hidden=false;
+        });
+      }
+      function downloadCSV(endpoint){
+        switch (endpoint) {
+          case 'procurementmethod':
+            var parametro = $("#disabledSelect").val();
+            var year = $("#yearProcurementMethod").val();            
+            var uri_endpoint = `${uri}:${port}${endPointProcurementMethod}csv/${parametro}/${year}`;
+            document.getElementById('downley').hidden=false;
+            document.getElementById('downlo_6').hidden=true;
+            break;
+          case 'additionalprocurementcategories':
+            var parametro = $("#disabledSelect_2").val();
+            var year = $("#yearAdditionalProcurementCategories").val();  
+            var uri_endpoint = `${uri}:${port}${endPointAdditionalProcurementCategories}csv/${parametro}/${year}`;
+            document.getElementById('downley_2').hidden=false;
+            document.getElementById('downlo_5').hidden=true;
+            break;
+          case 'contractingprocess':
+          var year = $("#yearContractingProcess​").val();
+            var uri_endpoint = `${uri}:${port}${endPointContractingProcess}csv/${year}`;
+            document.getElementById('downley_3').hidden=false;
+            document.getElementById('downlo_4').hidden=true;
+            break;
+          default:
+            break;
+        }
+        $.get(uri_endpoint).done(function (data) {
+            var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
+            var dlAnchorElem = document.getElementById('downloadAnchorElem');
+            dlAnchorElem.setAttribute("href",dataStr);
+            dlAnchorElem.setAttribute("download", `${uri_endpoint}.csv`);
+            dlAnchorElem.click();
+            document.getElementById('downley').hidden=true;
+            document.getElementById('downlo').hidden=false;
+            document.getElementById('downley_2').hidden=true;
+            document.getElementById('downlo_2').hidden=false;
+            document.getElementById('downley_3').hidden=true;
+            document.getElementById('downlo_3').hidden=false;
+            document.getElementById('downlo_4').hidden=false;
+            document.getElementById('downlo_5').hidden=false;
+            document.getElementById('downlo_6').hidden=false;
+        });
+      }
+      function downloadXLS(endpoint){
+        switch (endpoint) {
+          case 'procurementmethod':
+            var parametro = $("#disabledSelect").val();
+            var year = $("#yearProcurementMethod").val();            
+            var uri_endpoint = `${uri}:${port}${endPointProcurementMethod}${parametro}/${year}`;
+            document.getElementById('downley').hidden=false;
+            document.getElementById('downlo_7').hidden=true;
+            $.ajax({
+              url: `${uri_endpoint}`,
+              type: 'GET',
+              success: function(data){ 
+                generateExcel(data);
+                document.getElementById('downley').hidden=true;
+                document.getElementById('downlo_7').hidden=false;
+              },
+              error: function(data) {
+                $("#contractingprocessRes").val('Not Found');
+                $("#codecontractingprocess").text(404);
+                $("#descontractingprocess").text(`Not Found`);
+                document.getElementById('downley').hidden=true;
+                document.getElementById('downlo_7').hidden=false;
+                alert(`Not Found`)
+              }
+            });
+            break;
+          case 'additionalprocurementcategories':
+            var parametro = $("#disabledSelect_2").val();
+            var year = $("#yearAdditionalProcurementCategories").val();  
+            var uri_endpoint = `${uri}:${port}${endPointAdditionalProcurementCategories}${parametro}/${year}`;
+            document.getElementById('downley_2').hidden=false;
+            document.getElementById('downlo_8').hidden=true;
+            $.ajax({
+              url: `${uri_endpoint}`,
+              type: 'GET',
+              success: function(data){ 
+                generateExcel(data);
+                document.getElementById('downley_2').hidden=true;
+                document.getElementById('downlo_8').hidden=false;
+              },
+              error: function(data) {
+                $("#contractingprocessRes").val('Not Found');
+                $("#codecontractingprocess").text(404);
+                $("#descontractingprocess").text(`Not Found`);
+                document.getElementById('downley_2').hidden=true;
+                document.getElementById('downlo_8').hidden=false;
+                alert(`Not Found`)
+              }
+            });
+            break;
+          case 'contractingprocess':
+            var year = $("#yearContractingProcess​").val();
+            var uri_endpoint = `${uri}:${port}${endPointContractingProcess}${year}`;
+            document.getElementById('downley_3').hidden=false;
+            document.getElementById('downlo_9').hidden=true;
+            $.ajax({
+              url: `${uri_endpoint}`,
+              type: 'GET',
+              success: function(data){ 
+                generateExcel(data);
+                document.getElementById('downley_3').hidden=true;
+                document.getElementById('downlo_9').hidden=false;
+              },
+              error: function(data) {
+                $("#contractingprocessRes").val('Not Found');
+                $("#codecontractingprocess").text(404);
+                $("#descontractingprocess").text(`Not Found`);
+                document.getElementById('downley_3').hidden=true;
+                document.getElementById('downlo_9').hidden=false;
+                alert(`Not Found`)
+              }
+            });
+            break;
+          default:
+            break;
+        }
+      }
+      function copyResult(idTextArea){
+        var textarea = document.getElementById(idTextArea);
+        textarea.select(); 
+        var successful = document.execCommand('copy');
+        if(successful) alert('Copiado');
+      }
+      function generateExcel(data){
+        const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        const EXCEL_EXTENSION = '.xlsx';
+        var consecutivo = 1;
+              var arrayIndice = new Array(
+                {
+                  Path : 'ReleasePackage',
+                  Code : '1000'
+                },
+                {
+                  Path : 'Extensions',
+                  Code : '1100'
+                },
+                {
+                  Path : 'Publisher',
+                  Code : '1200'
+                },
+                {
+                  Path : 'Release',
+                  Code : '1300'
+                },
+                {
+                  Path : 'Parties',
+                  Code : '2000'
+                },
+                {
+                  Path : 'PartiesMemberOf',
+                  Code : '2100'
+                },
+                {
+                  Path : 'PartiesAdditionalContactPoint',
+                  Code : '2200'
+                },
+                {
+                  Path : 'Planning',
+                  Code : '3000'
+                },
+                {
+                  Path : 'PlanningRequestingUnits',
+                  Code : '3100'
+                },
+                {
+                  Path : 'PlanningContractingUnits',
+                  Code : '3200'
+                },
+                {
+                  Path : 'PlanningResponsibleUnits',
+                  Code : '3300'
+                },
+                {
+                  Path : 'ReleasePlanningBudgetBreakdown',
+                  Code : '3400'
+                },
+                {
+                  Path : 'BudgetLinesComponent',
+                  Code : '3500'
+                },
+                {
+                  Path : 'BudgetLinesMeasure',
+                  Code : '3600'
+                },
+                {
+                  Path : 'PlanningDocuments',
+                  Code : '3700'
+                },
+                {
+                  Path : 'RequestsForQuotes',
+                  Code : '3800'
+                },
+                {
+                  Path : 'RequestsForQuotesÍtems',
+                  Code : '3900'
+                },
+                {
+                  Path : 'RequestsForQuotesinvitedSuppliers',
+                  Code : '4000'
+                },
+                {
+                  Path : 'RequestsForQuotesQuotes',
+                  Code : '4100'
+                },
+                {
+                  Path : 'RequestsForQuotesQuotesItems',
+                  Code : '4200'
+                },
+                {
+                  Path : 'Tender',
+                  Code : '5000'
+                },
+                {
+                  Path : 'Tenderers',
+                  Code : '5100'
+                },
+                {
+                  Path : 'TenderItems',
+                  Code : '5200'
+                },
+                {
+                  Path : 'TenderDocuments',
+                  Code : '5300'
+                },
+                {
+                  Path : 'TendeMilestones',
+                  Code : '5400'
+                },
+                {
+                  Path : 'TenderAmendments',
+                  Code : '5500'
+                },
+                {
+                  Path : 'TenderClarificationMeetings',
+                  Code : '5600'
+                },
+                {
+                  Path : 'TenderClarificationMeetingsAttendees',
+                  Code : '5700'
+                },
+                {
+                  Path : 'buyer',
+                  Code : '5800'
+                },
+                {
+                  Path : 'TenderClarificationMeetingsOfficials',
+                  Code : '5900'
+                },
+                {
+                  Path : 'Awards',
+                  Code : '6000'
+                },
+                {
+                  Path : 'Suppliers',
+                  Code : '6100'
+                },
+                {
+                  Path : 'AwardsDocuments',
+                  Code : '6200'
+                },
+                {
+                  Path : 'AwardsAmendments',
+                  Code : '6300'
+                },
+                {
+                  Path : 'Contracts',
+                  Code : '7000'
+                },
+                {
+                  Path : 'ContractsItems',
+                  Code : '7100'
+                },
+                {
+                  Path : 'ContractsDocuments',
+                  Code : '7200'
+                },
+                {
+                  Path : 'ContractsAmendments',
+                  Code : '7300'
+                },
+                {
+                  Path : 'ContractsGuarantees',
+                  Code : '7400'
+                },
+                {
+                  Path : 'Implementation',
+                  Code : '8000'
+                },
+                {
+                  Path : 'ImplementationTransactions',
+                  Code : '8100'
+                },
+                {
+                  Path : 'ImplementationMilestones',
+                  Code : '8200'
+                },
+                {
+                  Path : 'ImplementationDocuments',
+                  Code : '8300'
+                },
+                {
+                  Path : 'RelatedProcesses',
+                  Code : '9000'
+                }
+              );
+              var arrayReleasePackage = new Array();
+              var arrayExtensions2 = new Array();
+              var arrayPublishers = new Array();
+              var arrayReleases = new Array();
+              var arrayParties = new Array();
+              var arrayMember = new Array();
+              var arrayAdditionalContactPoint = new Array();
+              var arrayPlanning = new Array();
+              var arrayRequestingUnit = new Array();
+              var arrayContractingUnit = new Array();
+              var arrayResponsibleUnit = new Array();
+              var arrayBudget = new Array();
+              var arrayBudgetLinesComponent = new Array();
+              var arrayBudgetLinesMeasure = new Array();
+              var arrayPlanningDocuments = new Array();
+              var arrayRequestsForQuotes = new Array();
+              var arrayRequestsForQuotesItems = new Array();
+              var arrayRequestsForQuotesinvitedSuppliers = new Array();
+              var arrayRequestsForQuotesQuotes = new Array();
+              var arrayRequestsForQuotesQuotesItems = new Array();
+              var arrayTender = new Array();
+              var arrayContractsItems = new Array();
+              var arrayTenderes = new Array();
+              var arrayTenderItems = new Array();
+              var arrayTenderDocuments = new Array();
+              var arrayTenderMilestones = new Array();
+              var arrayTenderAmendment = new Array();
+              var arrayTenderClarificationMeeting = new Array();
+              var arrayBuyer = new Array();
+              var arrayTenderClarificationMeetingAttendees = new Array();
+              var arrayTenderClarificationMeetingOfficials = new Array();
+              var arrayAwars = new Array();
+              var arrayAwarsSuppliers = new Array();
+              var arrayAwarsDocuments = new Array();
+              var arrayAwarsAmendments = new Array();
+              var arrayContracts = new Array();
+              var arrayContractsdocuments = new Array();
+              var arrayContractsAmendments = new Array();
+              var arrayContractsGuarantees = new Array();
+              var arrayContractsImplementation = new Array();
+              var arrayContractsImplementationTrans = new Array();
+              var arrayContractsImplementationMilestone = new Array();
+              var arrayContractsImplementationDocuments = new Array();
+              var arrayRelatedProcesses = new Array();
+
+              data.arrayReleasePackage.forEach(element => {
+                var objReleasePackage = new Object({
+                  ocid: element.releases[0].ocid,
+                  uri: element.uri,
+                  version: element.version,
+                  publishedDate: element.publishedDate,
+                  license: element.license,
+                  publicationPolicy: element.publicationPolicy,
+                });
+                arrayReleasePackage.push(objReleasePackage);
+                var arrayExtensions = new Array();
+                element.extensions.forEach(extension => {
+                  arrayExtensions.push(extension)
+                });
+                var objExtension = new Object({
+                    ocid: element.releases[0].ocid,
+                    extensions : (arrayExtensions <= 0 ? '' : arrayExtensions.toString())
+                  });
+                arrayExtensions2.push(objExtension)
+                if(element.publisher !== undefined){
+                  var objPublisher = new Object({
+                    ocid: element.releases[0].ocid,
+                    'publisher/name': element.publisher.name,
+                    'publisher/scheme': element.publisher.scheme,
+                    'publisher/uid': element.publisher.uid,
+                    'publisher/uri': element.publisher.uri
+                  });
+                  arrayPublishers.push(objPublisher)
+                }
+                if(element.releases.length > 0){
+                  element.releases.forEach(release => {
+                    var objRelease = new Object({
+                      ocid: release.ocid,
+                      id: release.id,
+                      date: release.date,
+                      initiationType: release.initiationType,
+                      language: release.language,
+                      tag: release.tag[0]
+                    });
+                    arrayReleases.push(objRelease)
+                    //PARTIES
+                    if(release.parties.length > 0){
+                      release.parties.forEach(partie => {
+                        //ROLES
+                        var arrayRoles = new Array();
+                        if(partie.roles !== undefined){
+                          if(partie.roles.length > 0){
+                            partie.roles.forEach(rol => {
+                              arrayRoles.push(rol)
+                            });
+                          }
+                        }
+                        var objPartie = new Object({
+                          ocid: release.ocid,
+                          'parties/name': partie.name,
+                          'parties/id': partie.id,
+                          'parties/position': partie.position,
+                          'parties/identifier/scheme': (partie.identifier === undefined ? '' : partie.identifier.scheme),
+                          'parties/identifier/id': (partie.identifier === undefined ? '' : partie.identifier.id),
+                          'parties/identifier/legalName': (partie.identifier === undefined ? '' : partie.identifier.legalName),
+                          'parties/identifier/legalPersonality': (partie.identifier === undefined ? '' : partie.identifier.legalPersonality),
+                          'parties/identifier/givenName': (partie.identifier === undefined ? '' : partie.identifier.givenName),
+                          'parties/identifier/patronymicName': (partie.identifier === undefined ? '' : partie.identifier.patronymicName),
+                          'parties/identifier/matronymicName': (partie.identifier === undefined ? '' : partie.identifier.matronymicName),
+                          'parties/address/streetAddress': (partie.address === undefined ? '' : partie.address.streetAddress),
+                          'parties/address/locality': (partie.address === undefined ? '' : partie.address.locality),
+                          'parties/address/region': (partie.address === undefined ? '' : partie.address.region),
+                          'parties/address/postalCode': (partie.address === undefined ? '' : partie.address.postalCode),
+                          'parties/address/countryName': (partie.address === undefined ? '' : partie.address.countryName),
+                          'parties/contactPoint/name': (partie.contactPoint === undefined ? '' : partie.contactPoint.name),
+                          'parties/contactPoint/email': (partie.contactPoint === undefined ? '' : partie.contactPoint.email),
+                          'parties/contactPoint/telephone': (partie.contactPoint === undefined ? '' : partie.contactPoint.telephone),
+                          'parties/contactPoint/faxNumber': (partie.contactPoint === undefined ? '' : partie.contactPoint.faxNumber),
+                          'parties/contactPoint/url': (partie.contactPoint === undefined ? '' : partie.contactPoint.url),
+                          'parties/contactPoint/type': (partie.contactPoint === undefined ? '' : partie.contactPoint.type),
+                          'parties/contactPoint/givenName': (partie.contactPoint === undefined ? '' : partie.contactPoint.givenName),
+                          'parties/contactPoint/patronymicName': (partie.contactPoint === undefined ? '' : partie.contactPoint.patronymicName),
+                          'parties/contactPoint/matronymicName': (partie.contactPoint === undefined ? '' : partie.contactPoint.matronymicName),
+                          'parties/roles': (arrayRoles <= 0 ? '' : arrayRoles.toString()),
+                        });
+                        arrayParties.push(objPartie)
+                        //MEMBER OF
+                        if(partie.memberOf !== undefined){
+                          if(partie.memberOf.length > 0){
+                            partie.memberOf.forEach(member => {
+                              var objMember = new Object({
+                                ocid : release.ocid,
+                                'parties/id' : partie.id,
+                                'parties/memberOf/id' : member.id,
+                                'parties/memberOf/name' : member.name
+                              });
+                              arrayMember.push(objMember)
+                            });
+                          }
+                        }
+                        
+                        //additionalContactPoints
+                        if(partie.additionalContactPoints !== undefined){
+                          if(partie.additionalContactPoints.length > 0){
+                            partie.additionalContactPoints.forEach(additionalContactPoint => {
+                              //availableLanguage
+                              var arrayAvailableLanguage = new Array();
+                              if(additionalContactPoint.availableLanguage.length > 0){
+                                additionalContactPoint.availableLanguage.forEach(availableLanguage => {
+                                  arrayAvailableLanguage.push(availableLanguage)
+                                });
+                              }
+                              var objAdditionalContactPoint = new Object({
+                                ocid : release.ocid,
+                                'parties/id': partie.id,
+                                'parties/additionalContacPoints/contactPointType' : additionalContactPoint.type,
+                                'parties/additionalContacPoints/name' : additionalContactPoint.name,
+                                'parties/additionalContacPoints/givenName' : additionalContactPoint.givenName,
+                                'parties/additionalContacPoints/patronymicName' : additionalContactPoint.patronymicName,
+                                'parties/additionalContacPoints/matronymicName' : additionalContactPoint.matronymicName,
+                                'parties/additionalContacPoints/email' : additionalContactPoint.email,
+                                'parties/additionalContacPoints/telephone' : additionalContactPoint.telephone,
+                                'parties/additionalContacPoints/faxNumber' : additionalContactPoint.faxNumber,
+                                'parties/additionalContacPoints/url' : additionalContactPoint.url,
+                                'parties/additionalContacPoints/availableLanguage': (arrayAvailableLanguage <= 0 ? '' : arrayAvailableLanguage.toString()),
+                              });
+                              arrayAdditionalContactPoint.push(objAdditionalContactPoint)
+                            });
+                          }
+                        }
+                      });
+                    }
+                  //PLANNING
+                  if(release.planning !== undefined){
+                    var objPlanning = new Object({
+                      ocid: release.ocid,
+                      rationale: release.planning.rationale,
+                      hasquotes: release.planning.hasquotes
+                    });
+                    arrayPlanning.push(objPlanning)
+                    //requestingUnits
+                    if(release.planning.requestingUnits !== undefined){
+                      if(release.planning.requestingUnits.length > 0){
+                        release.planning.requestingUnits.forEach(requestingUnit => {
+                          var objRequestingUnit = new Object({
+                            ocid: release.ocid,
+                            'planning/requestingUnits/id' : requestingUnit.id,
+                            'planning/requestingUnits/name' : requestingUnit.name
+                          });
+                          arrayRequestingUnit.push(objRequestingUnit)  
+                        });
+                      }
+                    }
+                    //contractingUnits
+                    if(release.planning.contractingUnits !== undefined){
+                      if(release.planning.contractingUnits.length > 0){
+                        release.planning.contractingUnits.forEach(contractingUnit => {
+                          var objContractingUnit = new Object({
+                            ocid: release.ocid,
+                            'planning/contractingUnits/id' : contractingUnit.id,
+                            'planning/contractingUnits/name' : contractingUnit.name
+                          });
+                          arrayContractingUnit.push(objContractingUnit)  
+                        });
+                      }
+                    }
+                    //responsibleUnits
+                    if(release.planning.responsibleUnits !== undefined){
+                      if(release.planning.responsibleUnits.length > 0){
+                        release.planning.responsibleUnits.forEach(responsibleUnit => {
+                          var objResponsibleUnit = new Object({
+                            ocid: release.ocid,
+                            'planning/responsibleUnits/id' : responsibleUnit.id,
+                            'planning/responsibleUnits/name' : responsibleUnit.name
+                          });
+                          arrayResponsibleUnit.push(objResponsibleUnit)  
+                        });
+                      }
+                    }
+                    //budget
+                    if(release.planning.budget !== undefined){
+                      if(release.planning.budget.budgetBreakdown !== undefined){
+                        if(release.planning.budget.budgetBreakdown.length > 0){
+                          release.planning.budget.budgetBreakdown.forEach(budgetBreakdown => {
+                            var objBudgetBreakdown = new Object({
+                              ocid: release.ocid,
+                              'planning/budget/budgetBreakdown/id' : budgetBreakdown.id,
+                              'planning/budget/budgetBreakdown/description' : budgetBreakdown.description,
+                              'planning/budget/budgetBreakdown/origin' : budgetBreakdown.origin,
+                              'planning/budget/budgetBreakdown/fundType' : budgetBreakdown.fundType,
+                              'planning/budget/budgetBreakdown/period/startDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.startDate),
+                              'planning/budget/budgetBreakdown/period/endDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.endDate),
+                              'planning/budget/budgetBreakdown/value/amount' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.amount),
+                              'planning/budget/budgetBreakdown/value/currency' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.currency),
+                              'planning/budget/budgetBreakdown/sourceParty/name' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.name),
+                              'planning/budget/budgetBreakdown/sourceParty/id' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.id),
+                            });
+                            arrayBudget.push(objBudgetBreakdown)
+                            if(budgetBreakdown.budgetLines !== undefined){
+                              if(budgetBreakdown.budgetLines.length > 0){
+                                budgetBreakdown.budgetLines.forEach(budgetLine => {
+                                  if(budgetLine.components !== undefined){
+                                    if(budgetLine.components.length > 0){
+                                      budgetLine.components.forEach(component => {
+                                        var objBudgetLinesComponent = new Object({
+                                          ocid: release.ocid,
+                                          'planning/budget/budgetBreakdown/budgetLines/components/name' : component.name,
+                                          'planning/budget/budgetBreakdown/budgetLines/components/level' : component.level,
+                                          'planning/budget/budgetBreakdown/budgetLines/components/code' : component.code,
+                                          'planning/budget/budgetBreakdown/budgetLines/components/description': component.description
+                                        });
+                                        arrayBudgetLinesComponent.push(objBudgetLinesComponent)
+                                      });
+                                    }
+                                  }
+                                  if(budgetLine.measures !== undefined){
+                                    if(budgetLine.measures.length > 0){
+                                      budgetLine.measures.forEach(measure => {
+                                        var objBudgetLinesMeasure = new Object({
+                                          ocid: release.ocid,
+                                          'planning/budget/budgetBreakdown/budgetLines/measures/id' : measure.id,
+                                          'planning/budget/budgetBreakdown/budgetLines/measures/update' : measure.update,
+                                          'planning/budget/budgetBreakdown/budgetLines/measures/amount' : (measure.value === undefined ? '' : measure.value.amount),
+                                          'planning/budget/budgetBreakdown/budgetLines/measures/currency' : (measure.value === undefined ? '' : measure.value.currency),
+                                        });
+                                        arrayBudgetLinesMeasure.push(objBudgetLinesMeasure)
+                                      });
+                                    }
+                                  }
+                                });   
+                              }
+                            }
+                          });
+                        }
+                      }
+                    }
+                    if(release.planning.documents !== undefined){
+                      if(release.planning.documents.length > 0){
+                        release.planning.documents.forEach(document => {
+                          var objDocument = new Object({
+                            ocid: release.ocid,
+                            'planning/documents/id' : document.id,
+                            'planning/documents/documentType' : document.documentType,
+                            'planning/documents/title' : document.title,
+                            'planning/documents/description' : document.description,
+                            'planning/documents/url' : document.url,
+                            'planning/documents/datePublished' : document.datePublished,
+                            'planning/documents/dateModified' : document.dateModified,
+                            'planning/documents/format' : document.format,
+                            'planning/documents/language' : document.language,
+                          });
+                          arrayPlanningDocuments.push(objDocument);
+                        });
+                      }
+                    }
+                    if(release.planning.requestsForQuotes !== undefined){
+                      if(release.planning.requestsForQuotes.length > 0){
+                        release.planning.requestsForQuotes.forEach(requestForQuote => {
+                          var objRequestForQuote = new Object({
+                            ocid: release.ocid,
+                            'planning/requestsForQuotes/id' : requestForQuote.id,
+                            'planning/requestsForQuotes/title' : requestForQuote.title,
+                            'planning/requestsForQuotes/description' : requestForQuote.description,
+                            'planning/requestsForQuotes/period/startDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.startDate),
+                            'planning/requestsForQuotes/period/endDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.endDate)
+                          });
+                          arrayRequestsForQuotes.push(objRequestForQuote);
+                          if(requestForQuote.items !== undefined){
+                            if(requestForQuote.items.length > 0){
+                              requestForQuote.items.forEach(item => {
+                                var objItem = new Object({
+                                  ocid: release.ocid,
+                                  'planning/requestsForQuotes/id' : requestForQuote.id,
+                                  'planning/requestsForQuotes/items/id' : item.id,
+                                  'planning/requestsForQuotes/items/description' : item.description,
+                                  'planning/requestsForQuotes/items/quantity' : item.quantity,
+                                  'planning/requestsForQuotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
+                                  'planning/requestsForQuotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
+                                  'planning/requestsForQuotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name)
+                                });
+                                arrayRequestsForQuotesItems.push(objItem);
+                              });
+                            }
+                          }
+                          if(requestForQuote.invitedSuppliers !== undefined){
+                            if(requestForQuote.invitedSuppliers.length > 0){
+                              requestForQuote.invitedSuppliers.forEach(invitedSupplier => {
+                                var objInvitedSupplier = new Object({
+                                  ocid: release.ocid,
+                                  'planning/requestsForQuotes/id' : requestForQuote.id,
+                                  'planning/invitedSuppliers/name' : invitedSupplier.name,
+                                  'planning/invitedSuppliers/id' : invitedSupplier.id
+                                });
+                                arrayRequestsForQuotesinvitedSuppliers.push(objInvitedSupplier);
+                              });
+                            }
+                          }
+                          if(requestForQuote.quotes !== undefined){
+                            if(requestForQuote.quotes.length > 0){
+                              requestForQuote.quotes.forEach(quote => {
+                                var objRequestsForQuotesQuotes = new Object({
+                                  ocid: release.ocid,
+                                  'planning/requestsForQuotes/id' : requestForQuote.id,
+                                  'planning/requestsForQuotes/quotes/id' : quote.id,
+                                  'planning/requestsForQuotes/quotes/description' : quote.description,
+                                  'planning/requestsForQuotes/quotes/date' : quote.date,
+                                  'planning/requestsForQuotes/quotes/value/amount' : (quote.value === undefined ? '' : quote.value.amount),
+                                  'planning/requestsForQuotes/quotes/quotePeriod/startDate' : (quote.period === undefined ? '' : quote.period.startDate),
+                                  'planning/requestsForQuotes/quotes/quotePeriod/endDate' : (quote.period === undefined ? '' : quote.period.endDate),
+                                  'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
+                                  'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
+                                });
+                                arrayRequestsForQuotesQuotes.push(objRequestsForQuotesQuotes);
+                                if(quote.items !== undefined){
+                                  if(quote.items.length > 0){
+                                    quote.items.forEach(item => {
+                                      var objRequestsForQuotesQuotesItems = new Object({
+                                        ocid: release.ocid,
+                                        'planning/requestsForQuotes/id' : requestForQuote.id,
+                                        'planning/requestsForQuotes/quotes/id' : quote.id,
+                                        'planning/requestsForQuotes/quotes/items/id' : item.id,
+                                        'planning/requestsForQuotes/quotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
+                                        'planning/requestsForQuotes/quotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
+                                        'planning/requestsForQuotes/quotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name),
+                                        'planning/requestsForQuotes/quotes/items/unit/value/amount' : (item.unit === undefined ? '' : item.unit.value.amount),
+                                        'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
+                                        'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
+                                      });
+                                      arrayRequestsForQuotesQuotesItems.push(objRequestsForQuotesQuotesItems);
+                                    });
+                                  }
+                                }
+                              });
+                            }
+                          }
+                        });
+                      }
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    //additionalProcurementCategories
+                    var arrayAdditionalProcurementCategories = new Array();
+                    if(release.tender.additionalProcurementCategories !== undefined){
+                      if(release.tender.additionalProcurementCategories.length > 0){
+                        release.tender.additionalProcurementCategories.forEach(additionalProcurementCategory => {
+                          arrayAdditionalProcurementCategories.push(additionalProcurementCategory)
+                        });
+                      }
+                    }
+                    //submissionMethod
+                    var arraySubmissionMethod = new Array();
+                    if(release.tender.submissionMethod !== undefined){
+                      if(release.tender.submissionMethod.length > 0){
+                        release.tender.submissionMethod.forEach(submissionMethod => {
+                          arraySubmissionMethod.push(submissionMethod)
+                        });
+                      }
+                    }
+                    var objTender = new Object({
+                      ocid: release.ocid,
+                      'tender/id': release.tender.id,
+                      'tender/title': release.tender.title,
+                      'tender/description': release.tender.description,
+                      'tender/status': release.tender.status,
+                      'tender/procuringEntity/name': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.name),
+                      'tender/procuringEntity/id': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.id),
+                      'tender/value/amount': (release.tender.value === undefined ? '' : release.tender.value.amount),
+                      'tender/value/currency': (release.tender.value === undefined ? '' : release.tender.value.currency),
+                      'tender/minValue/amount': (release.tender.minValue === undefined ? '' : release.tender.minValue.amount),
+                      'tender/minValue/currency': (release.tender.minValue === undefined ? '' : release.tender.minValue.currency),
+                      'tender/procurementMethod': release.tender.procurementMethod,
+                      'tender/procurementMethodDetails': release.tender.procurementMethodDetails,
+                      'tender/procurementMethodRationale': release.tender.procurementMethodRationale,
+                      'tender/mainProcurementCategory': release.tender.mainProcurementCategory,
+                      'tender/additionalProcurementCategories': (arrayAdditionalProcurementCategories <= 0 ? '' : arrayAdditionalProcurementCategories.toString()),
+                      'tender/awardCriteria': release.tender.awardCriteria,
+                      'tender/awardCriteriaDetails': release.tender.awardCriteriaDetails,
+                      'tender/submissionMethod': (arraySubmissionMethod <= 0 ? '' : arraySubmissionMethod.toString()),
+                      'tender/submissionMethodDetails': release.tender.submissionMethodDetails,
+                      'tender/tenderPeriod/startDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.startDate),
+                      'tender/tenderPeriod/endDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.endDate),
+                      'tender/enquiryPeriod/startDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.startDate),
+                      'tender/enquiryPeriod/endDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.endDate),
+                      'tender/hasEnquiries': (release.tender.hasEnquiries === true ? 'true' : false),
+                      'tender/eligibilityCriteria': release.tender.eligibilityCriteria,
+                      'tender/awardPeriod/startDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.startDate),
+                      'tender/awardPeriod/endDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.endDate),
+                      'tender/numberOfTenderers': release.tender.numberOfTenderers,
+                    });
+                    arrayTender.push(objTender)
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.tenderers !== undefined){
+                      release.tender.tenderers.forEach(tender => {
+                        var objTenderes = new Object({
+                            ocid: release.ocid,
+                            'tender/tenderers/name': tender.name,
+                            'tender/tenderers/id': tender.id
+                          });
+                          arrayTenderes.push(objTenderes)
+                      });
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.items !== undefined){
+                      release.tender.items.forEach(item => {
+                        var objTenderItem = new Object({
+                            ocid: release.ocid,
+                            'tender/items/id': item.id,
+                            'tender/items/description': item.description,
+                            'tender/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
+                            'tender/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
+                            'tender/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
+                            'tender/items/quantity': item.quantity,
+                            'tender/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
+                            'tender/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                            'tender/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                            'tender/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                            'tender/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
+                            'tender/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
+                            'tender/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
+                            'tender/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
+                            'tender/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
+                            'tender/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
+                          });
+                          arrayTenderItems.push(objTenderItem)
+                      });
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.documents !== undefined){
+                      release.tender.documents.forEach(document => {
+                        var objTenderdocument = new Object({
+                            ocid: release.ocid,
+                            'tender/documents/id': document.id,
+                            'tender/documents/documentType': document.documentType,
+                            'tender/documents/title': document.title,
+                            'tender/documents/description': document.description,
+                            'tender/documents/url': document.url,
+                            'tender/documents/datePublished': document.datePublished,
+                            'tender/documents/dateModified': document.dateModified,
+                            'tender/documents/format': document.format,
+                            'tender/documents/language': document.language
+                          });
+                          arrayTenderDocuments.push(objTenderdocument)
+                      });
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.milestones !== undefined){
+                      release.tender.milestones.forEach(milestone => {
+                        var objTendermilestone = new Object({
+                            ocid: release.ocid,
+                            'tender/milestones/id': milestone.id,
+                            'tender/milestones/title': milestone.title,
+                            'tender/milestones/type': milestone.type,
+                            'tender/milestones/description': milestone.description,
+                            'tender/milestones/dueDate': milestone.dueDate,
+                            'tender/milestones/dateModified': milestone.dateModified,
+                            'tender/milestones/status': milestone.status
+                          });
+                          arrayTenderMilestones.push(objTendermilestone)
+                      });
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.amendments !== undefined){
+                      release.tender.amendments.forEach(amendment => {
+                        var objTenderAmendment = new Object({
+                            ocid: release.ocid,
+                            'tender/amendments/date': amendment.date,
+                            'tender/amendments/rationale': amendment.rationale,
+                            'tender/amendments/id': amendment.id,
+                            'tender/amendments/description': amendment.description
+                          });
+                          arrayTenderAmendment.push(objTenderAmendment)
+                      });
+                    }
+                  }
+                  if(release.tender !== undefined){
+                    if(release.tender.clarificationMeetings !== undefined){
+                      release.tender.clarificationMeetings.forEach(clarificationMeeting => {
+                        var objTenderClarificationMeeting = new Object({
+                            ocid: release.ocid,
+                            'tender/clarificationMeetings/id': clarificationMeeting.id,
+                            'tender/clarificationMeetings/date': clarificationMeeting.date
+                          });
+                          arrayTenderClarificationMeeting.push(objTenderClarificationMeeting)
+                          if(clarificationMeeting.attendees !== undefined){
+                            clarificationMeeting.attendees.forEach(attendee => {
+                              var objTenderAttendees = new Object({
+                                ocid: release.ocid,
+                                'tender/clarificationMeetings/id': clarificationMeeting.id,
+                                'tender/clarificationMeetings/attendees/name': attendee.name,
+                                'tender/clarificationMeetings/attendees/id': attendee.id
+                              });
+                              arrayTenderClarificationMeetingAttendees.push(objTenderAttendees)
+                            })
+                          }
+                          if(clarificationMeeting.officials !== undefined){
+                            clarificationMeeting.officials.forEach(official => {
+                              var objTenderOfficials = new Object({
+                                ocid: release.ocid,
+                                'tender/clarificationMeetings/id': clarificationMeeting.id,
+                                'tender/clarificationMeetings/officials/name': official.name,
+                                'tender/clarificationMeetings/officials/id': official.id
+                              });
+                              arrayTenderClarificationMeetingOfficials.push(objTenderOfficials)
+                            })
+                          }
+                      });
+                    }
+                  }
+                  if(release.buyer !== undefined){
+                    var objReleaseBuyer = new Object({
+                      ocid: release.ocid,
+                      'buyer/name': release.buyer.name,
+                      'buyer/id': release.buyer.id
+                    });
+                    arrayBuyer.push(objReleaseBuyer)
+                  }
+                  if(release.awards !== undefined){
+                    if(release.awards.length > 0){
+                      release.awards.forEach(award => {
+                        var objReleaseAward = new Object({
+                          ocid: release.ocid,
+                          'awards/id': award.id,
+                          'awards/title': award.title,
+                          'awards/description': award.description,
+                          'awards/rationale': award.rationale,
+                          'awards/status': award.status,
+                          'awards/date': award.date,
+                          'awards/value/netAmount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
+                          'awards/value/amount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
+                          'awards/value/currency': ((award.value !== undefined) ? (award.value.currency !== undefined ? award.value.currency : '') : ''),
+                          'awards/contractPeriod/startDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.startDate !== undefined ? award.contractPeriod.startDate : '') : ''),
+                          'awards/contractPeriod/endDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.endDate !== undefined ? award.contractPeriod.endDate : '') : ''),
+                        });
+                        arrayAwars.push(objReleaseAward);
+                        var objReleaseAward = new Object({
+                          ocid: release.ocid,
+                          'awards/id': award.id,
+                          'awards/suppliers/name': ((award.suppliers !== undefined) ? (award.suppliers[0].name !== undefined ? award.suppliers[0].name : '') : ''),
+                          'awards/suppliers/id': ((award.suppliers !== undefined) ? (award.suppliers[0].id !== undefined ? award.suppliers[0].id : '') : ''),
+                        })
+                        arrayAwarsSuppliers.push(objReleaseAward)
+                        if(award.documents !== undefined){
+                          if(award.documents.length > 0){
+                            award.documents.forEach(awardDocument => {
+                              var objAwardDocument = new Object({
+                                ocid: release.ocid,
+                                'awards/documents/id': awardDocument.id,
+                                'awards/documents/documentType': awardDocument.documentType,
+                                'awards/documents/title': awardDocument.title,
+                                'awards/documents/description': awardDocument.description,
+                                'awards/documents/url': awardDocument.url,
+                                'awards/documents/datePublished': awardDocument.datePublished,
+                                'awards/documents/dateModified': awardDocument.dateModified,
+                                'awards/documents/format': awardDocument.format,
+                                'awards/documents/language': awardDocument.language,
+                              })
+                              arrayAwarsDocuments.push(objAwardDocument);
+                            })
+                          }
+                        }
+                        if(award.amendments !== undefined){
+                          if(award.amendments.length > 0){
+                            award.amendments.forEach(amendment => {
+                              var objAmendment = new Object({
+                                ocid: release.ocid,
+                                'awards/amendments/date': amendment.date,
+                                'awards/amendments/rationale': amendment.rationale,
+                                'awards/amendments/id': amendment.id,
+                                'awards/amendments/description': amendment.description,
+                                
+                              })
+                              arrayAwarsAmendments.push(objAmendment);
+                            })
+                          }
+                        }
+                      });
+                    }
+                  }
+                  if(release.contracts !== undefined){
+                    if(release.contracts.length > 0){
+                      release.contracts.forEach(contract => {
+                        var objContract = new Object({
+                          ocid: release.ocid,
+                          'contracts/id': contract.id,
+                          'contracts/awardID': contract.awardID,
+                          'contracts/title': contract.title,
+                          'contracts/description': contract.description,
+                          'contracts/status': contract.status,
+                          'contracts/period/startDate': ((contract.period !== undefined) ? (contract.period.startDate !== undefined ? contract.period.startDate : '') : ''),
+                          'contracts/period/endDate': ((contract.period !== undefined) ? (contract.period.endDate !== undefined ? contract.period.endDate : '') : ''),
+                          'contracts/value/netAmount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
+                          'contracts/value/amount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
+                          'contracts/value/currency': ((contract.value !== undefined) ? (contract.value.currency !== undefined ? contract.value.currency : '') : ''),
+                          'contracts/value/exchangeRates/currency':  ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].currency !== undefined ? contract.value.exchangeRates[0].currency : '') : '') : ''),
+                          'contracts/value/exchangeRates/rate': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].rate !== undefined ? contract.value.exchangeRates[0].rate : '') : '') : ''),
+                          'contracts/value/exchangeRates/date': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].date !== undefined ? contract.value.exchangeRates[0].date : '') : '') : ''),
+                          'contracts/value/exchangeRates/source': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].source !== undefined ? contract.value.exchangeRates[0].source : '') : '') : ''),
+                          'contracts/dateSigned': contract.dateSigned,
+                          'surveillanceMechanisms': ((contract.surveillanceMechanisms !== undefined) ? contract.surveillanceMechanisms[0] : ''), 
+                        })
+                        arrayContracts.push(objContract);
+                        if(contract.items !== undefined){
+                          if(contract.items.length > 0){
+                            contract.items.forEach(item => {
+                              var objContractItem = new Object({
+                                ocid: release.ocid,
+                                'contracts/id': contract.id,
+                                'contracts/awardID': contract.awardID,
+                                'contracts/items/id': item.id,
+                                'contracts/items/description': item.description,
+                                'contracts/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
+                                'contracts/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
+                                'contracts/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
+                                'contracts/items/quantity': item.quantity,
+                                'contracts/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
+                                'contracts/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                                'contracts/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                                'contracts/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                                'contracts/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
+                                'contracts/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
+                                'contracts/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
+                                'contracts/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
+                                'contracts/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
+                                'contracts/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
+                              });
+                              arrayContractsItems.push(objContractItem);
+                            });
+                          }
+                        }
+                        if(contract.documents !== undefined){
+                          if(contract.documents.length > 0){
+                            contract.documents.forEach(document => {
+                              var objContractItem = new Object({
+                                ocid: release.ocid,
+                                'contracts/id': contract.id,
+                                'contracts/awardID': contract.awardID,
+                                'contracts/documents/id': document.id,
+                                'contracts/documents/documentType': document.documentType,
+                                'contracts/documents/title': document.title,
+                                'contracts/documents/description': document.description,
+                                'contracts/documents/url': document.url,
+                                'contracts/documents/datePublished': document.datePublished,
+                                'contracts/documents/dateModified': document.dateModified,
+                                'contracts/documents/format': document.format,
+                                'contracts/documents/language': document.language,
+                              });
+                              arrayContractsdocuments.push(objContractItem);
+                            })
+                          }
+                        }
+                        if(contract.amendments !== undefined){
+                          if(contract.amendments.length > 0){
+                            contract.amendments.forEach(amendment => {
+                              var objAmendment = new Object({
+                                ocid: release.ocid,
+                                'contracts/id': contract.id,
+                                'contracts/awardID': contract.awardID,
+                                'contracts/amendments/date': amendment.date,
+                                'contracts/amendments/rationale': amendment.rationale,
+                                'contracts/amendments/id': amendment.id,
+                                'contracts/amendments/description': amendment.description,
+                              });
+                              arrayContractsAmendments.push(objAmendment);
+                            })
+                          }
+                        }
+                        if(contract.guarantees !== undefined){
+                          if(contract.guarantees.length > 0){
+                            contract.guarantees.forEach(guarantee => {
+                              var objGuarantee = new Object({
+                                ocid: release.ocid,
+                                'contracts/id': contract.id,
+                                'contracts/awardID': contract.awardID,
+                                'contracts/guarantees/id': guarantee.id,
+                                'contracts/guarantees/type': ((guarantee !== undefined) ? guarantee.type : ''),
+                                'contracts/guarantees/date': ((guarantee !== undefined) ? guarantee.date : ''),
+                                'contracts/guarantees/obligations': ((guarantee.guarantees !== undefined) ? guarantee.guarantees.obligations : ''),
+                                'contracts/guarantees/value/amount': ((guarantee.value !== undefined) ? guarantee.value.amount : ''),
+                                'contracts/guarantees/value/currency': ((guarantee.value !== undefined) ? guarantee.value.currency : ''),
+                                'contracts/guarantees/guarantor/name': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.name : ''),
+                                'contracts/guarantees/guarantor/id': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.id : ''),
+                                'contracts/guarantees/period/startDate': ((guarantee.period !== undefined) ? guarantee.period.startDate : ''),
+                                'contracts/guarantees/period/endDate': ((guarantee.period !== undefined) ? guarantee.period.endDate : ''),
+                              });
+                              arrayContractsGuarantees.push(objGuarantee);
+                            })
+                          }
+                        }
+                        if(contract.implementation !== undefined){
+                          var objGuarantee = new Object({
+                            ocid: release.ocid,
+                            'contracts/id': contract.id,
+                            'contracts/awardID': contract.awardID,
+                            'contracts/implementation/status': contract.implementation.status,
+                          });
+                          arrayContractsImplementation.push(objGuarantee);
+                          if(contract.implementation.transactions !== undefined){
+                            if(contract.implementation.transactions.length > 0){
+                              contract.implementation.transactions.forEach(transaction => {
+                                var objTransaction = new Object({
+                                  ocid: release.ocid,
+                                  'contracts/id': contract.id,
+                                  'contracts/awardID': contract.awardID,
+                                  'contracts/implementation/transactions/id': transaction.id,
+                                  'contracts/implementation/transactions/date': transaction.date,
+                                  'contracts/implementation/transactions/value/netAmount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
+                                  'contracts/implementation/transactions/value/amount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
+                                  'contracts/implementation/transactions/value/currency': ((transaction.value !== undefined) ? transaction.value.currency : ''),
+                                  'contracts/implementation/transactions/payer/name': ((transaction.payer !== undefined) ? transaction.payer.name : ''),
+                                  'contracts/implementation/transactions/payer/id': ((transaction.payer !== undefined) ? transaction.payer.id : ''),
+                                  'contracts/implementation/transactions/payee/id': ((transaction.payee !== undefined) ? transaction.payee.id : ''),
+                                  'contracts/implementation/transactions/payee/name': ((transaction.payee !== undefined) ? transaction.payee.name : ''),
+                                  'contracts/implementation/transactions/paymentMethod': transaction.paymentMethod,
+                                  
+                                });
+                                arrayContractsImplementationTrans.push(objTransaction);
+                              })
+                            }
+                          }
+                          if(contract.implementation.milestones !== undefined){
+                            if(contract.implementation.milestones.length > 0){
+                              contract.implementation.milestones.forEach(milestone => {
+                                var objMilestone = new Object({
+                                  ocid: release.ocid,
+                                  'contracts/id': contract.id,
+                                  'contracts/awardID': contract.awardID,
+                                  'implementation/milestones/id': milestone.id,
+                                  'implementation/milestones/title': milestone.title,
+                                  'implementation/milestones/type': milestone.type,
+                                  'implementation/milestones/description': milestone.description,
+                                  'implementation/milestones/dueDate': milestone.dueDate,
+                                  'implementation/milestones/dateModified': milestone.dateModified,
+                                  'implementation/milestones/status': milestone.status,
+                                });
+                                arrayContractsImplementationMilestone.push(objMilestone);
+                              })
+                            }
+                          }
+                          if(contract.implementation.documents !== undefined){
+                            if(contract.implementation.documents.length > 0){
+                              contract.implementation.documents.forEach(document => {
+                                var objDocuments = new Object({
+                                  ocid: release.ocid,
+                                  'contracts/id': contract.id,
+                                  'contracts/awardID': contract.awardID,
+                                  'implementation/documents/id': document.id,
+                                  'implementation/documents/documentType': document.documentType,
+                                  'implementation/documents/title': document.title,
+                                  'implementation/documents/description': document.description,
+                                  'implementation/documents/url': document.url,
+                                  'implementation/documents/datePublished': document.datePublished,
+                                  'implementation/documents/dateModified': document.dateModified,
+                                  'implementation/documents/format': document.format,
+                                  'implementation/documents/language': document.language,
+                                });
+                                arrayContractsImplementationDocuments.push(objDocuments);
+                              })
+                            }
+                          }
+                        }
+                      });
+                    }
+                  }
+                  if(release.relatedProcesses !== undefined){
+                    if(release.relatedProcesses.length > 0){
+                      release.relatedProcesses.forEach(relatedProcess => {
+                        var objRelatedProcess = new Object({
+                          ocid: release.ocid,
+                          'relatedProcesses/id': relatedProcess.id,
+                          'relatedProcesses/relationship': relatedProcess.relationship[0],
+                          'relatedProcesses/title': relatedProcess.title,
+                          'relatedProcesses/scheme': relatedProcess.scheme,
+                          'relatedProcesses/identifier': relatedProcess.identifier,
+                          'relatedProcesses/uri': relatedProcess.uri,
+                        });
+                        arrayRelatedProcesses.push(objRelatedProcess);
+                      });
+
+                    }
+                  }
+                });
+                }
+                
+                consecutivo++;
+              });
+              var arraySheetNames = new Array();
+              if(arrayIndice.length !== 0){
+                var worksheetIndex = XLSX.utils.json_to_sheet(arrayIndice);
+                var SheetName = 'Index';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayReleasePackage.length !== 0){
+                var worksheet = XLSX.utils.json_to_sheet(arrayReleasePackage);
+                var SheetName = '1000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayExtensions2.length !== 0){
+                var worksheetExtensions = XLSX.utils.json_to_sheet(arrayExtensions2);
+                var SheetName = '1100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayPublishers.length !== 0){
+                var worksheetPublisher = XLSX.utils.json_to_sheet(arrayPublishers);
+                var SheetName = '1200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayReleases.length !== 0){
+                var worksheetRelease = XLSX.utils.json_to_sheet(arrayReleases);
+                var SheetName = '1300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayParties.length !== 0){
+                var worksheetReleaseParties = XLSX.utils.json_to_sheet(arrayParties);
+                var SheetName = '2000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayMember.length !== 0){
+                var worksheetReleasePartiesMember = XLSX.utils.json_to_sheet(arrayMember);
+                var SheetName = '2100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayAdditionalContactPoint.length !== 0){
+                var worksheetReleasePartiesAContactPoint = XLSX.utils.json_to_sheet(arrayAdditionalContactPoint);
+                var SheetName = '2200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayPlanning.length !== 0){
+                var worksheetReleasePlanning = XLSX.utils.json_to_sheet(arrayPlanning);
+                var SheetName = '3000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestingUnit.length !== 0){
+                var worksheetReleasePlanningRequestingUnit = XLSX.utils.json_to_sheet(arrayRequestingUnit);
+                var SheetName = '3100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractingUnit.length !== 0){
+                var worksheetReleasePlanningContractingUnit = XLSX.utils.json_to_sheet(arrayContractingUnit);
+                var SheetName = '3200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayResponsibleUnit.length !== 0){
+                var worksheetReleasePlanningResponsibleUnit = XLSX.utils.json_to_sheet(arrayResponsibleUnit);
+                var SheetName = '3300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayBudget.length !== 0){
+                var worksheetReleasePlanningBudgetBreakdown = XLSX.utils.json_to_sheet(arrayBudget);
+                var SheetName = '3400';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayBudgetLinesComponent.length !== 0){
+                var worksheetBudgetLinesComponent = XLSX.utils.json_to_sheet(arrayBudgetLinesComponent);
+                var SheetName = '3500';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayBudgetLinesMeasure.length !== 0){
+                var worksheetBudgetLinesMeasure = XLSX.utils.json_to_sheet(arrayBudgetLinesMeasure);
+                var SheetName = '3600';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayPlanningDocuments.length !== 0){
+                var worksheetPlanningDocuments = XLSX.utils.json_to_sheet(arrayPlanningDocuments);
+                var SheetName = '3700';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestsForQuotes.length !== 0){
+                var worksheetRequestsForQuotes = XLSX.utils.json_to_sheet(arrayRequestsForQuotes);
+                var SheetName = '3800';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestsForQuotesItems.length !== 0){
+                var worksheetRequestsForQuotesItems = XLSX.utils.json_to_sheet(arrayRequestsForQuotesItems);
+                var SheetName = '3900';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestsForQuotesinvitedSuppliers.length !== 0){
+                var worksheetRequestsForQuotesinvitedSupp = XLSX.utils.json_to_sheet(arrayRequestsForQuotesinvitedSuppliers);
+                var SheetName = '4000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestsForQuotesQuotes.length !== 0){
+                var worksheetRequestsForQuotesQuotes = XLSX.utils.json_to_sheet(arrayRequestsForQuotesQuotes);
+                var SheetName = '4100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRequestsForQuotesQuotesItems.length !== 0){
+                var worksheetRequestsForQuotesQuotesItems = XLSX.utils.json_to_sheet(arrayRequestsForQuotesQuotesItems);
+                var SheetName = '4200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTender.length !== 0){
+                var worksheetTender = XLSX.utils.json_to_sheet(arrayTender);
+                var SheetName = '5000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderes.length !== 0){
+                var worksheetArrayTenderes = XLSX.utils.json_to_sheet(arrayTenderes);
+                var SheetName = '5100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderItems.length !== 0){
+                var worksheetTenderItems = XLSX.utils.json_to_sheet(arrayTenderItems);
+                var SheetName = '5200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderDocuments.length !== 0){
+                var worksheetTenderDocuments = XLSX.utils.json_to_sheet(arrayTenderDocuments);
+                var SheetName = '5300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderMilestones.length !== 0){
+                var worksheetTenderMilestones = XLSX.utils.json_to_sheet(arrayTenderMilestones);
+                var SheetName = '5400';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderAmendment.length !== 0){
+                var worksheetTenderAmendment = XLSX.utils.json_to_sheet(arrayTenderAmendment);
+                var SheetName = '5500';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderClarificationMeeting.length !== 0){
+                var worksheetClarificationMeeting = XLSX.utils.json_to_sheet(arrayTenderClarificationMeeting);
+                var SheetName = '5600';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderClarificationMeetingAttendees.length !== 0){
+                var worksheetTenderClarificationMeetingAttendees = XLSX.utils.json_to_sheet(arrayTenderClarificationMeetingAttendees);
+                var SheetName = '5700';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayBuyer.length !== 0){
+                var worksheetBuyer = XLSX.utils.json_to_sheet(arrayBuyer);
+                var SheetName = '5800';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayTenderClarificationMeetingOfficials.length !== 0){
+                var worksheetTenderClarificationMeetingOfficials = XLSX.utils.json_to_sheet(arrayTenderClarificationMeetingOfficials);
+                var SheetName = '5900';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayAwars.length !== 0){
+                var worksheetAwars = XLSX.utils.json_to_sheet(arrayAwars);
+                var SheetName = '6000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayAwarsSuppliers.length !== 0){
+                var worksheetAwarsSuppliers = XLSX.utils.json_to_sheet(arrayAwarsSuppliers);
+                var SheetName = '6100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayAwarsDocuments.length !== 0){
+                var worksheetAwarsDocuments = XLSX.utils.json_to_sheet(arrayAwarsDocuments);
+                var SheetName = '6200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayAwarsAmendments.length !== 0){
+                var worksheetAwarsAmendments = XLSX.utils.json_to_sheet(arrayAwarsAmendments);
+                var SheetName = '6300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContracts.length !== 0){
+                var worksheetContracts = XLSX.utils.json_to_sheet(arrayContracts);
+                var SheetName = '7000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsItems.length !== 0){
+                var worksheetContractsItems = XLSX.utils.json_to_sheet(arrayContractsItems);
+                var SheetName = '7100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsdocuments.length !== 0){
+                var worksheetContractsdocuments = XLSX.utils.json_to_sheet(arrayContractsdocuments);
+                var SheetName = '7200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsAmendments.length !== 0){
+                var worksheetContractsAmendments = XLSX.utils.json_to_sheet(arrayContractsAmendments);
+                var SheetName = '7300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsGuarantees.length !== 0){
+                var worksheetContractsGuarantees = XLSX.utils.json_to_sheet(arrayContractsGuarantees);
+                var SheetName = '7400';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsImplementation.length !== 0){
+                var worksheetContractsImplementation = XLSX.utils.json_to_sheet(arrayContractsImplementation);
+                var SheetName = '8000';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsImplementationTrans.length !== 0){
+                var worksheetContractsImplementationTrans = XLSX.utils.json_to_sheet(arrayContractsImplementationTrans);
+                var SheetName = '8100';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsImplementationMilestone.length !== 0){
+                var worksheetContractsImplementationMil = XLSX.utils.json_to_sheet(arrayContractsImplementationMilestone);
+                var SheetName = '8200';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayContractsImplementationDocuments.length !== 0){
+                var worksheetContractsImplementationDoc = XLSX.utils.json_to_sheet(arrayContractsImplementationDocuments);
+                var SheetName = '8300';
+                arraySheetNames.push(SheetName);
+              }
+              if(arrayRelatedProcesses.length !== 0){
+                var worksheetRelatedProcesses = XLSX.utils.json_to_sheet(arrayRelatedProcesses);
+                var SheetName = '9000';
+                arraySheetNames.push(SheetName);
+              }
+
+              const workbook = {
+                Sheets:{
+                  'Index': worksheetIndex,
+                  '1000': worksheet,
+                  '1100': worksheetExtensions,
+                  '1200': worksheetPublisher,
+                  '1300': worksheetRelease,
+                  '2000': worksheetReleaseParties,
+                  '2100': worksheetReleasePartiesMember,
+                  '2200': worksheetReleasePartiesAContactPoint,
+                  '3000': worksheetReleasePlanning,
+                  '3100': worksheetReleasePlanningRequestingUnit,
+                  '3200': worksheetReleasePlanningContractingUnit,
+                  '3300': worksheetReleasePlanningResponsibleUnit,
+                  '3400': worksheetReleasePlanningBudgetBreakdown,
+                  '3500': worksheetBudgetLinesComponent,
+                  '3600': worksheetBudgetLinesMeasure,
+                  '3700': worksheetPlanningDocuments,
+                  '3800': worksheetRequestsForQuotes,
+                  '3900': worksheetRequestsForQuotesItems,
+                  '4000': worksheetRequestsForQuotesinvitedSupp,
+                  '4100': worksheetRequestsForQuotesQuotes,
+                  '4200': worksheetRequestsForQuotesQuotesItems,
+                  '5000': worksheetTender,
+                  '5100': worksheetArrayTenderes,
+                  '5200': worksheetTenderItems,
+                  '5300': worksheetTenderDocuments,
+                  '5400': worksheetTenderMilestones,
+                  '5500': worksheetTenderAmendment,
+                  '5600': worksheetClarificationMeeting,
+                  '5700': worksheetTenderClarificationMeetingAttendees,
+                  '5800': worksheetBuyer,
+                  '5900': worksheetTenderClarificationMeetingOfficials,
+                  '6000': worksheetAwars,
+                  '6100': worksheetAwarsSuppliers,
+                  '6200': worksheetAwarsDocuments,
+                  '6300': worksheetAwarsAmendments,
+                  '7000': worksheetContracts,
+                  '7100': worksheetContractsItems,
+                  '7200': worksheetContractsdocuments,
+                  '7300': worksheetContractsAmendments,
+                  '7400': worksheetContractsGuarantees,
+                  '8000': worksheetContractsImplementation,
+                  '8100': worksheetContractsImplementationTrans,
+                  '8200': worksheetContractsImplementationMil,
+                  '8300': worksheetContractsImplementationDoc,
+                  '9000': worksheetRelatedProcesses,
+                },
+                SheetNames:arraySheetNames
+              }
+              const excelBuffer = XLSX.write(workbook,{bookType:'xlsx',type:'array'});
+              const info = new Blob([excelBuffer],{type: EXCEL_TYPE});
+              saveAs(info,`test_export_${new Date().getTime()}${EXCEL_EXTENSION}`)
+      }
+    </script>
+
+</body>
+
+</html>

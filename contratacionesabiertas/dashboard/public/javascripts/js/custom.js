@@ -1,16 +1,18 @@
 var initialise_form = function(selectionOptions) {
-    var filterers = $('.filter_block input');
-    filterers.change(function() {
-        var filters = [];
-        var targets = [];
-        filterers.filter(function() {
-            return !this.checked
-        }).each(function(k, v) {
-            filters[k] = v.value;
-            targets[k] = $(v).data('target');
-        });
-        use_filters(filters, targets);
-    });
+    var filtroSeleccionado = ""; 
+     var filterers = $('.filter_block input');
+     filterers.change(function() {
+         
+         var filters = [];
+         var targets = [];
+         filterers.filter(function() {
+             return !this.checked
+         }).each(function(k, v) {
+              filters[k] = v.value;
+              targets[k] = $(v).data('target');
+         });
+         use_filters(filters, targets);
+     });
 
     var groupSelect = $('#group-everything-by');
     for (var opt in selectionOptions) {
@@ -33,13 +35,43 @@ var initialise_form = function(selectionOptions) {
         var colorBy = colorSelect.val();
         color_by(colorBy);
     };
-    $('#clear_filters').click(function() {
-        if ($(this).hasClass('select')) {
-            $('.filter_block input').prop('checked', 'checked');
-        } else {
-            $('.filter_block input').prop('checked', false);
+    $('.clear').change(function(data) {
+        if (data.currentTarget.id == "clear_filters"){
+            if ($(this).hasClass('select')) {
+                $('.filter_block input').prop('checked', 'checked');
+            } else {
+                $('.filter_block input').prop('checked', false);
+            }
+        }else{
+            var claseCambio = data.currentTarget.id;
+            if ($(this).hasClass('select')) { 
+                if (claseCambio == "cProveedor"){
+                    $('.cProveedor').prop('checked','checked');
+                }else if (claseCambio == "cProcedimiento"){
+                    $('.cProcedimiento').prop('checked','checked');
+                }else if (claseCambio == "cDestino"){ 
+                    $('.cDestino').prop('checked','checked');
+                }else if (claseCambio.includes("rea")){
+                    $('.cArea').prop('checked','checked');
+                }else if (claseCambio == "cVigencia"){
+                    $('.cVigencia').prop('checked','checked');
+                } 
+            } else {
+                if (claseCambio == "cProveedor"){
+                    $('.cProveedor').prop('checked',false);
+                }else if (claseCambio == "cProcedimiento"){
+                    $('.cProcedimiento').prop('checked',false);
+                }else if (claseCambio == "cDestino"){  
+                    $('.cDestino').prop('checked',false);
+                }else if (claseCambio.includes("rea")){
+                    $('.cArea').prop('checked',false);
+                }else if (claseCambio == "cVigencia"){
+                    $('.cVigencia').prop('checked',false);
+                }	
+            }
         }
         $(this).toggleClass('select clear');
+        filtroSeleccionado = data.currentTarget.id; 
         filterers.change();
         return false;
     });
@@ -100,8 +132,13 @@ function render_filters_colors_and_groups(data) {
         var values = get_distinct_values (data, lookup.type, lookup.key);
         var item = $('<div class="filter_block col-md-4"><li class="filter_title"><p style="color:#00cc99;"><strong>' + lookup.title + '</strong></p></li></div>');
         for (var j in values) {
-            var checkbox = $('<li class="sub-filter-block"><label style="cursor:pointer"><input style="cursor:pointer" data-target="' + lookup.key + '" type="checkbox" checked="checked" value="' + values[j] + '"/> ' + values[j] + '</label></li>');
-            checkbox.appendTo(item);
+            if (lookup.type.includes("rea")){
+	    var checkbox = $('<li class="sub-filter-block"><label style="cursor:pointer"><input style="cursor:pointer" class="cArea" data-target="' + lookup.key + '" type="checkbox" checked="checked" value="' + values[j] + '"/> ' + values[j] + '</label></li>');
+		}else{
+		var checkbox = $('<li class="sub-filter-block"><label style="cursor:pointer"><input style="cursor:pointer" class="c' + lookup.type + '" data-target="' + lookup.key + '" type="checkbox" checked="checked" value="' + values[j] + '"/> ' + values[j] + '</label></li>');
+        
+		}
+		checkbox.appendTo(item);
         }
         item.appendTo(filterList);
     }

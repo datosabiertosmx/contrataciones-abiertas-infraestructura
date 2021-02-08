@@ -122,6 +122,8 @@ function ValidateProcess(cpid, db) {
 
                 if(Object.keys(messageCapture).length > 1) captureAwards.push(messageCapture);
             });
+        } else{
+            capture['Adjudicaciones'] = 'No se ha registrado ningúna adjudicación';
         }
 
         // validacion de contratos
@@ -163,6 +165,8 @@ function ValidateProcess(cpid, db) {
                 messageCapture = clean(messageCapture);
                 if(Object.keys(messageCapture).length > 1) captureContracts.push(messageCapture);
             });
+        } else {
+            capture['Contratos'] = 'No se ha especificado ningún contrato';
         }
 
         capture = clean(capture);
@@ -259,6 +263,7 @@ function ValidateProcess(cpid, db) {
     
     let generateResume = function(cpid, json){
         let buyer =  json.parties ? json.parties.filter(p => p.roles && p.roles.indexOf('buyer') !== -1)[0]: undefined;
+        let requestingUnit = json.parties ? json.parties.filter(p => p.roles && p.roles.indexOf('requestingUnit') !== -1)[0]: undefined;
         let empty = 'Sin dato';
         let amount = 0;
         let amount2 = 0;
@@ -277,8 +282,8 @@ function ValidateProcess(cpid, db) {
 
         let resume = {
             registry: cpid,
-            unitAdministrative: buyer ? buyer.name || empty : empty,
-            identifier: buyer ? buyer.id || empty : empty,
+            unitAdministrative: requestingUnit ? requestingUnit.name || empty : empty,
+            identifier: requestingUnit ? requestingUnit.id || empty : empty,
             date: json.date,
             name: json.tender ? json.tender.title || empty : empty,
             type: json.tender ? json.tender.procurementMethodDetails || empty : empty,
@@ -317,7 +322,8 @@ function ValidateProcess(cpid, db) {
                 completionCertificate: getDocMessage('completionCertificate', json.contracts ? json.contracts.findIndex(y => y.implementation && y.implementation.documents ? y.implementation.documents.find(x => x.documentType === 'completionCertificate') : false) !== -1 : false, json.tender.procurementMethodDetails),
             },
             parties: {
-            	buyer: buyer !== undefined ? 'Registrado' : 'No registrado',
+                buyer: buyer !== undefined ? 'Registrado' : 'No registrado',
+                requestingUnit: requestingUnit !== undefined ? 'Registrado' : 'No registrado',
                 procuringEntity: json.parties && json.parties.filter(p => p.roles && p.roles.indexOf('procuringEntity') !== -1).length > 0 ? 'Registrado' : 'No registrado',
                 supplier: json.parties && json.parties.filter(p => p.roles &&  p.roles.indexOf('supplier') !== -1).length > 0 ? 'Registrado' : 'No registrado',
                 payer: json.parties && json.parties.filter(p => p.roles &&  p.roles.indexOf('payer') !== -1).length > 0 ? 'Registrado' : 'No registrado',
@@ -384,17 +390,22 @@ function ValidateProcess(cpid, db) {
     }
 
     let getEtapaCaptura = json => {
-        if(json.contracts.find(x => x.implementation && x.implementation.status)) {
-            return 'Implementación'
-        } else if(json.contracts.find(x => x.status)) {
-            return 'Contrato'
-        } else if(json.awards.find(x => x.status)){
-            return 'Adjudicación'
-        } else if(json.tender.status) {
-            return 'Licitación'
-        } else{
+        if(json.contracts !== undefined && json.awards !== undefined){
+            if(json.contracts.find(x => x.implementation && x.implementation.status)) {
+                return 'Implementación'
+            } else if(json.contracts.find(x => x.status)) {
+                return 'Contrato'
+            } else if(json.awards.find(x => x.status)){
+                return 'Adjudicación'
+            } else if(json.tender.status) {
+                return 'Licitación'
+            } else{
+                return 'Planeación'
+            }
+        }else{
             return 'Planeación'
         }
+        
     }
 
     let countLength = json => {

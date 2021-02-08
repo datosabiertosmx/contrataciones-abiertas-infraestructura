@@ -346,7 +346,8 @@ if ( fs.existsSync(file_path) ){
                     issuingSupplier: false,
                     contractingunit: false,
                     requestingunit: false,
-                    technicalunit: false
+                    technicalunit: false,
+                    responsibleunit: false
                 };
 
                 if (!Array.isArray(party.roles)){
@@ -408,6 +409,9 @@ if ( fs.existsSync(file_path) ){
                         case "technicalunit":
                             roles.technicalunit = true;
                             break;
+                        case "responsibleunit":
+                            roles.responsibleunit = true;
+                            break;
                     }
 
 
@@ -452,7 +456,7 @@ if ( fs.existsSync(file_path) ){
                     return t.one("insert into roles (contractingprocess_id, parties_id, buyer, procuringEntity,supplier,tenderer,guarantor,enquirer," +
                         "payer,payee,reviewBody, attendee, official, " +
                         "invitedSupplier, issuingSupplier, requestingunit, " +
-						"contractingunit, technicalunit) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) returning id as rol_id", [
+						"contractingunit, technicalunit, responsibleunit) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19) returning id as rol_id", [
                         data[0].contractingprocess.id,
                         inserted_row.party_id,
                         roles.buyer,
@@ -470,7 +474,8 @@ if ( fs.existsSync(file_path) ){
                         roles.issuingSupplier,
 						roles.requestingunit,
 						roles.contractingunit, 
-						roles.technicalunit
+                        roles.technicalunit,
+                        roles.responsibleunit
                     ])
                 }));
             }

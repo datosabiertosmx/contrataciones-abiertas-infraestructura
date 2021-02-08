@@ -1,11 +1,10 @@
 $(document).ready(function () {
-
     // DONUT CHARTs
     var ff= $.jqplot;
 
     function donutChart1() {
         $.post('/contratacionesabiertas/donut-chart-data', {
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
         }, function (data) {
 
             var newData = [];
@@ -84,7 +83,7 @@ $(document).ready(function () {
 
     function donutChart2(  ) {
 		$.post('/contratacionesabiertas/donut-chart2-data', {
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
         }, function (data) {
 
             var newData = [];
@@ -163,7 +162,7 @@ $(document).ready(function () {
     // Carga la grafica de procedimientos por etapa
     function stageChart() {
         $.post('/contratacionesabiertas/stage-chart-data', {
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
         }, function (data) {
             var interval = 1;
             data.map(x => {
@@ -323,7 +322,7 @@ $(document).ready(function () {
                 process: $('#processFilter').val(), 
                 stage: $('#stageFilter').val(),
                 status: $('#statusFilter').val(),
-                year: $('#yearFilter').val(),
+                year: $('#metadataYear').val(),
                 orderby: $('#orderby').val()
             }, p);
         });
@@ -335,7 +334,7 @@ $(document).ready(function () {
         process: $('#processFilter').val(), 
         stage: $('#stageFilter').val(),
         status: $('#statusFilter').val(),
-        year: $('#yearFilter').val(),
+        year: $('#metadataYear').val(),
         orderby: $('#orderby').val() 
     }, p);
 
@@ -346,7 +345,7 @@ $(document).ready(function () {
             process: $('#processFilter').val(), 
             stage: $('#stageFilter').val(),
             status: $('#statusFilter').val(),
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
             orderby: $('#orderby').val() 
         }, p);
     });
@@ -358,7 +357,7 @@ $(document).ready(function () {
             process: $('#processFilter').val(), 
             stage: $('#stageFilter').val(),
             status: $('#statusFilter').val(),
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
             orderby: $('#orderby').val() 
         }, p);
     });
@@ -371,7 +370,7 @@ $(document).ready(function () {
             process: $('#processFilter').val(), 
             stage: $('#stageFilter').val(),
             status: $('#statusFilter').val(),
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
             orderby: $('#orderby').val() 
         }, p);
     });
@@ -432,7 +431,7 @@ $(document).ready(function () {
             process: $('#processFilter').val(), 
             stage: $('#stageFilter').val(),
             status: $('#statusFilter').val(),
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
             orderby: $('#orderby').val() 
         }, p);
     });
@@ -445,7 +444,7 @@ $(document).ready(function () {
             process: $('#processFilter').val(), 
             stage: $('#stageFilter').val(),
             status: $('#statusFilter').val(),
-            year: $('#yearFilter').val(),
+            year: $('#metadataYear').val(),
             orderby: $('#orderby').val() 
         }, p);
     });
@@ -463,7 +462,7 @@ google.charts.setOnLoadCallback(drawSeriesChart);
 function drawSeriesChart() {
 
     $.post('/contratacionesabiertas/bubble-chart-data', {
-        year: $('#yearFilter').val(),
+        year: $('#metadataYear').val(),
     }, function (data) {
 
         var newData = [['ID', 'Fecha de firma', 'Vigencia (días naturales)', 'Tipo', 'Monto MXN']];
@@ -497,7 +496,7 @@ function drawSeriesChart() {
                 left: '55',
                 right: '30',
                 top: '10',
-                //bottom: '30'
+                bottom: '80'
             },
             backgroundColor: 'transparent',
             tooltip: {isHtml: true},
@@ -564,7 +563,6 @@ function drawSeriesChart() {
                 'Licitación pública': {color: '#ffcc00'}                
             },
             legend: {
-                position: 'bottom',
                 textStyle: {
                 	fontName: 'Open Sans',
                 	fontSize: 16   //tamaño de la letra de los tipos de procedimiento
@@ -578,7 +576,7 @@ function drawSeriesChart() {
         //evento para dirigir al detalle del contrato
          function selectHandler() {
              var selectedItem = chart.getSelection()[0];
-             window.location.href = "/contratacionesabiertas/contrato/"+(data[selectedItem.row].id)+"/planeacion";
+             window.open(href = '/contratacionesabiertas/contrato/'+(data[selectedItem.row].id)+'/implementacion');
 
          }
         

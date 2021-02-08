@@ -2,6 +2,17 @@
 <html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" lang="es-MX" xml:lang="es-MX">
 
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNYE7DF2RM"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KNYE7DF2RM');
+    </script>
+    <!-- End Google Analytics -->
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/contratacionesabiertas/static/bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Bootstrap core CSS -->
@@ -112,7 +123,7 @@
             <a href="/contratacionesabiertas/implementa" class="botonMenuTop">Implementa el EDCA-MX</a>
         </div>
         <div class="col-xs-3" style="padding: 0 0 0;">
-            <a href="https://datos.gob.mx/busca/organization/inai" class="botonMenuTop" target="_blank">Datos abiertos</a>
+            <a href="/contratacionesabiertas/datosabiertos" class="botonMenuTop">Datos abiertos</a>
         </div>
     </div>
 
@@ -145,7 +156,7 @@
                 <div ng-bind-html="content" class="content ng-binding">
                     <h1 style="text-align: center;">Política de publicación de datos sobre contrataciones públicas del INAI de acuerdo con el Estándar de Datos de Contrataciones Abiertas en México (EDCA-MX) 1.1</h1>
                     <h6 style="text-align: right">Publicada el 25 de septiembre de 2018</h6>
-                    <h6 style="text-align: right">Última actualización: 25 de mayo de 2020</h6>
+                    <h6 style="text-align: right">Última actualización: 15 de diciembre de 2020</h6>
                     <br><br>
                 </div>
 
@@ -165,33 +176,34 @@
                 </ol>
                 <br>
                 <h4><strong>Publicación de datos</strong></h4>
-                <p>El 13 de septiembre de 2017 el Instituto Nacional de Transparencia, Acceso a la Información y 
-                    Protección de Datos Personales (INAI) publicó un primer conjunto de datos, conforme a la versión 1.1 del EDCA, 
-                    relativos a los procedimientos de contratación y convenios de colaboración celebrados durante el primer semestre de ese año. 
-                    Asimismo, el 17 de agosto de 2018 el INAI publicó una nueva actualización de datos, incluyendo algunas de las extensiones MX desarrolladas 
-                    por la Alianza para las Contrataciones Abiertas en México (ACA).
+                <p>
+                    El 13 de septiembre de 2017 el Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI) publicó un primer conjunto de datos, conforme a la versión 1.1 del 
+                    EDCA, relativos a los procedimientos de contratación y convenios de colaboración celebrados durante el primer semestre de ese año. Asimismo, el 17 de agosto de 2018 el INAI publicó una nueva 
+                    actualización de datos, incluyendo algunas de las extensiones MX desarrolladas por la Alianza para las Contrataciones Abiertas en México (ACA).
+                </p>
+                <p>El INAI continuó desarrollando y agregando extensiones al esquema inicial del EDCA consolidando así el EDCA-MX, que actualmente cuenta con un total de 19 extensiones. 
+                   Estas extensiones fueron agregadas paulatinamente a la par que se realizaba la publicación de conjuntos de datos. 
+                   Además de las dos primeras actualizaciones, se han realizado cuatro actualizaciones más; una de ellas se publicó en diciembre de 2018 y las tres siguientes tuvieron lugar en el transcurso del 2020.
                 </p>
                 <br>
                 <h4><strong>Consulta de datos</strong></h4>
                 <p>Los datos de los procedimientos de contratación del INAI se publican en el sitio de Internet: 
                     <a href="http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/contratos/" target="_blank">http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/contratos/</a>
                 </p>
-                <p>Las bases de datos abiertos están disponibles en formato JSON y CSV desde el portal de datos abiertos de Presidencia de la República en:
-                    <a href="https://datos.gob.mx/busca/dataset/contrataciones-abiertas-del-inai" target="_blank">https://datos.gob.mx/busca/dataset/contrataciones-abiertas-del-inai</a>
+                <p>Las bases de datos abiertos están disponibles en formato JSON y XLSX en el sitio de internet:
+                    <a href="http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/datosabiertos" target="_blank">http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/datosabiertos</a>
                 </p>
                 <br>
                 <h4><strong>Actualización de datos</strong></h4>
-                <p>A partir de la segunda mitad del 2018, y debido a que el INAI no cuenta con un método de publicación de datos
-                     vinculado al funcionamiento de herramientas transaccionales, se pretende publicar actualizaciones 
-                     de datos de manera trimestral. Las actualizaciones de datos se realizan de manera manual, 
-                     mediante un sistema de captura que contempla las variables aplicables a la normativa en materia de adquisiciones y 
-                     transparencia.
+                <p>
+                    A partir de la segunda mitad del 2018, y debido a que el INAI no cuenta con un método de publicación de datos vinculado al funcionamiento de herramientas transaccionales, se pretende publicar 
+                    actualizaciones de datos de manera trimestral. Las actualizaciones de datos se realizan de manera manual, mediante un sistema de captura que contempla las variables aplicables a la normativa en 
+                    materia de adquisiciones y transparencia.
                 </p>
                 <p>
-                        Posteriormente, se pretende fusionar el sistema electrónico de gestión documental (GD-Mx) del INAI 
-                        con la herramienta de contrataciones abiertas con el fin de organizar y estructurar la generación, 
-                        publicación y conservación de datos en el tiempo. Con ello, se logrará publicar la información en tiempo real, 
-                        una vez que los documentos que conforman el ciclo de la contratación estén terminados y firmados digitalmente.
+                    Posteriormente, se pretende fusionar el sistema electrónico de gestión documental (GD-Mx) del INAI con la herramienta de contrataciones abiertas con el fin de organizar y estructurar la generación, 
+                    publicación y conservación de datos en el tiempo. Con ello, se logrará publicar la información en tiempo real, una vez que los documentos que conforman el ciclo de la contratación estén terminados 
+                    y firmados digitalmente.
                 </p>
                 <br>
                 <h4 style="text-align: center">Tabla 1. Registro de actualización</h4>
@@ -225,6 +237,11 @@
                             <td>Junio de 2020</td>
                             <td>Actualización de datos.</td>
                             <td>4to trimestre 2019</td>
+                        </tr>
+                        <tr>
+                            <td>15 de diciembre de 2020</td>
+                            <td>Actualización de datos.</td>
+                            <td>1er, 2do, 3ro y 4to trimestre de 2020</td>
                         </tr>
                 </table>
                 <br>
@@ -338,16 +355,28 @@
                 </p>
                 <p>Actualmente, el Instituto publica las siguientes extensiones:</p>
                 <ul style="list-style-type: disc;">
-                    <li>Solicitud de cotizaciones (parcialmente)</li>
-                    <li>Método de pago</li>
-                    <li>Impuestos</li>
-                    <li>Tipo de cambio</li>
-                    <li>Estatus de la ejecución</li>
-                    <li>Justificación de la adjudicación</li>
-                    <li>Categorías adicionales del procedimiento</li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_requestForQuotes_extension" target="_blank">Solicitud de cotizaciones</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_clarificationMeetings_extension" target="_blank">Juntas de aclaraciones</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_paymentMethod_extension" target="_blank">Método de pago</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_taxes_extension" target="_blank">Impuestos</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_publicNotices_extension" target="_blank">Avisos a la población</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_implementationStatus_extension" target="_blank">Estatus de la ejecución</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_awardRationale_extension" target="_blank">Justificación de la adjudicación</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_nameBreakdown_extension" target="_blank">Desglose de nombre</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_surveillanceMechanisms_extension" target="_blank">Mecanismos de vigilancia</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_extendedProcurementCategory_extension" target="_blank">Categorías adicionales del procedimiento</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_contactPointType_extension" target="_blank">Tipo de punto de contacto</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_budgetLines_extension" target="_blank">Líneas de presupuesto</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_guarantees_extension" target="_blank">Garantías</a></li>
+                    <li><a href="https://github.com/contratacionesabiertas/ocds_procurementUnits_extension" target="_blank">Unidades administrativas</a></li>
+                    <li><a href="https://github.com/open-contracting-extensions/ocds_exchangeRate_extension" target="_blank">Tasas de cambio</a></li>
+                    <li><a href="https://extensions.open-contracting.org/en/extensions/location/" target="_blank">Ubicación</a></li>
+                    <li><a href="https://extensions.open-contracting.org/en/extensions/additionalContactPoint/" target="_blank">Puntos de contacto adicionales</a></li>
+                    <li><a href="https://github.com/open-contracting-extensions/ocds_memberOf_extension" target="_blank">Miembro de</a></li>
+                    <li><a href="https://extensions.open-contracting.org/en/extensions/budget/" target="_blank">Desglose del presupuesto</a></li>
                 </ul>
                 <br>
-                <p>El diseño de estas extensiones puede ser consultado en el <a href="https://github.com/contratacionesabiertas" target="_blank">repositorio del INAI.</a></p>
+                <p>El diseño de estas extensiones puede ser consultado en el <a href="https://github.com/contratacionesabiertas" target="_blank">repositorio del INAI.</a></p><br>
                 <h4><strong>Marco normativo de referencia</strong></h4>
                 <ul style="list-style-type: none;">
                     <li>Constitución Política de los Estados Unidos Mexicanos.</li>

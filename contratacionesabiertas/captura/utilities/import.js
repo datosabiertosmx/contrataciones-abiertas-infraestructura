@@ -241,9 +241,6 @@ function Import(contractingproessid, database, numberStage, registerid) {
             additionalProcurementCategories: (category, result) => {
                 let croc;
                 switch (category[0]){
-                    case 'memberships':
-                        croc = 'Adhesiones y membresías';
-                        break;
                     case 'goodsAcquisition':
                         croc = 'Adquisición de bienes';
                         break;
@@ -378,7 +375,6 @@ function Import(contractingproessid, database, numberStage, registerid) {
                 currency: 'value_currency',
                 exchangeRates: async (exchanges, result) => {
                     if(exchanges){
-                        result.exchangerate_amount = exchanges[0].amount;
                         result.exchangerate_currency = exchanges[0].currency;
                         result.exchangerate_rate = exchanges[0].rate;
                         result.exchangerate_date = exchanges[0].date;

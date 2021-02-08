@@ -33,9 +33,6 @@ let build = (release, recordsPnt, position, extras) => {
         fn.addField(334269, 'tender.additionalProcurementCategories[0]', undefined, value => {
             switch (value) {
                 // este no esta en el catalogo de pnt
-                case 'memberships':
-                    value = 0;
-                    break;
                 case 'goodsAcquisition':
                     value = 2;
                     break;
