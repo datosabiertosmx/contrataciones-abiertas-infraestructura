@@ -26,6 +26,9 @@ const configDash = {
 const globals = {
     site : {
         port : 3000
+    },
+    node: {
+        port : 6000
     }
 }
 

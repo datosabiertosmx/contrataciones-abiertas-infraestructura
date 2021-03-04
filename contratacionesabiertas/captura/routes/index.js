@@ -3773,7 +3773,7 @@ router.post('/search-contractingprocess', function (req, res) {
 
 router.post('/search-projects',async function (req, res) {
 
-   await db.edcapi_project_package.findAll({
+    await db.edcapi_project_package.findAll({
         include:[
             {
                 model: db.edcapi_project, 
@@ -3799,9 +3799,8 @@ router.post('/search-projects',async function (req, res) {
         attributes: { exclude: ['createdAt','updatedAt']},
         limit: 7
     }).then(async function (data) {
-        var prefix = await db.edcapi_project_prefix.findAll({ attributes: ['prefix']});    
         console.log("#### DATA " + JSON.stringify(data))
-        res.json(data,prefix);
+        res.status(200).json(data)
     }).catch(function (error) {
         res.json([]);
         console.log(error);
@@ -7244,6 +7243,48 @@ router.get('/edca/fiscalYears',async function(req, res){
             }
         )}
     });
+});
+
+router.get('/edca/amounts/',async function(req, res){
+    console.log("························· /edca/amounts/ "  + JSON.stringify(req.params));
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one('select count(*) as total from (select distinct partyid from contractingprocess, contract, parties, roles where contract.contractingprocess_id = contractingprocess.id and parties.contractingprocess_id = contractingprocess.id and parties.id = roles.parties_id and roles.supplier = true) as t;'), 
+            this.one('select count(*) as total from (select distinct contractingprocess.id from contractingprocess, contract where contractingprocess.id = contract.contractingprocess_id) t'),
+            this.one('select count(*) as total from contractingprocess, contract where contractingprocess.id = contract.contractingprocess_id and contract.exchangerate_amount > 0' ),
+            this.one('select sum((select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id)) as total from contractingprocess where 1 = 1' ),
+            this.manyOrNone(`select t.procurementmethod_details, count(*) as conteo, sum(t.total) as total
+                from (select tender.procurementmethod_details,
+                    (select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id) as total
+                    from contractingprocess
+                    inner join tender on tender.contractingprocess_id = contractingprocess.id
+                    where tender.procurementmethod_details is not null and tender.procurementmethod_details != '') as t 
+                group by t.procurementmethod_details order by total desc`),
+            this.manyOrNone(`select t.additionalprocurementcategories, count(*) as conteo, sum(t.total) as total
+                from (select tender.additionalprocurementcategories,
+                    (select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id) as total
+                    from contractingprocess
+                    inner join tender on tender.contractingprocess_id = contractingprocess.id
+                    where tender.additionalprocurementcategories is not null and tender.additionalprocurementcategories != '') as t 
+                group by t.additionalprocurementcategories order by total desc`)
+        ]);
+    }).then(function (data) {
+        var amount = new Object();
+        amount.supplier_count= +data[0].total;
+        amount.cp_count= +data[1].total;
+        amount.contract_count= +data[2].total;
+        amount.contract_exchangerate_amount_total= data[3].total;
+        amount.total_procedimiento= data[4];
+        amount.total_destino= data[5];
+        return res.status(200).json({amount});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados con el parámetro seleccionado.`
+        })
+    });
+
 });
 
 module.exports = router;

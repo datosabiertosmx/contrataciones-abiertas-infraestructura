@@ -451,9 +451,6 @@ module.exports = {
                         case 'Adjudicación directa':
                             proc = 'Adjudicación directa';
                             break;
-                        case 'Adhesiones y membresías':
-                            proc = 'Adhesiones y membresías';
-                            break;
                     }
 
                     return proc;

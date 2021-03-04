@@ -41,15 +41,10 @@
                         "items": {
                         "type": "string",
                         "enum": [
-                                "Adhesiones y membresías",
-                                "Adjudicación directa art.41",
-                                "Adjudicación directa art.42",
-                                "Convenio de colaboración",
-                                "Excepciones al reglamento",
+                                "Adjudicación directa",
                                 "Invitación a cuando menos tres personas",
                                 "Licitación pública"
-                            ],
-                        "default": "Adhesiones y membresías"
+                            ]
                         },
                         "collectionFormat": "multi"
                     }

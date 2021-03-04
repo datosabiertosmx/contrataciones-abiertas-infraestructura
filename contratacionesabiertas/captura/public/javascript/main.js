@@ -924,6 +924,37 @@ $('#genericModal').on('show.bs.modal', function (event) {
                     modal.find('.modal-title').text("Editar");
                     modal.find("#modal_content").load('/1.1/edit_related_projects.html', { related_projects_id: id},function(){
                         
+                        modal.find('[name="relatedProject_title"]').autocomplete({
+                            minLength: 0,
+                            source: function(request, response) {
+                                modal.find('[name="relatedProject_scheme"]').val('');
+                                modal.find('[name="relatedProject_identifier"]').val('');
+                                modal.find('[name="relatedProject_uri"]').val('');                                
+                                $.post('/search-projects', { search: request.term }).done(function(data) {
+                                    if (data.length == 0) {
+                                        modal.find('[name="relatedProject_title"]').val('');
+                                    }
+                                    response(data);
+                                });
+                            },
+                            close: function (e) {
+                                if (modal.find('[name="url"]').val() == '') {
+                                    modal.find('[name="relatedProject_title"]').val('');
+                                }
+                            },
+                            select: function(event, ui) {
+                                modal.find('[name="relatedProject_scheme"]').val(ui.item.projects[0].oc4ids);
+                                modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].identifier);
+                                modal.find('[name="relatedProject_uri"]').val(ui.item.uri);
+                                return false;
+                            }
+                        }).autocomplete('instance')._renderItem = function (ul, item) {
+                            return $('<li>')
+                                .data('item.autocomplete', item)
+                                .append('<div>' + item.projects[0].oc4ids+'-'+item.projects[0].identifier + '</div>')
+                                .appendTo(ul);
+                        };
+
                         $('#update_related_project_form').submit(function (e) {
                             $.post('/1.1/update_related_project', $(this).serialize()).done(function (data) {
                                 alert( data.description );
@@ -931,7 +962,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
                             });
                             e.preventDefault();
                         });
-                     });
+                    });
                 }),
                 $('button[name="delete_related_projects"]').click(function () {
                     if (confirm("¿Está seguro de eliminar el registro?")){
@@ -1903,16 +1934,16 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         }
                     },
                     select: function(event, ui) {
-                        console.log("@@@ UI " + JSON.stringify(ui))
-                        // modal.find('[name="relatedProject_title"]').val(ui.item.identifier);
-                        // modal.find('[name="url"]').val(ui.item.record);
+                        modal.find('[name="relatedProject_scheme"]').val(ui.item.projects[0].oc4ids);
+                        modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].identifier);
+                        modal.find('[name="relatedProject_uri"]').val(ui.item.uri);
                         return false;
                     }
                 }).autocomplete('instance')._renderItem = function (ul, item) {
                     return $('<li>')
-                      .data('item.autocomplete', item)
-                      .append('<div>' + item.identifier + '</div>')
-                      .appendTo(ul);
+                        .data('item.autocomplete', item)
+                        .append('<div>' + item.projects[0].oc4ids+'-'+item.projects[0].identifier + '</div>')
+                        .appendTo(ul);
                 };
 
                 modal.find('#add_related_projects_form').submit(function (event) {

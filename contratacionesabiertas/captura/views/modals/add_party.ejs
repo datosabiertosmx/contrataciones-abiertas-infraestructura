@@ -32,12 +32,16 @@
             {document.getElementById('givenname').disabled = false; 
              document.getElementById('surname').disabled = false; 
              document.getElementById('additionalsurname').disabled = false;
-             document.getElementById('identifier_legalname').disabled = true;} 
+             document.getElementById('identifier_legalname').disabled = true;
+             $('#identifier_legalname').val('');} 
             else
             {document.getElementById('identifier_legalname').disabled = false;
-             document.getElementById('givenname').disabled = true; 
-             document.getElementById('surname').disabled = true; 
-             document.getElementById('additionalsurname').disabled = true;}">
+             document.getElementById('givenname').disabled = true;
+             $('#givenname').val(''); 
+             document.getElementById('surname').disabled = true;
+             $('#surname').val(''); 
+             document.getElementById('additionalsurname').disabled = true;
+             $('#additionalsurname').val('');}">
 		    
             <option value="false"
                 <% if (typeof parties !== "undefined"){%>

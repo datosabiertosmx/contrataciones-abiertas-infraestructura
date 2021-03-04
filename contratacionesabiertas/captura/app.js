@@ -6,6 +6,7 @@ var logger       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var routes       = require('./routes/index');
+var conf = require('./db_conf');
 
 var app = express();
 
@@ -61,7 +62,7 @@ app.use(function(err, req, res, next) {
 
 
 
-app.listen(6000);
+app.listen(conf.globals.node.port);
 
 module.exports = app;
 

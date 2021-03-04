@@ -126,7 +126,7 @@ router.post('/pagination', function (req, res) {
         }
 
         if (req.body.keyword !== "" && req.body.keyword !== undefined) {
-            where += " and (tender.title ilike '%$1#%' or contractingprocess.ocid ilike '%$1#%')";
+            where += " and (tender.title ilike '%$1#%' or contractingprocess.ocid ilike '%$1#%' or parties.name ilike '%$1#%' or parties.identifier_legalname ilike '%$1#%')";
         }
 
         if (req.body.process !== "" && req.body.process !== undefined) {
@@ -178,7 +178,7 @@ router.post('/pagination', function (req, res) {
             }
         }
 
-        var query1 = `select * from (select contractingprocess.id as localid, contractingprocess.uri, contractingprocess.ocid, contractingprocess.stage, contractingprocess.description,
+        var query1 = `select * from (select distinct contractingprocess.id as localid, contractingprocess.uri, contractingprocess.ocid, contractingprocess.stage, contractingprocess.description,
             (select datesigned from contract where contractingprocess_id = contractingprocess.id order by datesigned limit 1) as datesigned,
             (select sum(exchangerate_amount) from contract where contractingprocess_id = contractingprocess.id) as exchangerate_amount,
             planning.hasquotes is not null as planning_active,
@@ -205,10 +205,12 @@ router.post('/pagination', function (req, res) {
             from contractingprocess
             inner join planning on planning.contractingprocess_id = contractingprocess.id
             inner join tender on tender.contractingprocess_id = contractingprocess.id
-            where ` + where + ') t ' + whereExterno;
+            inner join parties on parties.contractingprocess_id = contractingprocess.id
+            inner join roles as rod on rod.parties_id = parties.id
+            where rod.supplier = true and` + where + ') t ' + whereExterno;
 
         var query2 = "select count(*) as total from (" + query1 + ") as q";
-
+        
         if (req.body.orderby === undefined) {
             req.body.orderby = 'exchangerate_amount';
         }

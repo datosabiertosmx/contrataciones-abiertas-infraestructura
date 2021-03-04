@@ -1,5 +1,5 @@
 -- clonar esquema para el dashboard
-\c edca
+\c edca_generica
 
 Create schema dashboard;
 
