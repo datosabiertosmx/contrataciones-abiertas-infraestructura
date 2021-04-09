@@ -7077,38 +7077,48 @@ router.get('/edca/cp/:id',async function(req, res){
 
 router.get('/edca/contractingprocess/csv/:year',async function(req, res){
     console.log("························· /edca/contractingprocess/csv/:year PARAMS "  + JSON.stringify(req.params));
-    cp_functions.getContractingProcess(req.params, getHost(req)).then(response => {
-        if(response !== false){
-            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
-            converterToCSV.json2csv(response, (err, csv) => {
-                if (err) {
-                    throw err;
-                }
-                // print CSV string
-                // console.log(csv);
-                fs.writeFileSync('todos.csv', csv);
-                res.download('./todos.csv', function (err){
-                    if(err){
-                        console.log(`ERROR ${err}`)
-                    }else{
-                        fs.unlink('./todos.csv', (err) => {
-                            if (err) {
-                                console.error(err)
-                                return
-                            }
-                        })
-                    }    
-                })                
-            });
+    cp_functions.getContractingProcess(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
         }else{
             return res.status(404).json({
                 status: 404,
                 message: `No se encontrarón resultados con el parámetro seleccionado.`
             }
-        );
-        }
-        
+        )}
     })
+    // cp_functions.getContractingProcess(req.params, getHost(req)).then(response => {
+    //     if(response !== false){
+    //         console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
+    //         converterToCSV.json2csv(response, (err, csv) => {
+    //             if (err) {
+    //                 throw err;
+    //             }
+    //             // print CSV string
+    //             // console.log(csv);
+    //             fs.writeFileSync('todos.csv', csv);
+    //             res.download('./todos.csv', function (err){
+    //                 if(err){
+    //                     console.log(`ERROR ${err}`)
+    //                 }else{
+    //                     fs.unlink('./todos.csv', (err) => {
+    //                         if (err) {
+    //                             console.error(err)
+    //                             return
+    //                         }
+    //                     })
+    //                 }    
+    //             })                
+    //         });
+    //     }else{
+    //         return res.status(404).json({
+    //             status: 404,
+    //             message: `No se encontrarón resultados con el parámetro seleccionado.`
+    //         }
+    //     );
+    //     }
+        
+    // })
 });
 
 router.get('/edca/contractingprocess/additionalprocurementcategories/csv/:additionalprocurementcategories/:year',async function(req, res){

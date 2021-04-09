@@ -4705,7 +4705,7 @@ COPY public.documenttype (id, category, code, title, title_esp, description, sou
 25	basic	contractNotice	Contract Notice	Datos relevantes del contrato	The formal notice that gives details of a contract being signed and valid to start implementation. This may be a link to a downloadable document		4
 26	advanced	contractGuarantees	Guarantees	Garantías del contrato			4
 27	advanced	subContract	Subcontracts	Subcontratos	A document detailing subcontracts,  the subcontract itself or a linked OCDS document describing a subcontract.		4
-28	basic	contractText	Contract Text	Texto del contrato			4
+28	basic	contractText	Contract Text	Texto del contrato			0
 29	intermediate	finalAudit	Final Audit	Conclusión de la auditoría			5
 30	intermediate	financialProgressReport	Financial progress reports	Informe de avance financiero	Dates and amounts of stage payments made (against total amount) and the source of those payments, including cost overruns if any. Structured versions of this data can be provided through transactions.		5
 31	intermediate	physicalProgressReport	Physical progress reports	Informe de avance físico	A report on the status of implementation, usually against key milestones.		5
