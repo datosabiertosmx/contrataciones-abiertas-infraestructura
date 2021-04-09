@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING,
     purpose: DataTypes.STRING,
     sector: DataTypes.ARRAY(DataTypes.TEXT),
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    oc4idsIdentifier: DataTypes.STRING
   }, {});
   edcapi_project.associate = function(models) {
     edcapi_project.belongsToMany(models.edcapi_project_package, {

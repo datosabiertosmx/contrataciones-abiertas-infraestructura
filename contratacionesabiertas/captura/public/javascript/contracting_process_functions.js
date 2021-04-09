@@ -512,13 +512,50 @@ module.exports = {
     getFiscalYears: async function(){
         console.log(`### getFiscalYears`)
         return await db.edca_fiscal_year.findAll();
-    }
+    },
+    getPolicy: async function(){
+        console.log(`### getPolicy`)
+        return await db.edca_published_policy.findAll();
+    },
+    createPolicy: async function(data){
+        console.log(`### createPolicy ${JSON.stringify(data)}`)
+        var policies = await db.edca_published_policy.findAll();
+        if(policies.length > 0){
+            deletePolicies(policies).then( async () =>{
+                await db.edca_published_policy.create({
+                    policy: data,
+                    status: true,
+                    createdAt : new Date(),
+                    updatedAt : new Date()
+                }).then(function(result){
+                    return console.log("### policy " + JSON.stringify(result))
+                });
+            })
+        }else{
+            await db.edca_published_policy.create({
+                policy: data,
+                status: true,
+                createdAt : new Date(),
+                updatedAt : new Date()
+            }).then(function(result){
+                return console.log("### policy " + JSON.stringify(result))
+            });
+        }
+    },
 };
 
 async function deleteFiscalYears(fiscalYears){
     fiscalYears.forEach(async fiscalYear => {
         await db.edca_fiscal_year.destroy({
             where: {id: fiscalYear.id}
+        })
+    });
+    return true;
+};
+async function deletePolicies(policies){
+    policies.forEach(async policy => {
+        await db.edca_published_policy.destroy({
+            where: {id: policy.id}
         })
     });
     return true;

@@ -927,7 +927,6 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         modal.find('[name="relatedProject_title"]').autocomplete({
                             minLength: 0,
                             source: function(request, response) {
-                                modal.find('[name="relatedProject_scheme"]').val('');
                                 modal.find('[name="relatedProject_identifier"]').val('');
                                 modal.find('[name="relatedProject_uri"]').val('');                                
                                 $.post('/search-projects', { search: request.term }).done(function(data) {
@@ -943,8 +942,8 @@ $('#genericModal').on('show.bs.modal', function (event) {
                                 }
                             },
                             select: function(event, ui) {
-                                modal.find('[name="relatedProject_scheme"]').val(ui.item.projects[0].oc4ids);
-                                modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].identifier);
+                                modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].title);
+                                modal.find('[name="relatedProject_title"]').val(ui.item.projects[0].oc4idsIdentifier);
                                 modal.find('[name="relatedProject_uri"]').val(ui.item.uri);
                                 return false;
                             }
@@ -1580,14 +1579,14 @@ $('#genericModal').on('show.bs.modal', function (event) {
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
+                    // modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
                 });
 
                 modal.find('#newguarantee_date2').datetimepicker({
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
+                    // modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
                 });
 
                 modal.find('#newguarantee_form').submit(function (event) {
@@ -1917,7 +1916,6 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 modal.find('[name="relatedProject_title"]').autocomplete({
                     minLength: 0,
                     source: function(request, response) {
-                        modal.find('[name="relatedProject_scheme"]').val('');
                         modal.find('[name="relatedProject_identifier"]').val('');
                         modal.find('[name="relatedProject_uri"]').val('');
 
@@ -1934,8 +1932,8 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         }
                     },
                     select: function(event, ui) {
-                        modal.find('[name="relatedProject_scheme"]').val(ui.item.projects[0].oc4ids);
-                        modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].identifier);
+                        modal.find('[name="relatedProject_identifier"]').val(ui.item.projects[0].title);
+                        modal.find('[name="relatedProject_title"]').val(ui.item.projects[0].oc4idsIdentifier);
                         modal.find('[name="relatedProject_uri"]').val(ui.item.uri);
                         return false;
                     }
@@ -2128,14 +2126,14 @@ $('#genericModal').on('show.bs.modal', function (event) {
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
+                    // modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
                 });
 
                 modal.find('#newguarantee_date2').datetimepicker({
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
+                    // modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
                 });
 
                 modal.find('#editguarantee_form').submit(function (event) {

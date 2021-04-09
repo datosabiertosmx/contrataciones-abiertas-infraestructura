@@ -106,6 +106,19 @@ $("#adminModal").on('show.bs.modal', function (event) {
                 });
             });
             break;
+        case 'manage_policy':
+            modal.find('.modal-title').text('Editar pólitica de publicación');
+            modal.find('#modal_content').html("");
+            modal.find('#modal_content').load('/admin/policy', () => {
+                modal.find('#update_policy_form').submit(function(e) {
+                    e.preventDefault(); 
+                    $.post('/admin/policy', $(this).serializeArray(), (res) => {
+                        alert(res.message);
+                        modal.modal('hide');
+                    }).fail(res =>  alert(res.responseJSON.message));
+                });
+            });
+            break;
         case 'manage_years':
             modal.find('.modal-title').text('Periodos a publicar');
             modal.find('#modal_content').html("");

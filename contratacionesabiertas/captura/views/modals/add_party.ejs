@@ -27,25 +27,26 @@
     
     <p>
         <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si es persona física.'>¿Es persona física?</label>
-          <select class="form-control" name="naturalperson" id="naturalperson"
-           onchange="if(getElementById('naturalperson').selectedIndex == 1) 
-            {document.getElementById('givenname').disabled = false; 
-             document.getElementById('surname').disabled = false; 
-             document.getElementById('additionalsurname').disabled = false;
-             document.getElementById('identifier_legalname').disabled = true;
-             $('#identifier_legalname').val('');} 
-            else
-            {document.getElementById('identifier_legalname').disabled = false;
-             document.getElementById('givenname').disabled = true;
-             $('#givenname').val(''); 
-             document.getElementById('surname').disabled = true;
-             $('#surname').val(''); 
-             document.getElementById('additionalsurname').disabled = true;
-             $('#additionalsurname').val('');}">
-		    
+        <select class="form-control" name="naturalperson" id="naturalperson" onchange="if(getElementById('naturalperson').selectedIndex == 1){
+                document.getElementById('givenname').disabled = false; 
+                document.getElementById('surname').disabled = false; 
+                document.getElementById('additionalsurname').disabled = false;
+                document.getElementById('identifier_legalname').disabled = true;
+                $('#identifier_legalname').val('');
+            } 
+            else{
+                document.getElementById('identifier_legalname').disabled = false;
+                document.getElementById('givenname').disabled = true;
+                $('#givenname').val(''); 
+                document.getElementById('surname').disabled = true;
+                $('#surname').val(''); 
+                document.getElementById('additionalsurname').disabled = true;
+                $('#additionalsurname').val('');
+            }">
+            
             <option value="false"
                 <% if (typeof parties !== "undefined"){%>
-              	<%=(parties.naturalperson === false) ?'selected':''%>
+                <%=(parties.naturalperson === false) ?'selected':''%>
                 <%}%>
                 >No</option>
             <option value="true"
@@ -53,7 +54,7 @@
                 <%=(parties.naturalperson) ?'selected':''%>
                 <%}%>
                 >Si</option>
-          </select>
+        </select>
     </p>
      
     <br>

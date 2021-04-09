@@ -159,6 +159,7 @@ module.exports = {
                     purpose: (obj.purpose === '' ? null : obj.purpose),
                     sector: (arraySector < 0 ? null : arraySector),
                     type: (obj.type === '' ? null : obj.type),
+                    oc4idsIdentifier: (obj.id === '' ? null : prefix.prefix + "-" + obj.id),
                     updatedAt : new Date()
                 });
             }).then(async function(project){
@@ -318,12 +319,12 @@ module.exports = {
                     arrayRelationship.push(element.relationship)
                     if(element.relationship !== "" && element.relationship !== null)
                     objRelatedProjects.relationship = arrayRelationship;
-                    if(element.title !== "" && element.title !== null)
-                    objRelatedProjects.title = element.title;
+                    if(element.identifier !== "" && element.identifier !== null)
+                    objRelatedProjects.title = element.identifier;
                     if(element.scheme !== "" && element.scheme !== null)
                     objRelatedProjects.scheme = element.scheme;
-                    if(element.identifier !== "" && element.identifier !== null)
-                    objRelatedProjects.identifier = element.identifier;
+                    if(element.title !== "" && element.title !== null)
+                    objRelatedProjects.identifier = element.title;
                     if(element.uri !== "" && element.uri !== null)
                     objRelatedProjects.uri = element.uri;
                     arrayRelatedProjects.push(objRelatedProjects);

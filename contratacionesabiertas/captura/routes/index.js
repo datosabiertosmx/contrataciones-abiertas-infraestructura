@@ -3781,7 +3781,7 @@ router.post('/search-projects',async function (req, res) {
                 attributes: { exclude: ['createdAt','updatedAt']},
                 through: {attributes: []},
                 where: {
-                    identifier: {
+                    oc4idsIdentifier: {
                         //[Op.like]: Sequelize.literal('\'%'+req.body.search+'%\'')
                         [Op.substring]: req.body.search
                     }
@@ -3799,7 +3799,7 @@ router.post('/search-projects',async function (req, res) {
         attributes: { exclude: ['createdAt','updatedAt']},
         limit: 7
     }).then(async function (data) {
-        console.log("#### DATA " + JSON.stringify(data))
+        console.log("#### DATA " + JSON.stringify(data,null,2))
         res.status(200).json(data)
     }).catch(function (error) {
         res.json([]);
@@ -4308,6 +4308,7 @@ router.post('/1.1/related_projects.html', function (req, res) {
     var arrayRelatedProjects = new Array();
     console.log("#### project_id " + project_id)
     project.findProject(project_id).then(value => {
+        console.log(`value ${JSON.stringify(value,null,2)}`)
         value[0].projects[0].relatedProjects.forEach(element => {
             var objRelatedProjects = new Object();
             if(element.relationship !== "" && element.relationship !== null){
@@ -4812,9 +4813,11 @@ router.post('/1.1/update_budgetbreakdown_project',async function(req,res){
     relBudgetBreakdownBudget = await db.edcapi_project_budget_breakdown_budget.findAll({
         where: {edcapiProjectBudgetBreakdownId: req.body.budget_budgetBreakdown_sourceParty}
     }).then(async function(data){
-        relBudgetProject = await db.edcapi_budget_project.findAll({
-            where: {edcapiBudgetId: data[0].budget_id}
-        }); 
+        if(data.length > 0){
+            relBudgetProject = await db.edcapi_budget_project.findAll({
+                where: {edcapiBudgetId: data[0].budget_id}
+            }); 
+        }
     }); 
     
     project.updateBudgetBreakdown(request).then(async function(){
@@ -4823,7 +4826,10 @@ router.post('/1.1/update_budgetbreakdown_project',async function(req,res){
                 description: "Los datos han sido actualizados",
             });
         }).then(function(){
-            project.updatePublishedDate(relBudgetProject[0].project_id,req.user);
+            if(relBudgetProject.project_id !== null){
+                project.updatePublishedDate(relBudgetProject[0].project_id,req.user);
+            }
+            
         }).catch(function (error) {
             console.log("Error - /1.1/update_budgetbreakdown_project " + error);
             res.status(400).jsonp({
@@ -5886,6 +5892,20 @@ router.get('/admin/oc4ids', isAuthenticated, async (req,res) => {
     project.generateOc4ids().then(async function(value){
         res.render('modals/admin_oc4ids', {oc4ids: value[0].prefix});
     });
+});
+
+router.get('/admin/policy', isAuthenticated, async (req,res) => {
+    cp_functions.getPolicy().then(function(value){
+        console.log('/admin/policy value ' + JSON.stringify(value))
+        res.render('modals/admin_policy', {policy: value});
+    })
+});
+
+router.post('/admin/policy', isAuthenticated, async (req,res) => {
+    console.log('/admin/policy post ' + JSON.stringify(req.body.textarea))
+    cp_functions.createPolicy(req.body.textarea).then(() => {
+        return res.status(200).json({message: 'Se registro correctamente'});
+    })
 });
 
 // update prefix ocid
@@ -7243,6 +7263,21 @@ router.get('/edca/fiscalYears',async function(req, res){
             }
         )}
     });
+});
+
+router.get('/edca/policy', async (req,res) => {
+    cp_functions.getPolicy().then(function(value){
+        if(value){
+            console.log(`RES ${JSON.stringify(value[0])}`)
+            var policy = value[0].policy;
+            return res.status(200).json({policy});
+        }else{
+            return res.status(404).json({
+                status: 404,
+                message: `No se encontrarón registros.`
+            }
+        )}
+    })
 });
 
 router.get('/edca/amounts/',async function(req, res){
