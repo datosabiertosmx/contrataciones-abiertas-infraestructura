@@ -230,7 +230,6 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('procurementmethodRes')">Copiar contenido</button>
                                       <button id="downlo" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('procurementmethod')">Descargar JSON</button>
-                                      <button id="downlo_6" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('procurementmethod')">Descargar CSV</button>
                                       <button id="downlo_7" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('procurementmethod')">Descargar EXCEL</button>
                                     </div>
                                   </div>
@@ -365,7 +364,6 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('additionalProcurementCategoriesRes')">Copiar contenido</button>
                                       <button id="downlo_2" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('additionalprocurementcategories')">Descargar JSON</button>
-                                      <button id="downlo_5" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('additionalprocurementcategories')">Descargar CSV</button>
                                       <button id="downlo_8" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('additionalprocurementcategories')">Descargar EXCEL</button>
                                     </div>
                                   </div>
@@ -477,7 +475,6 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('contractingprocessRes')">Copiar contenido</button>
                                       <button id="downlo_3" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('contractingprocess')">Descargar JSON</button>
-                                      <button id="downlo_4" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('contractingprocess')">Descargar CSV</button>
                                       <button id="downlo_9" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('contractingprocess')">Descargar EXCEL</button>
                                   </div>
                                   <div id="downley_3" class="spinner-border" role="status" hidden>
@@ -950,12 +947,313 @@
           default:
             break;
         }
-        $.get(uri_endpoint).done(function (data) {
-            var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(data);
-            var dlAnchorElem = document.getElementById('downloadAnchorElem');
-            dlAnchorElem.setAttribute("href",dataStr);
-            dlAnchorElem.setAttribute("download", `${uri_endpoint}.csv`);
-            dlAnchorElem.click();
+        $.get(uri_endpoint).done(function (info) {
+          //  console.log(info)
+            var data = generateData(info);
+            
+
+            if(data.arrayIndice.length !== 0){
+              const headers = {
+                Path: 'Path',
+                Code: 'Code'
+              };
+              exportCSVFile(headers,data.arrayIndice,'index')
+            }
+            
+            if(data.arrayReleasePackage.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                uri: 'uri',
+                version: 'version',
+                publishedDate: 'publishedDate',
+                license: 'license',
+                publicationPolicy: 'publicationPolicy'
+              };
+              exportCSVFile(headers,data.arrayReleasePackage,'1000')
+            }
+
+            if(data.arrayExtensions2.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                extensions: 'extensions'
+              };
+              exportCSVFile(headers,data.arrayExtensions2,'1100')
+            }
+            
+            if(data.arrayPublishers.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                'publisher/name': 'publisher/name',
+                'publisher/scheme': 'publisher/scheme',
+                'publisher/uid': 'publisher/uid',
+                'publisher/uri': 'publisher/uri'
+              };
+              exportCSVFile(headers,data.arrayPublishers,'1200')
+            }
+            if(data.arrayReleases.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                id: 'id',
+                date: 'date',
+                initiationType: 'initiationType',
+                language: 'language',
+                tag: 'tag'
+              };
+              exportCSVFile(headers,data.arrayReleases,'1300')
+            }
+            if(data.arrayParties.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                'parties/name': 'parties/name',
+                'parties/id': 'parties/id',
+                'parties/position': 'parties/position',
+                'parties/identifier/scheme': 'parties/identifier/scheme',
+                'parties/identifier/id': 'parties/identifier/id',
+                'parties/identifier/legalName': 'parties/identifier/legalName',
+                'parties/identifier/legalPersonality': 'parties/identifier/legalPersonality',
+                'parties/identifier/givenName': 'parties/identifier/givenName',
+                'parties/identifier/patronymicName': 'parties/identifier/patronymicName',
+                'parties/identifier/matronymicName': 'parties/identifier/matronymicName',
+                'parties/address/streetAddress': 'parties/address/streetAddress',
+                'parties/address/locality': 'parties/address/locality',
+                'parties/address/region': 'parties/address/region',
+                'parties/address/postalCode': 'parties/address/postalCode',
+                'parties/address/countryName': 'parties/address/countryName',
+                'parties/contactPoint/name': 'parties/contactPoint/name',
+                'parties/contactPoint/email': 'parties/contactPoint/email',
+                'parties/contactPoint/telephone': 'parties/contactPoint/telephone',
+                'parties/contactPoint/faxNumber': 'parties/contactPoint/faxNumber',
+                'parties/contactPoint/url': 'parties/contactPoint/url',
+                'parties/contactPoint/type': 'parties/contactPoint/type',
+                'parties/contactPoint/givenName': 'parties/contactPoint/givenName',
+                'parties/contactPoint/patronymicName': 'parties/contactPoint/patronymicName',
+                'parties/contactPoint/matronymicName': 'parties/contactPoint/matronymicName',
+                'parties/roles': 'parties/roles',
+              };
+              exportCSVFile(headers,data.arrayParties,'2000')
+            }
+            if(data.arrayMember.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                'parties/id' : 'parties/id',
+                'parties/memberOf/id' : 'parties/memberOf/id',
+                'parties/memberOf/name' : 'parties/memberOf/name'
+              };
+              exportCSVFile(headers,data.arrayMember,'2100')
+            }
+            if(data.arrayAdditionalContactPoint.length !== 0){
+              const headers = {
+                ocid: 'ocid',
+                'parties/id' : 'parties/id',
+                'parties/additionalContacPoints/contactPointType' : 'parties/additionalContacPoints/contactPointType',
+                'parties/additionalContacPoints/name' : 'parties/additionalContacPoints/name',
+                'parties/additionalContacPoints/givenName' : 'parties/additionalContacPoints/givenName',
+                'parties/additionalContacPoints/patronymicName' : 'parties/additionalContacPoints/patronymicName',
+                'parties/additionalContacPoints/matronymicName' : 'parties/additionalContacPoints/matronymicName',
+                'parties/additionalContacPoints/email' : 'parties/additionalContacPoints/email',
+                'parties/additionalContacPoints/telephone' : 'parties/additionalContacPoints/telephone',
+                'parties/additionalContacPoints/faxNumber' : 'parties/additionalContacPoints/faxNumber',
+                'parties/additionalContacPoints/url' :'parties/additionalContacPoints/url',
+                'parties/additionalContacPoints/availableLanguage': 'parties/additionalContacPoints/availableLanguage',
+              };
+              exportCSVFile(headers,data.arrayAdditionalContactPoint,'2200')
+            }
+            if(data.arrayPlanning.length !== 0){
+              // var info = validatesComas(data.arrayPlanning);
+              // console.log(JSON.stringify(info))
+              // console.log(JSON.stringify(validatesComas(data.arrayPlanning)))
+              // data.arrayPlanning.forEach(element => {
+              //   console.log(JSON.stringify(element))
+              // });
+              const headers = {
+                ocid: 'ocid',
+                rationale: 'rationale',
+                hasquotes: 'hasquotes'
+              };
+              exportCSVFile(headers,data.arrayPlanning,'3000')
+            }
+            // if(data.arrayRequestingUnit.length !== 0){
+            //   var worksheetReleasePlanningRequestingUnit = XLSX.utils.json_to_sheet(data.arrayRequestingUnit);
+            //   var SheetName = '3100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractingUnit.length !== 0){
+            //   var worksheetReleasePlanningContractingUnit = XLSX.utils.json_to_sheet(data.arrayContractingUnit);
+            //   var SheetName = '3200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayResponsibleUnit.length !== 0){
+            //   var worksheetReleasePlanningResponsibleUnit = XLSX.utils.json_to_sheet(data.arrayResponsibleUnit);
+            //   var SheetName = '3300';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayBudget.length !== 0){
+            //   var worksheetReleasePlanningBudgetBreakdown = XLSX.utils.json_to_sheet(data.arrayBudget);
+            //   var SheetName = '3400';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayBudgetLinesComponent.length !== 0){
+            //   var worksheetBudgetLinesComponent = XLSX.utils.json_to_sheet(data.arrayBudgetLinesComponent);
+            //   var SheetName = '3500';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayBudgetLinesMeasure.length !== 0){
+            //   var worksheetBudgetLinesMeasure = XLSX.utils.json_to_sheet(data.arrayBudgetLinesMeasure);
+            //   var SheetName = '3600';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayPlanningDocuments.length !== 0){
+            //   var worksheetPlanningDocuments = XLSX.utils.json_to_sheet(data.arrayPlanningDocuments);
+            //   var SheetName = '3700';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRequestsForQuotes.length !== 0){
+            //   var worksheetRequestsForQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotes);
+            //   var SheetName = '3800';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRequestsForQuotesItems.length !== 0){
+            //   var worksheetRequestsForQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesItems);
+            //   var SheetName = '3900';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRequestsForQuotesinvitedSuppliers.length !== 0){
+            //   var worksheetRequestsForQuotesinvitedSupp = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesinvitedSuppliers);
+            //   var SheetName = '4000';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRequestsForQuotesQuotes.length !== 0){
+            //   var worksheetRequestsForQuotesQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotes);
+            //   var SheetName = '4100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRequestsForQuotesQuotesItems.length !== 0){
+            //   var worksheetRequestsForQuotesQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotesItems);
+            //   var SheetName = '4200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTender.length !== 0){
+            //   var worksheetTender = XLSX.utils.json_to_sheet(data.arrayTender);
+            //   var SheetName = '5000';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderes.length !== 0){
+            //   var worksheetArrayTenderes = XLSX.utils.json_to_sheet(data.arrayTenderes);
+            //   var SheetName = '5100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderItems.length !== 0){
+            //   var worksheetTenderItems = XLSX.utils.json_to_sheet(data.arrayTenderItems);
+            //   var SheetName = '5200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderDocuments.length !== 0){
+            //   var worksheetTenderDocuments = XLSX.utils.json_to_sheet(data.arrayTenderDocuments);
+            //   var SheetName = '5300';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderMilestones.length !== 0){
+            //   var worksheetTenderMilestones = XLSX.utils.json_to_sheet(data.arrayTenderMilestones);
+            //   var SheetName = '5400';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderAmendment.length !== 0){
+            //   var worksheetTenderAmendment = XLSX.utils.json_to_sheet(data.arrayTenderAmendment);
+            //   var SheetName = '5500';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderClarificationMeeting.length !== 0){
+            //   var worksheetClarificationMeeting = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeeting);
+            //   var SheetName = '5600';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderClarificationMeetingAttendees.length !== 0){
+            //   var worksheetTenderClarificationMeetingAttendees = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingAttendees);
+            //   var SheetName = '5700';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayBuyer.length !== 0){
+            //   var worksheetBuyer = XLSX.utils.json_to_sheet(data.arrayBuyer);
+            //   var SheetName = '5800';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayTenderClarificationMeetingOfficials.length !== 0){
+            //   var worksheetTenderClarificationMeetingOfficials = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingOfficials);
+            //   var SheetName = '5900';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayAwars.length !== 0){
+            //   var worksheetAwars = XLSX.utils.json_to_sheet(data.arrayAwars);
+            //   var SheetName = '6000';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayAwarsSuppliers.length !== 0){
+            //   var worksheetAwarsSuppliers = XLSX.utils.json_to_sheet(data.arrayAwarsSuppliers);
+            //   var SheetName = '6100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayAwarsDocuments.length !== 0){
+            //   var worksheetAwarsDocuments = XLSX.utils.json_to_sheet(data.arrayAwarsDocuments);
+            //   var SheetName = '6200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayAwarsAmendments.length !== 0){
+            //   var worksheetAwarsAmendments = XLSX.utils.json_to_sheet(data.arrayAwarsAmendments);
+            //   var SheetName = '6300';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContracts.length !== 0){
+            //   var worksheetContracts = XLSX.utils.json_to_sheet(data.arrayContracts);
+            //   var SheetName = '7000';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsItems.length !== 0){
+            //   var worksheetContractsItems = XLSX.utils.json_to_sheet(data.arrayContractsItems);
+            //   var SheetName = '7100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsdocuments.length !== 0){
+            //   var worksheetContractsdocuments = XLSX.utils.json_to_sheet(data.arrayContractsdocuments);
+            //   var SheetName = '7200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsAmendments.length !== 0){
+            //   var worksheetContractsAmendments = XLSX.utils.json_to_sheet(data.arrayContractsAmendments);
+            //   var SheetName = '7300';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsGuarantees.length !== 0){
+            //   var worksheetContractsGuarantees = XLSX.utils.json_to_sheet(data.arrayContractsGuarantees);
+            //   var SheetName = '7400';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsImplementation.length !== 0){
+            //   var worksheetContractsImplementation = XLSX.utils.json_to_sheet(data.arrayContractsImplementation);
+            //   var SheetName = '8000';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsImplementationTrans.length !== 0){
+            //   var worksheetContractsImplementationTrans = XLSX.utils.json_to_sheet(data.arrayContractsImplementationTrans);
+            //   var SheetName = '8100';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsImplementationMilestone.length !== 0){
+            //   var worksheetContractsImplementationMil = XLSX.utils.json_to_sheet(data.arrayContractsImplementationMilestone);
+            //   var SheetName = '8200';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayContractsImplementationDocuments.length !== 0){
+            //   var worksheetContractsImplementationDoc = XLSX.utils.json_to_sheet(data.arrayContractsImplementationDocuments);
+            //   var SheetName = '8300';
+            //   arraySheetNames.push(SheetName);
+            // }
+            // if(data.arrayRelatedProcesses.length !== 0){
+            //   var worksheetRelatedProcesses = XLSX.utils.json_to_sheet(data.arrayRelatedProcesses);
+            //   var SheetName = '9000';
+            //   arraySheetNames.push(SheetName);
+            // }
+
+            
             document.getElementById('downley').hidden=true;
             document.getElementById('downlo').hidden=false;
             document.getElementById('downley_2').hidden=true;
@@ -979,7 +1277,8 @@
               url: `${uri_endpoint}`,
               type: 'GET',
               success: function(data){ 
-                generateExcel(data);
+                var obj = generateData(data);
+                generateExcel(obj);
                 document.getElementById('downley').hidden=true;
                 document.getElementById('downlo_7').hidden=false;
               },
@@ -1003,7 +1302,8 @@
               url: `${uri_endpoint}`,
               type: 'GET',
               success: function(data){ 
-                generateExcel(data);
+                var obj = generateData(data);
+                generateExcel(obj);
                 document.getElementById('downley_2').hidden=true;
                 document.getElementById('downlo_8').hidden=false;
               },
@@ -1026,7 +1326,8 @@
               url: `${uri_endpoint}`,
               type: 'GET',
               success: function(data){ 
-                generateExcel(data);
+                var obj = generateData(data);
+                generateExcel(obj);
                 document.getElementById('downley_3').hidden=true;
                 document.getElementById('downlo_9').hidden=false;
               },
@@ -1050,1300 +1351,1406 @@
         var successful = document.execCommand('copy');
         if(successful) alert('Copiado');
       }
-      function generateExcel(data){
-        const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
-        const EXCEL_EXTENSION = '.xlsx';
+      function generateData(data){
+        // console.log(JSON.stringify(data.arrayReleasePackage))
         var consecutivo = 1;
-              var arrayIndice = new Array(
-                {
-                  Path : 'ReleasePackage',
-                  Code : '1000'
-                },
-                {
-                  Path : 'Extensions',
-                  Code : '1100'
-                },
-                {
-                  Path : 'Publisher',
-                  Code : '1200'
-                },
-                {
-                  Path : 'Release',
-                  Code : '1300'
-                },
-                {
-                  Path : 'Parties',
-                  Code : '2000'
-                },
-                {
-                  Path : 'PartiesMemberOf',
-                  Code : '2100'
-                },
-                {
-                  Path : 'PartiesAdditionalContactPoint',
-                  Code : '2200'
-                },
-                {
-                  Path : 'Planning',
-                  Code : '3000'
-                },
-                {
-                  Path : 'PlanningRequestingUnits',
-                  Code : '3100'
-                },
-                {
-                  Path : 'PlanningContractingUnits',
-                  Code : '3200'
-                },
-                {
-                  Path : 'PlanningResponsibleUnits',
-                  Code : '3300'
-                },
-                {
-                  Path : 'ReleasePlanningBudgetBreakdown',
-                  Code : '3400'
-                },
-                {
-                  Path : 'BudgetLinesComponent',
-                  Code : '3500'
-                },
-                {
-                  Path : 'BudgetLinesMeasure',
-                  Code : '3600'
-                },
-                {
-                  Path : 'PlanningDocuments',
-                  Code : '3700'
-                },
-                {
-                  Path : 'RequestsForQuotes',
-                  Code : '3800'
-                },
-                {
-                  Path : 'RequestsForQuotesÍtems',
-                  Code : '3900'
-                },
-                {
-                  Path : 'RequestsForQuotesinvitedSuppliers',
-                  Code : '4000'
-                },
-                {
-                  Path : 'RequestsForQuotesQuotes',
-                  Code : '4100'
-                },
-                {
-                  Path : 'RequestsForQuotesQuotesItems',
-                  Code : '4200'
-                },
-                {
-                  Path : 'Tender',
-                  Code : '5000'
-                },
-                {
-                  Path : 'Tenderers',
-                  Code : '5100'
-                },
-                {
-                  Path : 'TenderItems',
-                  Code : '5200'
-                },
-                {
-                  Path : 'TenderDocuments',
-                  Code : '5300'
-                },
-                {
-                  Path : 'TendeMilestones',
-                  Code : '5400'
-                },
-                {
-                  Path : 'TenderAmendments',
-                  Code : '5500'
-                },
-                {
-                  Path : 'TenderClarificationMeetings',
-                  Code : '5600'
-                },
-                {
-                  Path : 'TenderClarificationMeetingsAttendees',
-                  Code : '5700'
-                },
-                {
-                  Path : 'buyer',
-                  Code : '5800'
-                },
-                {
-                  Path : 'TenderClarificationMeetingsOfficials',
-                  Code : '5900'
-                },
-                {
-                  Path : 'Awards',
-                  Code : '6000'
-                },
-                {
-                  Path : 'Suppliers',
-                  Code : '6100'
-                },
-                {
-                  Path : 'AwardsDocuments',
-                  Code : '6200'
-                },
-                {
-                  Path : 'AwardsAmendments',
-                  Code : '6300'
-                },
-                {
-                  Path : 'Contracts',
-                  Code : '7000'
-                },
-                {
-                  Path : 'ContractsItems',
-                  Code : '7100'
-                },
-                {
-                  Path : 'ContractsDocuments',
-                  Code : '7200'
-                },
-                {
-                  Path : 'ContractsAmendments',
-                  Code : '7300'
-                },
-                {
-                  Path : 'ContractsGuarantees',
-                  Code : '7400'
-                },
-                {
-                  Path : 'Implementation',
-                  Code : '8000'
-                },
-                {
-                  Path : 'ImplementationTransactions',
-                  Code : '8100'
-                },
-                {
-                  Path : 'ImplementationMilestones',
-                  Code : '8200'
-                },
-                {
-                  Path : 'ImplementationDocuments',
-                  Code : '8300'
-                },
-                {
-                  Path : 'RelatedProcesses',
-                  Code : '9000'
-                }
-              );
-              var arrayReleasePackage = new Array();
-              var arrayExtensions2 = new Array();
-              var arrayPublishers = new Array();
-              var arrayReleases = new Array();
-              var arrayParties = new Array();
-              var arrayMember = new Array();
-              var arrayAdditionalContactPoint = new Array();
-              var arrayPlanning = new Array();
-              var arrayRequestingUnit = new Array();
-              var arrayContractingUnit = new Array();
-              var arrayResponsibleUnit = new Array();
-              var arrayBudget = new Array();
-              var arrayBudgetLinesComponent = new Array();
-              var arrayBudgetLinesMeasure = new Array();
-              var arrayPlanningDocuments = new Array();
-              var arrayRequestsForQuotes = new Array();
-              var arrayRequestsForQuotesItems = new Array();
-              var arrayRequestsForQuotesinvitedSuppliers = new Array();
-              var arrayRequestsForQuotesQuotes = new Array();
-              var arrayRequestsForQuotesQuotesItems = new Array();
-              var arrayTender = new Array();
-              var arrayContractsItems = new Array();
-              var arrayTenderes = new Array();
-              var arrayTenderItems = new Array();
-              var arrayTenderDocuments = new Array();
-              var arrayTenderMilestones = new Array();
-              var arrayTenderAmendment = new Array();
-              var arrayTenderClarificationMeeting = new Array();
-              var arrayBuyer = new Array();
-              var arrayTenderClarificationMeetingAttendees = new Array();
-              var arrayTenderClarificationMeetingOfficials = new Array();
-              var arrayAwars = new Array();
-              var arrayAwarsSuppliers = new Array();
-              var arrayAwarsDocuments = new Array();
-              var arrayAwarsAmendments = new Array();
-              var arrayContracts = new Array();
-              var arrayContractsdocuments = new Array();
-              var arrayContractsAmendments = new Array();
-              var arrayContractsGuarantees = new Array();
-              var arrayContractsImplementation = new Array();
-              var arrayContractsImplementationTrans = new Array();
-              var arrayContractsImplementationMilestone = new Array();
-              var arrayContractsImplementationDocuments = new Array();
-              var arrayRelatedProcesses = new Array();
+        var arrayIndice = new Array(
+          {
+            Path : 'ReleasePackage',
+            Code : '1000'
+          },
+          {
+            Path : 'Extensions',
+            Code : '1100'
+          },
+          {
+            Path : 'Publisher',
+            Code : '1200'
+          },
+          {
+            Path : 'Release',
+            Code : '1300'
+          },
+          {
+            Path : 'Parties',
+            Code : '2000'
+          },
+          {
+            Path : 'PartiesMemberOf',
+            Code : '2100'
+          },
+          {
+            Path : 'PartiesAdditionalContactPoint',
+            Code : '2200'
+          },
+          {
+            Path : 'Planning',
+            Code : '3000'
+          },
+          {
+            Path : 'PlanningRequestingUnits',
+            Code : '3100'
+          },
+          {
+            Path : 'PlanningContractingUnits',
+            Code : '3200'
+          },
+          {
+            Path : 'PlanningResponsibleUnits',
+            Code : '3300'
+          },
+          {
+            Path : 'ReleasePlanningBudgetBreakdown',
+            Code : '3400'
+          },
+          {
+            Path : 'BudgetLinesComponent',
+            Code : '3500'
+          },
+          {
+            Path : 'BudgetLinesMeasure',
+            Code : '3600'
+          },
+          {
+            Path : 'PlanningDocuments',
+            Code : '3700'
+          },
+          {
+            Path : 'RequestsForQuotes',
+            Code : '3800'
+          },
+          {
+            Path : 'RequestsForQuotesÍtems',
+            Code : '3900'
+          },
+          {
+            Path : 'RequestsForQuotesinvitedSuppliers',
+            Code : '4000'
+          },
+          {
+            Path : 'RequestsForQuotesQuotes',
+            Code : '4100'
+          },
+          {
+            Path : 'RequestsForQuotesQuotesItems',
+            Code : '4200'
+          },
+          {
+            Path : 'Tender',
+            Code : '5000'
+          },
+          {
+            Path : 'Tenderers',
+            Code : '5100'
+          },
+          {
+            Path : 'TenderItems',
+            Code : '5200'
+          },
+          {
+            Path : 'TenderDocuments',
+            Code : '5300'
+          },
+          {
+            Path : 'TendeMilestones',
+            Code : '5400'
+          },
+          {
+            Path : 'TenderAmendments',
+            Code : '5500'
+          },
+          {
+            Path : 'TenderClarificationMeetings',
+            Code : '5600'
+          },
+          {
+            Path : 'TenderClarificationMeetingsAttendees',
+            Code : '5700'
+          },
+          {
+            Path : 'buyer',
+            Code : '5800'
+          },
+          {
+            Path : 'TenderClarificationMeetingsOfficials',
+            Code : '5900'
+          },
+          {
+            Path : 'Awards',
+            Code : '6000'
+          },
+          {
+            Path : 'Suppliers',
+            Code : '6100'
+          },
+          {
+            Path : 'AwardsDocuments',
+            Code : '6200'
+          },
+          {
+            Path : 'AwardsAmendments',
+            Code : '6300'
+          },
+          {
+            Path : 'Contracts',
+            Code : '7000'
+          },
+          {
+            Path : 'ContractsItems',
+            Code : '7100'
+          },
+          {
+            Path : 'ContractsDocuments',
+            Code : '7200'
+          },
+          {
+            Path : 'ContractsAmendments',
+            Code : '7300'
+          },
+          {
+            Path : 'ContractsGuarantees',
+            Code : '7400'
+          },
+          {
+            Path : 'Implementation',
+            Code : '8000'
+          },
+          {
+            Path : 'ImplementationTransactions',
+            Code : '8100'
+          },
+          {
+            Path : 'ImplementationMilestones',
+            Code : '8200'
+          },
+          {
+            Path : 'ImplementationDocuments',
+            Code : '8300'
+          },
+          {
+            Path : 'RelatedProcesses',
+            Code : '9000'
+          }
+        );
+        var arrayReleasePackage = new Array();
+        var arrayExtensions2 = new Array();
+        var arrayPublishers = new Array();
+        var arrayReleases = new Array();
+        var arrayParties = new Array();
+        var arrayMember = new Array();
+        var arrayAdditionalContactPoint = new Array();
+        var arrayPlanning = new Array();
+        var arrayRequestingUnit = new Array();
+        var arrayContractingUnit = new Array();
+        var arrayResponsibleUnit = new Array();
+        var arrayBudget = new Array();
+        var arrayBudgetLinesComponent = new Array();
+        var arrayBudgetLinesMeasure = new Array();
+        var arrayPlanningDocuments = new Array();
+        var arrayRequestsForQuotes = new Array();
+        var arrayRequestsForQuotesItems = new Array();
+        var arrayRequestsForQuotesinvitedSuppliers = new Array();
+        var arrayRequestsForQuotesQuotes = new Array();
+        var arrayRequestsForQuotesQuotesItems = new Array();
+        var arrayTender = new Array();
+        var arrayContractsItems = new Array();
+        var arrayTenderes = new Array();
+        var arrayTenderItems = new Array();
+        var arrayTenderDocuments = new Array();
+        var arrayTenderMilestones = new Array();
+        var arrayTenderAmendment = new Array();
+        var arrayTenderClarificationMeeting = new Array();
+        var arrayBuyer = new Array();
+        var arrayTenderClarificationMeetingAttendees = new Array();
+        var arrayTenderClarificationMeetingOfficials = new Array();
+        var arrayAwars = new Array();
+        var arrayAwarsSuppliers = new Array();
+        var arrayAwarsDocuments = new Array();
+        var arrayAwarsAmendments = new Array();
+        var arrayContracts = new Array();
+        var arrayContractsdocuments = new Array();
+        var arrayContractsAmendments = new Array();
+        var arrayContractsGuarantees = new Array();
+        var arrayContractsImplementation = new Array();
+        var arrayContractsImplementationTrans = new Array();
+        var arrayContractsImplementationMilestone = new Array();
+        var arrayContractsImplementationDocuments = new Array();
+        var arrayRelatedProcesses = new Array();
+        var objResult = new Object();
 
-              data.arrayReleasePackage.forEach(element => {
-                var objReleasePackage = new Object({
-                  ocid: element.releases[0].ocid,
-                  uri: element.uri,
-                  version: element.version,
-                  publishedDate: element.publishedDate,
-                  license: element.license,
-                  publicationPolicy: element.publicationPolicy,
-                });
-                arrayReleasePackage.push(objReleasePackage);
-                var arrayExtensions = new Array();
-                element.extensions.forEach(extension => {
-                  arrayExtensions.push(extension)
-                });
-                var objExtension = new Object({
-                    ocid: element.releases[0].ocid,
-                    extensions : (arrayExtensions <= 0 ? '' : arrayExtensions.toString())
-                  });
-                arrayExtensions2.push(objExtension)
-                if(element.publisher !== undefined){
-                  var objPublisher = new Object({
-                    ocid: element.releases[0].ocid,
-                    'publisher/name': element.publisher.name,
-                    'publisher/scheme': element.publisher.scheme,
-                    'publisher/uid': element.publisher.uid,
-                    'publisher/uri': element.publisher.uri
-                  });
-                  arrayPublishers.push(objPublisher)
-                }
-                if(element.releases.length > 0){
-                  element.releases.forEach(release => {
-                    var objRelease = new Object({
-                      ocid: release.ocid,
-                      id: release.id,
-                      date: release.date,
-                      initiationType: release.initiationType,
-                      language: release.language,
-                      tag: release.tag[0]
-                    });
-                    arrayReleases.push(objRelease)
-                    //PARTIES
-                    if(release.parties.length > 0){
-                      release.parties.forEach(partie => {
-                        //ROLES
-                        var arrayRoles = new Array();
-                        if(partie.roles !== undefined){
-                          if(partie.roles.length > 0){
-                            partie.roles.forEach(rol => {
-                              arrayRoles.push(rol)
-                            });
-                          }
-                        }
-                        var objPartie = new Object({
-                          ocid: release.ocid,
-                          'parties/name': partie.name,
-                          'parties/id': partie.id,
-                          'parties/position': partie.position,
-                          'parties/identifier/scheme': (partie.identifier === undefined ? '' : partie.identifier.scheme),
-                          'parties/identifier/id': (partie.identifier === undefined ? '' : partie.identifier.id),
-                          'parties/identifier/legalName': (partie.identifier === undefined ? '' : partie.identifier.legalName),
-                          'parties/identifier/legalPersonality': (partie.identifier === undefined ? '' : partie.identifier.legalPersonality),
-                          'parties/identifier/givenName': (partie.identifier === undefined ? '' : partie.identifier.givenName),
-                          'parties/identifier/patronymicName': (partie.identifier === undefined ? '' : partie.identifier.patronymicName),
-                          'parties/identifier/matronymicName': (partie.identifier === undefined ? '' : partie.identifier.matronymicName),
-                          'parties/address/streetAddress': (partie.address === undefined ? '' : partie.address.streetAddress),
-                          'parties/address/locality': (partie.address === undefined ? '' : partie.address.locality),
-                          'parties/address/region': (partie.address === undefined ? '' : partie.address.region),
-                          'parties/address/postalCode': (partie.address === undefined ? '' : partie.address.postalCode),
-                          'parties/address/countryName': (partie.address === undefined ? '' : partie.address.countryName),
-                          'parties/contactPoint/name': (partie.contactPoint === undefined ? '' : partie.contactPoint.name),
-                          'parties/contactPoint/email': (partie.contactPoint === undefined ? '' : partie.contactPoint.email),
-                          'parties/contactPoint/telephone': (partie.contactPoint === undefined ? '' : partie.contactPoint.telephone),
-                          'parties/contactPoint/faxNumber': (partie.contactPoint === undefined ? '' : partie.contactPoint.faxNumber),
-                          'parties/contactPoint/url': (partie.contactPoint === undefined ? '' : partie.contactPoint.url),
-                          'parties/contactPoint/type': (partie.contactPoint === undefined ? '' : partie.contactPoint.type),
-                          'parties/contactPoint/givenName': (partie.contactPoint === undefined ? '' : partie.contactPoint.givenName),
-                          'parties/contactPoint/patronymicName': (partie.contactPoint === undefined ? '' : partie.contactPoint.patronymicName),
-                          'parties/contactPoint/matronymicName': (partie.contactPoint === undefined ? '' : partie.contactPoint.matronymicName),
-                          'parties/roles': (arrayRoles <= 0 ? '' : arrayRoles.toString()),
-                        });
-                        arrayParties.push(objPartie)
-                        //MEMBER OF
-                        if(partie.memberOf !== undefined){
-                          if(partie.memberOf.length > 0){
-                            partie.memberOf.forEach(member => {
-                              var objMember = new Object({
-                                ocid : release.ocid,
-                                'parties/id' : partie.id,
-                                'parties/memberOf/id' : member.id,
-                                'parties/memberOf/name' : member.name
-                              });
-                              arrayMember.push(objMember)
-                            });
-                          }
-                        }
-                        
-                        //additionalContactPoints
-                        if(partie.additionalContactPoints !== undefined){
-                          if(partie.additionalContactPoints.length > 0){
-                            partie.additionalContactPoints.forEach(additionalContactPoint => {
-                              //availableLanguage
-                              var arrayAvailableLanguage = new Array();
-                              if(additionalContactPoint.availableLanguage !== undefined){
-                                if(additionalContactPoint.availableLanguage.length > 0){
-                                  additionalContactPoint.availableLanguage.forEach(availableLanguage => {
-                                    arrayAvailableLanguage.push(availableLanguage)
-                                  });
-                                }
-                              }
-                              var objAdditionalContactPoint = new Object({
-                                ocid : release.ocid,
-                                'parties/id': partie.id,
-                                'parties/additionalContacPoints/contactPointType' : additionalContactPoint.type,
-                                'parties/additionalContacPoints/name' : additionalContactPoint.name,
-                                'parties/additionalContacPoints/givenName' : additionalContactPoint.givenName,
-                                'parties/additionalContacPoints/patronymicName' : additionalContactPoint.patronymicName,
-                                'parties/additionalContacPoints/matronymicName' : additionalContactPoint.matronymicName,
-                                'parties/additionalContacPoints/email' : additionalContactPoint.email,
-                                'parties/additionalContacPoints/telephone' : additionalContactPoint.telephone,
-                                'parties/additionalContacPoints/faxNumber' : additionalContactPoint.faxNumber,
-                                'parties/additionalContacPoints/url' : additionalContactPoint.url,
-                                'parties/additionalContacPoints/availableLanguage': (arrayAvailableLanguage <= 0 ? '' : arrayAvailableLanguage.toString()),
-                              });
-                              arrayAdditionalContactPoint.push(objAdditionalContactPoint)
-                            });
-                          }
-                        }
+        data.arrayReleasePackage.forEach(element => {
+          var objReleasePackage = new Object({
+            ocid: element.releases[0].ocid,
+            uri: element.uri,
+            version: element.version,
+            publishedDate: element.publishedDate,
+            license: element.license,
+            publicationPolicy: element.publicationPolicy,
+          });
+          arrayReleasePackage.push(objReleasePackage);
+          var arrayExtensions = new Array();
+          element.extensions.forEach(extension => {
+            arrayExtensions.push(extension)
+          });
+          var objExtension = new Object({
+              ocid: element.releases[0].ocid,
+              extensions : (arrayExtensions <= 0 ? '' : arrayExtensions.toString())
+            });
+          arrayExtensions2.push(objExtension)
+          if(element.publisher !== undefined){
+            var objPublisher = new Object({
+              ocid: element.releases[0].ocid,
+              'publisher/name': element.publisher.name,
+              'publisher/scheme': element.publisher.scheme,
+              'publisher/uid': element.publisher.uid,
+              'publisher/uri': element.publisher.uri
+            });
+            arrayPublishers.push(objPublisher)
+          }
+          if(element.releases.length > 0){
+            element.releases.forEach(release => {
+              var objRelease = new Object({
+                ocid: release.ocid,
+                id: release.id,
+                date: release.date,
+                initiationType: release.initiationType,
+                language: release.language,
+                tag: release.tag[0]
+              });
+              arrayReleases.push(objRelease)
+              //PARTIES
+              if(release.parties.length > 0){
+                release.parties.forEach(partie => {
+                  //ROLES
+                  var arrayRoles = new Array();
+                  if(partie.roles !== undefined){
+                    if(partie.roles.length > 0){
+                      partie.roles.forEach(rol => {
+                        arrayRoles.push(rol)
                       });
                     }
-                  //PLANNING
-                  if(release.planning !== undefined){
-                    var objPlanning = new Object({
-                      ocid: release.ocid,
-                      rationale: release.planning.rationale,
-                      hasquotes: release.planning.hasquotes
-                    });
-                    arrayPlanning.push(objPlanning)
-                    //requestingUnits
-                    if(release.planning.requestingUnits !== undefined){
-                      if(release.planning.requestingUnits.length > 0){
-                        release.planning.requestingUnits.forEach(requestingUnit => {
-                          var objRequestingUnit = new Object({
-                            ocid: release.ocid,
-                            'planning/requestingUnits/id' : requestingUnit.id,
-                            'planning/requestingUnits/name' : requestingUnit.name
-                          });
-                          arrayRequestingUnit.push(objRequestingUnit)  
+                  }
+                  var objPartie = new Object({
+                    ocid: release.ocid,
+                    'parties/name': (partie.name === undefined ? '' : partie.name),
+                    'parties/id': (partie.id === undefined ? '' : partie.id),
+                    'parties/position': (partie.position === undefined ? '' : partie.position),
+                    'parties/identifier/scheme': (partie.identifier === undefined ? '' : (partie.identifier.scheme === undefined ? '' : partie.identifier.scheme)),
+                    'parties/identifier/id': (partie.identifier === undefined ? '' : (partie.identifier.id === undefined ? '' : partie.identifier.id)),
+                    'parties/identifier/legalName': (partie.identifier === undefined ? '' : (partie.identifier.legalName === undefined ? '' : partie.identifier.legalName)),
+                    'parties/identifier/legalPersonality': (partie.identifier === undefined ? '' : (partie.identifier.legalPersonality === undefined ? '' : partie.identifier.legalPersonality)),
+                    'parties/identifier/givenName': (partie.identifier === undefined ? '' : (partie.identifier.givenName === undefined ? '' : partie.identifier.givenName)),
+                    'parties/identifier/patronymicName': (partie.identifier === undefined ? '' : (partie.identifier.patronymicName === undefined ? '' : partie.identifier.patronymicName)),
+                    'parties/identifier/matronymicName': (partie.identifier === undefined ? '' : (partie.identifier.matronymicName === undefined ? '' : partie.identifier.matronymicName)),
+                    'parties/address/streetAddress': (partie.address === undefined ? '' : (partie.address.streetAddress === undefined ? '' : partie.address.streetAddress)),
+                    'parties/address/locality': (partie.address === undefined ? '' : (partie.address.locality === undefined ? '' : partie.address.locality)),
+                    'parties/address/region': (partie.address === undefined ? '' : (partie.address.region === undefined ? '' : partie.address.region)),
+                    'parties/address/postalCode': (partie.address === undefined ? '' : (partie.address.postalCode === undefined ? '' : partie.address.postalCode)),
+                    'parties/address/countryName': (partie.address === undefined ? '' : (partie.address.countryName === undefined ? '' : partie.address.countryName)),
+                    'parties/contactPoint/name': (partie.contactPoint === undefined ? '' : (partie.contactPoint.name === undefined ? '' : partie.contactPoint.name)),
+                    'parties/contactPoint/email': (partie.contactPoint === undefined ? '' : (partie.contactPoint.email === undefined ? '' : partie.contactPoint.email)),
+                    'parties/contactPoint/telephone': (partie.contactPoint === undefined ? '' : (partie.contactPoint.telephone === undefined ? '' : partie.contactPoint.telephone)),
+                    'parties/contactPoint/faxNumber': (partie.contactPoint === undefined ? '' : (partie.contactPoint.faxNumber === undefined ? '' : partie.contactPoint.faxNumber)),
+                    'parties/contactPoint/url': (partie.contactPoint === undefined ? '' : (partie.contactPoint.url === undefined ? '' : partie.contactPoint.url)),
+                    'parties/contactPoint/type': (partie.contactPoint === undefined ? '' : (partie.contactPoint.type === undefined ? '' : partie.contactPoint.type)),
+                    'parties/contactPoint/givenName': (partie.contactPoint === undefined ? '' : (partie.contactPoint.givenName === undefined ? '' : partie.contactPoint.givenName)),
+                    'parties/contactPoint/patronymicName': (partie.contactPoint === undefined ? '' : (partie.contactPoint.patronymicName === undefined ? '' : partie.contactPoint.patronymicName)),
+                    'parties/contactPoint/matronymicName': (partie.contactPoint === undefined ? '' : (partie.contactPoint.matronymicName === undefined ? '' : partie.contactPoint.matronymicName)),
+                    'parties/roles': (arrayRoles <= 0 ? '' : arrayRoles.toString()),
+                  });
+                  arrayParties.push(objPartie)
+                  //MEMBER OF
+                  if(partie.memberOf !== undefined){
+                    if(partie.memberOf.length > 0){
+                      partie.memberOf.forEach(member => {
+                        var objMember = new Object({
+                          ocid : release.ocid,
+                          'parties/id' : (partie.id === undefined ? '' : partie.id),
+                          'parties/memberOf/id' : (member.id === undefined ? '' : member.id),
+                          'parties/memberOf/name' : (member.name === undefined ? '' : member.name)
                         });
-                      }
+                        arrayMember.push(objMember)
+                      });
                     }
-                    //contractingUnits
-                    if(release.planning.contractingUnits !== undefined){
-                      if(release.planning.contractingUnits.length > 0){
-                        release.planning.contractingUnits.forEach(contractingUnit => {
-                          var objContractingUnit = new Object({
-                            ocid: release.ocid,
-                            'planning/contractingUnits/id' : contractingUnit.id,
-                            'planning/contractingUnits/name' : contractingUnit.name
-                          });
-                          arrayContractingUnit.push(objContractingUnit)  
-                        });
-                      }
-                    }
-                    //responsibleUnits
-                    if(release.planning.responsibleUnits !== undefined){
-                      if(release.planning.responsibleUnits.length > 0){
-                        release.planning.responsibleUnits.forEach(responsibleUnit => {
-                          var objResponsibleUnit = new Object({
-                            ocid: release.ocid,
-                            'planning/responsibleUnits/id' : responsibleUnit.id,
-                            'planning/responsibleUnits/name' : responsibleUnit.name
-                          });
-                          arrayResponsibleUnit.push(objResponsibleUnit)  
-                        });
-                      }
-                    }
-                    //budget
-                    if(release.planning.budget !== undefined){
-                      if(release.planning.budget.budgetBreakdown !== undefined){
-                        if(release.planning.budget.budgetBreakdown.length > 0){
-                          release.planning.budget.budgetBreakdown.forEach(budgetBreakdown => {
-                            var objBudgetBreakdown = new Object({
-                              ocid: release.ocid,
-                              'planning/budget/budgetBreakdown/id' : budgetBreakdown.id,
-                              'planning/budget/budgetBreakdown/description' : budgetBreakdown.description,
-                              'planning/budget/budgetBreakdown/origin' : budgetBreakdown.origin,
-                              'planning/budget/budgetBreakdown/fundType' : budgetBreakdown.fundType,
-                              'planning/budget/budgetBreakdown/period/startDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.startDate),
-                              'planning/budget/budgetBreakdown/period/endDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.endDate),
-                              'planning/budget/budgetBreakdown/value/amount' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.amount),
-                              'planning/budget/budgetBreakdown/value/currency' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.currency),
-                              'planning/budget/budgetBreakdown/sourceParty/name' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.name),
-                              'planning/budget/budgetBreakdown/sourceParty/id' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.id),
+                  }
+                  
+                  //additionalContactPoints
+                  if(partie.additionalContactPoints !== undefined){
+                    if(partie.additionalContactPoints.length > 0){
+                      partie.additionalContactPoints.forEach(additionalContactPoint => {
+                        //availableLanguage
+                        var arrayAvailableLanguage = new Array();
+                        if(additionalContactPoint.availableLanguage !== undefined){
+                          if(additionalContactPoint.availableLanguage.length > 0){
+                            additionalContactPoint.availableLanguage.forEach(availableLanguage => {
+                              arrayAvailableLanguage.push(availableLanguage)
                             });
-                            arrayBudget.push(objBudgetBreakdown)
-                            if(budgetBreakdown.budgetLines !== undefined){
-                              if(budgetBreakdown.budgetLines.length > 0){
-                                budgetBreakdown.budgetLines.forEach(budgetLine => {
-                                  if(budgetLine.components !== undefined){
-                                    if(budgetLine.components.length > 0){
-                                      budgetLine.components.forEach(component => {
-                                        var objBudgetLinesComponent = new Object({
-                                          ocid: release.ocid,
-                                          'planning/budget/budgetBreakdown/budgetLines/components/name' : component.name,
-                                          'planning/budget/budgetBreakdown/budgetLines/components/level' : component.level,
-                                          'planning/budget/budgetBreakdown/budgetLines/components/code' : component.code,
-                                          'planning/budget/budgetBreakdown/budgetLines/components/description': component.description
-                                        });
-                                        arrayBudgetLinesComponent.push(objBudgetLinesComponent)
-                                      });
-                                    }
-                                  }
-                                  if(budgetLine.measures !== undefined){
-                                    if(budgetLine.measures.length > 0){
-                                      budgetLine.measures.forEach(measure => {
-                                        var objBudgetLinesMeasure = new Object({
-                                          ocid: release.ocid,
-                                          'planning/budget/budgetBreakdown/budgetLines/measures/id' : measure.id,
-                                          'planning/budget/budgetBreakdown/budgetLines/measures/update' : measure.update,
-                                          'planning/budget/budgetBreakdown/budgetLines/measures/amount' : (measure.value === undefined ? '' : measure.value.amount),
-                                          'planning/budget/budgetBreakdown/budgetLines/measures/currency' : (measure.value === undefined ? '' : measure.value.currency),
-                                        });
-                                        arrayBudgetLinesMeasure.push(objBudgetLinesMeasure)
-                                      });
-                                    }
-                                  }
-                                });   
+                          }
+                        }
+                        var objAdditionalContactPoint = new Object({
+                          ocid : release.ocid,
+                          'parties/id': partie.id,
+                          'parties/additionalContacPoints/contactPointType' : (additionalContactPoint.type === undefined ? '' : additionalContactPoint.type),
+                          'parties/additionalContacPoints/name' : (additionalContactPoint.name === undefined ? '' : additionalContactPoint.name),
+                          'parties/additionalContacPoints/givenName' : (additionalContactPoint.givenName === undefined ? '' : additionalContactPoint.givenName),
+                          'parties/additionalContacPoints/patronymicName' : (additionalContactPoint.patronymicName === undefined ? '' : additionalContactPoint.patronymicName),
+                          'parties/additionalContacPoints/matronymicName' : (additionalContactPoint.matronymicName === undefined ? '' : additionalContactPoint.matronymicName),
+                          'parties/additionalContacPoints/email' : (additionalContactPoint.email === undefined ? '' : additionalContactPoint.email),
+                          'parties/additionalContacPoints/telephone' : (additionalContactPoint.telephone === undefined ? '' : additionalContactPoint.telephone),
+                          'parties/additionalContacPoints/faxNumber' : (additionalContactPoint.faxNumber === undefined ? '' : additionalContactPoint.faxNumber),
+                          'parties/additionalContacPoints/url' : (additionalContactPoint.url === undefined ? '' : additionalContactPoint.url),
+                          'parties/additionalContacPoints/availableLanguage': (arrayAvailableLanguage <= 0 ? '' : arrayAvailableLanguage.toString()),
+                        });
+                        arrayAdditionalContactPoint.push(objAdditionalContactPoint)
+                      });
+                    }
+                  }
+                });
+              }
+            //PLANNING
+            if(release.planning !== undefined){
+              var objPlanning = new Object({
+                ocid: release.ocid,
+                rationale: (release.planning.rationale === undefined ? '' : release.planning.rationale),
+                hasquotes: (release.planning.hasquotes === undefined ? '' : (release.planning.hasquotes == true ? 'true' : 'false'))
+              });
+              arrayPlanning.push(objPlanning)
+              //requestingUnits
+              if(release.planning.requestingUnits !== undefined){
+                if(release.planning.requestingUnits.length > 0){
+                  release.planning.requestingUnits.forEach(requestingUnit => {
+                    var objRequestingUnit = new Object({
+                      ocid: release.ocid,
+                      'planning/requestingUnits/id' : requestingUnit.id,
+                      'planning/requestingUnits/name' : requestingUnit.name
+                    });
+                    arrayRequestingUnit.push(objRequestingUnit)  
+                  });
+                }
+              }
+              //contractingUnits
+              if(release.planning.contractingUnits !== undefined){
+                if(release.planning.contractingUnits.length > 0){
+                  release.planning.contractingUnits.forEach(contractingUnit => {
+                    var objContractingUnit = new Object({
+                      ocid: release.ocid,
+                      'planning/contractingUnits/id' : contractingUnit.id,
+                      'planning/contractingUnits/name' : contractingUnit.name
+                    });
+                    arrayContractingUnit.push(objContractingUnit)  
+                  });
+                }
+              }
+              //responsibleUnits
+              if(release.planning.responsibleUnits !== undefined){
+                if(release.planning.responsibleUnits.length > 0){
+                  release.planning.responsibleUnits.forEach(responsibleUnit => {
+                    var objResponsibleUnit = new Object({
+                      ocid: release.ocid,
+                      'planning/responsibleUnits/id' : responsibleUnit.id,
+                      'planning/responsibleUnits/name' : responsibleUnit.name
+                    });
+                    arrayResponsibleUnit.push(objResponsibleUnit)  
+                  });
+                }
+              }
+              //budget
+              if(release.planning.budget !== undefined){
+                if(release.planning.budget.budgetBreakdown !== undefined){
+                  if(release.planning.budget.budgetBreakdown.length > 0){
+                    release.planning.budget.budgetBreakdown.forEach(budgetBreakdown => {
+                      var objBudgetBreakdown = new Object({
+                        ocid: release.ocid,
+                        'planning/budget/budgetBreakdown/id' : budgetBreakdown.id,
+                        'planning/budget/budgetBreakdown/description' : budgetBreakdown.description,
+                        'planning/budget/budgetBreakdown/origin' : budgetBreakdown.origin,
+                        'planning/budget/budgetBreakdown/fundType' : budgetBreakdown.fundType,
+                        'planning/budget/budgetBreakdown/period/startDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.startDate),
+                        'planning/budget/budgetBreakdown/period/endDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.endDate),
+                        'planning/budget/budgetBreakdown/value/amount' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.amount),
+                        'planning/budget/budgetBreakdown/value/currency' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.currency),
+                        'planning/budget/budgetBreakdown/sourceParty/name' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.name),
+                        'planning/budget/budgetBreakdown/sourceParty/id' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.id),
+                      });
+                      arrayBudget.push(objBudgetBreakdown)
+                      if(budgetBreakdown.budgetLines !== undefined){
+                        if(budgetBreakdown.budgetLines.length > 0){
+                          budgetBreakdown.budgetLines.forEach(budgetLine => {
+                            if(budgetLine.components !== undefined){
+                              if(budgetLine.components.length > 0){
+                                budgetLine.components.forEach(component => {
+                                  var objBudgetLinesComponent = new Object({
+                                    ocid: release.ocid,
+                                    'planning/budget/budgetBreakdown/budgetLines/components/name' : component.name,
+                                    'planning/budget/budgetBreakdown/budgetLines/components/level' : component.level,
+                                    'planning/budget/budgetBreakdown/budgetLines/components/code' : component.code,
+                                    'planning/budget/budgetBreakdown/budgetLines/components/description': component.description
+                                  });
+                                  arrayBudgetLinesComponent.push(objBudgetLinesComponent)
+                                });
                               }
                             }
-                          });
+                            if(budgetLine.measures !== undefined){
+                              if(budgetLine.measures.length > 0){
+                                budgetLine.measures.forEach(measure => {
+                                  var objBudgetLinesMeasure = new Object({
+                                    ocid: release.ocid,
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/id' : measure.id,
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/update' : measure.update,
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/amount' : (measure.value === undefined ? '' : measure.value.amount),
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/currency' : (measure.value === undefined ? '' : measure.value.currency),
+                                  });
+                                  arrayBudgetLinesMeasure.push(objBudgetLinesMeasure)
+                                });
+                              }
+                            }
+                          });   
                         }
                       }
-                    }
-                    if(release.planning.documents !== undefined){
-                      if(release.planning.documents.length > 0){
-                        release.planning.documents.forEach(document => {
-                          var objDocument = new Object({
+                    });
+                  }
+                }
+              }
+              if(release.planning.documents !== undefined){
+                if(release.planning.documents.length > 0){
+                  release.planning.documents.forEach(document => {
+                    var objDocument = new Object({
+                      ocid: release.ocid,
+                      'planning/documents/id' : document.id,
+                      'planning/documents/documentType' : document.documentType,
+                      'planning/documents/title' : document.title,
+                      'planning/documents/description' : document.description,
+                      'planning/documents/url' : document.url,
+                      'planning/documents/datePublished' : document.datePublished,
+                      'planning/documents/dateModified' : document.dateModified,
+                      'planning/documents/format' : document.format,
+                      'planning/documents/language' : document.language,
+                    });
+                    arrayPlanningDocuments.push(objDocument);
+                  });
+                }
+              }
+              if(release.planning.requestsForQuotes !== undefined){
+                if(release.planning.requestsForQuotes.length > 0){
+                  release.planning.requestsForQuotes.forEach(requestForQuote => {
+                    var objRequestForQuote = new Object({
+                      ocid: release.ocid,
+                      'planning/requestsForQuotes/id' : requestForQuote.id,
+                      'planning/requestsForQuotes/title' : requestForQuote.title,
+                      'planning/requestsForQuotes/description' : requestForQuote.description,
+                      'planning/requestsForQuotes/period/startDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.startDate),
+                      'planning/requestsForQuotes/period/endDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.endDate)
+                    });
+                    arrayRequestsForQuotes.push(objRequestForQuote);
+                    if(requestForQuote.items !== undefined){
+                      if(requestForQuote.items.length > 0){
+                        requestForQuote.items.forEach(item => {
+                          var objItem = new Object({
                             ocid: release.ocid,
-                            'planning/documents/id' : document.id,
-                            'planning/documents/documentType' : document.documentType,
-                            'planning/documents/title' : document.title,
-                            'planning/documents/description' : document.description,
-                            'planning/documents/url' : document.url,
-                            'planning/documents/datePublished' : document.datePublished,
-                            'planning/documents/dateModified' : document.dateModified,
-                            'planning/documents/format' : document.format,
-                            'planning/documents/language' : document.language,
+                            'planning/requestsForQuotes/id' : requestForQuote.id,
+                            'planning/requestsForQuotes/items/id' : item.id,
+                            'planning/requestsForQuotes/items/description' : item.description,
+                            'planning/requestsForQuotes/items/quantity' : item.quantity,
+                            'planning/requestsForQuotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
+                            'planning/requestsForQuotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
+                            'planning/requestsForQuotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name)
                           });
-                          arrayPlanningDocuments.push(objDocument);
+                          arrayRequestsForQuotesItems.push(objItem);
                         });
                       }
                     }
-                    if(release.planning.requestsForQuotes !== undefined){
-                      if(release.planning.requestsForQuotes.length > 0){
-                        release.planning.requestsForQuotes.forEach(requestForQuote => {
-                          var objRequestForQuote = new Object({
+                    if(requestForQuote.invitedSuppliers !== undefined){
+                      if(requestForQuote.invitedSuppliers.length > 0){
+                        requestForQuote.invitedSuppliers.forEach(invitedSupplier => {
+                          var objInvitedSupplier = new Object({
                             ocid: release.ocid,
                             'planning/requestsForQuotes/id' : requestForQuote.id,
-                            'planning/requestsForQuotes/title' : requestForQuote.title,
-                            'planning/requestsForQuotes/description' : requestForQuote.description,
-                            'planning/requestsForQuotes/period/startDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.startDate),
-                            'planning/requestsForQuotes/period/endDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.endDate)
+                            'planning/invitedSuppliers/name' : invitedSupplier.name,
+                            'planning/invitedSuppliers/id' : invitedSupplier.id
                           });
-                          arrayRequestsForQuotes.push(objRequestForQuote);
-                          if(requestForQuote.items !== undefined){
-                            if(requestForQuote.items.length > 0){
-                              requestForQuote.items.forEach(item => {
-                                var objItem = new Object({
-                                  ocid: release.ocid,
-                                  'planning/requestsForQuotes/id' : requestForQuote.id,
-                                  'planning/requestsForQuotes/items/id' : item.id,
-                                  'planning/requestsForQuotes/items/description' : item.description,
-                                  'planning/requestsForQuotes/items/quantity' : item.quantity,
-                                  'planning/requestsForQuotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
-                                  'planning/requestsForQuotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
-                                  'planning/requestsForQuotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name)
-                                });
-                                arrayRequestsForQuotesItems.push(objItem);
-                              });
-                            }
-                          }
-                          if(requestForQuote.invitedSuppliers !== undefined){
-                            if(requestForQuote.invitedSuppliers.length > 0){
-                              requestForQuote.invitedSuppliers.forEach(invitedSupplier => {
-                                var objInvitedSupplier = new Object({
-                                  ocid: release.ocid,
-                                  'planning/requestsForQuotes/id' : requestForQuote.id,
-                                  'planning/invitedSuppliers/name' : invitedSupplier.name,
-                                  'planning/invitedSuppliers/id' : invitedSupplier.id
-                                });
-                                arrayRequestsForQuotesinvitedSuppliers.push(objInvitedSupplier);
-                              });
-                            }
-                          }
-                          if(requestForQuote.quotes !== undefined){
-                            if(requestForQuote.quotes.length > 0){
-                              requestForQuote.quotes.forEach(quote => {
-                                var objRequestsForQuotesQuotes = new Object({
+                          arrayRequestsForQuotesinvitedSuppliers.push(objInvitedSupplier);
+                        });
+                      }
+                    }
+                    if(requestForQuote.quotes !== undefined){
+                      if(requestForQuote.quotes.length > 0){
+                        requestForQuote.quotes.forEach(quote => {
+                          var objRequestsForQuotesQuotes = new Object({
+                            ocid: release.ocid,
+                            'planning/requestsForQuotes/id' : requestForQuote.id,
+                            'planning/requestsForQuotes/quotes/id' : quote.id,
+                            'planning/requestsForQuotes/quotes/description' : quote.description,
+                            'planning/requestsForQuotes/quotes/date' : quote.date,
+                            'planning/requestsForQuotes/quotes/value/amount' : (quote.value === undefined ? '' : quote.value.amount),
+                            'planning/requestsForQuotes/quotes/quotePeriod/startDate' : (quote.period === undefined ? '' : quote.period.startDate),
+                            'planning/requestsForQuotes/quotes/quotePeriod/endDate' : (quote.period === undefined ? '' : quote.period.endDate),
+                            'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
+                            'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
+                          });
+                          arrayRequestsForQuotesQuotes.push(objRequestsForQuotesQuotes);
+                          if(quote.items !== undefined){
+                            if(quote.items.length > 0){
+                              quote.items.forEach(item => {
+                                var objRequestsForQuotesQuotesItems = new Object({
                                   ocid: release.ocid,
                                   'planning/requestsForQuotes/id' : requestForQuote.id,
                                   'planning/requestsForQuotes/quotes/id' : quote.id,
-                                  'planning/requestsForQuotes/quotes/description' : quote.description,
-                                  'planning/requestsForQuotes/quotes/date' : quote.date,
-                                  'planning/requestsForQuotes/quotes/value/amount' : (quote.value === undefined ? '' : quote.value.amount),
-                                  'planning/requestsForQuotes/quotes/quotePeriod/startDate' : (quote.period === undefined ? '' : quote.period.startDate),
-                                  'planning/requestsForQuotes/quotes/quotePeriod/endDate' : (quote.period === undefined ? '' : quote.period.endDate),
+                                  'planning/requestsForQuotes/quotes/items/id' : item.id,
+                                  'planning/requestsForQuotes/quotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
+                                  'planning/requestsForQuotes/quotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
+                                  'planning/requestsForQuotes/quotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name),
+                                  'planning/requestsForQuotes/quotes/items/unit/value/amount' : (item.unit === undefined ? '' : item.unit.value.amount),
                                   'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
                                   'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
                                 });
-                                arrayRequestsForQuotesQuotes.push(objRequestsForQuotesQuotes);
-                                if(quote.items !== undefined){
-                                  if(quote.items.length > 0){
-                                    quote.items.forEach(item => {
-                                      var objRequestsForQuotesQuotesItems = new Object({
-                                        ocid: release.ocid,
-                                        'planning/requestsForQuotes/id' : requestForQuote.id,
-                                        'planning/requestsForQuotes/quotes/id' : quote.id,
-                                        'planning/requestsForQuotes/quotes/items/id' : item.id,
-                                        'planning/requestsForQuotes/quotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
-                                        'planning/requestsForQuotes/quotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
-                                        'planning/requestsForQuotes/quotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name),
-                                        'planning/requestsForQuotes/quotes/items/unit/value/amount' : (item.unit === undefined ? '' : item.unit.value.amount),
-                                        'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
-                                        'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
-                                      });
-                                      arrayRequestsForQuotesQuotesItems.push(objRequestsForQuotesQuotesItems);
-                                    });
-                                  }
-                                }
+                                arrayRequestsForQuotesQuotesItems.push(objRequestsForQuotesQuotesItems);
                               });
                             }
                           }
                         });
                       }
                     }
-                  }
-                  if(release.tender !== undefined){
-                    //additionalProcurementCategories
-                    var arrayAdditionalProcurementCategories = new Array();
-                    if(release.tender.additionalProcurementCategories !== undefined){
-                      if(release.tender.additionalProcurementCategories.length > 0){
-                        release.tender.additionalProcurementCategories.forEach(additionalProcurementCategory => {
-                          arrayAdditionalProcurementCategories.push(additionalProcurementCategory)
-                        });
-                      }
-                    }
-                    //submissionMethod
-                    var arraySubmissionMethod = new Array();
-                    if(release.tender.submissionMethod !== undefined){
-                      if(release.tender.submissionMethod.length > 0){
-                        release.tender.submissionMethod.forEach(submissionMethod => {
-                          arraySubmissionMethod.push(submissionMethod)
-                        });
-                      }
-                    }
-                    var objTender = new Object({
+                  });
+                }
+              }
+            }
+            if(release.tender !== undefined){
+              //additionalProcurementCategories
+              var arrayAdditionalProcurementCategories = new Array();
+              if(release.tender.additionalProcurementCategories !== undefined){
+                if(release.tender.additionalProcurementCategories.length > 0){
+                  release.tender.additionalProcurementCategories.forEach(additionalProcurementCategory => {
+                    arrayAdditionalProcurementCategories.push(additionalProcurementCategory)
+                  });
+                }
+              }
+              //submissionMethod
+              var arraySubmissionMethod = new Array();
+              if(release.tender.submissionMethod !== undefined){
+                if(release.tender.submissionMethod.length > 0){
+                  release.tender.submissionMethod.forEach(submissionMethod => {
+                    arraySubmissionMethod.push(submissionMethod)
+                  });
+                }
+              }
+              var objTender = new Object({
+                ocid: release.ocid,
+                'tender/id': release.tender.id,
+                'tender/title': release.tender.title,
+                'tender/description': release.tender.description,
+                'tender/status': release.tender.status,
+                'tender/procuringEntity/name': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.name),
+                'tender/procuringEntity/id': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.id),
+                'tender/value/amount': (release.tender.value === undefined ? '' : release.tender.value.amount),
+                'tender/value/currency': (release.tender.value === undefined ? '' : release.tender.value.currency),
+                'tender/minValue/amount': (release.tender.minValue === undefined ? '' : release.tender.minValue.amount),
+                'tender/minValue/currency': (release.tender.minValue === undefined ? '' : release.tender.minValue.currency),
+                'tender/procurementMethod': release.tender.procurementMethod,
+                'tender/procurementMethodDetails': release.tender.procurementMethodDetails,
+                'tender/procurementMethodRationale': release.tender.procurementMethodRationale,
+                'tender/mainProcurementCategory': release.tender.mainProcurementCategory,
+                'tender/additionalProcurementCategories': (arrayAdditionalProcurementCategories <= 0 ? '' : arrayAdditionalProcurementCategories.toString()),
+                'tender/awardCriteria': release.tender.awardCriteria,
+                'tender/awardCriteriaDetails': release.tender.awardCriteriaDetails,
+                'tender/submissionMethod': (arraySubmissionMethod <= 0 ? '' : arraySubmissionMethod.toString()),
+                'tender/submissionMethodDetails': release.tender.submissionMethodDetails,
+                'tender/tenderPeriod/startDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.startDate),
+                'tender/tenderPeriod/endDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.endDate),
+                'tender/enquiryPeriod/startDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.startDate),
+                'tender/enquiryPeriod/endDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.endDate),
+                'tender/hasEnquiries': (release.tender.hasEnquiries === true ? 'true' : false),
+                'tender/eligibilityCriteria': release.tender.eligibilityCriteria,
+                'tender/awardPeriod/startDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.startDate),
+                'tender/awardPeriod/endDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.endDate),
+                'tender/numberOfTenderers': release.tender.numberOfTenderers,
+              });
+              arrayTender.push(objTender)
+            }
+            if(release.tender !== undefined){
+              if(release.tender.tenderers !== undefined){
+                release.tender.tenderers.forEach(tender => {
+                  var objTenderes = new Object({
                       ocid: release.ocid,
-                      'tender/id': release.tender.id,
-                      'tender/title': release.tender.title,
-                      'tender/description': release.tender.description,
-                      'tender/status': release.tender.status,
-                      'tender/procuringEntity/name': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.name),
-                      'tender/procuringEntity/id': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.id),
-                      'tender/value/amount': (release.tender.value === undefined ? '' : release.tender.value.amount),
-                      'tender/value/currency': (release.tender.value === undefined ? '' : release.tender.value.currency),
-                      'tender/minValue/amount': (release.tender.minValue === undefined ? '' : release.tender.minValue.amount),
-                      'tender/minValue/currency': (release.tender.minValue === undefined ? '' : release.tender.minValue.currency),
-                      'tender/procurementMethod': release.tender.procurementMethod,
-                      'tender/procurementMethodDetails': release.tender.procurementMethodDetails,
-                      'tender/procurementMethodRationale': release.tender.procurementMethodRationale,
-                      'tender/mainProcurementCategory': release.tender.mainProcurementCategory,
-                      'tender/additionalProcurementCategories': (arrayAdditionalProcurementCategories <= 0 ? '' : arrayAdditionalProcurementCategories.toString()),
-                      'tender/awardCriteria': release.tender.awardCriteria,
-                      'tender/awardCriteriaDetails': release.tender.awardCriteriaDetails,
-                      'tender/submissionMethod': (arraySubmissionMethod <= 0 ? '' : arraySubmissionMethod.toString()),
-                      'tender/submissionMethodDetails': release.tender.submissionMethodDetails,
-                      'tender/tenderPeriod/startDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.startDate),
-                      'tender/tenderPeriod/endDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.endDate),
-                      'tender/enquiryPeriod/startDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.startDate),
-                      'tender/enquiryPeriod/endDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.endDate),
-                      'tender/hasEnquiries': (release.tender.hasEnquiries === true ? 'true' : false),
-                      'tender/eligibilityCriteria': release.tender.eligibilityCriteria,
-                      'tender/awardPeriod/startDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.startDate),
-                      'tender/awardPeriod/endDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.endDate),
-                      'tender/numberOfTenderers': release.tender.numberOfTenderers,
+                      'tender/tenderers/name': tender.name,
+                      'tender/tenderers/id': tender.id
                     });
-                    arrayTender.push(objTender)
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.tenderers !== undefined){
-                      release.tender.tenderers.forEach(tender => {
-                        var objTenderes = new Object({
-                            ocid: release.ocid,
-                            'tender/tenderers/name': tender.name,
-                            'tender/tenderers/id': tender.id
-                          });
-                          arrayTenderes.push(objTenderes)
-                      });
-                    }
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.items !== undefined){
-                      release.tender.items.forEach(item => {
-                        var objTenderItem = new Object({
-                            ocid: release.ocid,
-                            'tender/items/id': item.id,
-                            'tender/items/description': item.description,
-                            'tender/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
-                            'tender/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
-                            'tender/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
-                            'tender/items/quantity': item.quantity,
-                            'tender/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
-                            'tender/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                            'tender/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                            'tender/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
-                            'tender/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
-                            'tender/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
-                            'tender/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
-                            'tender/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
-                            'tender/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
-                            'tender/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
-                          });
-                          arrayTenderItems.push(objTenderItem)
-                      });
-                    }
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.documents !== undefined){
-                      release.tender.documents.forEach(document => {
-                        var objTenderdocument = new Object({
-                            ocid: release.ocid,
-                            'tender/documents/id': document.id,
-                            'tender/documents/documentType': document.documentType,
-                            'tender/documents/title': document.title,
-                            'tender/documents/description': document.description,
-                            'tender/documents/url': document.url,
-                            'tender/documents/datePublished': document.datePublished,
-                            'tender/documents/dateModified': document.dateModified,
-                            'tender/documents/format': document.format,
-                            'tender/documents/language': document.language
-                          });
-                          arrayTenderDocuments.push(objTenderdocument)
-                      });
-                    }
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.milestones !== undefined){
-                      release.tender.milestones.forEach(milestone => {
-                        var objTendermilestone = new Object({
-                            ocid: release.ocid,
-                            'tender/milestones/id': milestone.id,
-                            'tender/milestones/title': milestone.title,
-                            'tender/milestones/type': milestone.type,
-                            'tender/milestones/description': milestone.description,
-                            'tender/milestones/dueDate': milestone.dueDate,
-                            'tender/milestones/dateModified': milestone.dateModified,
-                            'tender/milestones/status': milestone.status
-                          });
-                          arrayTenderMilestones.push(objTendermilestone)
-                      });
-                    }
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.amendments !== undefined){
-                      release.tender.amendments.forEach(amendment => {
-                        var objTenderAmendment = new Object({
-                            ocid: release.ocid,
-                            'tender/amendments/date': amendment.date,
-                            'tender/amendments/rationale': amendment.rationale,
-                            'tender/amendments/id': amendment.id,
-                            'tender/amendments/description': amendment.description
-                          });
-                          arrayTenderAmendment.push(objTenderAmendment)
-                      });
-                    }
-                  }
-                  if(release.tender !== undefined){
-                    if(release.tender.clarificationMeetings !== undefined){
-                      release.tender.clarificationMeetings.forEach(clarificationMeeting => {
-                        var objTenderClarificationMeeting = new Object({
-                            ocid: release.ocid,
-                            'tender/clarificationMeetings/id': clarificationMeeting.id,
-                            'tender/clarificationMeetings/date': clarificationMeeting.date
-                          });
-                          arrayTenderClarificationMeeting.push(objTenderClarificationMeeting)
-                          if(clarificationMeeting.attendees !== undefined){
-                            clarificationMeeting.attendees.forEach(attendee => {
-                              var objTenderAttendees = new Object({
-                                ocid: release.ocid,
-                                'tender/clarificationMeetings/id': clarificationMeeting.id,
-                                'tender/clarificationMeetings/attendees/name': attendee.name,
-                                'tender/clarificationMeetings/attendees/id': attendee.id
-                              });
-                              arrayTenderClarificationMeetingAttendees.push(objTenderAttendees)
-                            })
-                          }
-                          if(clarificationMeeting.officials !== undefined){
-                            clarificationMeeting.officials.forEach(official => {
-                              var objTenderOfficials = new Object({
-                                ocid: release.ocid,
-                                'tender/clarificationMeetings/id': clarificationMeeting.id,
-                                'tender/clarificationMeetings/officials/name': official.name,
-                                'tender/clarificationMeetings/officials/id': official.id
-                              });
-                              arrayTenderClarificationMeetingOfficials.push(objTenderOfficials)
-                            })
-                          }
-                      });
-                    }
-                  }
-                  if(release.buyer !== undefined){
-                    var objReleaseBuyer = new Object({
+                    arrayTenderes.push(objTenderes)
+                });
+              }
+            }
+            if(release.tender !== undefined){
+              if(release.tender.items !== undefined){
+                release.tender.items.forEach(item => {
+                  var objTenderItem = new Object({
                       ocid: release.ocid,
-                      'buyer/name': release.buyer.name,
-                      'buyer/id': release.buyer.id
+                      'tender/items/id': item.id,
+                      'tender/items/description': item.description,
+                      'tender/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
+                      'tender/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
+                      'tender/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
+                      'tender/items/quantity': item.quantity,
+                      'tender/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
+                      'tender/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                      'tender/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                      'tender/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                      'tender/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
+                      'tender/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
+                      'tender/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
+                      'tender/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
+                      'tender/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
+                      'tender/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
                     });
-                    arrayBuyer.push(objReleaseBuyer)
-                  }
-                  if(release.awards !== undefined){
-                    if(release.awards.length > 0){
-                      release.awards.forEach(award => {
-                        var objReleaseAward = new Object({
+                    arrayTenderItems.push(objTenderItem)
+                });
+              }
+            }
+            if(release.tender !== undefined){
+              if(release.tender.documents !== undefined){
+                release.tender.documents.forEach(document => {
+                  var objTenderdocument = new Object({
+                      ocid: release.ocid,
+                      'tender/documents/id': document.id,
+                      'tender/documents/documentType': document.documentType,
+                      'tender/documents/title': document.title,
+                      'tender/documents/description': document.description,
+                      'tender/documents/url': document.url,
+                      'tender/documents/datePublished': document.datePublished,
+                      'tender/documents/dateModified': document.dateModified,
+                      'tender/documents/format': document.format,
+                      'tender/documents/language': document.language
+                    });
+                    arrayTenderDocuments.push(objTenderdocument)
+                });
+              }
+            }
+            if(release.tender !== undefined){
+              if(release.tender.milestones !== undefined){
+                release.tender.milestones.forEach(milestone => {
+                  var objTendermilestone = new Object({
+                      ocid: release.ocid,
+                      'tender/milestones/id': milestone.id,
+                      'tender/milestones/title': milestone.title,
+                      'tender/milestones/type': milestone.type,
+                      'tender/milestones/description': milestone.description,
+                      'tender/milestones/dueDate': milestone.dueDate,
+                      'tender/milestones/dateModified': milestone.dateModified,
+                      'tender/milestones/status': milestone.status
+                    });
+                    arrayTenderMilestones.push(objTendermilestone)
+                });
+              }
+            }
+            if(release.tender !== undefined){
+              if(release.tender.amendments !== undefined){
+                release.tender.amendments.forEach(amendment => {
+                  var objTenderAmendment = new Object({
+                      ocid: release.ocid,
+                      'tender/amendments/date': amendment.date,
+                      'tender/amendments/rationale': amendment.rationale,
+                      'tender/amendments/id': amendment.id,
+                      'tender/amendments/description': amendment.description
+                    });
+                    arrayTenderAmendment.push(objTenderAmendment)
+                });
+              }
+            }
+            if(release.tender !== undefined){
+              if(release.tender.clarificationMeetings !== undefined){
+                release.tender.clarificationMeetings.forEach(clarificationMeeting => {
+                  var objTenderClarificationMeeting = new Object({
+                      ocid: release.ocid,
+                      'tender/clarificationMeetings/id': clarificationMeeting.id,
+                      'tender/clarificationMeetings/date': clarificationMeeting.date
+                    });
+                    arrayTenderClarificationMeeting.push(objTenderClarificationMeeting)
+                    if(clarificationMeeting.attendees !== undefined){
+                      clarificationMeeting.attendees.forEach(attendee => {
+                        var objTenderAttendees = new Object({
                           ocid: release.ocid,
-                          'awards/id': award.id,
-                          'awards/title': award.title,
-                          'awards/description': award.description,
-                          'awards/rationale': award.rationale,
-                          'awards/status': award.status,
-                          'awards/date': award.date,
-                          'awards/value/netAmount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
-                          'awards/value/amount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
-                          'awards/value/currency': ((award.value !== undefined) ? (award.value.currency !== undefined ? award.value.currency : '') : ''),
-                          'awards/contractPeriod/startDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.startDate !== undefined ? award.contractPeriod.startDate : '') : ''),
-                          'awards/contractPeriod/endDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.endDate !== undefined ? award.contractPeriod.endDate : '') : ''),
+                          'tender/clarificationMeetings/id': clarificationMeeting.id,
+                          'tender/clarificationMeetings/attendees/name': attendee.name,
+                          'tender/clarificationMeetings/attendees/id': attendee.id
                         });
-                        arrayAwars.push(objReleaseAward);
-                        var objReleaseAward = new Object({
+                        arrayTenderClarificationMeetingAttendees.push(objTenderAttendees)
+                      })
+                    }
+                    if(clarificationMeeting.officials !== undefined){
+                      clarificationMeeting.officials.forEach(official => {
+                        var objTenderOfficials = new Object({
                           ocid: release.ocid,
-                          'awards/id': award.id,
-                          'awards/suppliers/name': ((award.suppliers !== undefined) ? (award.suppliers[0].name !== undefined ? award.suppliers[0].name : '') : ''),
-                          'awards/suppliers/id': ((award.suppliers !== undefined) ? (award.suppliers[0].id !== undefined ? award.suppliers[0].id : '') : ''),
+                          'tender/clarificationMeetings/id': clarificationMeeting.id,
+                          'tender/clarificationMeetings/officials/name': official.name,
+                          'tender/clarificationMeetings/officials/id': official.id
+                        });
+                        arrayTenderClarificationMeetingOfficials.push(objTenderOfficials)
+                      })
+                    }
+                });
+              }
+            }
+            if(release.buyer !== undefined){
+              var objReleaseBuyer = new Object({
+                ocid: release.ocid,
+                'buyer/name': release.buyer.name,
+                'buyer/id': release.buyer.id
+              });
+              arrayBuyer.push(objReleaseBuyer)
+            }
+            if(release.awards !== undefined){
+              if(release.awards.length > 0){
+                release.awards.forEach(award => {
+                  var objReleaseAward = new Object({
+                    ocid: release.ocid,
+                    'awards/id': award.id,
+                    'awards/title': award.title,
+                    'awards/description': award.description,
+                    'awards/rationale': award.rationale,
+                    'awards/status': award.status,
+                    'awards/date': award.date,
+                    'awards/value/netAmount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
+                    'awards/value/amount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
+                    'awards/value/currency': ((award.value !== undefined) ? (award.value.currency !== undefined ? award.value.currency : '') : ''),
+                    'awards/contractPeriod/startDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.startDate !== undefined ? award.contractPeriod.startDate : '') : ''),
+                    'awards/contractPeriod/endDate': ((award.contractPeriod !== undefined) ? (award.contractPeriod.endDate !== undefined ? award.contractPeriod.endDate : '') : ''),
+                  });
+                  arrayAwars.push(objReleaseAward);
+                  var objReleaseAward = new Object({
+                    ocid: release.ocid,
+                    'awards/id': award.id,
+                    'awards/suppliers/name': ((award.suppliers !== undefined) ? (award.suppliers[0].name !== undefined ? award.suppliers[0].name : '') : ''),
+                    'awards/suppliers/id': ((award.suppliers !== undefined) ? (award.suppliers[0].id !== undefined ? award.suppliers[0].id : '') : ''),
+                  })
+                  arrayAwarsSuppliers.push(objReleaseAward)
+                  if(award.documents !== undefined){
+                    if(award.documents.length > 0){
+                      award.documents.forEach(awardDocument => {
+                        var objAwardDocument = new Object({
+                          ocid: release.ocid,
+                          'awards/documents/id': awardDocument.id,
+                          'awards/documents/documentType': awardDocument.documentType,
+                          'awards/documents/title': awardDocument.title,
+                          'awards/documents/description': awardDocument.description,
+                          'awards/documents/url': awardDocument.url,
+                          'awards/documents/datePublished': awardDocument.datePublished,
+                          'awards/documents/dateModified': awardDocument.dateModified,
+                          'awards/documents/format': awardDocument.format,
+                          'awards/documents/language': awardDocument.language,
                         })
-                        arrayAwarsSuppliers.push(objReleaseAward)
-                        if(award.documents !== undefined){
-                          if(award.documents.length > 0){
-                            award.documents.forEach(awardDocument => {
-                              var objAwardDocument = new Object({
-                                ocid: release.ocid,
-                                'awards/documents/id': awardDocument.id,
-                                'awards/documents/documentType': awardDocument.documentType,
-                                'awards/documents/title': awardDocument.title,
-                                'awards/documents/description': awardDocument.description,
-                                'awards/documents/url': awardDocument.url,
-                                'awards/documents/datePublished': awardDocument.datePublished,
-                                'awards/documents/dateModified': awardDocument.dateModified,
-                                'awards/documents/format': awardDocument.format,
-                                'awards/documents/language': awardDocument.language,
-                              })
-                              arrayAwarsDocuments.push(objAwardDocument);
-                            })
-                          }
-                        }
-                        if(award.amendments !== undefined){
-                          if(award.amendments.length > 0){
-                            award.amendments.forEach(amendment => {
-                              var objAmendment = new Object({
-                                ocid: release.ocid,
-                                'awards/amendments/date': amendment.date,
-                                'awards/amendments/rationale': amendment.rationale,
-                                'awards/amendments/id': amendment.id,
-                                'awards/amendments/description': amendment.description,
-                                
-                              })
-                              arrayAwarsAmendments.push(objAmendment);
-                            })
-                          }
-                        }
-                      });
+                        arrayAwarsDocuments.push(objAwardDocument);
+                      })
                     }
                   }
-                  if(release.contracts !== undefined){
-                    if(release.contracts.length > 0){
-                      release.contracts.forEach(contract => {
-                        var objContract = new Object({
+                  if(award.amendments !== undefined){
+                    if(award.amendments.length > 0){
+                      award.amendments.forEach(amendment => {
+                        var objAmendment = new Object({
                           ocid: release.ocid,
-                          'contracts/id': contract.id,
-                          'contracts/awardID': contract.awardID,
-                          'contracts/title': contract.title,
-                          'contracts/description': contract.description,
-                          'contracts/status': contract.status,
-                          'contracts/period/startDate': ((contract.period !== undefined) ? (contract.period.startDate !== undefined ? contract.period.startDate : '') : ''),
-                          'contracts/period/endDate': ((contract.period !== undefined) ? (contract.period.endDate !== undefined ? contract.period.endDate : '') : ''),
-                          'contracts/value/netAmount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
-                          'contracts/value/amount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
-                          'contracts/value/currency': ((contract.value !== undefined) ? (contract.value.currency !== undefined ? contract.value.currency : '') : ''),
-                          'contracts/value/exchangeRates/currency':  ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].currency !== undefined ? contract.value.exchangeRates[0].currency : '') : '') : ''),
-                          'contracts/value/exchangeRates/rate': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].rate !== undefined ? contract.value.exchangeRates[0].rate : '') : '') : ''),
-                          'contracts/value/exchangeRates/date': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].date !== undefined ? contract.value.exchangeRates[0].date : '') : '') : ''),
-                          'contracts/value/exchangeRates/source': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].source !== undefined ? contract.value.exchangeRates[0].source : '') : '') : ''),
-                          'contracts/dateSigned': contract.dateSigned,
-                          'surveillanceMechanisms': ((contract.surveillanceMechanisms !== undefined) ? contract.surveillanceMechanisms[0] : ''), 
+                          'awards/amendments/date': amendment.date,
+                          'awards/amendments/rationale': amendment.rationale,
+                          'awards/amendments/id': amendment.id,
+                          'awards/amendments/description': amendment.description,
+                          
                         })
-                        arrayContracts.push(objContract);
-                        if(contract.items !== undefined){
-                          if(contract.items.length > 0){
-                            contract.items.forEach(item => {
-                              var objContractItem = new Object({
-                                ocid: release.ocid,
-                                'contracts/id': contract.id,
-                                'contracts/awardID': contract.awardID,
-                                'contracts/items/id': item.id,
-                                'contracts/items/description': item.description,
-                                'contracts/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
-                                'contracts/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
-                                'contracts/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
-                                'contracts/items/quantity': item.quantity,
-                                'contracts/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
-                                'contracts/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                                'contracts/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                                'contracts/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
-                                'contracts/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
-                                'contracts/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
-                                'contracts/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
-                                'contracts/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
-                                'contracts/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
-                                'contracts/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
-                              });
-                              arrayContractsItems.push(objContractItem);
-                            });
-                          }
-                        }
-                        if(contract.documents !== undefined){
-                          if(contract.documents.length > 0){
-                            contract.documents.forEach(document => {
-                              var objContractItem = new Object({
-                                ocid: release.ocid,
-                                'contracts/id': contract.id,
-                                'contracts/awardID': contract.awardID,
-                                'contracts/documents/id': document.id,
-                                'contracts/documents/documentType': document.documentType,
-                                'contracts/documents/title': document.title,
-                                'contracts/documents/description': document.description,
-                                'contracts/documents/url': document.url,
-                                'contracts/documents/datePublished': document.datePublished,
-                                'contracts/documents/dateModified': document.dateModified,
-                                'contracts/documents/format': document.format,
-                                'contracts/documents/language': document.language,
-                              });
-                              arrayContractsdocuments.push(objContractItem);
-                            })
-                          }
-                        }
-                        if(contract.amendments !== undefined){
-                          if(contract.amendments.length > 0){
-                            contract.amendments.forEach(amendment => {
-                              var objAmendment = new Object({
-                                ocid: release.ocid,
-                                'contracts/id': contract.id,
-                                'contracts/awardID': contract.awardID,
-                                'contracts/amendments/date': amendment.date,
-                                'contracts/amendments/rationale': amendment.rationale,
-                                'contracts/amendments/id': amendment.id,
-                                'contracts/amendments/description': amendment.description,
-                              });
-                              arrayContractsAmendments.push(objAmendment);
-                            })
-                          }
-                        }
-                        if(contract.guarantees !== undefined){
-                          if(contract.guarantees.length > 0){
-                            contract.guarantees.forEach(guarantee => {
-                              var objGuarantee = new Object({
-                                ocid: release.ocid,
-                                'contracts/id': contract.id,
-                                'contracts/awardID': contract.awardID,
-                                'contracts/guarantees/id': guarantee.id,
-                                'contracts/guarantees/type': ((guarantee !== undefined) ? guarantee.type : ''),
-                                'contracts/guarantees/date': ((guarantee !== undefined) ? guarantee.date : ''),
-                                'contracts/guarantees/obligations': ((guarantee.guarantees !== undefined) ? guarantee.guarantees.obligations : ''),
-                                'contracts/guarantees/value/amount': ((guarantee.value !== undefined) ? guarantee.value.amount : ''),
-                                'contracts/guarantees/value/currency': ((guarantee.value !== undefined) ? guarantee.value.currency : ''),
-                                'contracts/guarantees/guarantor/name': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.name : ''),
-                                'contracts/guarantees/guarantor/id': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.id : ''),
-                                'contracts/guarantees/period/startDate': ((guarantee.period !== undefined) ? guarantee.period.startDate : ''),
-                                'contracts/guarantees/period/endDate': ((guarantee.period !== undefined) ? guarantee.period.endDate : ''),
-                              });
-                              arrayContractsGuarantees.push(objGuarantee);
-                            })
-                          }
-                        }
-                        if(contract.implementation !== undefined){
-                          var objGuarantee = new Object({
-                            ocid: release.ocid,
-                            'contracts/id': contract.id,
-                            'contracts/awardID': contract.awardID,
-                            'contracts/implementation/status': contract.implementation.status,
-                          });
-                          arrayContractsImplementation.push(objGuarantee);
-                          if(contract.implementation.transactions !== undefined){
-                            if(contract.implementation.transactions.length > 0){
-                              contract.implementation.transactions.forEach(transaction => {
-                                var objTransaction = new Object({
-                                  ocid: release.ocid,
-                                  'contracts/id': contract.id,
-                                  'contracts/awardID': contract.awardID,
-                                  'contracts/implementation/transactions/id': transaction.id,
-                                  'contracts/implementation/transactions/date': transaction.date,
-                                  'contracts/implementation/transactions/value/netAmount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
-                                  'contracts/implementation/transactions/value/amount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
-                                  'contracts/implementation/transactions/value/currency': ((transaction.value !== undefined) ? transaction.value.currency : ''),
-                                  'contracts/implementation/transactions/payer/name': ((transaction.payer !== undefined) ? transaction.payer.name : ''),
-                                  'contracts/implementation/transactions/payer/id': ((transaction.payer !== undefined) ? transaction.payer.id : ''),
-                                  'contracts/implementation/transactions/payee/id': ((transaction.payee !== undefined) ? transaction.payee.id : ''),
-                                  'contracts/implementation/transactions/payee/name': ((transaction.payee !== undefined) ? transaction.payee.name : ''),
-                                  'contracts/implementation/transactions/paymentMethod': transaction.paymentMethod,
-                                  
-                                });
-                                arrayContractsImplementationTrans.push(objTransaction);
-                              })
-                            }
-                          }
-                          if(contract.implementation.milestones !== undefined){
-                            if(contract.implementation.milestones.length > 0){
-                              contract.implementation.milestones.forEach(milestone => {
-                                var objMilestone = new Object({
-                                  ocid: release.ocid,
-                                  'contracts/id': contract.id,
-                                  'contracts/awardID': contract.awardID,
-                                  'implementation/milestones/id': milestone.id,
-                                  'implementation/milestones/title': milestone.title,
-                                  'implementation/milestones/type': milestone.type,
-                                  'implementation/milestones/description': milestone.description,
-                                  'implementation/milestones/dueDate': milestone.dueDate,
-                                  'implementation/milestones/dateModified': milestone.dateModified,
-                                  'implementation/milestones/status': milestone.status,
-                                });
-                                arrayContractsImplementationMilestone.push(objMilestone);
-                              })
-                            }
-                          }
-                          if(contract.implementation.documents !== undefined){
-                            if(contract.implementation.documents.length > 0){
-                              contract.implementation.documents.forEach(document => {
-                                var objDocuments = new Object({
-                                  ocid: release.ocid,
-                                  'contracts/id': contract.id,
-                                  'contracts/awardID': contract.awardID,
-                                  'implementation/documents/id': document.id,
-                                  'implementation/documents/documentType': document.documentType,
-                                  'implementation/documents/title': document.title,
-                                  'implementation/documents/description': document.description,
-                                  'implementation/documents/url': document.url,
-                                  'implementation/documents/datePublished': document.datePublished,
-                                  'implementation/documents/dateModified': document.dateModified,
-                                  'implementation/documents/format': document.format,
-                                  'implementation/documents/language': document.language,
-                                });
-                                arrayContractsImplementationDocuments.push(objDocuments);
-                              })
-                            }
-                          }
-                        }
-                      });
-                    }
-                  }
-                  if(release.relatedProcesses !== undefined){
-                    if(release.relatedProcesses.length > 0){
-                      release.relatedProcesses.forEach(relatedProcess => {
-                        var objRelatedProcess = new Object({
-                          ocid: release.ocid,
-                          'relatedProcesses/id': relatedProcess.id,
-                          'relatedProcesses/relationship': relatedProcess.relationship[0],
-                          'relatedProcesses/title': relatedProcess.title,
-                          'relatedProcesses/scheme': relatedProcess.scheme,
-                          'relatedProcesses/identifier': relatedProcess.identifier,
-                          'relatedProcesses/uri': relatedProcess.uri,
-                        });
-                        arrayRelatedProcesses.push(objRelatedProcess);
-                      });
-
+                        arrayAwarsAmendments.push(objAmendment);
+                      })
                     }
                   }
                 });
-                }
-                
-                consecutivo++;
-              });
-              var arraySheetNames = new Array();
-              if(arrayIndice.length !== 0){
-                var worksheetIndex = XLSX.utils.json_to_sheet(arrayIndice);
-                var SheetName = 'Index';
-                arraySheetNames.push(SheetName);
               }
-              if(arrayReleasePackage.length !== 0){
-                var worksheet = XLSX.utils.json_to_sheet(arrayReleasePackage);
-                var SheetName = '1000';
-                arraySheetNames.push(SheetName);
+            }
+            if(release.contracts !== undefined){
+              if(release.contracts.length > 0){
+                release.contracts.forEach(contract => {
+                  var objContract = new Object({
+                    ocid: release.ocid,
+                    'contracts/id': contract.id,
+                    'contracts/awardID': contract.awardID,
+                    'contracts/title': contract.title,
+                    'contracts/description': contract.description,
+                    'contracts/status': contract.status,
+                    'contracts/period/startDate': ((contract.period !== undefined) ? (contract.period.startDate !== undefined ? contract.period.startDate : '') : ''),
+                    'contracts/period/endDate': ((contract.period !== undefined) ? (contract.period.endDate !== undefined ? contract.period.endDate : '') : ''),
+                    'contracts/value/netAmount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
+                    'contracts/value/amount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
+                    'contracts/value/currency': ((contract.value !== undefined) ? (contract.value.currency !== undefined ? contract.value.currency : '') : ''),
+                    'contracts/value/exchangeRates/currency':  ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].currency !== undefined ? contract.value.exchangeRates[0].currency : '') : '') : ''),
+                    'contracts/value/exchangeRates/rate': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].rate !== undefined ? contract.value.exchangeRates[0].rate : '') : '') : ''),
+                    'contracts/value/exchangeRates/date': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].date !== undefined ? contract.value.exchangeRates[0].date : '') : '') : ''),
+                    'contracts/value/exchangeRates/source': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].source !== undefined ? contract.value.exchangeRates[0].source : '') : '') : ''),
+                    'contracts/dateSigned': contract.dateSigned,
+                    'surveillanceMechanisms': ((contract.surveillanceMechanisms !== undefined) ? contract.surveillanceMechanisms[0] : ''), 
+                  })
+                  arrayContracts.push(objContract);
+                  if(contract.items !== undefined){
+                    if(contract.items.length > 0){
+                      contract.items.forEach(item => {
+                        var objContractItem = new Object({
+                          ocid: release.ocid,
+                          'contracts/id': contract.id,
+                          'contracts/awardID': contract.awardID,
+                          'contracts/items/id': item.id,
+                          'contracts/items/description': item.description,
+                          'contracts/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
+                          'contracts/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
+                          'contracts/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
+                          'contracts/items/quantity': item.quantity,
+                          'contracts/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
+                          'contracts/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                          'contracts/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
+                          'contracts/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                          'contracts/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
+                          'contracts/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
+                          'contracts/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
+                          'contracts/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
+                          'contracts/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
+                          'contracts/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
+                        });
+                        arrayContractsItems.push(objContractItem);
+                      });
+                    }
+                  }
+                  if(contract.documents !== undefined){
+                    if(contract.documents.length > 0){
+                      contract.documents.forEach(document => {
+                        var objContractItem = new Object({
+                          ocid: release.ocid,
+                          'contracts/id': contract.id,
+                          'contracts/awardID': contract.awardID,
+                          'contracts/documents/id': document.id,
+                          'contracts/documents/documentType': document.documentType,
+                          'contracts/documents/title': document.title,
+                          'contracts/documents/description': document.description,
+                          'contracts/documents/url': document.url,
+                          'contracts/documents/datePublished': document.datePublished,
+                          'contracts/documents/dateModified': document.dateModified,
+                          'contracts/documents/format': document.format,
+                          'contracts/documents/language': document.language,
+                        });
+                        arrayContractsdocuments.push(objContractItem);
+                      })
+                    }
+                  }
+                  if(contract.amendments !== undefined){
+                    if(contract.amendments.length > 0){
+                      contract.amendments.forEach(amendment => {
+                        var objAmendment = new Object({
+                          ocid: release.ocid,
+                          'contracts/id': contract.id,
+                          'contracts/awardID': contract.awardID,
+                          'contracts/amendments/date': amendment.date,
+                          'contracts/amendments/rationale': amendment.rationale,
+                          'contracts/amendments/id': amendment.id,
+                          'contracts/amendments/description': amendment.description,
+                        });
+                        arrayContractsAmendments.push(objAmendment);
+                      })
+                    }
+                  }
+                  if(contract.guarantees !== undefined){
+                    if(contract.guarantees.length > 0){
+                      contract.guarantees.forEach(guarantee => {
+                        var objGuarantee = new Object({
+                          ocid: release.ocid,
+                          'contracts/id': contract.id,
+                          'contracts/awardID': contract.awardID,
+                          'contracts/guarantees/id': guarantee.id,
+                          'contracts/guarantees/type': ((guarantee !== undefined) ? guarantee.type : ''),
+                          'contracts/guarantees/date': ((guarantee !== undefined) ? guarantee.date : ''),
+                          'contracts/guarantees/obligations': ((guarantee.guarantees !== undefined) ? guarantee.guarantees.obligations : ''),
+                          'contracts/guarantees/value/amount': ((guarantee.value !== undefined) ? guarantee.value.amount : ''),
+                          'contracts/guarantees/value/currency': ((guarantee.value !== undefined) ? guarantee.value.currency : ''),
+                          'contracts/guarantees/guarantor/name': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.name : ''),
+                          'contracts/guarantees/guarantor/id': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.id : ''),
+                          'contracts/guarantees/period/startDate': ((guarantee.period !== undefined) ? guarantee.period.startDate : ''),
+                          'contracts/guarantees/period/endDate': ((guarantee.period !== undefined) ? guarantee.period.endDate : ''),
+                        });
+                        arrayContractsGuarantees.push(objGuarantee);
+                      })
+                    }
+                  }
+                  if(contract.implementation !== undefined){
+                    var objGuarantee = new Object({
+                      ocid: release.ocid,
+                      'contracts/id': contract.id,
+                      'contracts/awardID': contract.awardID,
+                      'contracts/implementation/status': contract.implementation.status,
+                    });
+                    arrayContractsImplementation.push(objGuarantee);
+                    if(contract.implementation.transactions !== undefined){
+                      if(contract.implementation.transactions.length > 0){
+                        contract.implementation.transactions.forEach(transaction => {
+                          var objTransaction = new Object({
+                            ocid: release.ocid,
+                            'contracts/id': contract.id,
+                            'contracts/awardID': contract.awardID,
+                            'contracts/implementation/transactions/id': transaction.id,
+                            'contracts/implementation/transactions/date': transaction.date,
+                            'contracts/implementation/transactions/value/netAmount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
+                            'contracts/implementation/transactions/value/amount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
+                            'contracts/implementation/transactions/value/currency': ((transaction.value !== undefined) ? transaction.value.currency : ''),
+                            'contracts/implementation/transactions/payer/name': ((transaction.payer !== undefined) ? transaction.payer.name : ''),
+                            'contracts/implementation/transactions/payer/id': ((transaction.payer !== undefined) ? transaction.payer.id : ''),
+                            'contracts/implementation/transactions/payee/id': ((transaction.payee !== undefined) ? transaction.payee.id : ''),
+                            'contracts/implementation/transactions/payee/name': ((transaction.payee !== undefined) ? transaction.payee.name : ''),
+                            'contracts/implementation/transactions/paymentMethod': transaction.paymentMethod,
+                            
+                          });
+                          arrayContractsImplementationTrans.push(objTransaction);
+                        })
+                      }
+                    }
+                    if(contract.implementation.milestones !== undefined){
+                      if(contract.implementation.milestones.length > 0){
+                        contract.implementation.milestones.forEach(milestone => {
+                          var objMilestone = new Object({
+                            ocid: release.ocid,
+                            'contracts/id': contract.id,
+                            'contracts/awardID': contract.awardID,
+                            'implementation/milestones/id': milestone.id,
+                            'implementation/milestones/title': milestone.title,
+                            'implementation/milestones/type': milestone.type,
+                            'implementation/milestones/description': milestone.description,
+                            'implementation/milestones/dueDate': milestone.dueDate,
+                            'implementation/milestones/dateModified': milestone.dateModified,
+                            'implementation/milestones/status': milestone.status,
+                          });
+                          arrayContractsImplementationMilestone.push(objMilestone);
+                        })
+                      }
+                    }
+                    if(contract.implementation.documents !== undefined){
+                      if(contract.implementation.documents.length > 0){
+                        contract.implementation.documents.forEach(document => {
+                          var objDocuments = new Object({
+                            ocid: release.ocid,
+                            'contracts/id': contract.id,
+                            'contracts/awardID': contract.awardID,
+                            'implementation/documents/id': document.id,
+                            'implementation/documents/documentType': document.documentType,
+                            'implementation/documents/title': document.title,
+                            'implementation/documents/description': document.description,
+                            'implementation/documents/url': document.url,
+                            'implementation/documents/datePublished': document.datePublished,
+                            'implementation/documents/dateModified': document.dateModified,
+                            'implementation/documents/format': document.format,
+                            'implementation/documents/language': document.language,
+                          });
+                          arrayContractsImplementationDocuments.push(objDocuments);
+                        })
+                      }
+                    }
+                  }
+                });
               }
-              if(arrayExtensions2.length !== 0){
-                var worksheetExtensions = XLSX.utils.json_to_sheet(arrayExtensions2);
-                var SheetName = '1100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayPublishers.length !== 0){
-                var worksheetPublisher = XLSX.utils.json_to_sheet(arrayPublishers);
-                var SheetName = '1200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayReleases.length !== 0){
-                var worksheetRelease = XLSX.utils.json_to_sheet(arrayReleases);
-                var SheetName = '1300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayParties.length !== 0){
-                var worksheetReleaseParties = XLSX.utils.json_to_sheet(arrayParties);
-                var SheetName = '2000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayMember.length !== 0){
-                var worksheetReleasePartiesMember = XLSX.utils.json_to_sheet(arrayMember);
-                var SheetName = '2100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayAdditionalContactPoint.length !== 0){
-                var worksheetReleasePartiesAContactPoint = XLSX.utils.json_to_sheet(arrayAdditionalContactPoint);
-                var SheetName = '2200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayPlanning.length !== 0){
-                var worksheetReleasePlanning = XLSX.utils.json_to_sheet(arrayPlanning);
-                var SheetName = '3000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestingUnit.length !== 0){
-                var worksheetReleasePlanningRequestingUnit = XLSX.utils.json_to_sheet(arrayRequestingUnit);
-                var SheetName = '3100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractingUnit.length !== 0){
-                var worksheetReleasePlanningContractingUnit = XLSX.utils.json_to_sheet(arrayContractingUnit);
-                var SheetName = '3200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayResponsibleUnit.length !== 0){
-                var worksheetReleasePlanningResponsibleUnit = XLSX.utils.json_to_sheet(arrayResponsibleUnit);
-                var SheetName = '3300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayBudget.length !== 0){
-                var worksheetReleasePlanningBudgetBreakdown = XLSX.utils.json_to_sheet(arrayBudget);
-                var SheetName = '3400';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayBudgetLinesComponent.length !== 0){
-                var worksheetBudgetLinesComponent = XLSX.utils.json_to_sheet(arrayBudgetLinesComponent);
-                var SheetName = '3500';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayBudgetLinesMeasure.length !== 0){
-                var worksheetBudgetLinesMeasure = XLSX.utils.json_to_sheet(arrayBudgetLinesMeasure);
-                var SheetName = '3600';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayPlanningDocuments.length !== 0){
-                var worksheetPlanningDocuments = XLSX.utils.json_to_sheet(arrayPlanningDocuments);
-                var SheetName = '3700';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestsForQuotes.length !== 0){
-                var worksheetRequestsForQuotes = XLSX.utils.json_to_sheet(arrayRequestsForQuotes);
-                var SheetName = '3800';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestsForQuotesItems.length !== 0){
-                var worksheetRequestsForQuotesItems = XLSX.utils.json_to_sheet(arrayRequestsForQuotesItems);
-                var SheetName = '3900';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestsForQuotesinvitedSuppliers.length !== 0){
-                var worksheetRequestsForQuotesinvitedSupp = XLSX.utils.json_to_sheet(arrayRequestsForQuotesinvitedSuppliers);
-                var SheetName = '4000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestsForQuotesQuotes.length !== 0){
-                var worksheetRequestsForQuotesQuotes = XLSX.utils.json_to_sheet(arrayRequestsForQuotesQuotes);
-                var SheetName = '4100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRequestsForQuotesQuotesItems.length !== 0){
-                var worksheetRequestsForQuotesQuotesItems = XLSX.utils.json_to_sheet(arrayRequestsForQuotesQuotesItems);
-                var SheetName = '4200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTender.length !== 0){
-                var worksheetTender = XLSX.utils.json_to_sheet(arrayTender);
-                var SheetName = '5000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderes.length !== 0){
-                var worksheetArrayTenderes = XLSX.utils.json_to_sheet(arrayTenderes);
-                var SheetName = '5100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderItems.length !== 0){
-                var worksheetTenderItems = XLSX.utils.json_to_sheet(arrayTenderItems);
-                var SheetName = '5200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderDocuments.length !== 0){
-                var worksheetTenderDocuments = XLSX.utils.json_to_sheet(arrayTenderDocuments);
-                var SheetName = '5300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderMilestones.length !== 0){
-                var worksheetTenderMilestones = XLSX.utils.json_to_sheet(arrayTenderMilestones);
-                var SheetName = '5400';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderAmendment.length !== 0){
-                var worksheetTenderAmendment = XLSX.utils.json_to_sheet(arrayTenderAmendment);
-                var SheetName = '5500';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderClarificationMeeting.length !== 0){
-                var worksheetClarificationMeeting = XLSX.utils.json_to_sheet(arrayTenderClarificationMeeting);
-                var SheetName = '5600';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderClarificationMeetingAttendees.length !== 0){
-                var worksheetTenderClarificationMeetingAttendees = XLSX.utils.json_to_sheet(arrayTenderClarificationMeetingAttendees);
-                var SheetName = '5700';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayBuyer.length !== 0){
-                var worksheetBuyer = XLSX.utils.json_to_sheet(arrayBuyer);
-                var SheetName = '5800';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayTenderClarificationMeetingOfficials.length !== 0){
-                var worksheetTenderClarificationMeetingOfficials = XLSX.utils.json_to_sheet(arrayTenderClarificationMeetingOfficials);
-                var SheetName = '5900';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayAwars.length !== 0){
-                var worksheetAwars = XLSX.utils.json_to_sheet(arrayAwars);
-                var SheetName = '6000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayAwarsSuppliers.length !== 0){
-                var worksheetAwarsSuppliers = XLSX.utils.json_to_sheet(arrayAwarsSuppliers);
-                var SheetName = '6100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayAwarsDocuments.length !== 0){
-                var worksheetAwarsDocuments = XLSX.utils.json_to_sheet(arrayAwarsDocuments);
-                var SheetName = '6200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayAwarsAmendments.length !== 0){
-                var worksheetAwarsAmendments = XLSX.utils.json_to_sheet(arrayAwarsAmendments);
-                var SheetName = '6300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContracts.length !== 0){
-                var worksheetContracts = XLSX.utils.json_to_sheet(arrayContracts);
-                var SheetName = '7000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsItems.length !== 0){
-                var worksheetContractsItems = XLSX.utils.json_to_sheet(arrayContractsItems);
-                var SheetName = '7100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsdocuments.length !== 0){
-                var worksheetContractsdocuments = XLSX.utils.json_to_sheet(arrayContractsdocuments);
-                var SheetName = '7200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsAmendments.length !== 0){
-                var worksheetContractsAmendments = XLSX.utils.json_to_sheet(arrayContractsAmendments);
-                var SheetName = '7300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsGuarantees.length !== 0){
-                var worksheetContractsGuarantees = XLSX.utils.json_to_sheet(arrayContractsGuarantees);
-                var SheetName = '7400';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsImplementation.length !== 0){
-                var worksheetContractsImplementation = XLSX.utils.json_to_sheet(arrayContractsImplementation);
-                var SheetName = '8000';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsImplementationTrans.length !== 0){
-                var worksheetContractsImplementationTrans = XLSX.utils.json_to_sheet(arrayContractsImplementationTrans);
-                var SheetName = '8100';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsImplementationMilestone.length !== 0){
-                var worksheetContractsImplementationMil = XLSX.utils.json_to_sheet(arrayContractsImplementationMilestone);
-                var SheetName = '8200';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayContractsImplementationDocuments.length !== 0){
-                var worksheetContractsImplementationDoc = XLSX.utils.json_to_sheet(arrayContractsImplementationDocuments);
-                var SheetName = '8300';
-                arraySheetNames.push(SheetName);
-              }
-              if(arrayRelatedProcesses.length !== 0){
-                var worksheetRelatedProcesses = XLSX.utils.json_to_sheet(arrayRelatedProcesses);
-                var SheetName = '9000';
-                arraySheetNames.push(SheetName);
-              }
+            }
+            if(release.relatedProcesses !== undefined){
+              if(release.relatedProcesses.length > 0){
+                release.relatedProcesses.forEach(relatedProcess => {
+                  var objRelatedProcess = new Object({
+                    ocid: release.ocid,
+                    'relatedProcesses/id': relatedProcess.id,
+                    'relatedProcesses/relationship': relatedProcess.relationship[0],
+                    'relatedProcesses/title': relatedProcess.title,
+                    'relatedProcesses/scheme': relatedProcess.scheme,
+                    'relatedProcesses/identifier': relatedProcess.identifier,
+                    'relatedProcesses/uri': relatedProcess.uri,
+                  });
+                  arrayRelatedProcesses.push(objRelatedProcess);
+                });
 
-              const workbook = {
-                Sheets:{
-                  'Index': worksheetIndex,
-                  '1000': worksheet,
-                  '1100': worksheetExtensions,
-                  '1200': worksheetPublisher,
-                  '1300': worksheetRelease,
-                  '2000': worksheetReleaseParties,
-                  '2100': worksheetReleasePartiesMember,
-                  '2200': worksheetReleasePartiesAContactPoint,
-                  '3000': worksheetReleasePlanning,
-                  '3100': worksheetReleasePlanningRequestingUnit,
-                  '3200': worksheetReleasePlanningContractingUnit,
-                  '3300': worksheetReleasePlanningResponsibleUnit,
-                  '3400': worksheetReleasePlanningBudgetBreakdown,
-                  '3500': worksheetBudgetLinesComponent,
-                  '3600': worksheetBudgetLinesMeasure,
-                  '3700': worksheetPlanningDocuments,
-                  '3800': worksheetRequestsForQuotes,
-                  '3900': worksheetRequestsForQuotesItems,
-                  '4000': worksheetRequestsForQuotesinvitedSupp,
-                  '4100': worksheetRequestsForQuotesQuotes,
-                  '4200': worksheetRequestsForQuotesQuotesItems,
-                  '5000': worksheetTender,
-                  '5100': worksheetArrayTenderes,
-                  '5200': worksheetTenderItems,
-                  '5300': worksheetTenderDocuments,
-                  '5400': worksheetTenderMilestones,
-                  '5500': worksheetTenderAmendment,
-                  '5600': worksheetClarificationMeeting,
-                  '5700': worksheetTenderClarificationMeetingAttendees,
-                  '5800': worksheetBuyer,
-                  '5900': worksheetTenderClarificationMeetingOfficials,
-                  '6000': worksheetAwars,
-                  '6100': worksheetAwarsSuppliers,
-                  '6200': worksheetAwarsDocuments,
-                  '6300': worksheetAwarsAmendments,
-                  '7000': worksheetContracts,
-                  '7100': worksheetContractsItems,
-                  '7200': worksheetContractsdocuments,
-                  '7300': worksheetContractsAmendments,
-                  '7400': worksheetContractsGuarantees,
-                  '8000': worksheetContractsImplementation,
-                  '8100': worksheetContractsImplementationTrans,
-                  '8200': worksheetContractsImplementationMil,
-                  '8300': worksheetContractsImplementationDoc,
-                  '9000': worksheetRelatedProcesses,
-                },
-                SheetNames:arraySheetNames
               }
-              const excelBuffer = XLSX.write(workbook,{bookType:'xlsx',type:'array'});
-              const info = new Blob([excelBuffer],{type: EXCEL_TYPE});
-              saveAs(info,`test_export_${new Date().getTime()}${EXCEL_EXTENSION}`)
+            }
+          });
+          }
+          consecutivo++;
+        }); 
+        objResult.arrayIndice = arrayIndice;
+        objResult.arrayReleasePackage = arrayReleasePackage;
+        objResult.arrayExtensions2 = arrayExtensions2;
+        objResult.arrayPublishers = arrayPublishers;
+        objResult.arrayReleases = arrayReleases;
+        objResult.arrayParties = arrayParties;
+        objResult.arrayMember = arrayMember;
+        objResult.arrayAdditionalContactPoint = arrayAdditionalContactPoint;
+        objResult.arrayPlanning = arrayPlanning;
+        objResult.arrayRequestingUnit = arrayRequestingUnit;
+        objResult.arrayContractingUnit = arrayContractingUnit;
+        objResult.arrayResponsibleUnit = arrayResponsibleUnit;
+        objResult.arrayBudget = arrayBudget;
+        objResult.arrayBudgetLinesComponent = arrayBudgetLinesComponent;
+        objResult.arrayBudgetLinesMeasure = arrayBudgetLinesMeasure;
+        objResult.arrayPlanningDocuments = arrayPlanningDocuments;
+        objResult.arrayRequestsForQuotes = arrayRequestsForQuotes;
+        objResult.arrayRequestsForQuotesItems = arrayRequestsForQuotesItems;
+        objResult.arrayRequestsForQuotesinvitedSuppliers = arrayRequestsForQuotesinvitedSuppliers;
+        objResult.arrayRequestsForQuotesQuotes = arrayRequestsForQuotesQuotes;
+        objResult.arrayRequestsForQuotesQuotesItems = arrayRequestsForQuotesQuotesItems;
+        objResult.arrayTender = arrayTender;
+        objResult.arrayContractsItems = arrayContractsItems;
+        objResult.arrayTenderes = arrayTenderes;
+        objResult.arrayTenderItems = arrayTenderItems;
+        objResult.arrayTenderDocuments = arrayTenderDocuments;
+        objResult.arrayTenderMilestones = arrayTenderMilestones;
+        objResult.arrayTenderAmendment = arrayTenderAmendment;
+        objResult.arrayTenderClarificationMeeting = arrayTenderClarificationMeeting;
+        objResult.arrayBuyer = arrayBuyer;
+        objResult.arrayTenderClarificationMeetingAttendees = arrayTenderClarificationMeetingAttendees;
+        objResult.arrayTenderClarificationMeetingOfficials = arrayTenderClarificationMeetingOfficials;
+        objResult.arrayAwars = arrayAwars;
+        objResult.arrayAwarsSuppliers = arrayAwarsSuppliers;
+        objResult.arrayAwarsDocuments = arrayAwarsDocuments;
+        objResult.arrayAwarsAmendments = arrayAwarsAmendments;
+        objResult.arrayContracts = arrayContracts;
+        objResult.arrayContractsdocuments = arrayContractsdocuments;
+        objResult.arrayContractsAmendments = arrayContractsAmendments;
+        objResult.arrayContractsGuarantees = arrayContractsGuarantees;
+        objResult.arrayContractsImplementation = arrayContractsImplementation;
+        objResult.arrayContractsImplementationTrans = arrayContractsImplementationTrans;
+        objResult.arrayContractsImplementationMilestone = arrayContractsImplementationMilestone;
+        objResult.arrayContractsImplementationDocuments = arrayContractsImplementationDocuments;
+        objResult.arrayRelatedProcesses = arrayRelatedProcesses;
+        // console.log(JSON.stringify(objResult))
+        return objResult;
+      }
+      function generateExcel(data){
+        // console.log(JSON.stringify(data))
+        const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        const EXCEL_EXTENSION = '.xlsx';
+        var arraySheetNames = new Array();
+        if(data.arrayIndice.length !== 0){
+          var worksheetIndex = XLSX.utils.json_to_sheet(data.arrayIndice);
+          var SheetName = 'Index';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayReleasePackage.length !== 0){
+          var worksheet = XLSX.utils.json_to_sheet(data.arrayReleasePackage);
+          var SheetName = '1000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayExtensions2.length !== 0){
+          var worksheetExtensions = XLSX.utils.json_to_sheet(data.arrayExtensions2);
+          var SheetName = '1100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayPublishers.length !== 0){
+          var worksheetPublisher = XLSX.utils.json_to_sheet(data.arrayPublishers);
+          var SheetName = '1200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayReleases.length !== 0){
+          var worksheetRelease = XLSX.utils.json_to_sheet(data.arrayReleases);
+          var SheetName = '1300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayParties.length !== 0){
+          var worksheetReleaseParties = XLSX.utils.json_to_sheet(data.arrayParties);
+          var SheetName = '2000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayMember.length !== 0){
+          var worksheetReleasePartiesMember = XLSX.utils.json_to_sheet(data.arrayMember);
+          var SheetName = '2100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayAdditionalContactPoint.length !== 0){
+          var worksheetReleasePartiesAContactPoint = XLSX.utils.json_to_sheet(data.arrayAdditionalContactPoint);
+          var SheetName = '2200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayPlanning.length !== 0){
+          var worksheetReleasePlanning = XLSX.utils.json_to_sheet(data.arrayPlanning);
+          var SheetName = '3000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestingUnit.length !== 0){
+          var worksheetReleasePlanningRequestingUnit = XLSX.utils.json_to_sheet(data.arrayRequestingUnit);
+          var SheetName = '3100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractingUnit.length !== 0){
+          var worksheetReleasePlanningContractingUnit = XLSX.utils.json_to_sheet(data.arrayContractingUnit);
+          var SheetName = '3200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayResponsibleUnit.length !== 0){
+          var worksheetReleasePlanningResponsibleUnit = XLSX.utils.json_to_sheet(data.arrayResponsibleUnit);
+          var SheetName = '3300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayBudget.length !== 0){
+          var worksheetReleasePlanningBudgetBreakdown = XLSX.utils.json_to_sheet(data.arrayBudget);
+          var SheetName = '3400';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayBudgetLinesComponent.length !== 0){
+          var worksheetBudgetLinesComponent = XLSX.utils.json_to_sheet(data.arrayBudgetLinesComponent);
+          var SheetName = '3500';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayBudgetLinesMeasure.length !== 0){
+          var worksheetBudgetLinesMeasure = XLSX.utils.json_to_sheet(data.arrayBudgetLinesMeasure);
+          var SheetName = '3600';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayPlanningDocuments.length !== 0){
+          var worksheetPlanningDocuments = XLSX.utils.json_to_sheet(data.arrayPlanningDocuments);
+          var SheetName = '3700';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestsForQuotes.length !== 0){
+          var worksheetRequestsForQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotes);
+          var SheetName = '3800';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestsForQuotesItems.length !== 0){
+          var worksheetRequestsForQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesItems);
+          var SheetName = '3900';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestsForQuotesinvitedSuppliers.length !== 0){
+          var worksheetRequestsForQuotesinvitedSupp = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesinvitedSuppliers);
+          var SheetName = '4000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestsForQuotesQuotes.length !== 0){
+          var worksheetRequestsForQuotesQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotes);
+          var SheetName = '4100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRequestsForQuotesQuotesItems.length !== 0){
+          var worksheetRequestsForQuotesQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotesItems);
+          var SheetName = '4200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTender.length !== 0){
+          var worksheetTender = XLSX.utils.json_to_sheet(data.arrayTender);
+          var SheetName = '5000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderes.length !== 0){
+          var worksheetArrayTenderes = XLSX.utils.json_to_sheet(data.arrayTenderes);
+          var SheetName = '5100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderItems.length !== 0){
+          var worksheetTenderItems = XLSX.utils.json_to_sheet(data.arrayTenderItems);
+          var SheetName = '5200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderDocuments.length !== 0){
+          var worksheetTenderDocuments = XLSX.utils.json_to_sheet(data.arrayTenderDocuments);
+          var SheetName = '5300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderMilestones.length !== 0){
+          var worksheetTenderMilestones = XLSX.utils.json_to_sheet(data.arrayTenderMilestones);
+          var SheetName = '5400';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderAmendment.length !== 0){
+          var worksheetTenderAmendment = XLSX.utils.json_to_sheet(data.arrayTenderAmendment);
+          var SheetName = '5500';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderClarificationMeeting.length !== 0){
+          var worksheetClarificationMeeting = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeeting);
+          var SheetName = '5600';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderClarificationMeetingAttendees.length !== 0){
+          var worksheetTenderClarificationMeetingAttendees = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingAttendees);
+          var SheetName = '5700';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayBuyer.length !== 0){
+          var worksheetBuyer = XLSX.utils.json_to_sheet(data.arrayBuyer);
+          var SheetName = '5800';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayTenderClarificationMeetingOfficials.length !== 0){
+          var worksheetTenderClarificationMeetingOfficials = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingOfficials);
+          var SheetName = '5900';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayAwars.length !== 0){
+          var worksheetAwars = XLSX.utils.json_to_sheet(data.arrayAwars);
+          var SheetName = '6000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayAwarsSuppliers.length !== 0){
+          var worksheetAwarsSuppliers = XLSX.utils.json_to_sheet(data.arrayAwarsSuppliers);
+          var SheetName = '6100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayAwarsDocuments.length !== 0){
+          var worksheetAwarsDocuments = XLSX.utils.json_to_sheet(data.arrayAwarsDocuments);
+          var SheetName = '6200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayAwarsAmendments.length !== 0){
+          var worksheetAwarsAmendments = XLSX.utils.json_to_sheet(data.arrayAwarsAmendments);
+          var SheetName = '6300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContracts.length !== 0){
+          var worksheetContracts = XLSX.utils.json_to_sheet(data.arrayContracts);
+          var SheetName = '7000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsItems.length !== 0){
+          var worksheetContractsItems = XLSX.utils.json_to_sheet(data.arrayContractsItems);
+          var SheetName = '7100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsdocuments.length !== 0){
+          var worksheetContractsdocuments = XLSX.utils.json_to_sheet(data.arrayContractsdocuments);
+          var SheetName = '7200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsAmendments.length !== 0){
+          var worksheetContractsAmendments = XLSX.utils.json_to_sheet(data.arrayContractsAmendments);
+          var SheetName = '7300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsGuarantees.length !== 0){
+          var worksheetContractsGuarantees = XLSX.utils.json_to_sheet(data.arrayContractsGuarantees);
+          var SheetName = '7400';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsImplementation.length !== 0){
+          var worksheetContractsImplementation = XLSX.utils.json_to_sheet(data.arrayContractsImplementation);
+          var SheetName = '8000';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsImplementationTrans.length !== 0){
+          var worksheetContractsImplementationTrans = XLSX.utils.json_to_sheet(data.arrayContractsImplementationTrans);
+          var SheetName = '8100';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsImplementationMilestone.length !== 0){
+          var worksheetContractsImplementationMil = XLSX.utils.json_to_sheet(data.arrayContractsImplementationMilestone);
+          var SheetName = '8200';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayContractsImplementationDocuments.length !== 0){
+          var worksheetContractsImplementationDoc = XLSX.utils.json_to_sheet(data.arrayContractsImplementationDocuments);
+          var SheetName = '8300';
+          arraySheetNames.push(SheetName);
+        }
+        if(data.arrayRelatedProcesses.length !== 0){
+          var worksheetRelatedProcesses = XLSX.utils.json_to_sheet(data.arrayRelatedProcesses);
+          var SheetName = '9000';
+          arraySheetNames.push(SheetName);
+        }
+
+        const workbook = {
+          Sheets:{
+            'Index': worksheetIndex,
+            '1000': worksheet,
+            '1100': worksheetExtensions,
+            '1200': worksheetPublisher,
+            '1300': worksheetRelease,
+            '2000': worksheetReleaseParties,
+            '2100': worksheetReleasePartiesMember,
+            '2200': worksheetReleasePartiesAContactPoint,
+            '3000': worksheetReleasePlanning,
+            '3100': worksheetReleasePlanningRequestingUnit,
+            '3200': worksheetReleasePlanningContractingUnit,
+            '3300': worksheetReleasePlanningResponsibleUnit,
+            '3400': worksheetReleasePlanningBudgetBreakdown,
+            '3500': worksheetBudgetLinesComponent,
+            '3600': worksheetBudgetLinesMeasure,
+            '3700': worksheetPlanningDocuments,
+            '3800': worksheetRequestsForQuotes,
+            '3900': worksheetRequestsForQuotesItems,
+            '4000': worksheetRequestsForQuotesinvitedSupp,
+            '4100': worksheetRequestsForQuotesQuotes,
+            '4200': worksheetRequestsForQuotesQuotesItems,
+            '5000': worksheetTender,
+            '5100': worksheetArrayTenderes,
+            '5200': worksheetTenderItems,
+            '5300': worksheetTenderDocuments,
+            '5400': worksheetTenderMilestones,
+            '5500': worksheetTenderAmendment,
+            '5600': worksheetClarificationMeeting,
+            '5700': worksheetTenderClarificationMeetingAttendees,
+            '5800': worksheetBuyer,
+            '5900': worksheetTenderClarificationMeetingOfficials,
+            '6000': worksheetAwars,
+            '6100': worksheetAwarsSuppliers,
+            '6200': worksheetAwarsDocuments,
+            '6300': worksheetAwarsAmendments,
+            '7000': worksheetContracts,
+            '7100': worksheetContractsItems,
+            '7200': worksheetContractsdocuments,
+            '7300': worksheetContractsAmendments,
+            '7400': worksheetContractsGuarantees,
+            '8000': worksheetContractsImplementation,
+            '8100': worksheetContractsImplementationTrans,
+            '8200': worksheetContractsImplementationMil,
+            '8300': worksheetContractsImplementationDoc,
+            '9000': worksheetRelatedProcesses,
+          },
+          SheetNames:arraySheetNames
+        }
+        const excelBuffer = XLSX.write(workbook,{bookType:'xlsx',type:'array'});
+        const info = new Blob([excelBuffer],{type: EXCEL_TYPE});
+        saveAs(info,`test_export_${new Date().getTime()}${EXCEL_EXTENSION}`)
+      }
+      
+      function convertToCSV(objArray) {
+      const array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
+      let str = "";
+      for (let i = 0; i < array.length; i++) {
+        let line = "";
+        for (let index in array[i]) {
+          if (line != "") line += ",";
+          line += validatesComas(array[i][index]);
+        }
+        str += line + "\r\n";
+        console.log(`line str ${str}`)
+      }
+      
+      return str;
+      } 
+
+      function exportCSVFile(headers, items, fileName) {
+        if (headers) {
+          items.unshift(headers);
+        }
+        const jsonObject = JSON.stringify(items);
+        const csv = convertToCSV(jsonObject);
+        const exportName = fileName + ".csv" || "export.csv";
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        if (navigator.msSaveBlob) {
+          navigator.msSaveBlob(blob, exportName);
+        } else {
+          const link = document.createElement("a");
+          if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", exportName);
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
+      }
+
+      function validatesComas(cadena){
+        if(cadena != undefined){
+          var caracteres = Array.from(cadena);
+          var cadenaRes = "";
+          caracteres.forEach(caracter => {
+            if(caracter != ',') cadenaRes += caracter;
+          });
+          // console.log('validatesComas '+cadenaRes)
+          return cadenaRes.replace(/(\r\n|\n|92r)/gm,"");
+        }else{
+          return undefined;
+        }
+        
       }
     </script>
 

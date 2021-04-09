@@ -338,7 +338,7 @@ $(document).ready(function () {
         orderby: $('#orderby').val() 
     }, p);
 
-    $('#keyword').keyup(function () {
+    $('#anotherkeyword').click(function () {
         $('#ctable').load('/contratacionesabiertas/pagination',{ 
             npage : 1, 
             keyword: $('#keyword').val(),  
@@ -349,7 +349,7 @@ $(document).ready(function () {
             orderby: $('#orderby').val() 
         }, p);
     });
-
+    
     $('#orderby').change(function () {
         $('#ctable').load('/contratacionesabiertas/pagination',{ 
             npage : 1, 

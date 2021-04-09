@@ -207,7 +207,7 @@ router.post('/pagination', function (req, res) {
             inner join tender on tender.contractingprocess_id = contractingprocess.id
             inner join parties on parties.contractingprocess_id = contractingprocess.id
             inner join roles as rod on rod.parties_id = parties.id
-            where rod.supplier = true and` + where + ') t ' + whereExterno;
+            where (rod.supplier = true or rod.buyer = true or rod.requestingunit = true) and` + where + ') t ' + whereExterno;
 
         var query2 = "select count(*) as total from (" + query1 + ") as q";
         

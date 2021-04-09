@@ -27,6 +27,7 @@
     <link rel="import" href="/contratacionesabiertas/static/inai-footer/dgm-footer.html">
     <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css" />
     <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster-follower/dist/css/tooltipster-follower.min.css" />
+    <script src="/contratacionesabiertas/static/javascripts/common.js"></script>
 	
 	<style no-shim>        
         .navbar-default   { background-color: #FFFFFF; border: none; top: 158.5px; }
@@ -153,248 +154,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 post">
-                <div ng-bind-html="content" class="content ng-binding">
-                    <h1 style="text-align: center;">Política de publicación de datos sobre contrataciones públicas del INAI de acuerdo con el Estándar de Datos de Contrataciones Abiertas en México (EDCA-MX) 1.1</h1>
-                    <h6 style="text-align: right">Publicada el 25 de septiembre de 2018</h6>
-                    <h6 style="text-align: right">Última actualización: 15 de diciembre de 2020</h6>
-                    <br><br>
-                </div>
-
-                <h4><strong>Objetivo de la publicación</strong></h4>
-                <br>
-                <p>Mejorar la oferta, calidad y disponibilidad de la información relacionada con los procedimientos de contratación, con el fin de promover su transformación en conocimiento público útil que facilite la toma de decisiones, la libre competencia y la integridad pública a través de la contraloría ciudadana y la fiscalización inteligente.</p>
-                <br>
-                <h4><strong>Casos de uso que se buscan fomentar</strong></h4>
-                <br>
-                <ol>
-                    <li>Facilitar esquemas de interoperabilidad entre sistemas para publicar la información estandarizada y facilitar su uso.</li>
-                    <li>Desarrollar de herramientas tecnológicas que utilicen los datos y los transformen en información accionable para la toma de decisiones.</li>
-                    <li>Habilitar mecanismos de participación ciudadana en el monitoreo, control y seguimiento de los procedimientos de contratación.</li>
-                    <li>Facilitar el análisis de datos por parte del sector privado para mejorar su inteligencia de negocios.</li>
-                    <li>Facilitar el análisis de datos por parte del sector público para mejorar la efectividad y eficiencia de las compras públicas y generar ahorros.</li>
-                    <li>Establecer banderas rojas para la detección automática y oportuna de posibles irregularidades, omisiones y actos de corrupción.</li>
-                </ol>
-                <br>
-                <h4><strong>Publicación de datos</strong></h4>
-                <p>
-                    El 13 de septiembre de 2017 el Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI) publicó un primer conjunto de datos, conforme a la versión 1.1 del 
-                    EDCA, relativos a los procedimientos de contratación y convenios de colaboración celebrados durante el primer semestre de ese año. Asimismo, el 17 de agosto de 2018 el INAI publicó una nueva 
-                    actualización de datos, incluyendo algunas de las extensiones MX desarrolladas por la Alianza para las Contrataciones Abiertas en México (ACA).
-                </p>
-                <p>El INAI continuó desarrollando y agregando extensiones al esquema inicial del EDCA consolidando así el EDCA-MX, que actualmente cuenta con un total de 19 extensiones. 
-                   Estas extensiones fueron agregadas paulatinamente a la par que se realizaba la publicación de conjuntos de datos. 
-                   Además de las dos primeras actualizaciones, se han realizado cuatro actualizaciones más; una de ellas se publicó en diciembre de 2018 y las tres siguientes tuvieron lugar en el transcurso del 2020.
-                </p>
-                <br>
-                <h4><strong>Consulta de datos</strong></h4>
-                <p>Los datos de los procedimientos de contratación del INAI se publican en el sitio de Internet: 
-                    <a href="http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/contratos/" target="_blank">http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/contratos/</a>
-                </p>
-                <p>Las bases de datos abiertos están disponibles en formato JSON y XLSX en el sitio de internet:
-                    <a href="http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/datosabiertos" target="_blank">http://contratacionesabiertas.inai.org.mx/contratacionesabiertas/datosabiertos</a>
-                </p>
-                <br>
-                <h4><strong>Actualización de datos</strong></h4>
-                <p>
-                    A partir de la segunda mitad del 2018, y debido a que el INAI no cuenta con un método de publicación de datos vinculado al funcionamiento de herramientas transaccionales, se pretende publicar 
-                    actualizaciones de datos de manera trimestral. Las actualizaciones de datos se realizan de manera manual, mediante un sistema de captura que contempla las variables aplicables a la normativa en 
-                    materia de adquisiciones y transparencia.
-                </p>
-                <p>
-                    Posteriormente, se pretende fusionar el sistema electrónico de gestión documental (GD-Mx) del INAI con la herramienta de contrataciones abiertas con el fin de organizar y estructurar la generación, 
-                    publicación y conservación de datos en el tiempo. Con ello, se logrará publicar la información en tiempo real, una vez que los documentos que conforman el ciclo de la contratación estén terminados 
-                    y firmados digitalmente.
-                </p>
-                <br>
-                <h4 style="text-align: center">Tabla 1. Registro de actualización</h4>
-                <table>
-                        <tr>
-                            <th>Fecha de actualización</th>
-                            <th>Descripción</th>
-                            <th>Periodo que abarca</th>
-                        </tr>
-                        <tr>
-                            <td>13 de septiembre 2017</td>
-                            <td>Primera publicación de datos del INAI.</td>
-                            <td>1er semestre 2017</td>
-                        </tr>
-                        <tr>
-                            <td>17 de agosto 2018</td>
-                            <td>Actualización de datos.</td>
-                            <td>2do semestre 2017 y 1er semestre 2018</td>
-                        </tr>
-                        <tr>
-                            <td>4 de diciembre de 2018</td>
-                            <td>Actualización de datos.</td>
-                            <td>2do trimestre 2018 y 3er trimestre 2018</td>
-                        </tr>
-                        <tr>
-                            <td>24 de febrero de 2020</td>
-                            <td>Actualización de datos.</td>
-                            <td>4to trimestre 2018 y 3er trimestre 2019</td>
-                        </tr>
-                        <tr>
-                            <td>Junio de 2020</td>
-                            <td>Actualización de datos.</td>
-                            <td>4to trimestre 2019</td>
-                        </tr>
-                        <tr>
-                            <td>15 de diciembre de 2020</td>
-                            <td>Actualización de datos.</td>
-                            <td>1er, 2do, 3ro y 4to trimestre de 2020</td>
-                        </tr>
-                </table>
-                <br>
-                <br>
-                <h4><strong>Responsables de la publicación de datos</strong></h4>
-                <p>En el INAI, cada unidad administrativa que requiere un procedimiento es la responsable 
-                    de la captura de información dentro de la herramienta de contrataciones abiertas.
-                </p>
-                <p>
-                    La Dirección General de Políticas de Acceso (DGPA) es la encargada de dar seguimiento y 
-                    soporte a la captura por parte de cada una de las unidades administrativas del INAI y 
-                    de hacer un corte de actualización cada trimestre. Es importante considerar que la DGPA solo 
-                    hace validaciones sobre la naturaleza de los datos, pero no sobre la veracidad de los mismos, 
-                    por lo que la información contenida en cada publicación es responsabilidad exclusiva de la unidad 
-                    administrativa que la genera.
-                </p>
-                <br>
-                <h4><strong>Control de los datos</strong></h4>
-                <p>
-                    El INAI hace un esfuerzo por mantener congruencia e integridad en los datos que publica 
-                    cada una de las unidades administrativas. Por ello, la Dirección General de Políticas de 
-                    Acceso es la encargada de realizar periódicamente un conjunto de valoraciones sobre los 
-                    datos capturados por las áreas del Instituto.
-                </p>
-                <p>
-                    Para realizar estas valoraciones, se diseñó una herramienta semi automática que retoma todas 
-                    las variables capturadas y las contrasta con el esquema de publicación del EDCA. Como resultado, 
-                    se obtienen dos tipos de valoraciones que informan a las áreas sobre la calidad de sus 
-                    datos (de acuerdo con fórmulas previamente programadas) para mantener una correcta estructura de 
-                    publicación, y sobre la cantidad de los datos (de acuerdo con las responsabilidades de publicación 
-                    según el tipo de procedimiento) que evidencia la omisión de ciertas variables relevantes. 
-                    Asimismo, se otorga un reporte de los actores, los documentos, los ítems y las transacciones registradas.
-                </p>
-                <p>
-                    Este mecanismo de control busca reducir los errores de captura e incrementar el entendimiento 
-                    de la naturaleza de cada dato y atributo del EDCA.
-                </p>
-                <br>
-                <h4><strong>Datos de contacto</strong></h4>
-                <p>Sobre la publicación de los datos:</p>
-                <p><i>contratacionesabiertas@inai.org.mx</i></p>
-                <br>
-                <h4><strong>Licencia de publicación</strong></h4>
-                <p>Estos datos pueden ser utilizados, reutilizados y redistribuidos por cualquier usuario y para 
-                    cualquier fin, de acuerdo con el “Decreto por el que se establece la regulación en materia de 
-                    Datos Abiertos”, publicado el 20 de febrero de 2015 en el Diario Oficial de la Federación:
-                </p>
-                <p>
-                    Artículo Primero.- [...] los datos de carácter público, generados por las dependencias y 
-                    entidades de la Administración Pública Federal y por las empresas productivas del Estado, 
-                    se pondrán a disposición de la población como datos abiertos, con el propósito de facilitar 
-                    su acceso, uso, reutilización y redistribución para cualquier fin, conforme a los ordenamientos 
-                    jurídicos aplicables. [...]
-                </p>
-                <p>Consulta los <a href="https://datos.gob.mx/libreusomx" target="_blank">Términos de Libre Uso MX</a>.</p>
-                <br>
-                <h4><strong>Información de referencia</strong></h4>
-                <br>
-                <h5><i>Actores involucrados</i></h5>
-                <p>
-                    Para identificar fielmente a todos los actores involucrados en el procedimiento de 
-                    contratación se utiliza la lista de códigos “Registro Federal de Contribuyentes (RFC)”, 
-                    tanto para personas físicas como morales. 
-                </p>
-                <br>
-                <h5><i>Items</i></h5>
-                <p>
-                    Para identificar los ítems contratados según el EDCA, se utiliza la lista de códigos 
-                    “<a href="https://sites.google.com/site/cnetcucop/" target="_blank">Clasificador Único de las Contrataciones Públicas (CUCOP)</a>” que cuenta con ocho dígitos y 
-                    hacen referencia al bien, servicio u obra pública contratado.
-                </p>
-                <br>
-                <h5><i>Información presupuestaria</i></h5>
-                <p>
-                    Con el fin de ligar la planeación institucional con las contrataciones públicas, 
-                    se retomó la estructura programática definida en el <a href="http://transparenciapresupuestaria.gob.mx/work/models/PTP/Presupuesto/Programacion/manual_de_programacion_y_presupuesto_2018.pdf" target="_blank">Manual de Programación y Presupuesto 2018</a> 
-                    y se agregaron tres variables relativas a las actividades y proyectos especiales de 
-                    las unidades administrativas del INAI.
-                </p>
-                <br>
-                <h4 style="text-align: center">Figura 1: Estructura programática de la clave presupuestaria del INAI</h4>
-                <table style="width: 100%">
-                    <tr>
-                        <th class="th2">Clasificación administrativa</th>
-                        <th class="th2">Clasificación funcional y programática</th>
-                        <th class="th3">Clasificación INAI</th>
-                        <th class="th2">Clasificación económica</th>
-                        <th class="th2">Clasificación geográfica</th>
-                    </tr>
-                    <tr>
-                        <td class="td2">Ramo, Unidad responsable</td>
-                        <td class="td2">Finalidad, Función, Subfunción, Actividad institucional, Programa presupuestario</td>
-                        <td class="td3">Objetivo estratégico, Unidad requirente, Actividad MIR / Proyecto Especial</td>
-                        <td class="td2">Objeto del gasto, Tipo de gasto, Fuente de financiamiento</td>
-                        <td class="td2">Entidad federativa</td>
-                    </tr>
-                </table>
-                <br>
-                <p>
-                    Estas tres variables permiten asociar la planeación presupuestaria y el gasto a los indicadores 
-                    de desempeño institucional, lo que implica la posibilidad de valorar la contribución de las 
-                    contrataciones que realiza cada unidad administrativa con el cumplimiento de sus objetivos.
-                </p>
-                <br>
-                <h5><i>Extensiones MX</i></h5>
-                <p>La inclusión de las extensiones MX se ha dado de una forma paulatina de acuerdo con las 
-                    necesidades de publicación del Instituto. Sin embargo, se espera que se puedan incorporar todas las 
-                    extensiones en la interconexión del sistema GD-Mx y la herramienta de Contrataciones Abiertas con 
-                    el objetivo de facilitar la publicación de las obligaciones de transparencia del INAI en la 
-                    Plataforma Nacional de Transparencia.
-                </p>
-                <p>Actualmente, el Instituto publica las siguientes extensiones:</p>
-                <ul style="list-style-type: disc;">
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_requestForQuotes_extension" target="_blank">Solicitud de cotizaciones</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_clarificationMeetings_extension" target="_blank">Juntas de aclaraciones</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_paymentMethod_extension" target="_blank">Método de pago</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_taxes_extension" target="_blank">Impuestos</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_publicNotices_extension" target="_blank">Avisos a la población</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_implementationStatus_extension" target="_blank">Estatus de la ejecución</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_awardRationale_extension" target="_blank">Justificación de la adjudicación</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_nameBreakdown_extension" target="_blank">Desglose de nombre</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_surveillanceMechanisms_extension" target="_blank">Mecanismos de vigilancia</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_extendedProcurementCategory_extension" target="_blank">Categorías adicionales del procedimiento</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_contactPointType_extension" target="_blank">Tipo de punto de contacto</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_budgetLines_extension" target="_blank">Líneas de presupuesto</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_guarantees_extension" target="_blank">Garantías</a></li>
-                    <li><a href="https://github.com/contratacionesabiertas/ocds_procurementUnits_extension" target="_blank">Unidades administrativas</a></li>
-                    <li><a href="https://github.com/open-contracting-extensions/ocds_exchangeRate_extension" target="_blank">Tasas de cambio</a></li>
-                    <li><a href="https://extensions.open-contracting.org/en/extensions/location/" target="_blank">Ubicación</a></li>
-                    <li><a href="https://extensions.open-contracting.org/en/extensions/additionalContactPoint/" target="_blank">Puntos de contacto adicionales</a></li>
-                    <li><a href="https://github.com/open-contracting-extensions/ocds_memberOf_extension" target="_blank">Miembro de</a></li>
-                    <li><a href="https://extensions.open-contracting.org/en/extensions/budget/" target="_blank">Desglose del presupuesto</a></li>
-                </ul>
-                <br>
-                <p>El diseño de estas extensiones puede ser consultado en el <a href="https://github.com/contratacionesabiertas" target="_blank">repositorio del INAI.</a></p><br>
-                <h4><strong>Marco normativo de referencia</strong></h4>
-                <ul style="list-style-type: none;">
-                    <li>Constitución Política de los Estados Unidos Mexicanos.</li>
-                    <li>Ley de Adquisiciones, Arrendamientos y Servicios del Sector Público.</li>
-                    <li>Ley de Obras Públicas y Servicios Relacionados con las Mismas.</li>
-                    <li>Ley General del Sistema Nacional Anticorrupción.</li>
-                    <li>Ley General de Transparencia Y Acceso a la Información Pública.</li>
-                    <li>Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados.</li>
-                    <li>Ley de Coordinación Fiscal.</li>
-                    <li>Decreto de Presupuesto de Egresos de la Federación 2017.</li>
-                    <li>Decreto de Presupuesto de Egresos de la Federación 2018.</li>
-                    <li>Decreto por el que se establece la regulación en materia de Datos Abiertos.</li>
-                    <li>Reglamento de Adquisiciones, Arrendamientos y Servicios del instituto Nacional de Transparencia, Acceso a la información y Protección de Datos Personales.</li>
-                    <li>PLAN DE AUSTERIDAD para reducir el gasto del Instituto, eficientar el uso de recursos públicos y hacer más eficaz su gestión, sin afectar su labor para garantizar los derechos de acceso a la información y de protección de datos personales.</li>
-                    <li>Manual Administrativo de Aplicación General en Materia de Adquisiciones, Arrendamientos y Servicios del Sector Público.</li>
-                    <li>Manual Administrativo de Aplicación General en Materia de Obras Públicas y Servicios Relacionados con las Mismas.</li>
-                </ul>
-                <br>
+                <div id="policy"></div>
             </div>
         </div>
     </div>
@@ -406,7 +166,22 @@
     <script type="text/javascript" src="/contratacionesabiertas/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<%= process.env.CDN_URL %>/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var uri = globals.site.url;
+            var port = globals.site.port;
+            $.ajax({
+                    url: `${uri}:${port}/edca/policy`,
+                    type: 'GET',
+                    success: function(value){ 
+                        $("#policy").html(value.policy);
+                    },
+                    error: function(value) {
+                        $("#policy").val('Not Found');
+                    }
+                });
+        });
+    </script>
 </body>
 
 </html>
