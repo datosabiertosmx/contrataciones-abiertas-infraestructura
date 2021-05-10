@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       through: 'edcapi_project_locations_coordinate_location',
       as: 'coordinates',
       foreignKey: 'edcapiLocationProjectId',
+    }),
+    edcapi_location_project.belongsToMany(models.edcapi_project_location_address, {
+      through: 'edcapi_project_locations_address_location',
+      as: 'address',
+      foreignKey: 'edcapiLocationProjectId',
     })
   };
   return edcapi_location_project;

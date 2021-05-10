@@ -200,7 +200,8 @@ function Import(contractingproessid, database, numberStage, registerid) {
     this.importPlanning = async function(planning){
         let schema = {
             rationale: 'rationale',
-            hasquotes: 'hasquotes'
+            hasquotes: 'hasquotes',
+            numberofbeneficiaries: 'numberofbeneficiaries'
         };
         await deleteAll(['planning', 'requestforquotes', 'planningdocuments', 'budget', 'budgetbreakdown']);
         await processRecords('planning', ['contractingprocess_id'], schema,{contractingprocess_id: cpid, hasquotes: planning.requestsForQuotes !== undefined}, [planning]);

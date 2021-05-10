@@ -995,9 +995,10 @@ router.post('/update-planning', isAuthenticated, async function (req, res) {
 
     var register = await db_conf.edca_db.oneOrNone('select id from planning where contractingProcess_id = $1 and hasquotes is not null limit 1', [req.body.contractingprocess_id]) != null;
     db_conf.edca_db.tx( async function (t) {
-        var planning = this.one("update planning set rationale = $1, hasquotes = $2 where ContractingProcess_id = $3 returning id", [
+        var planning = this.one("update planning set rationale = $1, hasquotes = $2, numberofbeneficiaries = $3 where ContractingProcess_id = $4 returning id", [
             req.body.rationale,
             req.body.hasquotes != '' ? req.body.hasquotes : null,
+            req.body.numberofbeneficiaries,
             req.body.contractingprocess_id
         ]);
         var budget = this.one("update budget set budget_source = $2, budget_budgetid =$3, budget_description= $4, budget_amount=$5, budget_currency=$6, budget_project=$7, budget_projectid=$8, budget_uri=$9" +
@@ -4956,11 +4957,11 @@ router.post('/1.1/update_location_project',async function(req,res){
     console.log("######### /1.1/update_location_project BODY " + JSON.stringify(req.body, null, 4))
     var request = JSON.stringify(req.body); 
     var relprojectLocation = await db.edcapi_project_location_project.findAll({where: {edcapiLocationProjectId: req.body.location_id}});
+    console.log("######### relprojectLocation " + JSON.stringify(relprojectLocation, null, 4))
     project.updateLocationProject(request).then(async function(){
-            res.jsonp({
-                status: 'Ok',
-                description: "Los datos han sido actualizados",
-            });
+        return res.jsonp({
+            status: 'Ok',
+            description: "Los datos han sido actualizados",
         }).then(function(){
             project.updatePublishedDate(relprojectLocation[0].project_id,req.user);
         }).catch(function (error) {
@@ -4971,6 +4972,7 @@ router.post('/1.1/update_location_project',async function(req,res){
                 error: error
             });
         });
+    })
 });
 //update document project
 router.post('/1.1/update_document_project',async function(req,res){
@@ -7087,109 +7089,33 @@ router.get('/edca/contractingprocess/csv/:year',async function(req, res){
             }
         )}
     })
-    // cp_functions.getContractingProcess(req.params, getHost(req)).then(response => {
-    //     if(response !== false){
-    //         console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
-    //         converterToCSV.json2csv(response, (err, csv) => {
-    //             if (err) {
-    //                 throw err;
-    //             }
-    //             // print CSV string
-    //             // console.log(csv);
-    //             fs.writeFileSync('todos.csv', csv);
-    //             res.download('./todos.csv', function (err){
-    //                 if(err){
-    //                     console.log(`ERROR ${err}`)
-    //                 }else{
-    //                     fs.unlink('./todos.csv', (err) => {
-    //                         if (err) {
-    //                             console.error(err)
-    //                             return
-    //                         }
-    //                     })
-    //                 }    
-    //             })                
-    //         });
-    //     }else{
-    //         return res.status(404).json({
-    //             status: 404,
-    //             message: `No se encontrarón resultados con el parámetro seleccionado.`
-    //         }
-    //     );
-    //     }
-        
-    // })
 });
 
 router.get('/edca/contractingprocess/additionalprocurementcategories/csv/:additionalprocurementcategories/:year',async function(req, res){
     console.log("························· /edca/contractingprocess/additionalprocurementcategories/csv/:additionalprocurementcategories/:year PARAMS "  + JSON.stringify(req.params));
-    cp_functions.getAdditionalProcurementCategories(req.params, getHost(req), res).then(response => {
-        if(response !== false){
-            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
-            converterToCSV.json2csv(response, (err, csv) => {
-                if (err) {
-                    throw err;
-                }
-                // print CSV string
-                // console.log(csv);
-                fs.writeFileSync('todos.csv', csv);
-                res.download('./todos.csv', function (err){
-                    if(err){
-                        console.log(`ERROR ${err}`)
-                    }else{
-                        fs.unlink('./todos.csv', (err) => {
-                            if (err) {
-                                console.error(err)
-                                return
-                            }
-                        })
-                    }    
-                })                
-            });
+    cp_functions.getAdditionalProcurementCategories(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
         }else{
             return res.status(404).json({
                 status: 404,
                 message: `No se encontrarón resultados con el parámetro seleccionado.`
             }
-        );
-        }
-        
+        )}
     })
 });
 
 router.get('/edca/contractingprocess/procurementmethod/csv/:procurementmethod/:year',async function(req, res){
     console.log("························· /edca/contractingprocess/procurementmethod/csv/:procurementmethod/:year PARAMS "  + JSON.stringify(req.params));
-    cp_functions.getProcurementMethod(req.params, getHost(req), res).then(response => {
-        if(response !== false){
-            console.log(`responseJSON :  ${JSON.stringify(response, null, 2)}`)    
-            converterToCSV.json2csv(response, (err, csv) => {
-                if (err) {
-                    throw err;
-                }
-                // print CSV string
-                // console.log(csv);
-                fs.writeFileSync('todos.csv', csv);
-                res.download('./todos.csv', function (err){
-                    if(err){
-                        console.log(`ERROR ${err}`)
-                    }else{
-                        fs.unlink('./todos.csv', (err) => {
-                            if (err) {
-                                console.error(err)
-                                return
-                            }
-                        })
-                    }    
-                })                
-            });
+    cp_functions.getProcurementMethod(req.params, getHost(req), res).then(arrayReleasePackage => {
+        if(arrayReleasePackage){
+            return res.status(200).json({arrayReleasePackage});
         }else{
             return res.status(404).json({
                 status: 404,
                 message: `No se encontrarón resultados con el parámetro seleccionado.`
             }
-        );
-        }
-        
+        )}
     })
 });
 

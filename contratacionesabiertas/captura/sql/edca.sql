@@ -1713,7 +1713,8 @@ CREATE TABLE public.planning (
     id integer NOT NULL,
     contractingprocess_id integer,
     hasquotes boolean,
-    rationale text
+    rationale text,
+    numberofbeneficiaries numeric
 );
 
 
@@ -17141,7 +17142,7 @@ COPY public.paymentmethod (id, code, title, description) FROM stdin;
 -- Data for Name: planning; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.planning (id, contractingprocess_id, hasquotes, rationale) FROM stdin;
+COPY public.planning (id, contractingprocess_id, hasquotes, rationale, numberofbeneficiaries) FROM stdin;
 \.
 
 

@@ -825,13 +825,6 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         
                         modal.find('#update_location_project_form').submit(function (event) {
                             event.preventDefault();
-        
-                            modal.find('#items').children().each(function (i) {
-                                $(this).find('input, textarea, select').each(function () {
-                                    $(this).attr('name', $(this).attr('name').replace(/\[[0-9]+\]/g, '[' + i + ']'));
-                                });
-                            });
-        
                             $.ajax({
                                 url: '/1.1/update_location_project',
                                 type: 'post',
@@ -1822,37 +1815,6 @@ $('#genericModal').on('show.bs.modal', function (event) {
             modal.find('#modal_content').load('/add-location-project', {
                 project_id: button.data('project_id')
             }, function () {
-                // Agrega nuevos items a las coordenadas
-                modal.off('click', '[data-action="add_item"]');
-                modal.on('click', '[data-action="add_item"]', function (e) {
-                    e.preventDefault();
-                    var template = modal.find('#itemTemplate').html();
-
-                    var index = new Date().getTime();
-                    template = template.replace(/\[0\]/g, '[' + index + ']');
-
-                    var content = $(template).appendTo(modal.find('#items'));
-                    initItem(content);
-                    updateSelectedItem();
-                });
-
-                // Elimina items de las coordenadas
-                modal.on('click', '[data-dismiss="item"]', function (e) {
-                    e.preventDefault();
-
-                    $(this).parent().remove();
-
-                    if (modal.find('#items').children().length == 0) {
-                        var template = modal.find('#itemTemplate').html();
-
-                        var index = new Date().getTime();
-                        template = template.replace(/\[0\]/g, '[' + index + ']');
-
-                        var content = $(template).appendTo(modal.find('#items'));
-                    }
-                    updateSelectedItem();
-                });
-                
                 modal.find('#add_location_project_form').submit(function (event) {
                     event.preventDefault();
 

@@ -192,6 +192,13 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        code: 'illustration',
+        title: 'Imagen',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 

@@ -566,7 +566,7 @@ function record(db) {
 
         return {
             rationale: planning.rationale,
-            hasquotes: planning.hasquotes,
+            hasQuotes: planning.hasquotes,
             requestingUnits: planningUnits.requestingUnits,
             contractingUnits: planningUnits.contractingUnits,
             responsibleUnits: planningUnits.responsibleUnits,

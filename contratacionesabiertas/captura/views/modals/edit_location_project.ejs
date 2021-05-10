@@ -1,101 +1,81 @@
 <style>
-    button.multiselect {
-        text-align: left;
-    }
-
-    button.multiselect .caret {
-        position: absolute;
-        left: 97%;
-        top: 45%;
-    }
-
-    ul.multiselect-container.dropdown-menu {
-        width: 100%;
-    }
-
-    ul.multiselect-container.dropdown-menu > li label {
-        padding-left: 20px;
-    }
-
-    ul.multiselect-container.dropdown-menu > li input[type="checkbox"] {
-        display: none;
-    }
-
-    #items {
-        margin-bottom: 10px;
-        max-height: 500px;
-        overflow: hidden;
-        overflow-y: auto;
-    }
-
-    #items .close {
-        margin-right: 20px;
-    }
-
     .ui-autocomplete {
         z-index: 9999 !important;
+    }
+
+    .ui-menu-item:hover {
+        background-color: #0275d8;
+        color: white;
+    }
+
+    .ui-menu-item div {
+        background-color: transparent;
+    }
+
+
+    .map-container {
+        position: relative;
+    }
+
+    .map-geocoding {
+        position: absolute;
+        top: 9px;
+        right: 53px;
+        width: 80%;
+        z-index: 1;
+        height: 42px;
+    }
+
+    .map-geocoding input,
+    .map-geocoding button{
+        background: #fff;
+        height: 42px;
+    }
+
+    .map-geocoding-result {
+        position: absolute;
+        left: 0;
+        right: 39px;
+        top: 42px;
+    }
+
+    #map {
+        height: 500px;
     }
 </style>
 <form id="update_location_project_form">
     <input type="text" name="location_id" value = "<%= data[0].id %>" hidden>
-    <% for (var i = 0; i < data[0].coordinates.length; i++) { %>
-        <input type="hidden" name="id" value="<%= data[0].coordinates[i].id %>">
-        <input type="hidden" name="point" value="<%= data[0].coordinates[i].point %>">
-    <% } %>
+    <input type="hidden" name="location_countryname_p" value = "<%= data[0].address[0].countryName %>">
+    <input type="hidden" name="location_streetaddress_p" value = "<%= data[0].address[0].streetAddress %>">
+    <input type="hidden" name="location_region_p" value = "<%= data[0].address[0].region %>">
+    <input type="hidden" name="location_locality_p" value = "<%= data[0].address[0].locality %>">
+    <input type="hidden" name="location_postalcode_p" value = "<%= data[0].address[0].postalCode %>"> 
+    <input type="hidden" name="latitude_p" value = "<%= data[0].coordinates[0].point %>">
+    <input type="hidden" name="longitude_p" value = "<%= data[0].coordinates[1].point %>">
+    <input type="hidden" name="locations_geometry_type" value="Point">
+
     <p>
         <label data-tooltip="crear_proceso" title="Un nombre o descripción de esta ubicación. Esto puede incluir el nombre(s) de la ubicación(es), o puede proporcionar una descripción legible por humanos de la ubicación cubierta. Esta descripción puede ser usada en una interfaz de usuario.">
             Descripción </label>
         <textarea class="form-control" name="locations_description" rows="5" minlength="1" maxlength="900" value ="<%= data[0].description %>" required><%=(typeof data[0].description!= "undefined")? data[0].description : ''%></textarea>
     </p>
-    <label data-tooltip="crear_proceso" title='Se utiliza el estándar GeoJSON para expresar información básica de una ubicación, utilizando los valores de latitud y longitud en la proyección WGS84 (EPSG:4326). Una ubicación de punto puede ser identificada al geocodificar un domicilio de entrega. Para licencias de concesión u otros que cubran un polígono que no está contenido en ningún nomenclátor conocido, se puede utilizar un polígono o múltiples polígonos.'>Geometría</label>
-    <p>
-        <label data-tooltip="crear_proceso" title='El tipo de objetos geométricos del estándar GeoJSON proporcionados. Para proporcionar datos de latitud y longitud utilizar "punto", e introducir una matriz de valores de coordenadas (latitud y longitud), por ejemplo: [37.42,-122.085]. Tomar en cuenta el uso de mayúsculas en los valores capturados, establecer en orden para mantener compatibilidad con GeoJSON.'>Tipo</label>
-            <select class="form-control" name="locations_geometry_type" required>
-                <option value="">Seleccione una opción</option>
-                <% for (var i = 0; i < geometryTypes.length; i++) { %>
-                    <option value="<%= geometryTypes[i].code %>" <%= (geometryTypes[i].code === data[0].type ) ? 'selected' : '' %> > <%= geometryTypes[i].title%></option>
-                <% } %>
-            </select>
-    </p>
-    <div id="items">
-        <% for (var i = 0; i < data[0].coordinates.length; i++) { %>
-        <div class="row">
-            <input type="hidden" name="id" value="<%= data[0].coordinates[i].id %>">
-            <input type="hidden" name="point" value="<%= data[0].coordinates[i].point %>">
-            <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <div class="col-sm-12">
-                <p>
-                    <label data-tooltip="crear_proceso" title='La matriz relevante de puntos, p. ej. [latitud, longitud], o una matriz anidada para la geometría GeoJSON que se utiliza. La longitud y la latitud DEBEN expresarse en grados decimales en la proyección WGS84 (EPSG: 4326).'>
-                        Coordenadas</label>
-                    <input name="items[0].locations_geometry_coordinates" type="number" step="any" class="form-control" value="<%= data[0].coordinates[i].point %>">
-                </p>
+    
+    <label data-tooltip="crear_proceso" title='Ubicación del item'>
+        <h4>Ubicación</h4>
+    </label>
+    <div class="map-container">
+        <div class="map-geocoding input-group">
+            <input  type="search" class="form-control" placeholder="Buscar dirección" value="<%= `${data[0].address[0].streetAddress || ''} ${data[0].address[0].region || ''} ${data[0].address[0].countryName || ''}`.trim() %>"/>
+            <div class="input-group-btn">
+                <button id="btnGeocoding" type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
             </div>
+            <ul class="map-geocoding-result list-group"></ul>
         </div>
-        <% } %>
+        
+        <div id="map"></div>
     </div>
-    <div class="text-right">
-        <button type="button" class="btn btn-default" data-action="add_item"><span class="fa fa-plus"></span></button>
-    </div>
+    <br>
 
     <button type="submit" class="btn btn-default">Actualizar</button>
 </form>
-
-<div class="hide" id="itemTemplate">
-    <div class="row">
-        <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <div class="col-sm-12">
-            <p>
-                <label data-tooltip="crear_proceso" title='La matriz relevante de puntos, p. ej. [latitud, longitud], o una matriz anidada para la geometría GeoJSON que se utiliza. La longitud y la latitud DEBEN expresarse en grados decimales en la proyección WGS84 (EPSG: 4326).'>
-                    Coordenadas</label>
-                <input name="items[0].locations_geometry_coordinates" type="number" step="any" class="form-control">
-            </p>
-        </div>
-    </div>
-</div>
-
-<script>
-    $('#documents_datePublished, #documents_dateModified').datetimepicker({
-        locale: 'es',
-        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
-    });
-</script>
+<script src="/javascript/mapbox.js"></script>

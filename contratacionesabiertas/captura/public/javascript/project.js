@@ -243,6 +243,7 @@ module.exports = {
                 value[0].projects[0].locations.forEach(element => {
                     var objLocationProject = new Object();
                     var objGeometry = new Object();
+                    var objAddress = new Object();
                     var arrayCoordinates = new Array();
                     if(element.id !== "" && element.id !== null)
                     objLocationProject.id = String(element.id);
@@ -252,6 +253,7 @@ module.exports = {
                     objGeometry.type = element.type;
                     if(element.coordinates !== undefined){
                         element.coordinates.forEach(element => {
+                            if(element.point !== "" && element.point !== null)
                             arrayCoordinates.push(element.point);
                         });
                     }
@@ -259,6 +261,22 @@ module.exports = {
                     objGeometry.coordinates = arrayCoordinates;
                     if(Object.entries(objGeometry).length !== 0)
                     objLocationProject.geometry = objGeometry;
+                    if(element.address !== undefined){
+                        element.address.forEach(element => {
+                            if(element.streetAddress !== "" && element.streetAddress !== null)
+                            objAddress.streetAddress = element.streetAddress;
+                            if(element.locality !== "" && element.locality !== null)
+                            objAddress.locality = element.locality;
+                            if(element.region !== "" && element.region !== null)
+                            objAddress.region = element.region;
+                            if(element.postalCode !== "" && element.postalCode !== null)
+                            objAddress.postalCode = element.postalCode;
+                            if(element.countryName !== "" && element.countryName !== null)
+                            objAddress.countryName = element.countryName;
+                        });
+                    }
+                    if(Object.entries(objAddress).length !== 0)
+                    objLocationProject.address = objAddress;
                     arrayLocationProjects.push(objLocationProject);
                 })
             }
@@ -1290,7 +1308,7 @@ module.exports = {
         console.log("%%%% deleteDocumentProject")
         await db.edcapi_project_document.destroy({
             where: {id: document_id}
-          })
+        })
         return true;
     },
     insertLocationProject: async function(data){
@@ -1313,12 +1331,25 @@ module.exports = {
                 updatedAt : new Date()
             }).then(async function(relprojectLocation){
                 console.log("############## REL PROJECT LOCATION PROJECT - " + JSON.stringify(relprojectLocation, null, 4))
-                if(obj.items.length > 0 && obj.items.length !== undefined)
-                    obj.items.forEach(async element => {
+                var locationCoordinate = new db.edcapi_project_location_coordinate();
+                var relLocationCoordinateLocation = new db.edcapi_project_locations_coordinate_location();
+                return locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
+                    point:(obj.latitude_p === '' ? null : obj.latitude_p),
+                    createdAt : new Date(),
+                    updatedAt : new Date()
+                }).then(async function(locationCoordinate){
+                    console.log("############## LOCATION COORDINATE - " + JSON.stringify(locationCoordinate, null, 4))
+                    return relLocationCoordinateLocation = await db.edcapi_project_locations_coordinate_location.create({
+                        edcapiLocationProjectId: projectLocation.id,
+                        edcapiProjectLocationCoordinateId: locationCoordinate.id,
+                        createdAt : new Date(),
+                        updatedAt : new Date()
+                    }).then(async function(relLocationCoordinateLocation){
+                        console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
                         var locationCoordinate = new db.edcapi_project_location_coordinate();
                         var relLocationCoordinateLocation = new db.edcapi_project_locations_coordinate_location();
-                        locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
-                            point:(element.locations_geometry_coordinates === '' ? null : element.locations_geometry_coordinates),
+                        return locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
+                            point:(obj.longitude_p === '' ? null : obj.longitude_p),
                             createdAt : new Date(),
                             updatedAt : new Date()
                         }).then(async function(locationCoordinate){
@@ -1328,12 +1359,33 @@ module.exports = {
                                 edcapiProjectLocationCoordinateId: locationCoordinate.id,
                                 createdAt : new Date(),
                                 updatedAt : new Date()
-                        }).then(async function(relLocationCoordinateLocation){
-                            console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
-                        });
-                    });
-                    return true;
-                });
+                            }).then(async function(relLocationCoordinateLocation){
+                                console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
+                                var locationAddress = new db.edcapi_project_location_address();
+                                var relLocationAddressLocation = new db.edcapi_project_locations_address_location();
+                                return locationAddress = await db.edcapi_project_location_address.create({
+                                    streetAddress: (obj.location_streetaddress_p === '' ? null : obj.location_streetaddress_p),
+                                    locality: (obj.location_locality_p === '' ? null : obj.location_locality_p),
+                                    region: (obj.location_region_p === '' ? null : obj.location_region_p),
+                                    postalCode: (obj.location_postalcode_p === '' ? null : obj.location_postalcode_p),
+                                    countryName: (obj.location_countryname_p === '' ? null : obj.location_countryname_p),
+                                    createdAt : new Date(),
+                                    updatedAt : new Date()
+                                }).then(async function(locationAddress){
+                                    console.log("############## LOCATION ADDRESS - " + JSON.stringify(locationAddress, null, 4))
+                                    return relLocationAddressLocation = await db.edcapi_project_locations_address_location.create({
+                                        edcapiLocationProjectId: projectLocation.id,
+                                        edcapiProjectLocationAddressId: locationAddress.id,
+                                        createdAt : new Date(),
+                                        updatedAt : new Date()
+                                    }).then(async function(relLocationAddressLocation){
+                                        console.log("############## REL LOCATION ADDRESS LOCATION - " + JSON.stringify(relLocationAddressLocation, null, 4))
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
             });
         });
     },
@@ -1346,6 +1398,12 @@ module.exports = {
                     as: 'coordinates', 
                     attributes: { exclude: ['createdAt','updatedAt']},
                     through: {attributes: []}   
+                },
+                {
+                    model: db.edcapi_project_location_address,
+                    as: 'address', 
+                    attributes: { exclude: ['createdAt','updatedAt']},
+                    through: {attributes: []}   
                 }
             ],where : {id: location_id}
         });
@@ -1355,59 +1413,48 @@ module.exports = {
         console.log("%%%% updateLocationProject")
         var obj = JSON.parse(data);
         var location_project = new db.edcapi_location_project();
-        var location = new db.edcapi_location_project();
 
         async function findObjects(obj){
-            location_project = await db.edcapi_location_project.findAll({
+            return location_project = await db.edcapi_location_project.findAll({
                 include:[
                     {
                         model: db.edcapi_project_location_coordinate,
                         as: 'coordinates', 
                         attributes: { exclude: ['createdAt','updatedAt']},
                         through: {attributes: []}   
+                    },
+                    {
+                        model: db.edcapi_project_location_address,
+                        as: 'address', 
+                        attributes: { exclude: ['createdAt','updatedAt']},
+                        through: {attributes: []}   
                     }
                 ],where : {id: obj.location_id}
             });
         };
-
-        findObjects(obj).then(async function (){
-            location = await db.edcapi_location_project.findByPk(obj.location_id);
-            if(location_project[0].coordinates.length >0){
-                location_project[0].coordinates.forEach(async element => {
-                    await db.edcapi_project_location_coordinate.destroy({
-                        where: {id: element.id}
-                      })
-                })
-            }
-        }).then(async function(){
-            location.update({
-                description: (obj.locations_description === '' ? null : obj.locations_description),
-                type: (obj.locations_geometry_type === '' ? null : obj.locations_geometry_type),
+        findObjects(obj).then(async function(res){//AQUI
+            console.log('####################' + JSON.stringify(res[0].coordinates));
+            res[0].coordinates[0].update({
+                point:(obj.latitude_p === '' ? null : obj.latitude_p),
                 updatedAt : new Date()
-            })
-        }).then(async function(){
-            if(obj.items.length > 0 && obj.items.length !== undefined)
-                obj.items.forEach(async element => {
-                    var locationCoordinate = new db.edcapi_project_location_coordinate();
-                    var relLocationCoordinateLocation = new db.edcapi_project_locations_coordinate_location();
-                    locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
-                        point:(element.locations_geometry_coordinates === '' ? null : element.locations_geometry_coordinates),
-                        createdAt : new Date(),
-                        updatedAt : new Date()
-                    }).then(async function(locationCoordinate){
-                        console.log("############## LOCATION COORDINATE - " + JSON.stringify(locationCoordinate, null, 4))
-                        return relLocationCoordinateLocation = await db.edcapi_project_locations_coordinate_location.create({
-                            edcapiLocationProjectId: location.id,
-                            edcapiProjectLocationCoordinateId: locationCoordinate.id,
-                            createdAt : new Date(),
-                            updatedAt : new Date()
-                    }).then(async function(relLocationCoordinateLocation){
-                        console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
-                    });
-                });
-                return true;
             });
-        });        
+            res[0].coordinates[1].update({
+                point:(obj.longitude_p === '' ? null : obj.longitude_p),
+                updatedAt : new Date()
+            });
+            res[0].update({
+                description: (obj.locations_description === '' ? null : obj.locations_description),
+                updatedAt : new Date()
+            });
+            res[0].address[0].update({
+                streetAddress: (obj.location_streetaddress_p === '' ? null : obj.location_streetaddress_p),
+                locality: (obj.location_locality_p === '' ? null : obj.location_locality_p),
+                region: (obj.location_region_p === '' ? null : obj.location_region_p),
+                postalCode: (obj.location_postalcode_p === '' ? null : obj.location_postalcode_p),
+                countryName: (obj.location_countryname_p === '' ? null : obj.location_countryname_p),
+                updatedAt : new Date()
+            });
+        })       
     },
     deleteLocationProject: async function(location_id){
         console.log("%%%% deleteLocationProject")
@@ -2092,6 +2139,12 @@ async function findProjects(projectId) {
                             {
                                 model: db.edcapi_project_location_coordinate,
                                 as: 'coordinates', 
+                                attributes: { exclude: ['createdAt','updatedAt']},
+                                through: {attributes: []}   
+                            },
+                            {
+                                model: db.edcapi_project_location_address,
+                                as: 'address', 
                                 attributes: { exclude: ['createdAt','updatedAt']},
                                 through: {attributes: []}   
                             }

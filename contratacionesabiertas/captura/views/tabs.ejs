@@ -158,6 +158,12 @@ var estatusContrato = [
                         <% } %>
                     </select>
                 </p>
+                <p>
+                    <label data-tooltip="crear_proceso">Número de beneficiarios</label>
+                    <input type="number" step="1" class="form-control" name="numberofbeneficiaries" 
+                    value = "<%= (typeof planning!= "undefined")? planning.numberofbeneficiaries :''%>" >
+                </p>
+
                <hr>
                            
                	<label data-tooltip="crear_proceso" title='Esta sección contiene información del presupuesto asignado para el procedimiento de contratación, incluye información sobre la(s) clave(s) presupuestaria(s).'>
