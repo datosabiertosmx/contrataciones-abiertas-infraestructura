@@ -256,7 +256,38 @@
                     <nav class="navbar navbar-default" role="navigation">
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul id="visualizador" class="nav navbar-nav">
-                                <div id="search_form" class="navbar-form navbar-left">
+                                <li class="dropdown">       <!--Tamaño del combo filtro Gráfico Información general de contratos y proveedores -->
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong>Filtrar <span class="caret"></span></strong></a>
+                                    <ul id="filtros" class="dropdown-menu scrollable-menu container-me" style="width: 1300%;">
+                                        <div >
+                                            <div class="row">
+                                                <div style="display: inline-block; width: 19%;margin-left: 8px;">
+                                                    <a class="nameGreen">Proveedor</a><br>
+                                                    <input checked=true type="checkbox" class="clear" id="cProveedor"> <a class="selectAll">Seleccionar todo</a>
+                                                </div>
+                                                <div style="display: inline-block; width: 19%;margin-left: 8px;">
+                                                    <a class="nameGreen">Procedimiento de contratación</a></br>
+                                                    <input checked=true type="checkbox" class="clear" id="cProcedimiento"> <a class="selectAll">Seleccionar todo</a>
+                                                </div>
+                                                <div style="display: inline-block; width: 19%;margin-left: 8px;">
+                                                    <a class="nameGreen">Destino de contratación</a><br>
+                                                    <input checked=true type="checkbox" class="clear" id="cDestino"> <a class="selectAll">Seleccionar todo</a>
+                                                </div>
+                                                <div style="display: inline-block; width: 19%;margin-left: 8px; ">
+                                                    <a class="nameGreen">Área requirente</a><br>
+                                                    <input checked=true type="checkbox" class="clear" id="cArea"> <a class="selectAll">Seleccionar todo</a>
+                                                </div>
+                                                <div style="display: inline-block; width: 19%;margin-left: 8px;">
+                                                    <a class="nameGreen">Vigencia del contrato</a><br>
+                                                    <input checked=true type="checkbox" class="clear" id="cVigencia"> <a class="selectAll">Seleccionar todo</a>
+                                                </div> 
+                                            </div>
+                                            <li class="divider"></li>
+                                            <div id="filter-list" class="row"></div>
+                                        </div>
+                                    </ul>
+                                </li>
+                                <div style="margin-left: 30px;" id="search_form" class="navbar-form navbar-left">
                                     <div class="input-group">
                                         <input type="text" id="buscar_bubble" value="" class="form-control" placeholder="Buscar proveedores" aria-describedby="basic-addon1">
                                         <span class="input-group-addon" id="basic-addon1">
@@ -264,47 +295,17 @@
                                         </span>
                                     </div>  
                                 </div>
-                                <li class="dropdown">       <!--Tamaño del combo filtro Gráfico Información general de contratos y proveedores -->
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong>Filtrar <span class="caret"></span></strong></a>
-                                    <ul id="filtros" class="dropdown-menu scrollable-menu container-me">                                
-                                        <table class="default">
-                                            <tr>
-                                                <td>
-                                                    <a class="nameGreen">Proveedor</a><br>
-                                                    <input checked=true type="checkbox" class="clear" id="cProveedor"> <a class="selectAll">Seleccionar todo</a>
-                                                </td>
-                                                <td>
-                                                    <a class="nameGreen">Procedimiento de contratación</a></br>
-                                                    <input checked=true type="checkbox" class="clear" id="cProcedimiento"> <a class="selectAll">Seleccionar todo</a>
-                                                </td>
-                                                <td>
-                                                    <a class="nameGreen">Destino de contratación</a><br>
-                                                    <input checked=true type="checkbox" class="clear" id="cDestino"> <a class="selectAll">Seleccionar todo</a>
-                                                </td>
-                                                <td>
-                                                    <a class="nameGreen">Área requirente</a><br>
-                                                    <input checked=true type="checkbox" class="clear" id="cArea"> <a class="selectAll">Seleccionar todo</a>
-                                                </td>
-                                                <td>
-                                                    <a class="nameGreen">Vigencia del contrato</a><br>
-                                                    <input checked=true type="checkbox" class="clear" id="cVigencia"> <a class="selectAll">Seleccionar todo</a>
-                                                </td>
-                                            </tr>
-                                        </table>   
-                                        <li class="divider"></li>
-                                        <div id="filter-list"></div>
-                                    </ul>
-                                </li>
-                                    <div class="form-group navbar-form navbar-left">
-                                        <select id='group-everything-by' class="form-control">
-                                            <option value=''>Agrupar</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group navbar-form navbar-left">
-                                        <select id='color-everything-by' class="form-control">
-                                            <option value=''>Colorear</option>
-                                        </select>
-                                    </div>    
+                                <div style="margin-left: 30px; margin-right: 30px;" class="form-group navbar-form navbar-left">
+                                    <select id='group-everything-by' class="form-control">
+                                        <option value=''>Agrupar</option>
+                                    </select>
+                                </div>
+                                <div class="form-group navbar-form navbar-left">
+                                    <select id='color-everything-by' class="form-control">
+                                        <option value=''>Colorear</option>
+                                    </select>
+                                </div>
+
                             </ul>
                         </div>                        
                     </nav>

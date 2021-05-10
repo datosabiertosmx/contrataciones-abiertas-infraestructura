@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="/contratacionesabiertas/static/bower_components/tooltipster-follower/dist/css/tooltipster-follower.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js" integrity="sha512-k8F8QynmFNURwbUJC8drKA+fo3YfNvjqKzStdydD6au+MzvxBoRnxH8E31RJXwDY9DrnEiPhh9wBoDSIxhkyHQ==" crossorigin="anonymous"></script>
     <script src="/contratacionesabiertas/static/javascripts/common.js"></script>
 	
@@ -230,6 +231,7 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('procurementmethodRes')">Copiar contenido</button>
                                       <button id="downlo" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('procurementmethod')">Descargar JSON</button>
+                                      <button id="downlo_6" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('procurementmethod')">Descargar CSV</button>
                                       <button id="downlo_7" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('procurementmethod')">Descargar EXCEL</button>
                                     </div>
                                   </div>
@@ -364,6 +366,7 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('additionalProcurementCategoriesRes')">Copiar contenido</button>
                                       <button id="downlo_2" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('additionalprocurementcategories')">Descargar JSON</button>
+                                      <button id="downlo_5" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('additionalprocurementcategories')">Descargar CSV</button>
                                       <button id="downlo_8" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('additionalprocurementcategories')">Descargar EXCEL</button>
                                     </div>
                                   </div>
@@ -475,6 +478,7 @@
                                     <div class="row">
                                       <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('contractingprocessRes')">Copiar contenido</button>
                                       <button id="downlo_3" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('contractingprocess')">Descargar JSON</button>
+                                      <button id="downlo_4" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadCSV('contractingprocess')">Descargar CSV</button>
                                       <button id="downlo_9" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadXLS('contractingprocess')">Descargar EXCEL</button>
                                   </div>
                                   <div id="downley_3" class="spinner-border" role="status" hidden>
@@ -710,6 +714,7 @@
       var uri = globals.site.url;
       var port = globals.site.port;
       var endPointFiscalYear = '/edca/fiscalYears';
+      
       $.ajax({
           url: `${uri}:${port}${endPointFiscalYear}`,
           type: 'GET',
@@ -749,6 +754,7 @@
     var endPointProcurementMethod = '/edca/contractingprocess/procurementmethod/';
     var endPointAdditionalProcurementCategories = '/edca/contractingprocess/additionalprocurementcategories/';
     var endPointContractingProcess = '/edca/contractingprocess/';
+    var arrayFilesCSV = new Array();
       function getProcurementMethod(){
         var parametro = $("#disabledSelect").val();
         var year = $("#yearProcurementMethod").val();
@@ -947,323 +953,25 @@
           default:
             break;
         }
-        $.get(uri_endpoint).done(function (info) {
-          //  console.log(info)
-            var data = generateData(info);
-            
-
-            if(data.arrayIndice.length !== 0){
-              const headers = {
-                Path: 'Path',
-                Code: 'Code'
-              };
-              exportCSVFile(headers,data.arrayIndice,'index')
-            }
-            
-            if(data.arrayReleasePackage.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                uri: 'uri',
-                version: 'version',
-                publishedDate: 'publishedDate',
-                license: 'license',
-                publicationPolicy: 'publicationPolicy'
-              };
-              exportCSVFile(headers,data.arrayReleasePackage,'1000')
-            }
-
-            if(data.arrayExtensions2.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                extensions: 'extensions'
-              };
-              exportCSVFile(headers,data.arrayExtensions2,'1100')
-            }
-            
-            if(data.arrayPublishers.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                'publisher/name': 'publisher/name',
-                'publisher/scheme': 'publisher/scheme',
-                'publisher/uid': 'publisher/uid',
-                'publisher/uri': 'publisher/uri'
-              };
-              exportCSVFile(headers,data.arrayPublishers,'1200')
-            }
-            if(data.arrayReleases.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                id: 'id',
-                date: 'date',
-                initiationType: 'initiationType',
-                language: 'language',
-                tag: 'tag'
-              };
-              exportCSVFile(headers,data.arrayReleases,'1300')
-            }
-            if(data.arrayParties.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                'parties/name': 'parties/name',
-                'parties/id': 'parties/id',
-                'parties/position': 'parties/position',
-                'parties/identifier/scheme': 'parties/identifier/scheme',
-                'parties/identifier/id': 'parties/identifier/id',
-                'parties/identifier/legalName': 'parties/identifier/legalName',
-                'parties/identifier/legalPersonality': 'parties/identifier/legalPersonality',
-                'parties/identifier/givenName': 'parties/identifier/givenName',
-                'parties/identifier/patronymicName': 'parties/identifier/patronymicName',
-                'parties/identifier/matronymicName': 'parties/identifier/matronymicName',
-                'parties/address/streetAddress': 'parties/address/streetAddress',
-                'parties/address/locality': 'parties/address/locality',
-                'parties/address/region': 'parties/address/region',
-                'parties/address/postalCode': 'parties/address/postalCode',
-                'parties/address/countryName': 'parties/address/countryName',
-                'parties/contactPoint/name': 'parties/contactPoint/name',
-                'parties/contactPoint/email': 'parties/contactPoint/email',
-                'parties/contactPoint/telephone': 'parties/contactPoint/telephone',
-                'parties/contactPoint/faxNumber': 'parties/contactPoint/faxNumber',
-                'parties/contactPoint/url': 'parties/contactPoint/url',
-                'parties/contactPoint/type': 'parties/contactPoint/type',
-                'parties/contactPoint/givenName': 'parties/contactPoint/givenName',
-                'parties/contactPoint/patronymicName': 'parties/contactPoint/patronymicName',
-                'parties/contactPoint/matronymicName': 'parties/contactPoint/matronymicName',
-                'parties/roles': 'parties/roles',
-              };
-              exportCSVFile(headers,data.arrayParties,'2000')
-            }
-            if(data.arrayMember.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                'parties/id' : 'parties/id',
-                'parties/memberOf/id' : 'parties/memberOf/id',
-                'parties/memberOf/name' : 'parties/memberOf/name'
-              };
-              exportCSVFile(headers,data.arrayMember,'2100')
-            }
-            if(data.arrayAdditionalContactPoint.length !== 0){
-              const headers = {
-                ocid: 'ocid',
-                'parties/id' : 'parties/id',
-                'parties/additionalContacPoints/contactPointType' : 'parties/additionalContacPoints/contactPointType',
-                'parties/additionalContacPoints/name' : 'parties/additionalContacPoints/name',
-                'parties/additionalContacPoints/givenName' : 'parties/additionalContacPoints/givenName',
-                'parties/additionalContacPoints/patronymicName' : 'parties/additionalContacPoints/patronymicName',
-                'parties/additionalContacPoints/matronymicName' : 'parties/additionalContacPoints/matronymicName',
-                'parties/additionalContacPoints/email' : 'parties/additionalContacPoints/email',
-                'parties/additionalContacPoints/telephone' : 'parties/additionalContacPoints/telephone',
-                'parties/additionalContacPoints/faxNumber' : 'parties/additionalContacPoints/faxNumber',
-                'parties/additionalContacPoints/url' :'parties/additionalContacPoints/url',
-                'parties/additionalContacPoints/availableLanguage': 'parties/additionalContacPoints/availableLanguage',
-              };
-              exportCSVFile(headers,data.arrayAdditionalContactPoint,'2200')
-            }
-            if(data.arrayPlanning.length !== 0){
-              // var info = validatesComas(data.arrayPlanning);
-              // console.log(JSON.stringify(info))
-              // console.log(JSON.stringify(validatesComas(data.arrayPlanning)))
-              // data.arrayPlanning.forEach(element => {
-              //   console.log(JSON.stringify(element))
-              // });
-              const headers = {
-                ocid: 'ocid',
-                rationale: 'rationale',
-                hasquotes: 'hasquotes'
-              };
-              exportCSVFile(headers,data.arrayPlanning,'3000')
-            }
-            // if(data.arrayRequestingUnit.length !== 0){
-            //   var worksheetReleasePlanningRequestingUnit = XLSX.utils.json_to_sheet(data.arrayRequestingUnit);
-            //   var SheetName = '3100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractingUnit.length !== 0){
-            //   var worksheetReleasePlanningContractingUnit = XLSX.utils.json_to_sheet(data.arrayContractingUnit);
-            //   var SheetName = '3200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayResponsibleUnit.length !== 0){
-            //   var worksheetReleasePlanningResponsibleUnit = XLSX.utils.json_to_sheet(data.arrayResponsibleUnit);
-            //   var SheetName = '3300';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayBudget.length !== 0){
-            //   var worksheetReleasePlanningBudgetBreakdown = XLSX.utils.json_to_sheet(data.arrayBudget);
-            //   var SheetName = '3400';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayBudgetLinesComponent.length !== 0){
-            //   var worksheetBudgetLinesComponent = XLSX.utils.json_to_sheet(data.arrayBudgetLinesComponent);
-            //   var SheetName = '3500';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayBudgetLinesMeasure.length !== 0){
-            //   var worksheetBudgetLinesMeasure = XLSX.utils.json_to_sheet(data.arrayBudgetLinesMeasure);
-            //   var SheetName = '3600';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayPlanningDocuments.length !== 0){
-            //   var worksheetPlanningDocuments = XLSX.utils.json_to_sheet(data.arrayPlanningDocuments);
-            //   var SheetName = '3700';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRequestsForQuotes.length !== 0){
-            //   var worksheetRequestsForQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotes);
-            //   var SheetName = '3800';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRequestsForQuotesItems.length !== 0){
-            //   var worksheetRequestsForQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesItems);
-            //   var SheetName = '3900';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRequestsForQuotesinvitedSuppliers.length !== 0){
-            //   var worksheetRequestsForQuotesinvitedSupp = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesinvitedSuppliers);
-            //   var SheetName = '4000';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRequestsForQuotesQuotes.length !== 0){
-            //   var worksheetRequestsForQuotesQuotes = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotes);
-            //   var SheetName = '4100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRequestsForQuotesQuotesItems.length !== 0){
-            //   var worksheetRequestsForQuotesQuotesItems = XLSX.utils.json_to_sheet(data.arrayRequestsForQuotesQuotesItems);
-            //   var SheetName = '4200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTender.length !== 0){
-            //   var worksheetTender = XLSX.utils.json_to_sheet(data.arrayTender);
-            //   var SheetName = '5000';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderes.length !== 0){
-            //   var worksheetArrayTenderes = XLSX.utils.json_to_sheet(data.arrayTenderes);
-            //   var SheetName = '5100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderItems.length !== 0){
-            //   var worksheetTenderItems = XLSX.utils.json_to_sheet(data.arrayTenderItems);
-            //   var SheetName = '5200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderDocuments.length !== 0){
-            //   var worksheetTenderDocuments = XLSX.utils.json_to_sheet(data.arrayTenderDocuments);
-            //   var SheetName = '5300';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderMilestones.length !== 0){
-            //   var worksheetTenderMilestones = XLSX.utils.json_to_sheet(data.arrayTenderMilestones);
-            //   var SheetName = '5400';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderAmendment.length !== 0){
-            //   var worksheetTenderAmendment = XLSX.utils.json_to_sheet(data.arrayTenderAmendment);
-            //   var SheetName = '5500';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderClarificationMeeting.length !== 0){
-            //   var worksheetClarificationMeeting = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeeting);
-            //   var SheetName = '5600';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderClarificationMeetingAttendees.length !== 0){
-            //   var worksheetTenderClarificationMeetingAttendees = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingAttendees);
-            //   var SheetName = '5700';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayBuyer.length !== 0){
-            //   var worksheetBuyer = XLSX.utils.json_to_sheet(data.arrayBuyer);
-            //   var SheetName = '5800';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayTenderClarificationMeetingOfficials.length !== 0){
-            //   var worksheetTenderClarificationMeetingOfficials = XLSX.utils.json_to_sheet(data.arrayTenderClarificationMeetingOfficials);
-            //   var SheetName = '5900';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayAwars.length !== 0){
-            //   var worksheetAwars = XLSX.utils.json_to_sheet(data.arrayAwars);
-            //   var SheetName = '6000';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayAwarsSuppliers.length !== 0){
-            //   var worksheetAwarsSuppliers = XLSX.utils.json_to_sheet(data.arrayAwarsSuppliers);
-            //   var SheetName = '6100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayAwarsDocuments.length !== 0){
-            //   var worksheetAwarsDocuments = XLSX.utils.json_to_sheet(data.arrayAwarsDocuments);
-            //   var SheetName = '6200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayAwarsAmendments.length !== 0){
-            //   var worksheetAwarsAmendments = XLSX.utils.json_to_sheet(data.arrayAwarsAmendments);
-            //   var SheetName = '6300';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContracts.length !== 0){
-            //   var worksheetContracts = XLSX.utils.json_to_sheet(data.arrayContracts);
-            //   var SheetName = '7000';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsItems.length !== 0){
-            //   var worksheetContractsItems = XLSX.utils.json_to_sheet(data.arrayContractsItems);
-            //   var SheetName = '7100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsdocuments.length !== 0){
-            //   var worksheetContractsdocuments = XLSX.utils.json_to_sheet(data.arrayContractsdocuments);
-            //   var SheetName = '7200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsAmendments.length !== 0){
-            //   var worksheetContractsAmendments = XLSX.utils.json_to_sheet(data.arrayContractsAmendments);
-            //   var SheetName = '7300';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsGuarantees.length !== 0){
-            //   var worksheetContractsGuarantees = XLSX.utils.json_to_sheet(data.arrayContractsGuarantees);
-            //   var SheetName = '7400';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsImplementation.length !== 0){
-            //   var worksheetContractsImplementation = XLSX.utils.json_to_sheet(data.arrayContractsImplementation);
-            //   var SheetName = '8000';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsImplementationTrans.length !== 0){
-            //   var worksheetContractsImplementationTrans = XLSX.utils.json_to_sheet(data.arrayContractsImplementationTrans);
-            //   var SheetName = '8100';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsImplementationMilestone.length !== 0){
-            //   var worksheetContractsImplementationMil = XLSX.utils.json_to_sheet(data.arrayContractsImplementationMilestone);
-            //   var SheetName = '8200';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayContractsImplementationDocuments.length !== 0){
-            //   var worksheetContractsImplementationDoc = XLSX.utils.json_to_sheet(data.arrayContractsImplementationDocuments);
-            //   var SheetName = '8300';
-            //   arraySheetNames.push(SheetName);
-            // }
-            // if(data.arrayRelatedProcesses.length !== 0){
-            //   var worksheetRelatedProcesses = XLSX.utils.json_to_sheet(data.arrayRelatedProcesses);
-            //   var SheetName = '9000';
-            //   arraySheetNames.push(SheetName);
-            // }
-
-            
-            document.getElementById('downley').hidden=true;
-            document.getElementById('downlo').hidden=false;
-            document.getElementById('downley_2').hidden=true;
-            document.getElementById('downlo_2').hidden=false;
-            document.getElementById('downley_3').hidden=true;
-            document.getElementById('downlo_3').hidden=false;
-            document.getElementById('downlo_4').hidden=false;
-            document.getElementById('downlo_5').hidden=false;
-            document.getElementById('downlo_6').hidden=false;
-        });
+        $.ajax({
+              url: uri_endpoint,
+              type: 'GET',
+              success: function(info){ 
+                generateCSV(info)
+              },
+              error: function(info) {
+                alert(`Not Found`)
+                document.getElementById('downley').hidden=true;
+                document.getElementById('downlo').hidden=false;
+                document.getElementById('downley_2').hidden=true;
+                document.getElementById('downlo_2').hidden=false;
+                document.getElementById('downley_3').hidden=true;
+                document.getElementById('downlo_3').hidden=false;
+                document.getElementById('downlo_4').hidden=false;
+                document.getElementById('downlo_5').hidden=false;
+                document.getElementById('downlo_6').hidden=false;
+              }
+          });
       }
       function downloadXLS(endpoint){
         switch (endpoint) {
@@ -1352,7 +1060,6 @@
         if(successful) alert('Copiado');
       }
       function generateData(data){
-        // console.log(JSON.stringify(data.arrayReleasePackage))
         var consecutivo = 1;
         var arrayIndice = new Array(
           {
@@ -1721,8 +1428,8 @@
                   release.planning.requestingUnits.forEach(requestingUnit => {
                     var objRequestingUnit = new Object({
                       ocid: release.ocid,
-                      'planning/requestingUnits/id' : requestingUnit.id,
-                      'planning/requestingUnits/name' : requestingUnit.name
+                      'planning/requestingUnits/id' : (requestingUnit.id === undefined ? '' : requestingUnit.id),
+                      'planning/requestingUnits/name' : (requestingUnit.name === undefined ? '' : requestingUnit.name)
                     });
                     arrayRequestingUnit.push(objRequestingUnit)  
                   });
@@ -1734,8 +1441,8 @@
                   release.planning.contractingUnits.forEach(contractingUnit => {
                     var objContractingUnit = new Object({
                       ocid: release.ocid,
-                      'planning/contractingUnits/id' : contractingUnit.id,
-                      'planning/contractingUnits/name' : contractingUnit.name
+                      'planning/contractingUnits/id' : (contractingUnit.id === undefined ? '' : contractingUnit.id),
+                      'planning/contractingUnits/name' : (contractingUnit.name === undefined ? '' : contractingUnit.name)
                     });
                     arrayContractingUnit.push(objContractingUnit)  
                   });
@@ -1747,8 +1454,8 @@
                   release.planning.responsibleUnits.forEach(responsibleUnit => {
                     var objResponsibleUnit = new Object({
                       ocid: release.ocid,
-                      'planning/responsibleUnits/id' : responsibleUnit.id,
-                      'planning/responsibleUnits/name' : responsibleUnit.name
+                      'planning/responsibleUnits/id' : (responsibleUnit.id === undefined ? '' : responsibleUnit.id),
+                      'planning/responsibleUnits/name' : (responsibleUnit.name === undefined ? '' : responsibleUnit.name)
                     });
                     arrayResponsibleUnit.push(objResponsibleUnit)  
                   });
@@ -1761,16 +1468,16 @@
                     release.planning.budget.budgetBreakdown.forEach(budgetBreakdown => {
                       var objBudgetBreakdown = new Object({
                         ocid: release.ocid,
-                        'planning/budget/budgetBreakdown/id' : budgetBreakdown.id,
-                        'planning/budget/budgetBreakdown/description' : budgetBreakdown.description,
-                        'planning/budget/budgetBreakdown/origin' : budgetBreakdown.origin,
-                        'planning/budget/budgetBreakdown/fundType' : budgetBreakdown.fundType,
-                        'planning/budget/budgetBreakdown/period/startDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.startDate),
-                        'planning/budget/budgetBreakdown/period/endDate' : (budgetBreakdown.period === undefined ? '' : budgetBreakdown.period.endDate),
-                        'planning/budget/budgetBreakdown/value/amount' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.amount),
-                        'planning/budget/budgetBreakdown/value/currency' : (budgetBreakdown.amount === undefined ? '' : budgetBreakdown.amount.currency),
-                        'planning/budget/budgetBreakdown/sourceParty/name' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.name),
-                        'planning/budget/budgetBreakdown/sourceParty/id' : (budgetBreakdown.sourceParty === undefined ? '' : budgetBreakdown.sourceParty.id),
+                        'planning/budget/budgetBreakdown/id' : (budgetBreakdown.id === undefined ? '' : budgetBreakdown.id),
+                        'planning/budget/budgetBreakdown/description' : (budgetBreakdown.description === undefined ? '' : budgetBreakdown.description),
+                        'planning/budget/budgetBreakdown/origin' : (budgetBreakdown.origin === undefined ? '' : budgetBreakdown.origin),
+                        'planning/budget/budgetBreakdown/fundType' : (budgetBreakdown.fundType === undefined ? '' : budgetBreakdown.fundType),
+                        'planning/budget/budgetBreakdown/period/startDate' : (budgetBreakdown.period === undefined ? '' : (budgetBreakdown.period.startDate === undefined ? '' : budgetBreakdown.period.startDate)),
+                        'planning/budget/budgetBreakdown/period/endDate' : (budgetBreakdown.period === undefined ? '' : (budgetBreakdown.period.endDate === undefined ? '' : budgetBreakdown.period.endDate)),
+                        'planning/budget/budgetBreakdown/value/amount' : (budgetBreakdown.amount === undefined ? '' : (budgetBreakdown.amount.amount === undefined ? '' : budgetBreakdown.amount.amount)),
+                        'planning/budget/budgetBreakdown/value/currency' : (budgetBreakdown.amount === undefined ? '' : (budgetBreakdown.amount.currency === undefined ? '' : budgetBreakdown.amount.currency)),
+                        'planning/budget/budgetBreakdown/sourceParty/name' : (budgetBreakdown.sourceParty === undefined ? '' : (budgetBreakdown.sourceParty.name === undefined ? '' : budgetBreakdown.sourceParty.name)),
+                        'planning/budget/budgetBreakdown/sourceParty/id' : (budgetBreakdown.sourceParty === undefined ? '' : (budgetBreakdown.sourceParty.id === undefined ? '' : budgetBreakdown.sourceParty.id)),
                       });
                       arrayBudget.push(objBudgetBreakdown)
                       if(budgetBreakdown.budgetLines !== undefined){
@@ -1781,10 +1488,10 @@
                                 budgetLine.components.forEach(component => {
                                   var objBudgetLinesComponent = new Object({
                                     ocid: release.ocid,
-                                    'planning/budget/budgetBreakdown/budgetLines/components/name' : component.name,
-                                    'planning/budget/budgetBreakdown/budgetLines/components/level' : component.level,
-                                    'planning/budget/budgetBreakdown/budgetLines/components/code' : component.code,
-                                    'planning/budget/budgetBreakdown/budgetLines/components/description': component.description
+                                    'planning/budget/budgetBreakdown/budgetLines/components/name' : (component.name === undefined ? '' : component.name),
+                                    'planning/budget/budgetBreakdown/budgetLines/components/level' : (component.level === undefined ? '' : component.level),
+                                    'planning/budget/budgetBreakdown/budgetLines/components/code' : (component.code === undefined ? '' : component.code),
+                                    'planning/budget/budgetBreakdown/budgetLines/components/description': (component.description === undefined ? '' : component.description)
                                   });
                                   arrayBudgetLinesComponent.push(objBudgetLinesComponent)
                                 });
@@ -1795,10 +1502,10 @@
                                 budgetLine.measures.forEach(measure => {
                                   var objBudgetLinesMeasure = new Object({
                                     ocid: release.ocid,
-                                    'planning/budget/budgetBreakdown/budgetLines/measures/id' : measure.id,
-                                    'planning/budget/budgetBreakdown/budgetLines/measures/update' : measure.update,
-                                    'planning/budget/budgetBreakdown/budgetLines/measures/amount' : (measure.value === undefined ? '' : measure.value.amount),
-                                    'planning/budget/budgetBreakdown/budgetLines/measures/currency' : (measure.value === undefined ? '' : measure.value.currency),
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/id' : (measure.id === undefined ? '' : measure.id),
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/update' : (measure.update === undefined ? '' : measure.update),
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/amount' : (measure.value === undefined ? '' : (measure.value.amount === undefined ? '' : measure.value.amount)),
+                                    'planning/budget/budgetBreakdown/budgetLines/measures/currency' : (measure.value === undefined ? '' : (measure.value.currency === undefined ? '' : measure.value.currency)),
                                   });
                                   arrayBudgetLinesMeasure.push(objBudgetLinesMeasure)
                                 });
@@ -1816,15 +1523,15 @@
                   release.planning.documents.forEach(document => {
                     var objDocument = new Object({
                       ocid: release.ocid,
-                      'planning/documents/id' : document.id,
-                      'planning/documents/documentType' : document.documentType,
-                      'planning/documents/title' : document.title,
-                      'planning/documents/description' : document.description,
-                      'planning/documents/url' : document.url,
-                      'planning/documents/datePublished' : document.datePublished,
-                      'planning/documents/dateModified' : document.dateModified,
-                      'planning/documents/format' : document.format,
-                      'planning/documents/language' : document.language,
+                      'planning/documents/id' : (document.id === undefined ? '' : document.id),
+                      'planning/documents/documentType' : (document.documentType === undefined ? '' : document.documentType),
+                      'planning/documents/title' : (document.title === undefined ? '' : document.title),
+                      'planning/documents/description' : (document.description === undefined ? '' : document.description),
+                      'planning/documents/url' : (document.url === undefined ? '' : document.url),
+                      'planning/documents/datePublished' : (document.datePublished === undefined ? '' : document.datePublished),
+                      'planning/documents/dateModified' : (document.dateModified === undefined ? '' : document.dateModified),
+                      'planning/documents/format' : (document.format === undefined ? '' : document.format),
+                      'planning/documents/language' : (document.language === undefined ? '' : document.language)
                     });
                     arrayPlanningDocuments.push(objDocument);
                   });
@@ -1835,11 +1542,11 @@
                   release.planning.requestsForQuotes.forEach(requestForQuote => {
                     var objRequestForQuote = new Object({
                       ocid: release.ocid,
-                      'planning/requestsForQuotes/id' : requestForQuote.id,
-                      'planning/requestsForQuotes/title' : requestForQuote.title,
-                      'planning/requestsForQuotes/description' : requestForQuote.description,
-                      'planning/requestsForQuotes/period/startDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.startDate),
-                      'planning/requestsForQuotes/period/endDate' : (requestForQuote.period === undefined ? '' : requestForQuote.period.endDate)
+                      'planning/requestsForQuotes/id' : (requestForQuote.id === undefined ? '' : requestForQuote.id),
+                      'planning/requestsForQuotes/title' : (requestForQuote.title === undefined ? '' : requestForQuote.title),
+                      'planning/requestsForQuotes/description' : (requestForQuote.description === undefined ? '' : requestForQuote.description),
+                      'planning/requestsForQuotes/period/startDate' : (requestForQuote.period === undefined ? '' : (requestForQuote.period.startDate === undefined ? '' : requestForQuote.period.startDate)),
+                      'planning/requestsForQuotes/period/endDate' : (requestForQuote.period === undefined ? '' : (requestForQuote.period.endDate === undefined ? '' : requestForQuote.period.endDate))
                     });
                     arrayRequestsForQuotes.push(objRequestForQuote);
                     if(requestForQuote.items !== undefined){
@@ -1847,12 +1554,12 @@
                         requestForQuote.items.forEach(item => {
                           var objItem = new Object({
                             ocid: release.ocid,
-                            'planning/requestsForQuotes/id' : requestForQuote.id,
-                            'planning/requestsForQuotes/items/id' : item.id,
-                            'planning/requestsForQuotes/items/description' : item.description,
-                            'planning/requestsForQuotes/items/quantity' : item.quantity,
-                            'planning/requestsForQuotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
-                            'planning/requestsForQuotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
+                            'planning/requestsForQuotes/id' : (requestForQuote.id === undefined ? '' : requestForQuote.id),
+                            'planning/requestsForQuotes/items/id' : (item.id === undefined ? '' : item.id),
+                            'planning/requestsForQuotes/items/description' : (item.description === undefined ? '' : item.description),
+                            'planning/requestsForQuotes/items/quantity' : (item.quantity === undefined ? '' : item.quantity),
+                            'planning/requestsForQuotes/items/classification/id' : (item.classification === undefined ? '' : (item.classification.id === undefined ? '' : item.classification.id)),
+                            'planning/requestsForQuotes/items/classification/description' : (item.classification === undefined ? '' : (item.classification.description === undefined ? '' : item.classification.description)),
                             'planning/requestsForQuotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name)
                           });
                           arrayRequestsForQuotesItems.push(objItem);
@@ -1864,9 +1571,9 @@
                         requestForQuote.invitedSuppliers.forEach(invitedSupplier => {
                           var objInvitedSupplier = new Object({
                             ocid: release.ocid,
-                            'planning/requestsForQuotes/id' : requestForQuote.id,
-                            'planning/invitedSuppliers/name' : invitedSupplier.name,
-                            'planning/invitedSuppliers/id' : invitedSupplier.id
+                            'planning/requestsForQuotes/id' : (requestForQuote.id === undefined ? '' : requestForQuote.id),
+                            'planning/invitedSuppliers/name' : (invitedSupplier.name === undefined ? '' : invitedSupplier.name),
+                            'planning/invitedSuppliers/id' : (invitedSupplier.id === undefined ? '' : invitedSupplier.id)
                           });
                           arrayRequestsForQuotesinvitedSuppliers.push(objInvitedSupplier);
                         });
@@ -1877,15 +1584,15 @@
                         requestForQuote.quotes.forEach(quote => {
                           var objRequestsForQuotesQuotes = new Object({
                             ocid: release.ocid,
-                            'planning/requestsForQuotes/id' : requestForQuote.id,
-                            'planning/requestsForQuotes/quotes/id' : quote.id,
-                            'planning/requestsForQuotes/quotes/description' : quote.description,
-                            'planning/requestsForQuotes/quotes/date' : quote.date,
-                            'planning/requestsForQuotes/quotes/value/amount' : (quote.value === undefined ? '' : quote.value.amount),
-                            'planning/requestsForQuotes/quotes/quotePeriod/startDate' : (quote.period === undefined ? '' : quote.period.startDate),
-                            'planning/requestsForQuotes/quotes/quotePeriod/endDate' : (quote.period === undefined ? '' : quote.period.endDate),
-                            'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
-                            'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
+                            'planning/requestsForQuotes/id' : (requestForQuote.id === undefined ? '' : requestForQuote.id),
+                            'planning/requestsForQuotes/quotes/id' : (quote.id === undefined ? '' : quote.id),
+                            'planning/requestsForQuotes/quotes/description' : (quote.description === undefined ? '' : quote.description),
+                            'planning/requestsForQuotes/quotes/date' : (quote.date === undefined ? '' : quote.date),
+                            'planning/requestsForQuotes/quotes/value/amount' : (quote.value === undefined ? '' : (quote.value.amount === undefined ? '' : quote.value.amount)),
+                            'planning/requestsForQuotes/quotes/quotePeriod/startDate' : (quote.period === undefined ? '' : (quote.period.startDate === undefined ? '' : quote.period.startDate)),
+                            'planning/requestsForQuotes/quotes/quotePeriod/endDate' : (quote.period === undefined ? '' : (quote.period.endDate === undefined ? '' : quote.period.endDate)),
+                            'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : (quote.issuingSupplier.name === undefined ? '' : quote.issuingSupplier.name)),
+                            'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : (quote.issuingSupplier.id === undefined ? '' : quote.issuingSupplier.id))
                           });
                           arrayRequestsForQuotesQuotes.push(objRequestsForQuotesQuotes);
                           if(quote.items !== undefined){
@@ -1893,15 +1600,15 @@
                               quote.items.forEach(item => {
                                 var objRequestsForQuotesQuotesItems = new Object({
                                   ocid: release.ocid,
-                                  'planning/requestsForQuotes/id' : requestForQuote.id,
-                                  'planning/requestsForQuotes/quotes/id' : quote.id,
-                                  'planning/requestsForQuotes/quotes/items/id' : item.id,
-                                  'planning/requestsForQuotes/quotes/items/classification/id' : (item.classification === undefined ? '' : item.classification.id),
-                                  'planning/requestsForQuotes/quotes/items/classification/description' : (item.classification === undefined ? '' : item.classification.description),
-                                  'planning/requestsForQuotes/quotes/items/unit/name' : (item.unit === undefined ? '' : item.unit.name),
+                                  'planning/requestsForQuotes/id' : (requestForQuote.id === undefined ? '' : requestForQuote.id),
+                                  'planning/requestsForQuotes/quotes/id' : (quote.id === undefined ? '' : quote.id),
+                                  'planning/requestsForQuotes/quotes/items/id' : (item.id === undefined ? '' : item.id),
+                                  'planning/requestsForQuotes/quotes/items/classification/id' : (item.classification === undefined ? '' : (item.classification.id === undefined ? '' : item.classification.id)),
+                                  'planning/requestsForQuotes/quotes/items/classification/description' : (item.classification === undefined ? '' : (item.classification.description === undefined ? '' : item.classification.description)),
+                                  'planning/requestsForQuotes/quotes/items/unit/name' : (item.unit === undefined ? '' : (item.unit.name === undefined ? '' : item.unit.name)),
                                   'planning/requestsForQuotes/quotes/items/unit/value/amount' : (item.unit === undefined ? '' : item.unit.value.amount),
-                                  'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.name),
-                                  'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : quote.issuingSupplier.id)
+                                  'planning/requestsForQuotes/quotes/issuingSupplier/name' : (quote.issuingSupplier === undefined ? '' : (quote.issuingSupplier.name === undefined ? '' : quote.issuingSupplier.name)),
+                                  'planning/requestsForQuotes/quotes/issuingSupplier/id' : (quote.issuingSupplier === undefined ? '' : (quote.issuingSupplier.id === undefined ? '' : quote.issuingSupplier.id))
                                 });
                                 arrayRequestsForQuotesQuotesItems.push(objRequestsForQuotesQuotesItems);
                               });
@@ -1935,34 +1642,34 @@
               }
               var objTender = new Object({
                 ocid: release.ocid,
-                'tender/id': release.tender.id,
-                'tender/title': release.tender.title,
-                'tender/description': release.tender.description,
-                'tender/status': release.tender.status,
-                'tender/procuringEntity/name': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.name),
-                'tender/procuringEntity/id': (release.tender.procuringEntity === undefined ? '' : release.tender.procuringEntity.id),
-                'tender/value/amount': (release.tender.value === undefined ? '' : release.tender.value.amount),
-                'tender/value/currency': (release.tender.value === undefined ? '' : release.tender.value.currency),
-                'tender/minValue/amount': (release.tender.minValue === undefined ? '' : release.tender.minValue.amount),
-                'tender/minValue/currency': (release.tender.minValue === undefined ? '' : release.tender.minValue.currency),
-                'tender/procurementMethod': release.tender.procurementMethod,
-                'tender/procurementMethodDetails': release.tender.procurementMethodDetails,
-                'tender/procurementMethodRationale': release.tender.procurementMethodRationale,
-                'tender/mainProcurementCategory': release.tender.mainProcurementCategory,
+                'tender/id': (release.tender.id === undefined ? '' : release.tender.id),
+                'tender/title': (release.tender.title === undefined ? '' : release.tender.title),
+                'tender/description': (release.tender.description === undefined ? '' : release.tender.description),
+                'tender/status': (release.tender.status === undefined ? '' : release.tender.status),
+                'tender/procuringEntity/name': (release.tender.procuringEntity === undefined ? '' : (release.tender.procuringEntity.name === undefined ? '' : release.tender.procuringEntity.name)),
+                'tender/procuringEntity/id': (release.tender.procuringEntity === undefined ? '' : (release.tender.procuringEntity.id === undefined ? '' : release.tender.procuringEntity.id)),
+                'tender/value/amount': (release.tender.value === undefined ? '' : (release.tender.value.amount === undefined ? '' : release.tender.value.amount)),
+                'tender/value/currency': (release.tender.value === undefined ? '' : (release.tender.value.currency === undefined ? '' : release.tender.value.currency)),
+                'tender/minValue/amount': (release.tender.minValue === undefined ? '' : (release.tender.minValue.amount === undefined ? '' : release.tender.minValue.amount)),
+                'tender/minValue/currency': (release.tender.minValue === undefined ? '' : (release.tender.minValue.currency === undefined ? '' : release.tender.minValue.currency)),
+                'tender/procurementMethod': (release.tender.procurementMethod === undefined ? '' : release.tender.procurementMethod),
+                'tender/procurementMethodDetails': (release.tender.procurementMethodDetails === undefined ? '' : release.tender.procurementMethodDetails),
+                'tender/procurementMethodRationale': (release.tender.procurementMethodRationale === undefined ? '' : release.tender.procurementMethodRationale),
+                'tender/mainProcurementCategory': (release.tender.mainProcurementCategory === undefined ? '' : release.tender.mainProcurementCategory),
                 'tender/additionalProcurementCategories': (arrayAdditionalProcurementCategories <= 0 ? '' : arrayAdditionalProcurementCategories.toString()),
-                'tender/awardCriteria': release.tender.awardCriteria,
-                'tender/awardCriteriaDetails': release.tender.awardCriteriaDetails,
+                'tender/awardCriteria': (release.tender.awardCriteria === undefined ? '' : release.tender.awardCriteria),
+                'tender/awardCriteriaDetails': (release.tender.awardCriteriaDetails === undefined ? '' : release.tender.awardCriteriaDetails),
                 'tender/submissionMethod': (arraySubmissionMethod <= 0 ? '' : arraySubmissionMethod.toString()),
-                'tender/submissionMethodDetails': release.tender.submissionMethodDetails,
-                'tender/tenderPeriod/startDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.startDate),
-                'tender/tenderPeriod/endDate': (release.tender.tenderPeriod === undefined ? '' : release.tender.tenderPeriod.endDate),
-                'tender/enquiryPeriod/startDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.startDate),
-                'tender/enquiryPeriod/endDate': (release.tender.enquiryPeriod === undefined ? '' : release.tender.enquiryPeriod.endDate),
+                'tender/submissionMethodDetails': (release.tender.submissionMethodDetails === undefined ? '' : release.tender.submissionMethodDetails),
+                'tender/tenderPeriod/startDate': (release.tender.tenderPeriod === undefined ? '' : (release.tender.tenderPeriod.startDate === undefined ? '' : release.tender.tenderPeriod.startDate)),
+                'tender/tenderPeriod/endDate': (release.tender.tenderPeriod === undefined ? '' : (release.tender.tenderPeriod.endDate === undefined ? '' : release.tender.tenderPeriod.endDate)),
+                'tender/enquiryPeriod/startDate': (release.tender.enquiryPeriod === undefined ? '' : (release.tender.enquiryPeriod.startDate === undefined ? '' : release.tender.enquiryPeriod.startDate)),
+                'tender/enquiryPeriod/endDate': (release.tender.enquiryPeriod === undefined ? '' : (release.tender.enquiryPeriod.endDate === undefined ? '' : release.tender.enquiryPeriod.endDate)),
                 'tender/hasEnquiries': (release.tender.hasEnquiries === true ? 'true' : false),
-                'tender/eligibilityCriteria': release.tender.eligibilityCriteria,
-                'tender/awardPeriod/startDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.startDate),
-                'tender/awardPeriod/endDate': (release.tender.awardPeriod === undefined ? '' : release.tender.awardPeriod.endDate),
-                'tender/numberOfTenderers': release.tender.numberOfTenderers,
+                'tender/eligibilityCriteria': (release.tender.eligibilityCriteria === undefined ? '' : release.tender.eligibilityCriteria),
+                'tender/awardPeriod/startDate': (release.tender.awardPeriod === undefined ? '' : (release.tender.awardPeriod.startDate === undefined ? '' : release.tender.awardPeriod.startDate)),
+                'tender/awardPeriod/endDate': (release.tender.awardPeriod === undefined ? '' : (release.tender.awardPeriod.endDate === undefined ? '' : release.tender.awardPeriod.endDate)),
+                'tender/numberOfTenderers': (release.tender.numberOfTenderers === undefined ? '' : release.tender.numberOfTenderers),
               });
               arrayTender.push(objTender)
             }
@@ -1983,22 +1690,22 @@
                 release.tender.items.forEach(item => {
                   var objTenderItem = new Object({
                       ocid: release.ocid,
-                      'tender/items/id': item.id,
-                      'tender/items/description': item.description,
-                      'tender/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
-                      'tender/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
-                      'tender/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
-                      'tender/items/quantity': item.quantity,
-                      'tender/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
-                      'tender/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                      'tender/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                      'tender/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                      'tender/items/id': (item.id === undefined ? '' : item.id),
+                      'tender/items/description': (item.description === undefined ? '' : item.description),
+                      'tender/items/classification/scheme': (item.classification === undefined ? '' : (item.classification.scheme === undefined ? '' : item.classification.scheme)),
+                      'tender/items/classification/id': (item.classification === undefined ? '' : (item.classification.id === undefined ? '' : item.classification.id)),
+                      'tender/items/classification/description': (item.classification === undefined ? '' : (item.classification.description === undefined ? '' : item.classification.description)),
+                      'tender/items/quantity': (item.quantity === undefined ? '' : item.quantity),
+                      'tender/items/unit/name': (item.unit === undefined ? '' : (item.unit.name === undefined ? '' : item.unit.name)),
+                      'tender/items/unit/value/amount': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.amount === undefined ? '' : item.unit.value.amount))),
+                      'tender/items/unit/value/netAmount': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.amount === undefined ? '' : item.unit.value.amount))),
+                      'tender/items/unit/value/currency': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.currency === undefined ? '' : item.unit.value.currency))),
                       'tender/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
                       'tender/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
-                      'tender/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
-                      'tender/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
-                      'tender/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
-                      'tender/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
+                      'tender/items/deliveryAddress/streetAddress': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.streetAddress === undefined ? '' : item.deliveryAddress.streetAddress)),
+                      'tender/items/deliveryAddress/locality': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.locality === undefined ? '' : item.deliveryAddress.locality)),
+                      'tender/items/deliveryAddress/postalCode': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.postalCode === undefined ? '' : item.deliveryAddress.postalCode)),
+                      'tender/items/deliveryAddress/countryName': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.countryName === undefined ? '' : item.deliveryAddress.countryName))
                     });
                     arrayTenderItems.push(objTenderItem)
                 });
@@ -2009,15 +1716,15 @@
                 release.tender.documents.forEach(document => {
                   var objTenderdocument = new Object({
                       ocid: release.ocid,
-                      'tender/documents/id': document.id,
-                      'tender/documents/documentType': document.documentType,
-                      'tender/documents/title': document.title,
-                      'tender/documents/description': document.description,
-                      'tender/documents/url': document.url,
-                      'tender/documents/datePublished': document.datePublished,
-                      'tender/documents/dateModified': document.dateModified,
-                      'tender/documents/format': document.format,
-                      'tender/documents/language': document.language
+                      'tender/documents/id': (document.id === undefined ? '' : document.id),
+                      'tender/documents/documentType': (document.documentType === undefined ? '' : document.documentType),
+                      'tender/documents/title': (document.title === undefined ? '' : document.title),
+                      'tender/documents/description': (document.description === undefined ? '' : document.description),
+                      'tender/documents/url': (document.url === undefined ? '' : document.url),
+                      'tender/documents/datePublished': (document.datePublished === undefined ? '' : document.datePublished),
+                      'tender/documents/dateModified': (document.dateModified === undefined ? '' : document.dateModified),
+                      'tender/documents/format': (document.format === undefined ? '' : document.format),
+                      'tender/documents/language': (document.language === undefined ? '' : document.language)
                     });
                     arrayTenderDocuments.push(objTenderdocument)
                 });
@@ -2028,13 +1735,13 @@
                 release.tender.milestones.forEach(milestone => {
                   var objTendermilestone = new Object({
                       ocid: release.ocid,
-                      'tender/milestones/id': milestone.id,
-                      'tender/milestones/title': milestone.title,
-                      'tender/milestones/type': milestone.type,
-                      'tender/milestones/description': milestone.description,
-                      'tender/milestones/dueDate': milestone.dueDate,
-                      'tender/milestones/dateModified': milestone.dateModified,
-                      'tender/milestones/status': milestone.status
+                      'tender/milestones/id': (milestone.id === undefined ? '' : milestone.id),
+                      'tender/milestones/title': (milestone.title === undefined ? '' : milestone.title),
+                      'tender/milestones/type': (milestone.type === undefined ? '' : milestone.type),
+                      'tender/milestones/description': (milestone.description === undefined ? '' : milestone.description),
+                      'tender/milestones/dueDate': (milestone.dueDate === undefined ? '' : milestone.dueDate),
+                      'tender/milestones/dateModified': (milestone.dateModified === undefined ? '' : milestone.dateModified),
+                      'tender/milestones/status': (milestone.status === undefined ? '' : milestone.status)
                     });
                     arrayTenderMilestones.push(objTendermilestone)
                 });
@@ -2045,10 +1752,10 @@
                 release.tender.amendments.forEach(amendment => {
                   var objTenderAmendment = new Object({
                       ocid: release.ocid,
-                      'tender/amendments/date': amendment.date,
-                      'tender/amendments/rationale': amendment.rationale,
-                      'tender/amendments/id': amendment.id,
-                      'tender/amendments/description': amendment.description
+                      'tender/amendments/date': (amendment.date === undefined ? '' : amendment.date),
+                      'tender/amendments/rationale': (amendment.rationale === undefined ? '' : amendment.rationale),
+                      'tender/amendments/id': (amendment.id === undefined ? '' : amendment.id),
+                      'tender/amendments/description': (amendment.description === undefined ? '' : amendment.description)
                     });
                     arrayTenderAmendment.push(objTenderAmendment)
                 });
@@ -2059,17 +1766,17 @@
                 release.tender.clarificationMeetings.forEach(clarificationMeeting => {
                   var objTenderClarificationMeeting = new Object({
                       ocid: release.ocid,
-                      'tender/clarificationMeetings/id': clarificationMeeting.id,
-                      'tender/clarificationMeetings/date': clarificationMeeting.date
+                      'tender/clarificationMeetings/id': (clarificationMeeting.id === undefined ? '' : clarificationMeeting.id),
+                      'tender/clarificationMeetings/date': (clarificationMeeting.date === undefined ? '' : clarificationMeeting.date)
                     });
                     arrayTenderClarificationMeeting.push(objTenderClarificationMeeting)
                     if(clarificationMeeting.attendees !== undefined){
                       clarificationMeeting.attendees.forEach(attendee => {
                         var objTenderAttendees = new Object({
                           ocid: release.ocid,
-                          'tender/clarificationMeetings/id': clarificationMeeting.id,
-                          'tender/clarificationMeetings/attendees/name': attendee.name,
-                          'tender/clarificationMeetings/attendees/id': attendee.id
+                          'tender/clarificationMeetings/id': (clarificationMeeting.id === undefined ? '' : clarificationMeeting.id),
+                          'tender/clarificationMeetings/attendees/name': (attendee.name === undefined ? '' : attendee.name),
+                          'tender/clarificationMeetings/attendees/id': (attendee.id === undefined ? '' : attendee.id)
                         });
                         arrayTenderClarificationMeetingAttendees.push(objTenderAttendees)
                       })
@@ -2078,9 +1785,9 @@
                       clarificationMeeting.officials.forEach(official => {
                         var objTenderOfficials = new Object({
                           ocid: release.ocid,
-                          'tender/clarificationMeetings/id': clarificationMeeting.id,
-                          'tender/clarificationMeetings/officials/name': official.name,
-                          'tender/clarificationMeetings/officials/id': official.id
+                          'tender/clarificationMeetings/id': (clarificationMeeting.id === undefined ? '' : clarificationMeeting.id),
+                          'tender/clarificationMeetings/officials/name': (official.name === undefined ? '' : official.name),
+                          'tender/clarificationMeetings/officials/id': (official.id === undefined ? '' : official.id)
                         });
                         arrayTenderClarificationMeetingOfficials.push(objTenderOfficials)
                       })
@@ -2091,8 +1798,8 @@
             if(release.buyer !== undefined){
               var objReleaseBuyer = new Object({
                 ocid: release.ocid,
-                'buyer/name': release.buyer.name,
-                'buyer/id': release.buyer.id
+                'buyer/name': (release.buyer.name === undefined ? '' : release.buyer.name),
+                'buyer/id': (release.buyer.id === undefined ? '' : release.buyer.id)
               });
               arrayBuyer.push(objReleaseBuyer)
             }
@@ -2101,12 +1808,12 @@
                 release.awards.forEach(award => {
                   var objReleaseAward = new Object({
                     ocid: release.ocid,
-                    'awards/id': award.id,
-                    'awards/title': award.title,
-                    'awards/description': award.description,
-                    'awards/rationale': award.rationale,
-                    'awards/status': award.status,
-                    'awards/date': award.date,
+                    'awards/id': (award.id === undefined ? '' : award.id),
+                    'awards/title': (award.title === undefined ? '' : award.title),
+                    'awards/description': (award.description === undefined ? '' : award.description),
+                    'awards/rationale': (award.rationale === undefined ? '' : award.rationale),
+                    'awards/status': (award.status === undefined ? '' : award.status),
+                    'awards/date': (award.date === undefined ? '' : award.date),
                     'awards/value/netAmount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
                     'awards/value/amount': ((award.value !== undefined) ? (award.value.amount !== undefined ? award.value.amount : '') : ''),
                     'awards/value/currency': ((award.value !== undefined) ? (award.value.currency !== undefined ? award.value.currency : '') : ''),
@@ -2116,7 +1823,7 @@
                   arrayAwars.push(objReleaseAward);
                   var objReleaseAward = new Object({
                     ocid: release.ocid,
-                    'awards/id': award.id,
+                    'awards/id': (award.id === undefined ? '' : award.id),
                     'awards/suppliers/name': ((award.suppliers !== undefined) ? (award.suppliers[0].name !== undefined ? award.suppliers[0].name : '') : ''),
                     'awards/suppliers/id': ((award.suppliers !== undefined) ? (award.suppliers[0].id !== undefined ? award.suppliers[0].id : '') : ''),
                   })
@@ -2126,15 +1833,15 @@
                       award.documents.forEach(awardDocument => {
                         var objAwardDocument = new Object({
                           ocid: release.ocid,
-                          'awards/documents/id': awardDocument.id,
-                          'awards/documents/documentType': awardDocument.documentType,
-                          'awards/documents/title': awardDocument.title,
-                          'awards/documents/description': awardDocument.description,
-                          'awards/documents/url': awardDocument.url,
-                          'awards/documents/datePublished': awardDocument.datePublished,
-                          'awards/documents/dateModified': awardDocument.dateModified,
-                          'awards/documents/format': awardDocument.format,
-                          'awards/documents/language': awardDocument.language,
+                          'awards/documents/id': (awardDocument.id === undefined ? '' : awardDocument.id),
+                          'awards/documents/documentType': (awardDocument.documentType === undefined ? '' : awardDocument.documentType),
+                          'awards/documents/title': (awardDocument.title === undefined ? '' : awardDocument.title),
+                          'awards/documents/description': (awardDocument.description === undefined ? '' : awardDocument.description),
+                          'awards/documents/url': (awardDocument.url === undefined ? '' : awardDocument.url),
+                          'awards/documents/datePublished': (awardDocument.datePublished === undefined ? '' : awardDocument.datePublished),
+                          'awards/documents/dateModified': (awardDocument.dateModified === undefined ? '' : awardDocument.dateModified),
+                          'awards/documents/format': (awardDocument.format === undefined ? '' : awardDocument.format),
+                          'awards/documents/language': (awardDocument.language === undefined ? '' : awardDocument.language),
                         })
                         arrayAwarsDocuments.push(objAwardDocument);
                       })
@@ -2145,10 +1852,10 @@
                       award.amendments.forEach(amendment => {
                         var objAmendment = new Object({
                           ocid: release.ocid,
-                          'awards/amendments/date': amendment.date,
-                          'awards/amendments/rationale': amendment.rationale,
-                          'awards/amendments/id': amendment.id,
-                          'awards/amendments/description': amendment.description,
+                          'awards/amendments/date': (amendment.date === undefined ? '' : amendment.date),
+                          'awards/amendments/rationale': (amendment.rationale === undefined ? '' : amendment.rationale),
+                          'awards/amendments/id': (amendment.id === undefined ? '' : amendment.id),
+                          'awards/amendments/description': (amendment.description === undefined ? '' : amendment.description),
                           
                         })
                         arrayAwarsAmendments.push(objAmendment);
@@ -2163,11 +1870,11 @@
                 release.contracts.forEach(contract => {
                   var objContract = new Object({
                     ocid: release.ocid,
-                    'contracts/id': contract.id,
-                    'contracts/awardID': contract.awardID,
-                    'contracts/title': contract.title,
-                    'contracts/description': contract.description,
-                    'contracts/status': contract.status,
+                    'contracts/id': (contract.id === undefined ? '' : contract.id),
+                    'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                    'contracts/title': (contract.title === undefined ? '' : contract.title),
+                    'contracts/description': (contract.description === undefined ? '' : contract.description),
+                    'contracts/status': (contract.status === undefined ? '' : contract.status),
                     'contracts/period/startDate': ((contract.period !== undefined) ? (contract.period.startDate !== undefined ? contract.period.startDate : '') : ''),
                     'contracts/period/endDate': ((contract.period !== undefined) ? (contract.period.endDate !== undefined ? contract.period.endDate : '') : ''),
                     'contracts/value/netAmount': ((contract.value !== undefined) ? (contract.value.amount !== undefined ? contract.value.amount : '') : ''),
@@ -2177,7 +1884,7 @@
                     'contracts/value/exchangeRates/rate': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].rate !== undefined ? contract.value.exchangeRates[0].rate : '') : '') : ''),
                     'contracts/value/exchangeRates/date': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].date !== undefined ? contract.value.exchangeRates[0].date : '') : '') : ''),
                     'contracts/value/exchangeRates/source': ((contract.value !== undefined) ? (contract.value.exchangeRates !== undefined ? (contract.value.exchangeRates[0].source !== undefined ? contract.value.exchangeRates[0].source : '') : '') : ''),
-                    'contracts/dateSigned': contract.dateSigned,
+                    'contracts/dateSigned': (contract.dateSigned === undefined ? '' : contract.dateSigned),
                     'surveillanceMechanisms': ((contract.surveillanceMechanisms !== undefined) ? contract.surveillanceMechanisms[0] : ''), 
                   })
                   arrayContracts.push(objContract);
@@ -2186,24 +1893,24 @@
                       contract.items.forEach(item => {
                         var objContractItem = new Object({
                           ocid: release.ocid,
-                          'contracts/id': contract.id,
-                          'contracts/awardID': contract.awardID,
-                          'contracts/items/id': item.id,
-                          'contracts/items/description': item.description,
+                          'contracts/id': (contract.id === undefined ? '' : contract.id),
+                          'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                          'contracts/items/id': (item.id === undefined ? '' : item.id),
+                          'contracts/items/description': (item.description === undefined ? '' : item.description),
                           'contracts/items/classification/scheme': ((item.classification !== undefined) ? item.classification.scheme : ''),
                           'contracts/items/classification/id': ((item.classification !== undefined) ? item.classification.id : ''),
                           'contracts/items/classification/description': ((item.classification !== undefined) ? item.classification.description : ''),
-                          'contracts/items/quantity': item.quantity,
-                          'contracts/items/unit/name': (item.unit !== undefined ? item.unit.name : ''),
-                          'contracts/items/unit/value/amount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                          'contracts/items/unit/value/netAmount': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.amount : '') : ''),
-                          'contracts/items/unit/value/currency': ((item.unit !== undefined) ? (item.unit.value !== undefined ? item.unit.value.currency : '') : ''),
+                          'contracts/items/quantity': (item.quantity === undefined ? '' : item.quantity),
+                          'contracts/items/unit/name': (item.unit === undefined ? '' : (item.unit.name === undefined ? '' : item.unit.name)),
+                          'contracts/items/unit/value/amount': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.amount === undefined ? '' : item.unit.value.amount))),
+                          'contracts/items/unit/value/netAmount': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.amount === undefined ? '' : item.unit.value.amount))),
+                          'contracts/items/unit/value/currency': (item.unit === undefined ? '' : (item.unit.value === undefined ? '' : (item.unit.value.currency === undefined ? '' : item.unit.value.currency))),
                           'contracts/items/deliveryLocation/geometry/type': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? item.deliveryLocation.geometry.type : '') : ''),
                           'contracts/items/deliveryLocation/geometry/coordinates': ((item.deliveryLocation !== undefined) ? (item.deliveryLocation.geometry !== undefined ? (item.deliveryLocation.geometry.coordinates !== undefined ? item.deliveryLocation.geometry.coordinates[0]+','+item.deliveryLocation.geometry.coordinates[1] : '') : '') : ''),
-                          'contracts/items/deliveryAddress/streetAddress': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.streetAddress : ''),
-                          'contracts/items/deliveryAddress/locality': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.locality : ''),
-                          'contracts/items/deliveryAddress/postalCode': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.postalCode : ''),
-                          'contracts/items/deliveryAddress/countryName': ((item.deliveryAddress !== undefined) ? item.deliveryAddress.countryName : ''),
+                          'contracts/items/deliveryAddress/streetAddress': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.streetAddress === undefined ? '' : item.deliveryAddress.streetAddress)),
+                          'contracts/items/deliveryAddress/locality': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.locality === undefined ? '' : item.deliveryAddress.locality)),
+                          'contracts/items/deliveryAddress/postalCode': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.postalCode === undefined ? '' : item.deliveryAddress.postalCode)),
+                          'contracts/items/deliveryAddress/countryName': (item.deliveryAddress === undefined ? '' : (item.deliveryAddress.countryName === undefined ? '' : item.deliveryAddress.countryName)),
                         });
                         arrayContractsItems.push(objContractItem);
                       });
@@ -2214,17 +1921,17 @@
                       contract.documents.forEach(document => {
                         var objContractItem = new Object({
                           ocid: release.ocid,
-                          'contracts/id': contract.id,
-                          'contracts/awardID': contract.awardID,
-                          'contracts/documents/id': document.id,
-                          'contracts/documents/documentType': document.documentType,
-                          'contracts/documents/title': document.title,
-                          'contracts/documents/description': document.description,
-                          'contracts/documents/url': document.url,
-                          'contracts/documents/datePublished': document.datePublished,
-                          'contracts/documents/dateModified': document.dateModified,
-                          'contracts/documents/format': document.format,
-                          'contracts/documents/language': document.language,
+                          'contracts/id': (contract.id === undefined ? '' : contract.id),
+                          'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                          'contracts/documents/id': (document.id === undefined ? '' : document.id),
+                          'contracts/documents/documentType': (document.documentType === undefined ? '' : document.documentType),
+                          'contracts/documents/title': (document.title === undefined ? '' : document.title),
+                          'contracts/documents/description': (document.description === undefined ? '' : document.description),
+                          'contracts/documents/url': (document.url === undefined ? '' : document.url),
+                          'contracts/documents/datePublished': (document.datePublished === undefined ? '' : document.datePublished),
+                          'contracts/documents/dateModified': (document.dateModified === undefined ? '' : document.dateModified),
+                          'contracts/documents/format': (document.format === undefined ? '' : document.format),
+                          'contracts/documents/language': (document.language === undefined ? '' : document.language),
                         });
                         arrayContractsdocuments.push(objContractItem);
                       })
@@ -2235,12 +1942,12 @@
                       contract.amendments.forEach(amendment => {
                         var objAmendment = new Object({
                           ocid: release.ocid,
-                          'contracts/id': contract.id,
-                          'contracts/awardID': contract.awardID,
-                          'contracts/amendments/date': amendment.date,
-                          'contracts/amendments/rationale': amendment.rationale,
-                          'contracts/amendments/id': amendment.id,
-                          'contracts/amendments/description': amendment.description,
+                          'contracts/id': (contract.id === undefined ? '' : contract.id),
+                          'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                          'contracts/amendments/date': (amendment.date === undefined ? '' : amendment.date),
+                          'contracts/amendments/rationale': (amendment.rationale === undefined ? '' : amendment.rationale),
+                          'contracts/amendments/id': (amendment.id === undefined ? '' : amendment.id),
+                          'contracts/amendments/description': (amendment.description === undefined ? '' : amendment.description),
                         });
                         arrayContractsAmendments.push(objAmendment);
                       })
@@ -2251,18 +1958,18 @@
                       contract.guarantees.forEach(guarantee => {
                         var objGuarantee = new Object({
                           ocid: release.ocid,
-                          'contracts/id': contract.id,
-                          'contracts/awardID': contract.awardID,
-                          'contracts/guarantees/id': guarantee.id,
-                          'contracts/guarantees/type': ((guarantee !== undefined) ? guarantee.type : ''),
-                          'contracts/guarantees/date': ((guarantee !== undefined) ? guarantee.date : ''),
-                          'contracts/guarantees/obligations': ((guarantee.guarantees !== undefined) ? guarantee.guarantees.obligations : ''),
-                          'contracts/guarantees/value/amount': ((guarantee.value !== undefined) ? guarantee.value.amount : ''),
-                          'contracts/guarantees/value/currency': ((guarantee.value !== undefined) ? guarantee.value.currency : ''),
-                          'contracts/guarantees/guarantor/name': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.name : ''),
-                          'contracts/guarantees/guarantor/id': ((guarantee.guarantor !== undefined) ? guarantee.guarantor.id : ''),
-                          'contracts/guarantees/period/startDate': ((guarantee.period !== undefined) ? guarantee.period.startDate : ''),
-                          'contracts/guarantees/period/endDate': ((guarantee.period !== undefined) ? guarantee.period.endDate : ''),
+                          'contracts/id': (contract.id === undefined ? '' : contract.id),
+                          'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                          'contracts/guarantees/id': (guarantee.id === undefined ? '' : guarantee.id),
+                          'contracts/guarantees/type': (guarantee.type === undefined ? '' : guarantee.type),
+                          'contracts/guarantees/date': (guarantee.date === undefined ? '' : guarantee.date),
+                          'contracts/guarantees/obligations': (guarantee.obligations === undefined ? '' : guarantee.obligations),
+                          'contracts/guarantees/value/amount': (guarantee.value === undefined ? '' : (guarantee.value.amount === undefined ? '' : guarantee.value.amount)),
+                          'contracts/guarantees/value/currency': (guarantee.value === undefined ? '' : (guarantee.value.currency === undefined ? '' : guarantee.value.currency)),
+                          'contracts/guarantees/guarantor/name': (guarantee.guarantor === undefined ? '' : (guarantee.guarantor.name === undefined ? '' : guarantee.guarantor.name)),
+                          'contracts/guarantees/guarantor/id': (guarantee.guarantor === undefined ? '' : (guarantee.guarantor.id === undefined ? '' : guarantee.guarantor.id)),
+                          'contracts/guarantees/period/startDate': (guarantee.period === undefined ? '' : (guarantee.period.startDate === undefined ? '' : guarantee.period.startDate)),
+                          'contracts/guarantees/period/endDate': (guarantee.period === undefined ? '' : (guarantee.period.endDate === undefined ? '' : guarantee.period.endDate)),
                         });
                         arrayContractsGuarantees.push(objGuarantee);
                       })
@@ -2271,9 +1978,9 @@
                   if(contract.implementation !== undefined){
                     var objGuarantee = new Object({
                       ocid: release.ocid,
-                      'contracts/id': contract.id,
-                      'contracts/awardID': contract.awardID,
-                      'contracts/implementation/status': contract.implementation.status,
+                      'contracts/id': (contract.id === undefined ? '' : contract.id),
+                      'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                      'contracts/implementation/status': (contract.implementation === undefined ? '' : (contract.implementation.status === undefined ? '' : contract.implementation.status)),
                     });
                     arrayContractsImplementation.push(objGuarantee);
                     if(contract.implementation.transactions !== undefined){
@@ -2281,18 +1988,18 @@
                         contract.implementation.transactions.forEach(transaction => {
                           var objTransaction = new Object({
                             ocid: release.ocid,
-                            'contracts/id': contract.id,
-                            'contracts/awardID': contract.awardID,
-                            'contracts/implementation/transactions/id': transaction.id,
-                            'contracts/implementation/transactions/date': transaction.date,
-                            'contracts/implementation/transactions/value/netAmount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
-                            'contracts/implementation/transactions/value/amount': ((transaction.value !== undefined) ? transaction.value.amount : ''),
-                            'contracts/implementation/transactions/value/currency': ((transaction.value !== undefined) ? transaction.value.currency : ''),
-                            'contracts/implementation/transactions/payer/name': ((transaction.payer !== undefined) ? transaction.payer.name : ''),
-                            'contracts/implementation/transactions/payer/id': ((transaction.payer !== undefined) ? transaction.payer.id : ''),
-                            'contracts/implementation/transactions/payee/id': ((transaction.payee !== undefined) ? transaction.payee.id : ''),
-                            'contracts/implementation/transactions/payee/name': ((transaction.payee !== undefined) ? transaction.payee.name : ''),
-                            'contracts/implementation/transactions/paymentMethod': transaction.paymentMethod,
+                            'contracts/id': (contract.id === undefined ? '' : contract.id),
+                            'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                            'contracts/implementation/transactions/id': (transaction.id === undefined ? '' : transaction.id),
+                            'contracts/implementation/transactions/date': (transaction.date === undefined ? '' : transaction.date),
+                            'contracts/implementation/transactions/value/netAmount': (transaction.value === undefined ? '' : (transaction.value.amount === undefined ? '' : transaction.value.amount)),
+                            'contracts/implementation/transactions/value/amount': (transaction.value === undefined ? '' : (transaction.value.amount === undefined ? '' : transaction.value.amount)),
+                            'contracts/implementation/transactions/value/currency': (transaction.value === undefined ? '' : (transaction.value.currency === undefined ? '' : transaction.value.currency)),
+                            'contracts/implementation/transactions/payer/name': (transaction.payer === undefined ? '' : (transaction.payer.name === undefined ? '' : transaction.payer.name)),
+                            'contracts/implementation/transactions/payer/id': (transaction.payer === undefined ? '' : (transaction.payer.id === undefined ? '' : transaction.payer.id)),
+                            'contracts/implementation/transactions/payee/id': (transaction.payee === undefined ? '' : (transaction.payee.id === undefined ? '' : transaction.payee.id)),
+                            'contracts/implementation/transactions/payee/name': (transaction.payee === undefined ? '' : (transaction.payee.name === undefined ? '' : transaction.payee.name)),
+                            'contracts/implementation/transactions/paymentMethod': (transaction.paymentMethod === undefined ? '' : transaction.paymentMethod),
                             
                           });
                           arrayContractsImplementationTrans.push(objTransaction);
@@ -2304,15 +2011,15 @@
                         contract.implementation.milestones.forEach(milestone => {
                           var objMilestone = new Object({
                             ocid: release.ocid,
-                            'contracts/id': contract.id,
-                            'contracts/awardID': contract.awardID,
-                            'implementation/milestones/id': milestone.id,
-                            'implementation/milestones/title': milestone.title,
-                            'implementation/milestones/type': milestone.type,
-                            'implementation/milestones/description': milestone.description,
-                            'implementation/milestones/dueDate': milestone.dueDate,
-                            'implementation/milestones/dateModified': milestone.dateModified,
-                            'implementation/milestones/status': milestone.status,
+                            'contracts/id': (contract.id === undefined ? '' : contract.id),
+                            'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                            'implementation/milestones/id': (milestone.id === undefined ? '' : milestone.id),
+                            'implementation/milestones/title': (milestone.title === undefined ? '' : milestone.title),
+                            'implementation/milestones/type': (milestone.type === undefined ? '' : milestone.type),
+                            'implementation/milestones/description': (milestone.description === undefined ? '' : milestone.description),
+                            'implementation/milestones/dueDate': (milestone.dueDate === undefined ? '' : milestone.dueDate),
+                            'implementation/milestones/dateModified': (milestone.dateModified === undefined ? '' : milestone.dateModified),
+                            'implementation/milestones/status': (milestone.status === undefined ? '' : milestone.status),
                           });
                           arrayContractsImplementationMilestone.push(objMilestone);
                         })
@@ -2323,17 +2030,17 @@
                         contract.implementation.documents.forEach(document => {
                           var objDocuments = new Object({
                             ocid: release.ocid,
-                            'contracts/id': contract.id,
-                            'contracts/awardID': contract.awardID,
-                            'implementation/documents/id': document.id,
-                            'implementation/documents/documentType': document.documentType,
-                            'implementation/documents/title': document.title,
-                            'implementation/documents/description': document.description,
-                            'implementation/documents/url': document.url,
-                            'implementation/documents/datePublished': document.datePublished,
-                            'implementation/documents/dateModified': document.dateModified,
-                            'implementation/documents/format': document.format,
-                            'implementation/documents/language': document.language,
+                            'contracts/id': (contract.id === undefined ? '' : contract.id),
+                            'contracts/awardID': (contract.awardID === undefined ? '' : contract.awardID),
+                            'implementation/documents/id': (document.id === undefined ? '' : document.id),
+                            'implementation/documents/documentType': (document.documentType === undefined ? '' : document.documentType),
+                            'implementation/documents/title': (document.title === undefined ? '' : document.title),
+                            'implementation/documents/description': (document.description === undefined ? '' : document.description),
+                            'implementation/documents/url': (document.url === undefined ? '' : document.url),
+                            'implementation/documents/datePublished': (document.datePublished === undefined ? '' : document.datePublished),
+                            'implementation/documents/dateModified': (document.dateModified === undefined ? '' : document.dateModified),
+                            'implementation/documents/format': (document.format === undefined ? '' : document.format),
+                            'implementation/documents/language': (document.language === undefined ? '' : document.language),
                           });
                           arrayContractsImplementationDocuments.push(objDocuments);
                         })
@@ -2348,12 +2055,12 @@
                 release.relatedProcesses.forEach(relatedProcess => {
                   var objRelatedProcess = new Object({
                     ocid: release.ocid,
-                    'relatedProcesses/id': relatedProcess.id,
-                    'relatedProcesses/relationship': relatedProcess.relationship[0],
-                    'relatedProcesses/title': relatedProcess.title,
-                    'relatedProcesses/scheme': relatedProcess.scheme,
-                    'relatedProcesses/identifier': relatedProcess.identifier,
-                    'relatedProcesses/uri': relatedProcess.uri,
+                    'relatedProcesses/id': (relatedProcess.id === undefined ? '' : relatedProcess.id),
+                    'relatedProcesses/relationship': (relatedProcess.relationship[0] === undefined ? '' : relatedProcess.relationship[0]),
+                    'relatedProcesses/title': (relatedProcess.title === undefined ? '' : relatedProcess.title),
+                    'relatedProcesses/scheme': (relatedProcess.scheme === undefined ? '' : relatedProcess.scheme),
+                    'relatedProcesses/identifier': (relatedProcess.identifier === undefined ? '' : relatedProcess.identifier),
+                    'relatedProcesses/uri': (relatedProcess.uri === undefined ? '' : relatedProcess.uri),
                   });
                   arrayRelatedProcesses.push(objRelatedProcess);
                 });
@@ -2413,7 +2120,6 @@
         return objResult;
       }
       function generateExcel(data){
-        // console.log(JSON.stringify(data))
         const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
         const EXCEL_EXTENSION = '.xlsx';
         var arraySheetNames = new Array();
@@ -2697,7 +2403,623 @@
         const info = new Blob([excelBuffer],{type: EXCEL_TYPE});
         saveAs(info,`test_export_${new Date().getTime()}${EXCEL_EXTENSION}`)
       }
-      
+      function generateCSV(info){
+        var data = generateData(info);
+        if(data.arrayIndice.length !== 0){
+          const headers = {
+            Path: 'Path',
+            Code: 'Code'
+          };
+          exportCSVFile(headers,data.arrayIndice,'index')
+        }
+        
+        if(data.arrayReleasePackage.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            uri: 'uri',
+            version: 'version',
+            publishedDate: 'publishedDate',
+            license: 'license',
+            publicationPolicy: 'publicationPolicy'
+          };
+          exportCSVFile(headers,data.arrayReleasePackage,'1000')
+        }
+
+        if(data.arrayExtensions2.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            extensions: 'extensions'
+          };
+          exportCSVFile(headers,data.arrayExtensions2,'1100')
+        }
+        
+        if(data.arrayPublishers.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'publisher/name': 'publisher/name',
+            'publisher/scheme': 'publisher/scheme',
+            'publisher/uid': 'publisher/uid',
+            'publisher/uri': 'publisher/uri'
+          };
+          exportCSVFile(headers,data.arrayPublishers,'1200')
+        }
+        if(data.arrayReleases.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            id: 'id',
+            date: 'date',
+            initiationType: 'initiationType',
+            language: 'language',
+            tag: 'tag'
+          };
+          exportCSVFile(headers,data.arrayReleases,'1300')
+        }
+        if(data.arrayParties.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'parties/name': 'parties/name',
+            'parties/id': 'parties/id',
+            'parties/position': 'parties/position',
+            'parties/identifier/scheme': 'parties/identifier/scheme',
+            'parties/identifier/id': 'parties/identifier/id',
+            'parties/identifier/legalName': 'parties/identifier/legalName',
+            'parties/identifier/legalPersonality': 'parties/identifier/legalPersonality',
+            'parties/identifier/givenName': 'parties/identifier/givenName',
+            'parties/identifier/patronymicName': 'parties/identifier/patronymicName',
+            'parties/identifier/matronymicName': 'parties/identifier/matronymicName',
+            'parties/address/streetAddress': 'parties/address/streetAddress',
+            'parties/address/locality': 'parties/address/locality',
+            'parties/address/region': 'parties/address/region',
+            'parties/address/postalCode': 'parties/address/postalCode',
+            'parties/address/countryName': 'parties/address/countryName',
+            'parties/contactPoint/name': 'parties/contactPoint/name',
+            'parties/contactPoint/email': 'parties/contactPoint/email',
+            'parties/contactPoint/telephone': 'parties/contactPoint/telephone',
+            'parties/contactPoint/faxNumber': 'parties/contactPoint/faxNumber',
+            'parties/contactPoint/url': 'parties/contactPoint/url',
+            'parties/contactPoint/type': 'parties/contactPoint/type',
+            'parties/contactPoint/givenName': 'parties/contactPoint/givenName',
+            'parties/contactPoint/patronymicName': 'parties/contactPoint/patronymicName',
+            'parties/contactPoint/matronymicName': 'parties/contactPoint/matronymicName',
+            'parties/roles': 'parties/roles',
+          };
+          exportCSVFile(headers,data.arrayParties,'2000')
+        }
+        if(data.arrayMember.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'parties/id' : 'parties/id',
+            'parties/memberOf/id' : 'parties/memberOf/id',
+            'parties/memberOf/name' : 'parties/memberOf/name'
+          };
+          exportCSVFile(headers,data.arrayMember,'2100')
+        }
+        if(data.arrayAdditionalContactPoint.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'parties/id' : 'parties/id',
+            'parties/additionalContacPoints/contactPointType' : 'parties/additionalContacPoints/contactPointType',
+            'parties/additionalContacPoints/name' : 'parties/additionalContacPoints/name',
+            'parties/additionalContacPoints/givenName' : 'parties/additionalContacPoints/givenName',
+            'parties/additionalContacPoints/patronymicName' : 'parties/additionalContacPoints/patronymicName',
+            'parties/additionalContacPoints/matronymicName' : 'parties/additionalContacPoints/matronymicName',
+            'parties/additionalContacPoints/email' : 'parties/additionalContacPoints/email',
+            'parties/additionalContacPoints/telephone' : 'parties/additionalContacPoints/telephone',
+            'parties/additionalContacPoints/faxNumber' : 'parties/additionalContacPoints/faxNumber',
+            'parties/additionalContacPoints/url' :'parties/additionalContacPoints/url',
+            'parties/additionalContacPoints/availableLanguage': 'parties/additionalContacPoints/availableLanguage',
+          };
+          exportCSVFile(headers,data.arrayAdditionalContactPoint,'2200')
+        }
+        if(data.arrayPlanning.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            rationale: 'rationale',
+            hasquotes: 'hasquotes'
+          };
+          exportCSVFile(headers,data.arrayPlanning,'3000')
+        }
+        if(data.arrayRequestingUnit.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestingUnits/id' : 'planning/requestingUnits/id',
+            'planning/requestingUnits/name' : 'planning/requestingUnits/name'
+          };
+          exportCSVFile(headers,data.arrayRequestingUnit,'3100')
+        }
+        if(data.arrayContractingUnit.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/contractingUnits/id' : 'planning/contractingUnits/id',
+            'planning/contractingUnits/name' : 'planning/contractingUnits/name'
+          };
+          exportCSVFile(headers,data.arrayContractingUnit,'3200')
+        }
+        if(data.arrayResponsibleUnit.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/responsibleUnits/id' : 'planning/responsibleUnits/id',
+            'planning/responsibleUnits/name' : 'planning/responsibleUnits/name'
+          };
+          exportCSVFile(headers,data.arrayResponsibleUnit,'3300')
+        }
+        if(data.arrayBudget.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/budget/budgetBreakdown/id' : 'planning/budget/budgetBreakdown/id',
+            'planning/budget/budgetBreakdown/description' : 'planning/budget/budgetBreakdown/description',
+            'planning/budget/budgetBreakdown/origin' : 'planning/budget/budgetBreakdown/origin',
+            'planning/budget/budgetBreakdown/fundType' : 'planning/budget/budgetBreakdown/fundType',
+            'planning/budget/budgetBreakdown/period/startDate' : 'planning/budget/budgetBreakdown/period/startDate',
+            'planning/budget/budgetBreakdown/period/endDate' : 'planning/budget/budgetBreakdown/period/endDate',
+            'planning/budget/budgetBreakdown/value/amount' : 'planning/budget/budgetBreakdown/value/amount',
+            'planning/budget/budgetBreakdown/value/currency' : 'planning/budget/budgetBreakdown/value/currency',
+            'planning/budget/budgetBreakdown/sourceParty/name' : 'planning/budget/budgetBreakdown/sourceParty/name',
+            'planning/budget/budgetBreakdown/sourceParty/id' : 'planning/budget/budgetBreakdown/sourceParty/id'
+          };
+          exportCSVFile(headers,data.arrayBudget,'3400')
+        }
+        if(data.arrayBudgetLinesComponent.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/budget/budgetBreakdown/budgetLines/components/name' : 'planning/budget/budgetBreakdown/budgetLines/components/name',
+            'planning/budget/budgetBreakdown/budgetLines/components/level' : 'planning/budget/budgetBreakdown/budgetLines/components/level',
+            'planning/budget/budgetBreakdown/budgetLines/components/code' : 'planning/budget/budgetBreakdown/budgetLines/components/code',
+            'planning/budget/budgetBreakdown/budgetLines/components/description': 'planning/budget/budgetBreakdown/budgetLines/components/description'
+          };
+          exportCSVFile(headers,data.arrayBudgetLinesComponent,'3500')
+        }
+        if(data.arrayBudgetLinesMeasure.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/budget/budgetBreakdown/budgetLines/measures/id' : 'planning/budget/budgetBreakdown/budgetLines/measures/id',
+            'planning/budget/budgetBreakdown/budgetLines/measures/update' : 'planning/budget/budgetBreakdown/budgetLines/measures/update',
+            'planning/budget/budgetBreakdown/budgetLines/measures/amount' : 'planning/budget/budgetBreakdown/budgetLines/measures/amount',
+            'planning/budget/budgetBreakdown/budgetLines/measures/currency' : 'planning/budget/budgetBreakdown/budgetLines/measures/currency'
+          };
+          exportCSVFile(headers,data.arrayBudgetLinesMeasure,'3600')
+        }
+        if(data.arrayPlanningDocuments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/documents/id' :'planning/documents/id',
+            'planning/documents/documentType' : 'planning/documents/documentType',
+            'planning/documents/title' : 'planning/documents/title',
+            'planning/documents/description' : 'planning/documents/description',
+            'planning/documents/url' : 'planning/documents/url',
+            'planning/documents/datePublished' : 'planning/documents/datePublished',
+            'planning/documents/dateModified' : 'planning/documents/dateModified',
+            'planning/documents/format' : 'planning/documents/format',
+            'planning/documents/language' : 'planning/documents/language'
+          };
+          exportCSVFile(headers,data.arrayPlanningDocuments,'3700')
+        }
+        if(data.arrayRequestsForQuotes.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestsForQuotes/id' : 'planning/requestsForQuotes/id',
+            'planning/requestsForQuotes/title' : 'planning/requestsForQuotes/title',
+            'planning/requestsForQuotes/description' : 'planning/requestsForQuotes/description',
+            'planning/requestsForQuotes/period/startDate' : 'planning/requestsForQuotes/period/startDate',
+            'planning/requestsForQuotes/period/endDate' : 'planning/requestsForQuotes/period/endDate'
+          };
+          exportCSVFile(headers,data.arrayRequestsForQuotes,'3800')
+        }
+        if(data.arrayRequestsForQuotesItems.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestsForQuotes/id' : 'planning/requestsForQuotes/id',
+            'planning/requestsForQuotes/items/id' : 'planning/requestsForQuotes/items/id',
+            'planning/requestsForQuotes/items/description' : 'planning/requestsForQuotes/items/description',
+            'planning/requestsForQuotes/items/quantity' : 'planning/requestsForQuotes/items/quantity',
+            'planning/requestsForQuotes/items/classification/id' : 'planning/requestsForQuotes/items/classification/id',
+            'planning/requestsForQuotes/items/classification/description' : 'planning/requestsForQuotes/items/classification/description',
+            'planning/requestsForQuotes/items/unit/name' : 'planning/requestsForQuotes/items/unit/name'
+          };
+          exportCSVFile(headers,data.arrayRequestsForQuotesItems,'3900')
+        }
+        if(data.arrayRequestsForQuotesinvitedSuppliers.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestsForQuotes/id' : 'planning/requestsForQuotes/id',
+            'planning/invitedSuppliers/name' : 'planning/invitedSuppliers/name',
+            'planning/invitedSuppliers/id' : 'planning/invitedSuppliers/id'
+          };
+          exportCSVFile(headers,data.arrayRequestsForQuotesinvitedSuppliers,'4000')
+        }
+        if(data.arrayRequestsForQuotesQuotes.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestsForQuotes/id' : 'planning/requestsForQuotes/id',
+            'planning/requestsForQuotes/quotes/id' : 'planning/requestsForQuotes/quotes/id',
+            'planning/requestsForQuotes/quotes/description' : 'planning/requestsForQuotes/quotes/description',
+            'planning/requestsForQuotes/quotes/date' : 'planning/requestsForQuotes/quotes/date',
+            'planning/requestsForQuotes/quotes/value/amount' : 'planning/requestsForQuotes/quotes/value/amount',
+            'planning/requestsForQuotes/quotes/quotePeriod/startDate' : 'planning/requestsForQuotes/quotes/quotePeriod/startDate',
+            'planning/requestsForQuotes/quotes/quotePeriod/endDate' : 'planning/requestsForQuotes/quotes/quotePeriod/endDate',
+            'planning/requestsForQuotes/quotes/issuingSupplier/name' : 'planning/requestsForQuotes/quotes/issuingSupplier/name',
+            'planning/requestsForQuotes/quotes/issuingSupplier/id' : 'planning/requestsForQuotes/quotes/issuingSupplier/id'
+          };
+          exportCSVFile(headers,data.arrayRequestsForQuotesQuotes,'4100')
+        }
+        if(data.arrayRequestsForQuotesQuotesItems.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'planning/requestsForQuotes/id' : 'planning/requestsForQuotes/id',
+            'planning/requestsForQuotes/quotes/id' : 'planning/requestsForQuotes/quotes/id',
+            'planning/requestsForQuotes/quotes/items/id' : 'planning/requestsForQuotes/quotes/items/id',
+            'planning/requestsForQuotes/quotes/items/classification/id' : 'planning/requestsForQuotes/quotes/items/classification/id',
+            'planning/requestsForQuotes/quotes/items/classification/description' : 'planning/requestsForQuotes/quotes/items/classification/description',
+            'planning/requestsForQuotes/quotes/items/unit/name' : 'planning/requestsForQuotes/quotes/items/unit/name',
+            'planning/requestsForQuotes/quotes/items/unit/value/amount' : 'planning/requestsForQuotes/quotes/items/unit/value/amount',
+            'planning/requestsForQuotes/quotes/issuingSupplier/name' : 'planning/requestsForQuotes/quotes/issuingSupplier/name',
+            'planning/requestsForQuotes/quotes/issuingSupplier/id' : 'planning/requestsForQuotes/quotes/issuingSupplier/id'
+          };
+          exportCSVFile(headers,data.arrayRequestsForQuotesQuotesItems,'4200')
+        }
+        if(data.arrayTender.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/id': 'tender/id',
+            'tender/title': 'tender/title',
+            'tender/description': 'tender/description',
+            'tender/status': 'tender/status',
+            'tender/procuringEntity/name': 'tender/procuringEntity/name',
+            'tender/procuringEntity/id': 'tender/procuringEntity/id',
+            'tender/value/amount': 'tender/value/amount',
+            'tender/value/currency': 'tender/value/currency',
+            'tender/minValue/amount': 'tender/minValue/amount',
+            'tender/minValue/currency': 'tender/minValue/currency',
+            'tender/procurementMethod': 'tender/procurementMethod',
+            'tender/procurementMethodDetails': 'tender/procurementMethodDetails',
+            'tender/procurementMethodRationale': 'tender/procurementMethodRationale',
+            'tender/mainProcurementCategory': 'tender/mainProcurementCategory',
+            'tender/additionalProcurementCategories': 'tender/additionalProcurementCategories',
+            'tender/awardCriteria': 'tender/awardCriteria',
+            'tender/awardCriteriaDetails': 'tender/awardCriteriaDetails',
+            'tender/submissionMethod': 'tender/submissionMethod',
+            'tender/submissionMethodDetails': 'tender/submissionMethodDetails',
+            'tender/tenderPeriod/startDate': 'tender/tenderPeriod/startDate',
+            'tender/tenderPeriod/endDate': 'tender/tenderPeriod/endDate',
+            'tender/enquiryPeriod/startDate': 'tender/enquiryPeriod/startDate',
+            'tender/enquiryPeriod/endDate': 'tender/enquiryPeriod/endDate',
+            'tender/hasEnquiries': 'tender/hasEnquiries',
+            'tender/eligibilityCriteria': 'tender/eligibilityCriteria',
+            'tender/awardPeriod/startDate': 'tender/awardPeriod/startDate',
+            'tender/awardPeriod/endDate': 'tender/awardPeriod/endDate',
+            'tender/numberOfTenderers': 'tender/numberOfTenderers'
+          };
+          exportCSVFile(headers,data.arrayTender,'5000')
+        }
+        if(data.arrayTenderes.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/tenderers/name': 'tender/tenderers/name',
+            'tender/tenderers/id': 'tender/tenderers/id'
+          };
+          exportCSVFile(headers,data.arrayTenderes,'5100')
+        }
+        if(data.arrayTenderItems.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/items/id': 'tender/items/id',
+            'tender/items/description': 'tender/items/description',
+            'tender/items/classification/scheme': 'tender/items/classification/scheme',
+            'tender/items/classification/id': 'tender/items/classification/id',
+            'tender/items/classification/description': 'tender/items/classification/description',
+            'tender/items/quantity': 'tender/items/quantity',
+            'tender/items/unit/name': 'tender/items/unit/name',
+            'tender/items/unit/value/amount': 'tender/items/unit/value/amount',
+            'tender/items/unit/value/netAmount': 'tender/items/unit/value/netAmount',
+            'tender/items/unit/value/currency': 'tender/items/unit/value/currency',
+            'tender/items/deliveryLocation/geometry/type': 'tender/items/deliveryLocation/geometry/type',
+            'tender/items/deliveryLocation/geometry/coordinates': 'tender/items/deliveryLocation/geometry/coordinates',
+            'tender/items/deliveryAddress/streetAddress': 'tender/items/deliveryAddress/streetAddress',
+            'tender/items/deliveryAddress/locality': 'tender/items/deliveryAddress/locality',
+            'tender/items/deliveryAddress/postalCode': 'tender/items/deliveryAddress/postalCode',
+            'tender/items/deliveryAddress/countryName': 'tender/items/deliveryAddress/countryName'
+          };
+          exportCSVFile(headers,data.arrayTenderItems,'5200')
+        }
+        if(data.arrayTenderDocuments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/documents/id': 'tender/documents/id',
+            'tender/documents/documentType': 'tender/documents/documentType',
+            'tender/documents/title': 'tender/documents/title',
+            'tender/documents/description': 'tender/documents/description',
+            'tender/documents/url': 'tender/documents/url',
+            'tender/documents/datePublished': 'tender/documents/datePublished',
+            'tender/documents/dateModified': 'tender/documents/dateModified',
+            'tender/documents/format': 'tender/documents/format',
+            'tender/documents/language': 'tender/documents/language'
+          };
+          exportCSVFile(headers,data.arrayTenderDocuments,'5300')
+        }
+        if(data.arrayTenderMilestones.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/milestones/id': 'tender/milestones/id',
+            'tender/milestones/title': 'tender/milestones/title',
+            'tender/milestones/type': 'tender/milestones/type',
+            'tender/milestones/description': 'tender/milestones/description',
+            'tender/milestones/dueDate': 'tender/milestones/dueDate',
+            'tender/milestones/dateModified': 'tender/milestones/dateModified',
+            'tender/milestones/status': 'tender/milestones/status'
+          };
+          exportCSVFile(headers,data.arrayTenderMilestones,'5400')
+        }
+        if(data.arrayTenderAmendment.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/amendments/date': 'tender/amendments/date',
+            'tender/amendments/rationale': 'tender/amendments/rationale',
+            'tender/amendments/id':'tender/amendments/id',
+            'tender/amendments/description': 'tender/amendments/description'
+          };
+          exportCSVFile(headers,data.arrayTenderAmendment,'5500')
+        }
+        if(data.arrayTenderClarificationMeeting.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/clarificationMeetings/id': 'tender/clarificationMeetings/id',
+            'tender/clarificationMeetings/date': 'tender/clarificationMeetings/date'
+          };
+          exportCSVFile(headers,data.arrayTenderClarificationMeeting,'5600')
+        }
+        if(data.arrayTenderClarificationMeetingAttendees.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/clarificationMeetings/id': 'tender/clarificationMeetings/id',
+            'tender/clarificationMeetings/attendees/name': 'tender/clarificationMeetings/attendees/name',
+            'tender/clarificationMeetings/attendees/id': 'tender/clarificationMeetings/attendees/id'
+          };
+          exportCSVFile(headers,data.arrayTenderClarificationMeetingAttendees,'5700')
+        }
+        if(data.arrayBuyer.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'buyer/name':'buyer/name',
+            'buyer/id': 'buyer/id'
+          };
+          exportCSVFile(headers,data.arrayBuyer,'5800')
+        }
+        if(data.arrayTenderClarificationMeetingOfficials.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'tender/clarificationMeetings/id': 'tender/clarificationMeetings/id',
+            'tender/clarificationMeetings/officials/name': 'tender/clarificationMeetings/officials/name',
+            'tender/clarificationMeetings/officials/id': 'tender/clarificationMeetings/officials/id'
+          };
+          exportCSVFile(headers,data.arrayTenderClarificationMeetingOfficials,'5900')
+        }
+        if(data.arrayAwars.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'awards/id': 'awards/id',
+            'awards/title': 'awards/title',
+            'awards/description': 'awards/description',
+            'awards/rationale': 'awards/rationale',
+            'awards/status': 'awards/status',
+            'awards/date': 'awards/date',
+            'awards/value/netAmount': 'awards/value/netAmount',
+            'awards/value/amount': 'awards/value/amount',
+            'awards/value/currency': 'awards/value/currency',
+            'awards/contractPeriod/startDate': 'awards/contractPeriod/startDate',
+            'awards/contractPeriod/endDate': 'awards/contractPeriod/endDate'
+          };
+          exportCSVFile(headers,data.arrayAwars,'6000')
+        }
+        if(data.arrayAwarsSuppliers.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'awards/id': 'awards/id',
+            'awards/suppliers/name': 'awards/suppliers/name',
+            'awards/suppliers/id': 'awards/suppliers/id'
+          };
+          exportCSVFile(headers,data.arrayAwarsSuppliers,'6100')
+        }
+        if(data.arrayAwarsDocuments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'awards/documents/id': 'awards/documents/id',
+            'awards/documents/documentType': 'awards/documents/documentType',
+            'awards/documents/title': 'awards/documents/title',
+            'awards/documents/description': 'awards/documents/description',
+            'awards/documents/url': 'awards/documents/url',
+            'awards/documents/datePublished': 'awards/documents/datePublished',
+            'awards/documents/dateModified': 'awards/documents/dateModified',
+            'awards/documents/format': 'awards/documents/format',
+            'awards/documents/language': 'awards/documents/language'
+          };
+          exportCSVFile(headers,data.arrayAwarsDocuments,'6200')
+        }
+        if(data.arrayAwarsAmendments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'awards/amendments/date': 'awards/amendments/date',
+            'awards/amendments/rationale': 'awards/amendments/rationale',
+            'awards/amendments/id': 'awards/amendments/id',
+            'awards/amendments/description': 'awards/amendments/description'
+          };
+          exportCSVFile(headers,data.arrayAwarsAmendments,'6300')
+        }
+        if(data.arrayContracts.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/title': 'contracts/title',
+            'contracts/description': 'contracts/description',
+            'contracts/status': 'contracts/status',
+            'contracts/period/startDate': 'contracts/period/startDate',
+            'contracts/period/endDate': 'contracts/period/endDate',
+            'contracts/value/netAmount': 'contracts/value/netAmount',
+            'contracts/value/amount': 'contracts/value/amount',
+            'contracts/value/currency': 'contracts/value/currency',
+            'contracts/value/exchangeRates/currency':'contracts/value/exchangeRates/currency',
+            'contracts/value/exchangeRates/rate': 'contracts/value/exchangeRates/rate',
+            'contracts/value/exchangeRates/date': 'contracts/value/exchangeRates/date',
+            'contracts/value/exchangeRates/source': 'contracts/value/exchangeRates/source',
+            'contracts/dateSigned': 'contracts/dateSigned',
+            'surveillanceMechanisms': 'surveillanceMechanisms',
+          };
+          exportCSVFile(headers,data.arrayContracts,'7000')
+        }
+        if(data.arrayContractsItems.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/items/id': 'contracts/items/id',
+            'contracts/items/description': 'contracts/items/description',
+            'contracts/items/classification/scheme': 'contracts/items/classification/scheme',
+            'contracts/items/classification/id': 'contracts/items/classification/id',
+            'contracts/items/classification/description': 'contracts/items/classification/description',
+            'contracts/items/quantity': 'contracts/items/quantity',
+            'contracts/items/unit/name': 'contracts/items/unit/name',
+            'contracts/items/unit/value/amount': 'contracts/items/unit/value/amount',
+            'contracts/items/unit/value/netAmount': 'contracts/items/unit/value/netAmount',
+            'contracts/items/unit/value/currency': 'contracts/items/unit/value/currency',
+            'contracts/items/deliveryLocation/geometry/type': 'contracts/items/deliveryLocation/geometry/type',
+            'contracts/items/deliveryLocation/geometry/coordinates': 'contracts/items/deliveryLocation/geometry/coordinates',
+            'contracts/items/deliveryAddress/streetAddress': 'contracts/items/deliveryAddress/streetAddress',
+            'contracts/items/deliveryAddress/locality': 'contracts/items/deliveryAddress/locality',
+            'contracts/items/deliveryAddress/postalCode': 'contracts/items/deliveryAddress/postalCode',
+            'contracts/items/deliveryAddress/countryName': 'contracts/items/deliveryAddress/countryName'
+          };
+          exportCSVFile(headers,data.arrayContractsItems,'7100')
+        }
+        if(data.arrayContractsdocuments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/documents/id': 'contracts/documents/id',
+            'contracts/documents/documentType': 'contracts/documents/documentType',
+            'contracts/documents/title': 'contracts/documents/title',
+            'contracts/documents/description': 'contracts/documents/description',
+            'contracts/documents/url': 'contracts/documents/url',
+            'contracts/documents/datePublished': 'contracts/documents/datePublished',
+            'contracts/documents/dateModified': 'contracts/documents/dateModified',
+            'contracts/documents/format': 'contracts/documents/format',
+            'contracts/documents/language': 'contracts/documents/language'
+          };
+          exportCSVFile(headers,data.arrayContractsdocuments,'7200')
+        }
+        if(data.arrayContractsAmendments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/amendments/date': 'contracts/amendments/date',
+            'contracts/amendments/rationale': 'contracts/amendments/rationale',
+            'contracts/amendments/id': 'contracts/amendments/id',
+            'contracts/amendments/description': 'contracts/amendments/description'
+          };
+          exportCSVFile(headers,data.arrayContractsAmendments,'7300')
+        }
+        if(data.arrayContractsGuarantees.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/guarantees/id': 'contracts/guarantees/id',
+            'contracts/guarantees/type': 'contracts/guarantees/type',
+            'contracts/guarantees/date': 'contracts/guarantees/date',
+            'contracts/guarantees/obligations': 'contracts/guarantees/obligations',
+            'contracts/guarantees/value/amount': 'contracts/guarantees/value/amount',
+            'contracts/guarantees/value/currency': 'contracts/guarantees/value/currency',
+            'contracts/guarantees/guarantor/name': 'contracts/guarantees/guarantor/name',
+            'contracts/guarantees/guarantor/id': 'contracts/guarantees/guarantor/id',
+            'contracts/guarantees/period/startDate': 'contracts/guarantees/period/startDate',
+            'contracts/guarantees/period/endDate': 'contracts/guarantees/period/endDate'
+          };
+          exportCSVFile(headers,data.arrayContractsGuarantees,'7400')
+        }
+        if(data.arrayContractsImplementation.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/implementation/status': 'contracts/implementation/status'
+          };
+          exportCSVFile(headers,data.arrayContractsImplementation,'8000')
+        }
+        if(data.arrayContractsImplementationTrans.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'contracts/implementation/transactions/id': 'contracts/implementation/transactions/id',
+            'contracts/implementation/transactions/date': 'contracts/implementation/transactions/date',
+            'contracts/implementation/transactions/value/netAmount': 'contracts/implementation/transactions/value/netAmount',
+            'contracts/implementation/transactions/value/amount': 'contracts/implementation/transactions/value/amount',
+            'contracts/implementation/transactions/value/currency': 'contracts/implementation/transactions/value/currency',
+            'contracts/implementation/transactions/payer/name': 'contracts/implementation/transactions/payer/name',
+            'contracts/implementation/transactions/payer/id': 'contracts/implementation/transactions/payer/id',
+            'contracts/implementation/transactions/payee/id': 'contracts/implementation/transactions/payee/id',
+            'contracts/implementation/transactions/payee/name': 'contracts/implementation/transactions/payee/name',
+            'contracts/implementation/transactions/paymentMethod': 'contracts/implementation/transactions/paymentMethod',
+          };
+          exportCSVFile(headers,data.arrayContractsImplementationTrans,'8100')
+        }
+        if(data.arrayContractsImplementationMilestone.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'implementation/milestones/id': 'implementation/milestones/id',
+            'implementation/milestones/title': 'implementation/milestones/title',
+            'implementation/milestones/type': 'implementation/milestones/type',
+            'implementation/milestones/description': 'implementation/milestones/description',
+            'implementation/milestones/dueDate': 'implementation/milestones/dueDate',
+            'implementation/milestones/dateModified': 'implementation/milestones/dateModified',
+            'implementation/milestones/status': 'implementation/milestones/status',
+          };
+          exportCSVFile(headers,data.arrayContractsImplementationMilestone,'8200')
+        }
+        if(data.arrayContractsImplementationDocuments.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'contracts/id': 'contracts/id',
+            'contracts/awardID': 'contracts/awardID',
+            'implementation/documents/id': 'implementation/documents/id',
+            'implementation/documents/documentType': 'implementation/documents/documentType',
+            'implementation/documents/title': 'implementation/documents/title',
+            'implementation/documents/description': 'implementation/documents/description',
+            'implementation/documents/url': 'implementation/documents/url',
+            'implementation/documents/datePublished': 'implementation/documents/datePublished',
+            'implementation/documents/dateModified': 'implementation/documents/dateModified',
+            'implementation/documents/format': 'implementation/documents/format',
+            'implementation/documents/language': 'implementation/documents/language'
+          };
+          exportCSVFile(headers,data.arrayContractsImplementationDocuments,'8300')
+        }
+        if(data.arrayRelatedProcesses.length !== 0){
+          const headers = {
+            ocid: 'ocid',
+            'relatedProcesses/id': 'relatedProcesses/id',
+            'relatedProcesses/relationship': 'relatedProcesses/relationship',
+            'relatedProcesses/title':'relatedProcesses/title',
+            'relatedProcesses/scheme': 'relatedProcesses/scheme',
+            'relatedProcesses/identifier': 'relatedProcesses/identifier',
+            'relatedProcesses/uri': 'relatedProcesses/uri',
+          };
+          exportCSVFile(headers,data.arrayRelatedProcesses,'9000')
+        }
+        downloadZipCSVFile();
+        arrayFilesCSV = new Array();
+        document.getElementById('downley').hidden=true;
+        document.getElementById('downlo').hidden=false;
+        document.getElementById('downley_2').hidden=true;
+        document.getElementById('downlo_2').hidden=false;
+        document.getElementById('downley_3').hidden=true;
+        document.getElementById('downlo_3').hidden=false;
+        document.getElementById('downlo_4').hidden=false;
+        document.getElementById('downlo_5').hidden=false;
+        document.getElementById('downlo_6').hidden=false;
+      }
       function convertToCSV(objArray) {
       const array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
       let str = "";
@@ -2708,12 +3030,11 @@
           line += validatesComas(array[i][index]);
         }
         str += line + "\r\n";
-        console.log(`line str ${str}`)
+        // console.log(`line str ${str}`)
       }
       
       return str;
       } 
-
       function exportCSVFile(headers, items, fileName) {
         if (headers) {
           items.unshift(headers);
@@ -2722,31 +3043,39 @@
         const csv = convertToCSV(jsonObject);
         const exportName = fileName + ".csv" || "export.csv";
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        if (navigator.msSaveBlob) {
-          navigator.msSaveBlob(blob, exportName);
-        } else {
-          const link = document.createElement("a");
-          if (link.download !== undefined) {
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", exportName);
-            link.style.visibility = "hidden";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
+        var file = new Object({
+          exportName: exportName,
+          blob: blob
+        })
+        arrayFilesCSV.push(file);
+      }
+      function downloadZipCSVFile() {
+        if (arrayFilesCSV.length !== 0) {
+          var zip = new JSZip();
+          var csvs = zip.folder("csvs");
+          arrayFilesCSV.forEach(file => {
+            csvs.file(file.exportName, file.blob, {base64: true});
+          });
+          zip.generateAsync({type:"blob"})
+              .then(function(content) {
+                  saveAs(content, `${new Date().getTime()}_CSV.zip`);
+              });
+        }else{
+          alert('No se encontraron registros.')
         }
       }
-
       function validatesComas(cadena){
         if(cadena != undefined){
-          var caracteres = Array.from(cadena);
-          var cadenaRes = "";
-          caracteres.forEach(caracter => {
-            if(caracter != ',') cadenaRes += caracter;
-          });
-          // console.log('validatesComas '+cadenaRes)
-          return cadenaRes.replace(/(\r\n|\n|92r)/gm,"");
+          if (typeof cadena === 'number') {
+            return cadena;
+          }else{
+            var caracteres = Array.from(cadena);
+            var cadenaRes = "";
+            caracteres.forEach(caracter => {
+              if(caracter != ',' && caracter != ';') cadenaRes += caracter;
+            });
+            return cadenaRes.replace(/(\r\n|\n|92r)/gm,"");
+          }
         }else{
           return undefined;
         }
