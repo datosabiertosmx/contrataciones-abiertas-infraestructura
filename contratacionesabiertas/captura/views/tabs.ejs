@@ -158,11 +158,6 @@ var estatusContrato = [
                         <% } %>
                     </select>
                 </p>
-                <p>
-                    <label data-tooltip="crear_proceso">Número de beneficiarios</label>
-                    <input type="number" step="1" class="form-control" name="numberofbeneficiaries" 
-                    value = "<%= (typeof planning!= "undefined")? planning.numberofbeneficiaries :''%>" >
-                </p>
 
                <hr>
                            
@@ -387,6 +382,16 @@ var estatusContrato = [
                         <option value = "Adjudicación directa" <%= tender.procurementmethod_details == 'Adjudicación directa'?'selected':''%> >Adjudicación directa</option>
                         <option value = "Invitación a cuando menos tres personas" <%= tender.procurementmethod_details == 'Invitación a cuando menos tres personas'?'selected':''%> >Invitación a cuando menos tres personas</option>
                         <option value = "Licitación pública" <%= tender.procurementmethod_details == 'Licitación pública'?'selected':'' %> >Licitación pública</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label data-tooltip="crear_proceso" title=''>Carácter del procedimiento</label>
+                    <br>
+                    <select name="procedurecharacter" id="procedurecharacter" class="form-control">
+                        <option value = "" data-text="">Seleccione una opción</option>
+                        <option value = "internacional" <%= tender.procedurecharacter == 'internacional'?'selected':'' %> >Internacional</option>
+                        <option value = "nacional" <%= tender.procedurecharacter == 'nacional'?'selected':'' %> >Nacional</option>
                     </select>
                 </p>
 

@@ -1,0 +1,39 @@
+<form id="frmSearchValidations">
+    <div class="col-sm-2">
+        <label class="label-control">Registro<label>
+        <input type="number" name="id" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <label class="label-control">Identificador oc4ids<label>
+        <input type="text" name="oc4ids" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <label class="label-control">Título del proyecto<label>
+        <input type="text" name="title" class="form-control" >
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-default" style="margin-top:20px">Buscar</button>
+    </div>
+</form>
+<table id="tValidationSearch" class="table table-stripped table-condenced" style="zoom:0.8">
+    <thead>
+        <tr>
+            <th>Registro</th>
+            <th>Indicador oc4ids</th>
+            <th>Publicador</th>
+            <th style="width:250px">Título del proyecto</th>
+            <th style="width:200px">Estatus</th>
+            <th style="width:110px">Fecha de última modificación</th>
+            <th style="width:110px">Fecha de publicación</th>
+            <th style="width:150px"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-center" colspan="12">No se encontraron resultados</td>
+        </tr>
+    </tbody>
+</table>
+
+<script src="/javascript/validate_projects.js"></script>
+<link rel="stylesheet" href="/stylesheets/validate-process.css"/>

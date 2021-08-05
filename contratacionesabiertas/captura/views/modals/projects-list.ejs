@@ -1,0 +1,29 @@
+<% if (data.length > 0){%>
+<div class="list-group">
+
+    <% for (var i=0;i< data.length;i++){%>
+    <a href="<%= '/project/'+ data[i].projects[0].id %>" class="list-group-item">
+        <h4 class="list-group-item-heading"> Proyecto <%= data[i].projects[0].id %> </h4>
+        
+        <% if (data[i].projects[0].oc4idsIdentifier) {%>
+            <p class="list-group-item-text"><strong>Identificador de OC4IDS:</strong> <%= data[i].projects[0].oc4idsIdentifier %></p>
+        <%} %>
+
+        <% if (data[i].projects[0].identifier) {%>
+            <p class="list-group-item-text"><strong>Identificador del proyecto:</strong> <%= data[i].projects[0].identifier %></p>
+        <%} %>
+
+        <% if (data[i].projects[0].title) {%>
+            <p class="list-group-item-text"><strong>Titulo del proyecto:</strong> <%= data[i].projects[0].title %></p>
+        <%} %>
+        
+        <% if (data[i].tender_name) {%>
+        <p class="list-group-item-text"><strong>Título del proyecto:</strong> <%= data[i].tender_name.length > 50 ? data[i].tender_name.substring(0,50) + '...' : data[i].tender_name %></p>
+        <%} %>
+    </a>
+    <%}%>
+</div>
+<%}else {%>
+<div class="alert alert-warning" role="alert"><strong>Atención:</strong> La búsqueda no ha regresado resultados</div>
+<%}%>
+

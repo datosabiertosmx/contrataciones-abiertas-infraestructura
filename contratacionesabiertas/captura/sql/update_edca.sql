@@ -117,11 +117,6 @@ update tender set procurementmethod_rationale_id = 'Artículo 41 fracción X RAA
 update tender set procurementmethod_rationale_id = 'Artículo 41 fracción XI RAAS AD' where procurementmethod_rationale_id = 'Artículo 41 XI RAAS AD';
 update tender set procurementmethod_rationale_id = 'Artículo 41 fracción XII RAAS AD' where procurementmethod_rationale_id = 'Artículo 41 XII RAAS AD';
 
--- Update 21-abril-21
-alter table public.planning add column numberofbeneficiaries numeric;
-
-alter table dashboard.planning add column numberofbeneficiaries numeric;
-
 -- Ejecutar para actualizar roles con datos en el esquema dashboard
 truncate table roles restart identity;
 

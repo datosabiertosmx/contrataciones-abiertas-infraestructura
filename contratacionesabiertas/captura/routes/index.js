@@ -995,10 +995,9 @@ router.post('/update-planning', isAuthenticated, async function (req, res) {
 
     var register = await db_conf.edca_db.oneOrNone('select id from planning where contractingProcess_id = $1 and hasquotes is not null limit 1', [req.body.contractingprocess_id]) != null;
     db_conf.edca_db.tx( async function (t) {
-        var planning = this.one("update planning set rationale = $1, hasquotes = $2, numberofbeneficiaries = $3 where ContractingProcess_id = $4 returning id", [
+        var planning = this.one("update planning set rationale = $1, hasquotes = $2 where ContractingProcess_id = $3 returning id", [
             req.body.rationale,
             req.body.hasquotes != '' ? req.body.hasquotes : null,
-            req.body.numberofbeneficiaries,
             req.body.contractingprocess_id
         ]);
         var budget = this.one("update budget set budget_source = $2, budget_budgetid =$3, budget_description= $4, budget_amount=$5, budget_currency=$6, budget_project=$7, budget_projectid=$8, budget_uri=$9" +
@@ -1191,7 +1190,8 @@ router.post('/update-tender',isAuthenticated, async function (req, res) {
             req.body.procurementmethod_details,
             stringCol(req.body.mainprocurementcategory),
             req.body.additionalprocurementcategories,
-            req.body.procurementmethod_rationale_id
+            req.body.procurementmethod_rationale_id,
+            req.body.procedurecharacter
         ];
 
         const currentTenderid = await db_conf.edca_db.oneOrNone('select tenderid from tender where ContractingProcess_id = $1 ', tender);
@@ -1201,7 +1201,8 @@ router.post('/update-tender',isAuthenticated, async function (req, res) {
         let data = await db_conf.edca_db.one("update tender set tenderid =$2, title= $3, description=$4, minvalue_amount=$6, minvalue_currency=$7, value_amount=$8, value_currency=$9, procurementmethod=$10," +
             "procurementmethod_rationale=$11, awardcriteria=$12, awardcriteria_details=$13, submissionmethod=$14, submissionmethod_details=$15," +
             "tenderperiod_startdate=$16, tenderperiod_enddate=$17, enquiryperiod_startdate=$18, enquiryperiod_enddate=$19 ,hasenquiries=$20, eligibilitycriteria=$21, awardperiod_startdate=$22," +
-            "awardperiod_enddate=$23, numberoftenderers=$24, amendment_date=$25, amendment_rationale=$26, procurementmethod_details =$27,  mainprocurementcategory=$28, additionalprocurementcategories=$29, procurementmethod_rationale_id=$30" +
+            "awardperiod_enddate=$23, numberoftenderers=$24, amendment_date=$25, amendment_rationale=$26, procurementmethod_details =$27,  mainprocurementcategory=$28," +
+            "additionalprocurementcategories=$29, procurementmethod_rationale_id=$30, procedurecharacter=$31" +
             " where ContractingProcess_id = $1 returning id", tender);
 
         // update ocid
@@ -3373,7 +3374,7 @@ router.post('/search-process-by-date', function (req, res) {
     });
 });
 
-router.post('/search-process-by-ocid',function(req, res){
+router.post('/search-process-by-ocid', function(req, res){
     let select = 'select c.*, t.title tender_name, t.tenderid tender_id, ' +
     "((select string_agg(name, ', ') from parties p  join roles r on r.parties_id = p.id where p.contractingprocess_id = c.id and requestingunit = true)) requestingunit_name from contractingprocess c " +
     ' left join tender t on t.contractingprocess_id = c.id ';
@@ -3392,6 +3393,13 @@ router.post('/search-process-by-ocid',function(req, res){
     });
 });
 
+//Buscar proyectos by ocid
+router.post('/search-projects-by-ocid', function(req, res){
+    project.findProjectByOc4ids(req.body).then(value =>{
+        res.render('modals/projects-list',{ data : value});   
+    });
+
+});
 
 router.post('/search/', function (req, res) {
     res.render('modals/search');
@@ -3399,6 +3407,11 @@ router.post('/search/', function (req, res) {
 
 router.get('/manual', function (req, res) {
     res.render('modals/manual');
+});
+
+//Buscar proyectos
+router.post('/search_projects/', function (req, res) {
+    res.render('modals/search_projects');
 });
 
 
@@ -4387,7 +4400,7 @@ let getNumberOfTenderes = async (cpid) => {
 // new party
 router.put('/1.1/party/', function (req,res) {
     //falta verificar que la organización no exista
-
+    console.log("#############" + JSON.stringify(req.body));
     //regresar error si no se ha seleccionado al menos un rol
     if (!isChecked(req.body.buyer) &&
         !isChecked(req.body.procuringEntity) &&
@@ -4414,11 +4427,12 @@ router.put('/1.1/party/', function (req,res) {
     } else {
 
         db_conf.edca_db.one('insert into parties (contractingprocess_id, name, partyid, naturalperson, position, identifier_scheme, ' +
-            ' identifier_id, identifier_legalname, identifier_uri, address_streetaddress, address_locality, ' +
-            ' address_region, address_postalcode, address_countryname, contactpoint_name, contactpoint_email, ' +
-            ' contactpoint_telephone, contactpoint_faxnumber, contactpoint_url, surname, additionalsurname, contactpoint_surname, contactpoint_additionalsurname,' +
-            ' givenname, contactpoint_givenname, contactpoint_type, contactpoint_language) values' +
-            ' ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27) returning id', [
+            ' identifier_id, identifier_legalname, identifier_uri, address_typeofroad, address_streetaddress, address_outdoornumber, address_interiornumber, ' +
+            ' address_typeofsettlement, address_settlementname, address_locality, address_region, address_locationname, address_localitykey, address_postalcode, ' +
+            ' address_countryname, address_streetabroad, address_numberabroad, address_cityabroad, address_countryabroad, address_regionkey, address_alcaldiakey, ' +
+            ' contactpoint_name, contactpoint_email, contactpoint_telephone, contactpoint_faxnumber, contactpoint_url, surname, ' +
+            ' additionalsurname, contactpoint_surname, contactpoint_additionalsurname, givenname, contactpoint_givenname, contactpoint_type, contactpoint_language) values' +
+            ' ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40) returning id', [
             req.body.contractingprocess_id,
             req.body.name, // name
             req.body.partyid,
@@ -4428,11 +4442,24 @@ router.put('/1.1/party/', function (req,res) {
             req.body.identifier_id,
             req.body.identifier_legalname,
             req.body.identifier_uri,
+            req.body.address_typeofroad,
             req.body.address_streetaddress,
-            req.body.address_locality,
-            req.body.address_region,
+            req.body.address_outdoornumber,
+            req.body.address_interiornumber,
+            req.body.address_typeofsettlement,
+            req.body.address_settlementname,
+            req.body.locality_text,
+            req.body.region_text,
+            req.body.locationname_text,
+            req.body.address_localitykey,
             req.body.address_postalcode,
             req.body.address_countryname,
+            req.body.address_streetabroad,
+            req.body.address_numberabroad,
+            req.body.address_cityabroad,
+            req.body.address_countryabroad,
+            req.body.address_regionkey,
+            req.body.address_alcaldiakey,
             `${req.body.contactpoint_givenname} ${req.body.contactpoint_surname} ${req.body.contactpoint_additionalsurname}`.trim(), // contactpoint name
             req.body.contactpoint_email,
             req.body.contactpoint_telephone,
@@ -4707,12 +4734,13 @@ router.post('/1.1/party', function(req,res){
 
     db_conf.edca_db.tx(function (t) {
         return t.batch([
-            this.one('update parties set name=$1, partyid=$2, naturalperson=$3, position=$4, identifier_scheme=$5,' +
-                ' identifier_id=$6, identifier_legalname=$7, identifier_uri=$8, address_streetaddress=$9, address_locality=$10,' +
-                ' address_region=$11, address_postalcode=$12, address_countryname=$13, contactpoint_name=$14, contactpoint_email=$15,' +
-                ' contactpoint_telephone=$16, contactpoint_faxnumber=$17, contactpoint_url=$18, surname = $20, additionalsurname= $21,' +
-                ' contactpoint_surname = $22, contactpoint_additionalsurname= $23, givenname= $24, contactpoint_givenname = $25, contactpoint_type = $26,' +
-                ' contactpoint_language = $27 where id = $19 returning id',[
+            this.one('update parties set name=$1, partyid=$2, naturalperson=$3, position=$4, identifier_scheme=$5, identifier_id=$6,' +
+                ' identifier_legalname=$7, identifier_uri=$8, address_typeofroad=$9, address_streetaddress=$10, address_outdoornumber=$11, address_interiornumber=$12,' +
+                ' address_typeofsettlement=$13, address_settlementname=$14, address_locality=$15, address_region=$16, address_locationname=$17, address_localitykey=$18,' +
+                ' address_postalcode=$19, address_countryname=$20, address_streetabroad=$21, address_numberabroad=$22, address_cityabroad=$23, address_countryabroad=$24,' +
+                ' address_regionkey=$25, address_alcaldiakey=$26, contactpoint_name=$27, contactpoint_email=$28, contactpoint_telephone=$29, contactpoint_faxnumber=$30,' +
+                ' contactpoint_url=$31, surname = $33, additionalsurname= $34, contactpoint_surname = $35, contactpoint_additionalsurname= $36, givenname= $37,' +
+                ' contactpoint_givenname = $38, contactpoint_type = $39, contactpoint_language = $40 where id = $32 returning id',[
                 req.body.name, //  name
                 req.body.partyid,
                 (req.body.naturalperson==="true"),
@@ -4721,11 +4749,24 @@ router.post('/1.1/party', function(req,res){
                 req.body.identifier_id,
                 req.body.identifier_legalname,
                 req.body.identifier_uri,
+                req.body.address_typeofroad,
                 req.body.address_streetaddress,
-                req.body.address_locality,
-                req.body.address_region,
+                req.body.address_outdoornumber,
+                req.body.address_interiornumber,
+                req.body.address_typeofsettlement,
+                req.body.address_settlementname,
+                req.body.locality_text,
+                req.body.region_text,
+                req.body.locationname_text,
+                req.body.address_localitykey,
                 req.body.address_postalcode,
                 req.body.address_countryname,
+                req.body.address_streetabroad,
+                req.body.address_numberabroad,
+                req.body.address_cityabroad,
+                req.body.address_countryabroad,
+                req.body.address_regionkey,
+                req.body.address_alcaldiakey,
                 `${req.body.contactpoint_givenname} ${req.body.contactpoint_surname} ${req.body.contactpoint_additionalsurname}`.trim(), // contactpoint name
                 req.body.contactpoint_email,
                 req.body.contactpoint_telephone,
@@ -5943,6 +5984,11 @@ router.get('/validate/:cpid', async  (req, res) => {
     }
 });
 
+// view list projects
+router.get('/validate-projects', isAuthenticated, async  (req, res) => {
+    res.render('modals/validate_projects_list');
+});
+
 // view list process
 router.get('/validate-process', isAuthenticated, async  (req, res) => {
     res.render('modals/validate_process_list');
@@ -6398,6 +6444,7 @@ let removeInfoSensible = record => {
 
 // descarga desde dashboard
 router.get('/record-package/:ocid', async (req, res) => {
+    console.log("### /record-package/ :ocid  ===> " + req.params.ocid);
     try {
         let record = require('../io/record')(db_conf.edca_db);    
         await record.checkRecordIfExists(await getCpidFromOcid(req.params.ocid), getHost(req));
@@ -6412,6 +6459,15 @@ router.get('/record-package/:ocid', async (req, res) => {
             error: e.message
         });
     }
+});
+
+// get recordPackages por anio
+router.get('/edca/recordPackages/:year', async (req, res) => {
+    console.log("························· /recordPackages/:year PARAMS "  + JSON.stringify(req.params));
+    var ids = await db_conf.edca_db.manyOrNone(`select id cpid from contractingprocess  WHERE extract(year from fecha_creacion) = ${req.params.year} order by id`);
+    cp_functions.getRecordPackages(ids,getHost(req)).then(recordPackages =>{
+        return res.status(200).json({recordPackages});
+    })
 });
 
 // public record
@@ -7256,6 +7312,655 @@ router.get('/edca/amounts/',async function(req, res){
         })
     });
 
+});
+
+router.get('/edcapi/homePage/:year',async function(req, res){
+    console.log("························· /edcapi/homePage/ "  + JSON.stringify(req.params));
+    var queryMapa = `SELECT * FROM public.view_test_mapa`;
+    var queryProyectos = `SELECT * FROM public.view_test_proyectos`;
+    var queryContrataciones = `SELECT * FROM public.view_test_contrataciones`;
+    var queryContratistas = `SELECT * FROM public.view_test_contratistas`;
+    var queryLicitantes = `SELECT * FROM public.view_test_licitantes`;
+    var queryInstituciones = `SELECT * FROM public.view_test_instituciones`;
+    if(req.params.year != 0){
+        console.log(`#### si trae year`)
+        queryMapa = `${queryMapa} where view_test_mapa."startDate" like '%${req.params.year}%'`
+        queryProyectos = `SELECT 
+                            COUNT(*) AS totalprojects
+                        FROM 
+                            public.edcapi_projects p,public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                        WHERE 
+                        1 = 1
+                        AND p.id = ppp.project_id
+                        AND pp.id = ppp.project_period_id
+                        AND pp."startDate" like '%${req.params.year}%';`;
+        queryContrataciones =`SELECT 
+	                            COUNT(*) AS totalcontractingprocess
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.id = rcpp.project_id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        queryContratistas = `SELECT 
+                                COUNT (*) AS totalsuppliers
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_processes rcp, 
+                                public.edcapi_project_related_contracting_process_projects rcpp ,
+                                public.parties pt, 
+                                public.roles r,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                AND pt.id = r.parties_id
+                                AND r.supplier = true
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        queryLicitantes = `SELECT 
+                                COUNT (*) AS totaltenderers
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_processes rcp, 
+                                public.edcapi_project_related_contracting_process_projects rcpp ,
+                                public.parties pt, 
+                                public.roles r,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                AND pt.id = r.parties_id
+                                AND r.tenderer = true
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        queryInstituciones = `SELECT 
+                                COUNT (*) AS totalinstitutes
+                            FROM 
+                                public.edcapi_projects p,
+                                public.edcapi_project_party_projects ppp,
+                                public.edcapi_project_parties_roles ppr,
+                                public.edcapi_project_parties_roles_parties pprp, 
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects eppp
+                            WHERE
+                                1 = 1
+                                AND p.id = ppp.project_id
+                                AND ppp."edcapiProjectPartyId" = pprp.party_id
+                                AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                AND ppr."publicAuthority" = 'on'
+                                AND p.id = eppp.project_id
+                                AND pp.id = eppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+    }   
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.manyOrNone(queryMapa),
+            this.one(queryProyectos),
+            this.one(queryContrataciones),
+            this.one(queryContratistas),
+            this.one(queryLicitantes),
+            this.one(queryInstituciones)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/init/',async function(req, res){
+    console.log("························· /init/ "  + JSON.stringify(req.params));
+    var status = ['completed','completion','identification','implementation','cancelled','preparation'];
+    var sector = ['waterAndWaste','communications','cultureSportsAndRecreation','sports','economy','education','energy','governance','socialHousing','recreation','waste','health','transport','transport.air','transport.road','transport.rail','transport.water','transport.urban','security'];
+    var type = ['construction','rehabilitation','replacement','expansion'];
+    var moneda = ['MXN','EUR','USD'];
+    var locaciones = [
+        {//Ciudad de México
+            latitud: 19.42847,
+            longitud: -99.12766
+        },
+        {//Iztapalapa	19.35529, -99.06224
+            latitud:19.35529,
+            longitud:-99.06224
+        },
+        {//Guadalajara	20.66682, -103.39182
+            latitud:20.66682,
+            longitud:-103.39182
+        },
+        {//Puebla	19.03793, -98.20346
+            latitud:19.03793,
+            longitud:-98.20346
+        },
+        {//Tijuana	32.5027, -117.00371
+            latitud:32.5027,
+            longitud:-117.00371
+        },
+        {//Monterrey	25.67507, -100.31847
+            latitud:25.67507,
+            longitud:-100.31847
+        },
+        {//Ecatepec de Morelos	19.60492, -99.06064
+            latitud:19.60492,
+            longitud:-99.06064
+        },
+        {//Chihuahua	28.63528, -106.08889
+            latitud:28.63528,
+            longitud:-106.08889
+        },
+        {//Naucalpan de Juárez	19.47851, -99.23963
+            latitud:19.47851,
+            longitud:-99.23963
+        },
+        {//Mérida	20.97537, -89.61696
+            latitud:20.97537,
+            longitud:-89.61696
+        },
+        {//San Luis	22.14982, -100.97916
+            latitud:22.14982,
+            longitud:-100.97916
+        },
+        {//Hermosillo	29.1026, -110.97732
+            latitud:29.1026,
+            longitud:-110.97732
+        },
+        {//Saltillo	25.42321, -101.0053
+            latitud:25.42321,
+            longitud:-101.0053
+        },
+        {//Mexicali	32.62781, -115.45446
+            latitud:32.62781,
+            longitud:-115.45446
+        },
+        {//Guadalupe	25.67678, -100.25646
+            latitud:25.67678,
+            longitud:-100.25646
+        },
+        {//Paso del Norte	31.72024, -106.46084
+            latitud:31.72024,
+            longitud:-106.46084
+        },
+        {//Cancún	21.17429, -86.84656
+            latitud:21.17429,
+            longitud:-86.84656
+        },
+        {//Coyoacán	19.3467, -99.16174
+            latitud:19.3467,
+            longitud:-99.16174
+        },
+        {//León de los Aldama	21.12908, -101.67374
+            latitud:21.12908,
+            longitud:-101.67374
+        },
+        {//Morelia	19.70078, -101.18443
+            latitud:19.70078,
+            longitud:-101.18443
+        },
+        {//Gustavo Adolfo Madero 19.49392, -99.11075
+            latitud:19.49392,
+            longitud:-99.11075
+        },
+        {//Reynosa se encuentra en la latitud 26.08061 y longitud -98.28835
+            latitud:26.08061,
+            longitud:-98.28835
+        },
+        {//Tlalpan se encuentra en la latitud 19.29513 y longitud -99.16206
+            latitud:19.29513,
+            longitud:-99.16206
+        },
+        {//Zapopan se encuentra en la latitud 20.72356 y longitud -103.38479
+            latitud:20.72356,
+            longitud:-103.38479
+        },
+        {//Ciudad Nezahualcoyotl se encuentra en la latitud 19.40061 y longitud -99.01483
+            latitud:19.40061,
+            longitud:-99.01483
+        },
+        {//Cuauhtémoc se encuentra en la latitud 19.44506 y longitud -99.14612
+            latitud:19.44506,
+            longitud:-99.14612
+        },
+        {//Toluca se encuentra en la latitud 19.28786 y longitud -99.65324
+            latitud:19.28786,
+            longitud:-99.65324
+        },
+        {//Cuautitlán Izcalli se encuentra en la latitud 19.64388 y longitud -99.21598
+            latitud:19.64388,
+            longitud:-99.21598
+        },
+        {//San Nicolás de los Garza se encuentra en la latitud 25.74167 y longitud -100.30222
+            latitud:25.74167,
+            longitud:-100.30222
+        },
+        {//Venustiano Carranza se encuentra en la latitud 19.44361 y longitud -99.10499
+            latitud:19.44361,
+            longitud:-99.10499
+        },
+        {//Veracruz se encuentra en la latitud 19.18095 y longitud -96.1429
+            latitud:19.18095,
+            longitud:-96.1429
+        },
+        {//Azcapotzalco se encuentra en la latitud 19.48698 y longitud -99.18594
+            latitud:19.48698,
+            longitud:-99.18594
+        },
+        {//Tonalá se encuentra en la latitud 20.62445 y longitud -103.23423
+            latitud:20.62445,
+            longitud:-103.23423
+        },
+        {//Xochimilco se encuentra en la latitud 19.25465 y longitud -99.10356
+            latitud:19.25465,
+            longitud:-99.10356
+        },
+        {//Iztacalco se encuentra en la latitud 19.39528 y longitud -99.09778
+            latitud:19.39528,
+            longitud:-99.09778
+        },
+        {//Mazatlán se encuentra en la latitud 23.2329 y longitud -106.4062
+            latitud:23.2329,
+            longitud:-106.4062
+        },
+        {//Irapuato se encuentra en la latitud 20.67675 y longitud -101.35628
+            latitud:20.67675,
+            longitud:-101.35628
+        },
+        {//Nuevo Laredo se encuentra en la latitud 27.47629 y longitud -99.51639
+            latitud:27.47629,
+            longitud:-99.51639
+        },
+        {//Miguel Hidalgo se encuentra en la latitud 19.43411 y longitud -99.20024
+            latitud:19.43411,
+            longitud:-99.20024
+        },
+        {//Álvaro Obregón se encuentra en la latitud 19.35867 y longitud -99.20329
+            latitud:19.35867,
+            longitud:-99.20329
+        },
+        {//Aguascalientes se encuentra en la latitud 21.88234 y longitud -102.28259
+            latitud:21.88234,
+            longitud:-102.28259
+        },
+        {//Xico se encuentra en la latitud 19.27032 y longitud -98.95088
+            latitud:19.27032,
+            longitud:-98.95088
+        },
+        {//Villahermosa se encuentra en la latitud 17.98689 y longitud -92.93028
+            latitud:17.98689,
+            longitud:-92.93028
+        },
+        {//Celaya se encuentra en la latitud 20.52353 y longitud -100.8157
+            latitud:20.52353,
+            longitud:-100.8157
+        },
+        {//Cuernavaca se encuentra en la latitud 18.9261 y longitud -99.23075
+            latitud:18.9261,
+            longitud:-99.23075
+        },
+        {//Cuilacan se encuentra en la latitud 24.79032 y longitud -107.38782
+            latitud:24.79032,
+            longitud:-107.38782
+        },
+        {//Acapulco se encuentra en la latitud 16.84942 y longitud -99.90891
+            latitud:16.84942,
+            longitud:-99.90891
+        },
+        {//Tepic se encuentra en la latitud 21.50951 y longitud -104.89569
+            latitud:21.50951,
+            longitud:-104.89569
+        },
+        {//Tlalnepantla se encuentra en la latitud 19.54005 y longitud -99.19538
+            latitud:19.54005,
+            longitud:-99.19538
+        },
+        {//Ixtapaluca se encuentra en la latitud 19.31556 y longitud -98.88284
+            latitud:19.31556,
+            longitud:-98.88284
+        },
+        {//Santiago de Querétaro se encuentra en la latitud 20.58806 y longitud -100.38806
+            latitud:20.58806,
+            longitud:-100.38806
+        },
+        {//Tampico se encuentra en la latitud 22.28519 y longitud -97.87777
+            latitud:22.28519,
+            longitud:-97.87777
+        },
+        {//Santa María Chimalhuacán se encuentra en la latitud 19.42155 y longitud -98.95038
+            latitud:19.42155,
+            longitud:-98.95038
+        },
+        {//Ciudad Victoria se encuentra en la latitud 23.74174 y longitud -99.14599
+            latitud:23.74174,
+            longitud:-99.14599
+        },
+        {//Torreon se encuentra en la latitud 25.54389 y longitud -103.41898
+            latitud:25.54389,
+            longitud:-103.41898
+        },
+        {//Tlaquepaque se encuentra en la latitud 20.64091 y longitud -103.29327
+            latitud:20.64091,
+            longitud:-103.29327
+        },
+        {//Ensenada se encuentra en la latitud 31.87149 y longitud -116.60071
+            latitud:31.87149,
+            longitud:-116.60071
+        },
+        {//Coacalco se encuentra en la latitud 19.62923 y longitud -99.10689
+            latitud:19.62923,
+            longitud:-99.10689
+        },
+        {//Tuxtla se encuentra en la latitud 16.75973 y longitud -93.11308
+            latitud:16.75973,
+            longitud:-93.11308
+        },
+        {//Santa Catarina se encuentra en la latitud 25.67325 y longitud -100.45813
+            latitud:25.67325,
+            longitud:-100.45813
+        },
+        {//Uruapan se encuentra en la latitud 19.41116 y longitud -102.05644
+            latitud:19.41116,
+            longitud:-102.05644
+        },
+        {//Victoria de Durango se encuentra en la latitud 24.02032 y longitud -104.65756
+            latitud:24.02032,
+            longitud:-104.65756
+        },
+        {//Los Mochis se encuentra en la latitud 25.79302 y longitud -108.99808
+            latitud:25.79302,
+            longitud:-108.99808
+        },
+        {//Oaxaca se encuentra en la latitud 17.06542 y longitud -96.72365
+            latitud:17.06542,
+            longitud:-96.72365
+        },
+        {//Tehuacán se encuentra en la latitud 18.46422 y longitud -97.39735
+            latitud:18.46422,
+            longitud:-97.39735
+        },
+        {//Atizapan se encuentra en la latitud 19.55793 y longitud -99.25675
+            latitud:19.55793,
+            longitud:-99.25675
+        },
+        {//Magdalena Contreras se encuentra en la latitud 19.33212 y longitud -99.21118
+            latitud:19.33212,
+            longitud:-99.21118
+        },
+        {//Coatzacoalcos se encuentra en la latitud 18.14905 y longitud -94.4447
+            latitud:18.14905,
+            longitud:-94.4447
+        },
+        {//Ciudad Apodaca se encuentra en la latitud 25.78195 y longitud -100.18839
+            latitud:25.78195,
+            longitud:-100.18839
+        },
+        {//Heroica Matamoros se encuentra en la latitud 25.87972 y longitud -97.50417
+            latitud:25.87972,
+            longitud:-97.50417
+        },
+        {//Campeche se encuentra en la latitud 19.84386 y longitud -90.52554
+            latitud:19.84386,
+            longitud:-90.52554
+        },
+        {//Monclova se encuentra en la latitud 26.90687 y longitud -101.42056
+            latitud:26.90687,
+            longitud:-101.42056
+        },
+        {//La Paz se encuentra en la latitud 24.14437 y longitud -110.3005
+            latitud:24.14437,
+            longitud:-110.3005
+        },
+        {//Nogales se encuentra en la latitud 31.30862 y longitud -110.94217
+            latitud:31.30862,
+            longitud:-110.94217
+        },
+        {//Xalapa de Enríquez se encuentra en la latitud 19.53124 y longitud -96.91589
+            latitud:19.53124,
+            longitud:-96.91589
+        },
+        {//Puerto Vallarta se encuentra en la latitud 20.617 y longitud -105.23018
+            latitud:20.617,
+            longitud:-105.23018
+        },
+        {//Tapachula se encuentra en la latitud 14.90385 y longitud -92.25749
+            latitud:14.90385,
+            longitud:-92.25749
+        },
+        {//Ciudad Madero se encuentra en la latitud 22.27228 y longitud -97.83623
+            latitud:22.27228,
+            longitud:-97.83623
+        },
+        {//Benito Juárez se encuentra en la latitud 19.3727 y longitud -99.1564
+            latitud:19.3727,
+            longitud:-99.1564
+        },
+        {//Chilpancingo se encuentra en la latitud 17.5506 y longitud -99.50578
+            latitud:17.5506,
+            longitud:-99.50578
+        },
+        {//Poza Rica se encuentra en la latitud 20.53315 y longitud -97.45946
+            latitud:20.53315,
+            longitud:-97.45946
+        },
+        {//Benito Juarez se encuentra en la latitud 19.3984 y longitud -99.15766
+            latitud:19.3984,
+            longitud:-99.15766
+        },
+        {//Ciudad General Escobedo se encuentra en la latitud 25.79698 y longitud -100.31791
+            latitud:25.79698,
+            longitud:-100.31791
+        },
+        {//Ciudad del Carmen se encuentra en la latitud 18.64592 y longitud -91.82991
+            latitud:18.64592,
+            longitud:-91.82991
+        },
+        {//Jiutepec se encuentra en la latitud 18.88139 y longitud -99.17778
+            latitud:18.88139,
+            longitud:-99.17778
+        },
+        {//Salamanca se encuentra en la latitud 20.57196 y longitud -101.19154
+            latitud:20.57196,
+            longitud:-101.19154
+        },
+        {//San Luis se encuentra en la latitud 32.45612 y longitud -114.77186
+            latitud:32.45612,
+            longitud:-114.77186
+        },
+        {//San Cristobal se encuentra en la latitud 16.73176 y longitud -92.64126
+            latitud:16.73176,
+            longitud:-92.64126
+        },
+        {//San Pablo de las Salinas se encuentra en la latitud 19.66658 y longitud -99.09477
+            latitud:19.66658,
+            longitud:-99.09477
+        },
+        {//Cuautla se encuentra en la latitud 18.8106 y longitud -98.93525
+            latitud:18.8106,
+            longitud:-98.93525
+        },
+        {//Tláhuac se encuentra en la latitud 19.28689 y longitud -99.00507
+            latitud:19.28689,
+            longitud:-99.00507
+        },
+        {//Chetumal se encuentra en la latitud 18.51413 y longitud -88.30381
+            latitud:18.51413,
+            longitud:-88.30381
+        },
+        {//Piedras Negras se encuentra en la latitud 28.70007 y longitud -100.52353
+            latitud:28.70007,
+            longitud:-100.52353
+        },
+        {//Playa del Carmen se encuentra en la latitud 20.6274 y longitud -87.07987
+            latitud:20.6274,
+            longitud:-87.07987
+        },
+        {//Obregon se encuentra en la latitud 27.48642 y longitud -109.94083
+            latitud:27.48642,
+            longitud:-109.94083
+        },
+        {//Lagos de Moreno se encuentra en la latitud 21.35666 y longitud -101.93768
+            latitud:21.35666,
+            longitud:-101.93768
+        },
+        {//Temixco se encuentra en la latitud 18.85254 y longitud -99.22537
+            latitud:18.85254,
+            longitud:-99.22537
+        },
+        {//Zamora se encuentra en la latitud 19.9855 y longitud -102.28387
+            latitud:19.9855,
+            longitud:-102.28387
+        },
+        {//Nicolás Romero se encuentra en la latitud 19.64177 y longitud -99.3068
+            latitud:19.64177,
+            longitud:-99.3068
+        },
+        {//Córdoba se encuentra en la latitud 18.8842 y longitud -96.92559
+            latitud:18.8842,
+            longitud:-96.92559
+        },
+        {//Colima se encuentra en la latitud 19.24997 y longitud -103.72714
+            latitud:19.24997,
+            longitud:-103.72714
+        },
+        {//Cárdenas se encuentra en la latitud 18.00135 y longitud -93.37559
+            latitud:18.00135,
+            longitud:-93.37559
+        },
+        {//Ciudad Acuña se encuentra en la latitud 29.32322 y longitud -100.95217
+            latitud:29.32322,
+            longitud:-100.95217
+        },
+        {//Atlixco se encuentra en la latitud 18.90815 y longitud -98.43613
+            latitud:18.90815,
+            longitud:-98.43613
+        },
+        {//Manzanillo se encuentra en la latitud 19.11695 y longitud -104.34214
+            latitud:19.11695,
+            longitud:-104.34214
+        },
+        {//Zacatecas se encuentra en la latitud 22.76843 y longitud -102.58141
+            latitud:22.76843,
+            longitud:-102.58141
+        },
+        {//Gomez Palacio se encuentra en la latitud 25.56985 y longitud -103.49588
+            latitud:25.56985,
+            longitud:-103.49588
+        },
+        {//Pachuca de Soto se encuentra en la latitud 20.11697 y longitud -98.73329
+            latitud:20.11697,
+            longitud:-98.73329
+        },
+        {//Soledad de Graciano Sánchez se encuentra en la latitud 22.18912 y longitud -100.93792
+            latitud:22.18912,
+            longitud:-100.93792
+        },
+        {//Tlaxcala se encuentra en la latitud 19.31905 y longitud -98.19982
+            latitud:19.31905,
+            longitud:-98.19982
+        }
+    ]
+    var cps = await db_conf.edca_db.manyOrNone(`SELECT cp.ocid,t.title,cp.id,t.tenderid FROM public.contractingprocess cp, public.tender t WHERE 1=1 AND cp.id = t.contractingprocess_id	AND published = true order by cp.id;`);
+    console.log(`cps -> ${JSON.stringify(cps)}`)
+    console.log(`cps -> ${cps.length}`)
+    //inserts por proyecto cada indice es un nuevo proyecto con sus objetos hijos
+    for (let index = 1; index < 51; index++) {
+        console.log(`INDEX -> ${index}`)
+        
+        //llenado de arreglo para sector
+        var arraySector = new Array();
+        var sizeSector = Math.floor(Math.random()*19);
+        var locationId = Math.floor(Math.random()*110);
+        if(cps.length > 0){
+            var cpId = Math.floor(Math.random()*cps.length);
+        }
+        
+        for (let y = 0; y < sizeSector; y++) {
+            if(arraySector.length != undefined){
+                while(true){                    
+                    var sectorVal = sector[Math.floor(Math.random()*19)];
+                    if(!arraySector.includes(sectorVal)){
+                        arraySector.push(sectorVal);
+                        break;    
+                    }
+                }
+            }else{
+                arraySector.push(sector[Math.floor(Math.random()*19)]);
+            }
+            // console.log(`${JSON.stringify(arraySector)}`)
+        }
+        /** publisher, project package, project **/ 
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_publishers(id, name, scheme, uid, uri, "createdAt", "updatedAt")VALUES (${index}, 'Publisher ${index}', 'Scheme ${index}', 'uid ${index}', 'http://localhost:3000/edcapi/publisher/${index}', now(), now());`);
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_packages(id, uri, "publishedDate", version, license, "publicationPolicy", "createdAt", "updatedAt")VALUES (${index}, 'http://localhost:3000/edcapi/projectPackage/${index}', now(), '0.9.1', 'https://datos.gob.mx/libreusomx', 'http://bit.ly/politicadepublicacionINAI', now(), now());`);
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_projects(id, oc4ids, identifier, updated, title, description, status, purpose, sector, type, "oc4idsIdentifier", "createdAt", "updatedAt")VALUES (${index}, 'oc4ids', 'identificador', now(), 'Proyecto ${index}', 'Description proyecto ${index}', '${status[Math.floor(Math.random()*6)]}', 'proposito', '{${arraySector}}', '${type[Math.floor(Math.random()*4)]}', 'oc4ids-identificador', now(), now());`),
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_publisher_project_packages(id, "edcapiPublisherId", project_package_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`),
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_package_projects(id, project_package_id, project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+        // period 
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_periods(id, "startDate", "endDate", "maxExtentDate", "durationInDays", "createdAt", "updatedAt")VALUES (${index}, '20${Math.floor(Math.random()*(21-15+1)+15)}-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', '2021-06-${Math.floor(Math.random()*(30-28+1)+28)} 13:08:38', ${Math.ceil(Math.random()*31)}, now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_period_projects(id, project_id, project_period_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+        // asset life time
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_asset_lifetimes(id, "startDate", "endDate", "maxExtentDate", "durationInDays", "createdAt", "updatedAt")VALUES (${index}, '2021-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', '2021-06-${Math.floor(Math.random()*(30-28+1)+28)} 13:08:38', ${Math.ceil(Math.random()*31)}, now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_asset_lifetime_projects(id, project_id, "edcapiProjectAssetLifetimeId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+        // budget
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budgets(id, "requestDate", "approvalDate", "createdAt", "updatedAt")VALUES (${index}, '2021-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_projects(id, project_id, "edcapiBudgetId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+
+        // amount 
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_amounts(id, amount, currency, "createdAt", "updatedAt")VALUES (${index}, ${Math.ceil(Math.random()*999999)}, '${moneda[Math.floor(Math.random()*3)]}', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_amount_budgets(id, budget_id, "edcapiBudgetAmountId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+
+        // location
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_location_projects(id, description, type, "createdAt", "updatedAt")VALUES (${index}, 'Descripcion ${index}', 'Point', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_projects(id, "edcapiLocationProjectId", project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+        // adress, coordinate 
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_coordinates(id, latitude,longitude, "createdAt", "updatedAt")VALUES (${index}, ${locaciones[locationId].latitud}, ${locaciones[locationId].longitud}, now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_locations_coordinate_locations(id, "edcapiLocationProjectId", "edcapiProjectLocationCoordinateId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_addresses(id, "streetAddress", locality, region, "postalCode", "countryName", "createdAt", "updatedAt")VALUES (${index}, 'El Loto ${index}', 'Tultepec', 'Estado de México', '54987', 'México', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_locations_address_locations(id, "edcapiLocationProjectId", "edcapiProjectLocationAddressId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+
+        // contracting_processes
+        if(cps.length > 0){
+            await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_related_contracting_processes(id, ocid, title, "contractingProcessId", "tenderId", "createdAt", "updatedAt")VALUES (${index}, '${cps[cpId].ocid}', 'title', ${cps[cpId].id}, '${cps[cpId].tenderid}', now(), now());`)
+            await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_related_contracting_process_projects(id, "edcapiProjectRelatedContractingProcessId", project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        }
+        
+        //parties
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties(id, identifier, name, "createdAt", "updatedAt") VALUES (${index},'rfc-fghdfdfjhjdghj', 'Actor ${index}', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_party_projects(id, "edcapiProjectPartyId", project_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
+
+        //identifier
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_identifiers(id, scheme, identifier, "legalName", uri, "createdAt", "updatedAt") VALUES (${index}, 'rfc', 'identifier', 'actor sa de cv', 'http://localhost:3000/project/party/${index}', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_identifier_projects(id, "edcapiProjectPartiesIdentifierId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
+
+        //addresses
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_addresses(id, "streetAddress", locality, region, "postalCode", "countryName", "createdAt", "updatedAt") VALUES (${index}, 'Sauces ${index}', 'Nezahualcoyotl', 'Edo de México', '57820', 'Mexico', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_address_parties(id, "edcapiProjectPartiesAddressId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)        
+
+        //contact_points
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_contact_points(id, name, email, telephone, "faxNumber", url, "createdAt", "updatedAt") VALUES (${index}, 'Jorge', 'jorge@prueba.com', '5566778899', '4444', 'http://prueba.com', now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_contact_point_parties(id, "edcapiProjectPartiesContactPointId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+        //roles
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_roles(id, buyer, "reviewBody", "publicAuthority", payer, "procuringEntity", funder, tenderer, enquirer, supplier, payee, "createdAt", "updatedAt") VALUES (${index}, null, null, 'on', null, null, null, null, null, null, null, now(), now());`)
+        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_roles_parties(id, "edcapiProjectPartiesRoleId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
+        
+    }
+    return res.status(200).json({message:'todo ok'});
 });
 
 module.exports = router;

@@ -253,8 +253,10 @@ module.exports = {
                     objGeometry.type = element.type;
                     if(element.coordinates !== undefined){
                         element.coordinates.forEach(element => {
-                            if(element.point !== "" && element.point !== null)
-                            arrayCoordinates.push(element.point);
+                            if(element.latitude !== "" && element.latitude !== null)
+                            arrayCoordinates.push(element.latitude);
+                            if(element.longitude !== "" && element.longitude !== null)
+                            arrayCoordinates.push(element.longitude);
                         });
                     }
                     if(arrayCoordinates.length > 0)
@@ -1331,10 +1333,10 @@ module.exports = {
                 updatedAt : new Date()
             }).then(async function(relprojectLocation){
                 console.log("############## REL PROJECT LOCATION PROJECT - " + JSON.stringify(relprojectLocation, null, 4))
-                var locationCoordinate = new db.edcapi_project_location_coordinate();
                 var relLocationCoordinateLocation = new db.edcapi_project_locations_coordinate_location();
                 return locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
-                    point:(obj.latitude_p === '' ? null : obj.latitude_p),
+                    latitude:(obj.latitude_p === '' ? null : obj.latitude_p),
+                    longitude:(obj.longitude_p === '' ? null : obj.longitude_p),
                     createdAt : new Date(),
                     updatedAt : new Date()
                 }).then(async function(locationCoordinate){
@@ -1346,48 +1348,31 @@ module.exports = {
                         updatedAt : new Date()
                     }).then(async function(relLocationCoordinateLocation){
                         console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
-                        var locationCoordinate = new db.edcapi_project_location_coordinate();
-                        var relLocationCoordinateLocation = new db.edcapi_project_locations_coordinate_location();
-                        return locationCoordinate = await db.edcapi_project_location_coordinate.create({                    
-                            point:(obj.longitude_p === '' ? null : obj.longitude_p),
+                        var locationAddress = new db.edcapi_project_location_address();
+                        var relLocationAddressLocation = new db.edcapi_project_locations_address_location();
+                        return locationAddress = await db.edcapi_project_location_address.create({
+                            streetAddress: (obj.location_streetaddress_p === '' ? null : obj.location_streetaddress_p),
+                            locality: (obj.location_locality_p === '' ? null : obj.location_locality_p),
+                            region: (obj.location_region_p === '' ? null : obj.location_region_p),
+                            postalCode: (obj.location_postalcode_p === '' ? null : obj.location_postalcode_p),
+                            countryName: (obj.location_countryname_p === '' ? null : obj.location_countryname_p),
                             createdAt : new Date(),
                             updatedAt : new Date()
-                        }).then(async function(locationCoordinate){
-                            console.log("############## LOCATION COORDINATE - " + JSON.stringify(locationCoordinate, null, 4))
-                            return relLocationCoordinateLocation = await db.edcapi_project_locations_coordinate_location.create({
+                        }).then(async function(locationAddress){
+                            console.log("############## LOCATION ADDRESS - " + JSON.stringify(locationAddress, null, 4))
+                            return relLocationAddressLocation = await db.edcapi_project_locations_address_location.create({
                                 edcapiLocationProjectId: projectLocation.id,
-                                edcapiProjectLocationCoordinateId: locationCoordinate.id,
+                                edcapiProjectLocationAddressId: locationAddress.id,
                                 createdAt : new Date(),
                                 updatedAt : new Date()
-                            }).then(async function(relLocationCoordinateLocation){
-                                console.log("############## REL LOCATION COORDINATE LOCATION - " + JSON.stringify(relLocationCoordinateLocation, null, 4))
-                                var locationAddress = new db.edcapi_project_location_address();
-                                var relLocationAddressLocation = new db.edcapi_project_locations_address_location();
-                                return locationAddress = await db.edcapi_project_location_address.create({
-                                    streetAddress: (obj.location_streetaddress_p === '' ? null : obj.location_streetaddress_p),
-                                    locality: (obj.location_locality_p === '' ? null : obj.location_locality_p),
-                                    region: (obj.location_region_p === '' ? null : obj.location_region_p),
-                                    postalCode: (obj.location_postalcode_p === '' ? null : obj.location_postalcode_p),
-                                    countryName: (obj.location_countryname_p === '' ? null : obj.location_countryname_p),
-                                    createdAt : new Date(),
-                                    updatedAt : new Date()
-                                }).then(async function(locationAddress){
-                                    console.log("############## LOCATION ADDRESS - " + JSON.stringify(locationAddress, null, 4))
-                                    return relLocationAddressLocation = await db.edcapi_project_locations_address_location.create({
-                                        edcapiLocationProjectId: projectLocation.id,
-                                        edcapiProjectLocationAddressId: locationAddress.id,
-                                        createdAt : new Date(),
-                                        updatedAt : new Date()
-                                    }).then(async function(relLocationAddressLocation){
-                                        console.log("############## REL LOCATION ADDRESS LOCATION - " + JSON.stringify(relLocationAddressLocation, null, 4))
-                                    })
-                                })
+                            }).then(async function(relLocationAddressLocation){
+                                console.log("############## REL LOCATION ADDRESS LOCATION - " + JSON.stringify(relLocationAddressLocation, null, 4))
                             })
                         })
                     })
                 })
-            });
-        });
+            })
+        })
     },
     findLocationProject: async function(location_id){
         console.log("%%%% findLocationProject")
@@ -1432,14 +1417,11 @@ module.exports = {
                 ],where : {id: obj.location_id}
             });
         };
-        findObjects(obj).then(async function(res){//AQUI
+        findObjects(obj).then(async function(res){//AQUIx2
             console.log('####################' + JSON.stringify(res[0].coordinates));
             res[0].coordinates[0].update({
-                point:(obj.latitude_p === '' ? null : obj.latitude_p),
-                updatedAt : new Date()
-            });
-            res[0].coordinates[1].update({
-                point:(obj.longitude_p === '' ? null : obj.longitude_p),
+                latitude:(obj.latitude_p === '' ? null : obj.latitude_p),
+                longitude:(obj.longitude_p === '' ? null : obj.longitude_p),
                 updatedAt : new Date()
             });
             res[0].update({
@@ -1991,18 +1973,113 @@ module.exports = {
         console.log("%%%% deleteBudgetLineMeasure")
         await db.edcapi_project_budget_breakdown_budget_lines_measure.destroy({
             where: {id: measure_id}
-          })
+        })
         return true;
     },
-    
+    findProjectByOc4ids: async function(data){
+        console.log("%%%% findProjectByOc4ids " + JSON.stringify(data))
+        var project = null;
+        if (data.oc4idsIdentifier != ''){//si escribieron oc4ids
+            await findProjects(null,data.oc4idsIdentifier,null,null).then(async value =>{
+            console.log("$$$$ findProjectByOc4ids X1 " + JSON.stringify(value,null,4))
+                if(value.length == 0){//si no trajo resultados
+                    if(data.title != ''){//si escribieron en titulo 
+                        await findProjects(null,null,data.title,null).then(async value =>{
+                            console.log("$$$$ findProjectByOc4ids X2 " + JSON.stringify(value,null,4))
+                            if(value.length == 0){//si no trajo resultados
+                                if(data.identifier != ''){//si escribio identifier 
+                                    await findProjects(null,null,null,data.identifier).then(async value =>{
+                                        console.log("$$$$ findProjectByOc4ids X3 " + JSON.stringify(value,null,4))
+                                        if(value.length == 0){//si no trajo resultados
+                                            project = value;        
+                                        }else{
+                                            project = value;                
+                                        }
+                                    })
+                                }else{
+                                    await findProjects().then(async value =>{
+                                        console.log("$$$$ findProjectByOc4ids X4 " + JSON.stringify(value,null,4))
+                                        project = value; 
+                                    });
+                                }
+                            }else{
+                                project = value;        
+                            }
+                        });
+                    }else{
+                        if(data.identifier != ''){
+                            await findProjects(null,null,null,data.identifier).then(async value =>{
+                                console.log("$$$$ findProjectByOc4ids X3 " + JSON.stringify(value,null,4))
+                                if(value.length == 0){
+                                    project = value;        
+                                }else{
+                                    project = value;                
+                                }
+                            })
+                        }else{
+                            project = value;
+                        }
+                    }
+                }else{
+                    project = value;
+                } 
+            });
+        }else if (data.title != ''){
+            await findProjects(null,null,data.title,null).then(async value =>{
+                console.log("$$$$ findProjectByOc4ids X2 " + JSON.stringify(value,null,4))
+                if(value.length == 0){
+                    if(data.identifier != ''){//si escribio identifier 
+                        await findProjects(null,null,null,data.identifier).then(async value =>{
+                            console.log("$$$$ findProjectByOc4ids X3 " + JSON.stringify(value,null,4))
+                            if(value.length == 0){//si no trajo resultados
+                                project = value;        
+                            }else{
+                                project = value;                
+                            }
+                        })
+                    }else{
+                        project = value;     
+                    }
+                }else{
+                    project = value; 
+                }
+                
+            }); 
+        }
+        else if (data.identifier != ''){
+            await findProjects(null,null,null,data.identifier).then(async value =>{
+                console.log("$$$$ findProjectByOc4ids X3 " + JSON.stringify(value,null,4))
+                project = value; 
+            }); 
+        }
+        else{
+            await findProjects().then(async value =>{
+                console.log("$$$$ findProjectByOc4ids X4 " + JSON.stringify(value,null,4))
+                project = value; 
+            });
+        }
+        return project;
+    }
 }
 
-async function findProjects(projectId) {
+async function findProjects(projectId,projectOc4ids,projectTitle,projectIdentifier) {
     console.log('calling...');
     console.log('findingProjects...');
     var options = {};
     if(projectId) {
         options = { where:{ id:projectId } };
+    }
+    if(projectOc4ids){
+        console.log('entro projectOc4ids ... ');
+        options = { where:{ oc4idsIdentifier:projectOc4ids } };
+    }
+    if(projectTitle){
+        console.log('entro projectTitle ... ');
+        options = { where:{ title:projectTitle } };
+    }
+    if(projectIdentifier){
+        console.log('entro projectIdentifier ... ');
+        options = { where:{ identifier:projectIdentifier } };
     }
     //console.log("##### " + JSON.stringify(options.where))
     var project_edcapi = await db.edcapi_project_package.findAll({
@@ -2198,8 +2275,8 @@ function findRecordPackage(ocids,host){
                 arrayContractingProcess.push(objContractingProcess) 
             }
         });
-         return  arrayContractingProcess;
-      };
+        return  arrayContractingProcess;
+    };
     return start();
 };
 

@@ -1,5 +1,4 @@
-
-// FORMATO A
+// FORMATO B
 const FORMAT = 43335;
 const FormatFunctions = require('./format-functions');
 
@@ -30,6 +29,19 @@ let build = (release, recordsPnt, position, extras) => {
         fn.add(334258, extras.reportingperiodstartdate.toISOString(), date => fn.dateFormat(date), true, 'Fecha de inicio del periodo que se informa');
         fn.add(334259, extras.reportingperiodenddate.toISOString(), date => fn.dateFormat(date), true, 'Fecha de término del periodo que se informa');
 
+        fn.addField(334270, 'tender.procurementMethodDetails', undefined, value => {
+            switch (value) {
+                case 'Adjudicación directa art.41':
+                case 'Adjudicación directa art.42':
+                    value = 0;
+                    break;
+                default:
+                    value = 1;
+                    break;
+            }
+            return value;
+        });
+
         fn.addField(334269, 'tender.additionalProcurementCategories[0]', undefined, value => {
             switch (value) {
                 // este no esta en el catalogo de pnt
@@ -51,6 +63,11 @@ let build = (release, recordsPnt, position, extras) => {
             }
             return value;
         });
+
+        if (extras.procedureCharacter == 'nacional') extras.procedureCharacter = 0;        
+        if (extras.procedureCharacter == 'internacional') extras.procedureCharacter = 1; 
+        fn.add(563617, extras.procedureCharacter, undefined, false, 'Carácter del procedimiento');
+
         fn.addField(334230, 'awardID', contract);
 
         let values = fn.findValue('tender.procurementMethodDetails');
@@ -80,7 +97,6 @@ let build = (release, recordsPnt, position, extras) => {
 
         fn.addFields(334239, 'description', contract);
 
-
         fn.addTable(334271, 'planning.requestsForQuotes[*].quotes[*]', (quotes, results) => {
             let issueSuppliers = fn.findValues('issuingSupplier', quotes);
             if (issueSuppliers) {
@@ -100,11 +116,347 @@ let build = (release, recordsPnt, position, extras) => {
         let awardSupplier = fn.findValues(`awards[?(@.id==="${contract.awardID}")].suppliers[0]`);
         if (awardSupplier) {
             awardSupplier.map(x => {
-                fn.addField(334264, `parties[?(@.id==="${x.id}")].identifier.givenName`);
-                fn.addField(334260, `parties[?(@.id==="${x.id}")].identifier.patronymicName`);
-                fn.addField(334265, `parties[?(@.id==="${x.id}")].identifier.matronymicName`);
-                fn.addField(334266, `parties[?(@.id==="${x.id}")].identifier.legalName`);
-                fn.addField(334267, `parties[?(@.id==="${x.id}")].id`);
+                extras.domicilioFiscal.forEach(domicilio => {
+                    if(domicilio.partyid === x.id){
+                        fn.addField(334264, `parties[?(@.id==="${x.id}")].identifier.givenName`);
+                        fn.addField(334260, `parties[?(@.id==="${x.id}")].identifier.patronymicName`);
+                        fn.addField(334265, `parties[?(@.id==="${x.id}")].identifier.matronymicName`);
+                        fn.addField(334266, `parties[?(@.id==="${x.id}")].identifier.legalName`);
+                        fn.addField(334267, `parties[?(@.id==="${x.id}")].id`);
+
+                        // Domicilio fiscal de la empresa  contratista o proveedor
+                        //console.log(JSON.stringify(extras));
+                        if (domicilio.address_typeofroad != null){
+                            switch (domicilio.address_typeofroad) {
+                                case 'Carretera':
+                                    domicilio.address_typeofroad = 0;
+                                    break;
+                                case 'Privada':
+                                    domicilio.address_typeofroad = 1;
+                                    break;
+                                case 'Eje vial':
+                                    domicilio.address_typeofroad = 2;
+                                    break;
+                                case 'Circunvalación':
+                                    domicilio.address_typeofroad = 3;
+                                    break;
+                                case 'Brecha':
+                                    domicilio.address_typeofroad = 4;
+                                    break;
+                                case 'Diagonal':
+                                    domicilio.address_typeofroad = 5;
+                                    break;
+                                case 'Calle':
+                                    domicilio.address_typeofroad = 6;
+                                    break;
+                                case 'Corredor':
+                                    domicilio.address_typeofroad = 7;
+                                    break;
+                                case 'Circuito':
+                                    domicilio.address_typeofroad = 8;
+                                    break;
+                                case 'Pasaje':
+                                    domicilio.address_typeofroad = 9;
+                                    break;
+                                case 'Vereda':
+                                    domicilio.address_typeofroad = 10;
+                                    break;
+                                case 'Calzada':
+                                    domicilio.address_typeofroad = 11;
+                                    break;
+                                case 'Viaducto':
+                                    domicilio.address_typeofroad = 12;
+                                    break;
+                                case 'Prolongación':
+                                    domicilio.address_typeofroad = 13;
+                                    break;
+                                case 'Boulevard':
+                                    domicilio.address_typeofroad = 14;
+                                    break;
+                                case 'Peatonal':
+                                    domicilio.address_typeofroad = 15;
+                                    break;
+                                case 'Retorno':
+                                    domicilio.address_typeofroad = 16;
+                                    break;
+                                case 'Camino':
+                                    domicilio.address_typeofroad = 17;
+                                    break;
+                                case 'Callejón':
+                                    domicilio.address_typeofroad = 18;
+                                    break;
+                                case 'Cerrada':
+                                    domicilio.address_typeofroad = 19;
+                                    break;
+                                case 'Ampliación':
+                                    domicilio.address_typeofroad = 20;
+                                    break;
+                                case 'Continuación':
+                                    domicilio.address_typeofroad = 21;
+                                    break;
+                                case 'Terracería':
+                                    domicilio.address_typeofroad = 22;
+                                    break;
+                                case 'Andador':
+                                    domicilio.address_typeofroad = 23;
+                                    break;
+                                case 'Periférico':
+                                    domicilio.address_typeofroad = 24;
+                                    break;
+                                case 'Avenida':
+                                    domicilio.address_typeofroad = 25;
+                                    break;
+                            }        
+                        fn.add(563618, domicilio.address_typeofroad, undefined, false, 'Tipo de vialidad (catálogo)');
+                        }
+                        fn.add(563619, domicilio.address_streetaddress, undefined, false, 'Nombre de vialidad');
+                        fn.add(563620, domicilio.address_outdoornumber, undefined, false, 'Número exterior');
+                        fn.add(563621, domicilio.address_interiornumber, undefined, false, 'Número interior en su caso');
+                        if (domicilio.address_typeofsettlement != null){
+                            switch (domicilio.address_typeofsettlement) {
+                                case 'aeropuerto':
+                                    domicilio.address_typeofsettlement = 0;
+                                    break;
+                                case 'ampliacion':
+                                    domicilio.address_typeofsettlement = 1;
+                                    break;
+                                case 'barrio':
+                                    domicilio.address_typeofsettlement = 2;
+                                    break;
+                                case 'canton':
+                                    domicilio.address_typeofsettlement = 3;
+                                    break;
+                                case 'ciudad':
+                                    domicilio.address_typeofsettlement = 4;
+                                    break;
+                                case 'ciudadIndustrial':
+                                    domicilio.address_typeofsettlement = 5;
+                                    break;
+                                case 'colonia':
+                                    domicilio.address_typeofsettlement = 6;
+                                    break;
+                                case 'condominio':
+                                    domicilio.address_typeofsettlement = 7;
+                                    break;
+                                case 'conjuntoHabitacional':
+                                    domicilio.address_typeofsettlement = 8;
+                                    break;
+                                case 'corredorIndustrial':
+                                    domicilio.address_typeofsettlement = 9;
+                                    break;
+                                case 'coto':
+                                    domicilio.address_typeofsettlement = 10;
+                                    break;
+                                case 'cuartel':
+                                    domicilio.address_typeofsettlement = 11;
+                                    break;
+                                case 'ejido':
+                                    domicilio.address_typeofsettlement = 12;
+                                    break;
+                                case 'exhacienda':
+                                    domicilio.address_typeofsettlement = 13;
+                                    break;
+                                case 'fraccion':
+                                    domicilio.address_typeofsettlement = 14;
+                                    break;
+                                case 'fraccionamiento':
+                                    domicilio.address_typeofsettlement = 15;
+                                    break;
+                                case 'granja':
+                                    domicilio.address_typeofsettlement = 16;
+                                    break;
+                                case 'hacienda':
+                                    domicilio.address_typeofsettlement = 17;
+                                    break;
+                                case 'ingenio':
+                                    domicilio.address_typeofsettlement = 18;
+                                    break;
+                                case 'manzana':
+                                    domicilio.address_typeofsettlement = 19;
+                                    break;
+                                case 'paraje':
+                                    domicilio.address_typeofsettlement = 20;
+                                    break;
+                                case 'parqueIndustrial':
+                                    domicilio.address_typeofsettlement = 21;
+                                    break;
+                                case 'privada':
+                                    domicilio.address_typeofsettlement = 22;
+                                    break;
+                                case 'prolongacion':
+                                    domicilio.address_typeofsettlement = 23;
+                                    break;
+                                case 'pueblo':
+                                    domicilio.address_typeofsettlement = 24;
+                                    break;
+                                case 'puerto':
+                                    domicilio.address_typeofsettlement = 25;
+                                    break;
+                                case 'rancheria':
+                                    domicilio.address_typeofsettlement = 26;
+                                    break;
+                                case 'rancho':
+                                    domicilio.address_typeofsettlement = 27;
+                                    break;
+                                case 'region':
+                                    domicilio.address_typeofsettlement = 28;
+                                    break;
+                                case 'residencial':
+                                    domicilio.address_typeofsettlement = 29;
+                                    break;
+                                case 'rinconada':
+                                    domicilio.address_typeofsettlement = 30;
+                                    break;
+                                case 'seccion':
+                                    domicilio.address_typeofsettlement = 31;
+                                    break;
+                                case 'sector':
+                                    domicilio.address_typeofsettlement = 32;
+                                    break;
+                                case 'supermanzana':
+                                    domicilio.address_typeofsettlement = 33;
+                                    break;
+                                case 'unidad':
+                                    domicilio.address_typeofsettlement = 34;
+                                    break;
+                                case 'unidadHabitacional':
+                                    domicilio.address_typeofsettlement = 35;
+                                    break;
+                                case 'villa':
+                                    domicilio.address_typeofsettlement = 36;
+                                    break;
+                                case 'zonaFederal':
+                                    domicilio.address_typeofsettlement = 37;
+                                    break;
+                                case 'zonaIndustrial':
+                                    domicilio.address_typeofsettlement = 38;
+                                    break;
+                                case 'zonaMilitar':
+                                    domicilio.address_typeofsettlement = 39;
+                                    break;
+                                case 'zonaNaval':
+                                    domicilio.address_typeofsettlement = 40;
+                                    break;
+                            } 
+                        fn.add(563622, domicilio.address_typeofsettlement, undefined, false, 'Tipo de asentamiento (catálogo)');
+                        }
+                        fn.add(563623, domicilio.address_settlementname, undefined, false, 'Nombre del asentamiento');
+                        fn.add(563624, domicilio.address_localitykey, undefined, false, 'Clave de la localidad');
+                        fn.add(563625, domicilio.address_locationname, undefined, false, 'Nombre de la localidad');
+                        fn.add(563626, domicilio.address_alcaldiakey, undefined, false, 'Clave del municipio');
+                        fn.add(563627, domicilio.address_locality, undefined, false, 'Nombre del municipio o alcaldía');
+
+                        fn.add(563628, domicilio.address_regionkey, undefined, false, 'Clave de la entidad federativa');
+                        if (domicilio.address_regionkey != null){
+                            switch (domicilio.address_regionkey) {
+                                case '01':
+                                    domicilio.address_regionkey = 22;
+                                    break;
+                                case '02':
+                                    domicilio.address_regionkey = 31;
+                                    break;
+                                case '03':
+                                    domicilio.address_regionkey = 14;
+                                    break;
+                                case '04':
+                                    domicilio.address_regionkey = 8;
+                                    break;
+                                case '05':
+                                    domicilio.address_regionkey = 9;
+                                    break;
+                                case '06':
+                                    domicilio.address_regionkey = 15;
+                                    break;
+                                case '07':
+                                    domicilio.address_regionkey = 20;
+                                    break;
+                                case '08':
+                                    domicilio.address_regionkey = 26;
+                                    break;
+                                case '09':
+                                    domicilio.address_regionkey = 30;
+                                    break;
+                                case '10':
+                                    domicilio.address_regionkey = 5;
+                                    break;
+                                case '11':
+                                    domicilio.address_regionkey = 4;
+                                    break;
+                                case '12':
+                                    domicilio.address_regionkey = 1;
+                                    break;
+                                case '13':
+                                    domicilio.address_regionkey = 21;
+                                    break;
+                                case '14':
+                                    domicilio.address_regionkey = 19;
+                                    break;
+                                case '15':
+                                    domicilio.address_regionkey = 0;
+                                    break;
+                                case '16':
+                                    domicilio.address_regionkey = 6;
+                                    break;
+                                case '17':
+                                    domicilio.address_regionkey = 12;
+                                    break;
+                                case '18':
+                                    domicilio.address_regionkey = 10;
+                                    break;
+                                case '19':
+                                    domicilio.address_regionkey = 28;
+                                    break;
+                                case '20':
+                                    domicilio.address_regionkey = 17;
+                                    break;
+                                case '21':
+                                    domicilio.address_regionkey = 2;
+                                    break;
+                                case '22':
+                                    domicilio.address_regionkey = 27;
+                                    break;
+                                case '23':
+                                    domicilio.address_regionkey = 3;
+                                    break;
+                                case '24':
+                                    domicilio.address_regionkey = 7;
+                                    break;
+                                case '25':
+                                    domicilio.address_regionkey = 24;
+                                    break;
+                                case '26':
+                                    domicilio.address_regionkey = 13;
+                                    break;
+                                case '27':
+                                    domicilio.address_regionkey = 16;
+                                    break;
+                                case '28':
+                                    domicilio.address_regionkey = 23;
+                                    break;
+                                case '29':
+                                    domicilio.address_regionkey = 18;
+                                    break;
+                                case '30':
+                                    domicilio.address_regionkey = 29;
+                                    break;
+                                case '31':
+                                    domicilio.address_regionkey = 25;
+                                    break;
+                                case '32':
+                                    domicilio.address_regionkey = 11;
+                                    break;
+                            } 
+                        fn.add(563629, domicilio.address_regionkey, undefined, false, 'Nombre de la entidad federativa (catálogo)');
+                        }
+                        fn.add(563630, domicilio.address_postalcode, undefined, false, 'Código postal');
+                        fn.add(563631, domicilio.address_countryabroad, undefined, false, 'País');
+                        fn.add(563632, domicilio.address_cityabroad, undefined, false, 'Ciudad');
+                        fn.add(563633, domicilio.address_streetabroad, undefined, false, 'Calle');
+                        fn.add(563634, domicilio.address_numberabroad, undefined, false, 'Número');
+                    }
+                })
+                
+                
             });
 
         }
@@ -127,6 +479,10 @@ let build = (release, recordsPnt, position, extras) => {
 
         fn.addField(334231, `id`, contract);
         fn.addField(334243, `dateSigned`, contract, date => fn.dateFormat(date), true, 'Fecha de contrato');
+
+        fn.addField(563635, 'period.startDate', contract, date => fn.dateFormat(date), false, 'Fecha de inicio de la vigencia del contrato (día/mes/año)');
+        fn.addField(563636, 'period.endDate', contract, date => fn.dateFormat(date), false, 'Fecha de término de la vigencia del contrato (día/mes/año)');
+
         fn.addField(334244, `value.netAmount`, contract);
         fn.addField(334245, `value.amount`, contract);
         

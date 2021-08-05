@@ -1599,11 +1599,24 @@ CREATE TABLE public.parties (
     identifier_id text,
     identifier_legalname text,
     identifier_uri text,
+    address_typeofroad text,
     address_streetaddress text,
+    address_outdoornumber text,
+    address_interiornumber text,
+    address_typeofsettlement text,
+    address_settlementname text,
+    address_alcaldiakey text,
     address_locality text,
     address_region text,
+    address_regionkey text,
+    address_locationname text,
+    address_localitykey text,
     address_postalcode text,
     address_countryname text,
+    address_streetabroad text,
+    address_numberabroad text,
+    address_cityabroad text,
+    address_countryabroad text,
     contactpoint_name text,
     contactpoint_email text,
     contactpoint_telephone text,
@@ -1713,8 +1726,7 @@ CREATE TABLE public.planning (
     id integer NOT NULL,
     contractingprocess_id integer,
     hasquotes boolean,
-    rationale text,
-    numberofbeneficiaries numeric
+    rationale text
 );
 
 
@@ -2284,6 +2296,7 @@ CREATE TABLE public.tender (
     value_currency text,
     procurementmethod text,
     procurementmethod_details text,
+    procedurecharacter text,
     procurementmethod_rationale text,
     mainprocurementcategory text,
     additionalprocurementcategories text,
@@ -17115,7 +17128,7 @@ COPY public.milestonetype (id, code, title, description) FROM stdin;
 -- Data for Name: parties; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.parties (contractingprocess_id, id, partyid, name, "position", identifier_scheme, identifier_id, identifier_legalname, identifier_uri, address_streetaddress, address_locality, address_region, address_postalcode, address_countryname, contactpoint_name, contactpoint_email, contactpoint_telephone, contactpoint_faxnumber, contactpoint_url, details, naturalperson, contactpoint_type, contactpoint_language, surname, additionalsurname, contactpoint_surname, contactpoint_additionalsurname, givenname, contactpoint_givenname) FROM stdin;
+COPY public.parties (contractingprocess_id, id, partyid, name, "position", identifier_scheme, identifier_id, identifier_legalname, identifier_uri, address_typeofroad, address_streetaddress, address_outdoornumber, address_interiornumber, address_typeofsettlement, address_settlementname, address_locality, address_region, address_regionkey, address_alcaldiakey, address_locationname, address_localitykey, address_postalcode, address_countryname, address_streetabroad, address_numberabroad, address_cityabroad, address_countryabroad, contactpoint_name, contactpoint_email, contactpoint_telephone, contactpoint_faxnumber, contactpoint_url, details, naturalperson, contactpoint_type, contactpoint_language, surname, additionalsurname, contactpoint_surname, contactpoint_additionalsurname, givenname, contactpoint_givenname) FROM stdin;
 \.
 
 
@@ -17142,7 +17155,7 @@ COPY public.paymentmethod (id, code, title, description) FROM stdin;
 -- Data for Name: planning; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.planning (id, contractingprocess_id, hasquotes, rationale, numberofbeneficiaries) FROM stdin;
+COPY public.planning (id, contractingprocess_id, hasquotes, rationale) FROM stdin;
 \.
 
 
@@ -17271,7 +17284,7 @@ COPY public.tags (id, contractingprocess_id, planning, planningupdate, tender, t
 -- Data for Name: tender; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.tender (id, contractingprocess_id, tenderid, title, description, status, minvalue_amount, minvalue_currency, value_amount, value_currency, procurementmethod, procurementmethod_details, procurementmethod_rationale, mainprocurementcategory, additionalprocurementcategories, awardcriteria, awardcriteria_details, submissionmethod, submissionmethod_details, tenderperiod_startdate, tenderperiod_enddate, enquiryperiod_startdate, enquiryperiod_enddate, hasenquiries, eligibilitycriteria, awardperiod_startdate, awardperiod_enddate, numberoftenderers, amendment_date, amendment_rationale, procurementmethod_rationale_id) FROM stdin;
+COPY public.tender (id, contractingprocess_id, tenderid, title, description, status, minvalue_amount, minvalue_currency, value_amount, value_currency, procurementmethod, procurementmethod_details, procedurecharacter, procurementmethod_rationale, mainprocurementcategory, additionalprocurementcategories, awardcriteria, awardcriteria_details, submissionmethod, submissionmethod_details, tenderperiod_startdate, tenderperiod_enddate, enquiryperiod_startdate, enquiryperiod_enddate, hasenquiries, eligibilitycriteria, awardperiod_startdate, awardperiod_enddate, numberoftenderers, amendment_date, amendment_rationale, procurementmethod_rationale_id) FROM stdin;
 \.
 
 

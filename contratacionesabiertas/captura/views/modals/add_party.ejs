@@ -115,25 +115,162 @@
     <label data-tooltip="crear_proceso" title='Domicilio de la persona física o moral, o del área de la institución pública.'>
     <h4>Domicilio</h4></label>
     
-    <p><label data-tooltip="crear_proceso" title='Calle y número. Por ejemplo, Insurgentes Sur 1600.'>
-    Calle y número<!--Address street address--></label>
+    <p><label>Tipo de vialidad</label>
+        <select name="address_typeofroad" class="form-control">
+            <option value="">- Seleccionar -</option>
+            <option value="Ampliación">Ampliación</option>
+            <option value="Andador">Andador</option>
+            <option value="Avenida">Avenida</option>
+            <option value="Boulevard">Boulevard</option>
+            <option value="Brecha">Brecha</option>
+            <option value="Calle">Calle</option>
+            <option value="Callejón">Callejón</option>
+            <option value="Calzada">Calzada</option>
+            <option value="Camino">Camino</option>
+            <option value="Carretera">Carretera</option>
+            <option value="Cerrada">Cerrada</option>
+            <option value="Circuito">Circuito</option>
+            <option value="Circunvalación">Circunvalación</option>
+            <option value="Continuación">Continuación</option>
+            <option value="Corredor">Corredor</option>
+            <option value="Diagonal">Diagonal</option>
+            <option value="Eje vial">Eje vial</option>
+            <option value="Pasaje">Pasaje</option>
+            <option value="Peatonal">Peatonal</option>
+            <option value="Periférico">Periférico</option>
+            <option value="Privada">Privada</option>
+            <option value="Prolongación">Prolongación</option>
+            <option value="Retorno">Retorno</option>
+            <option value="Terracería">Terracería</option>
+            <option value="Vereda">Vereda</option>
+            <option value="Viaducto">Viaducto</option>
+        </select>
+    </p>
+
+    <p><label data-tooltip="crear_proceso" title='Nombre de vialidad. Por ejemplo, Insurgentes Sur.'>
+    Nombre de vialidad</label>
         <input name="address_streetaddress" type="text" class="form-control"></p>
-        
-    <p><label data-tooltip="crear_proceso" title='Alcaldía o municipio. Por ejemplo, Coyoacán.'>
-    Alcaldía o municipio<!--Address locality--></label>
-        <input name="address_locality" type="text" class="form-control"></p>
-        
-    <p><label data-tooltip="crear_proceso" title='Entidad federativa. Por ejemplo, Ciudad de México.'>
-    Entidad federativa<!--Address region--></label>
-        <input name="address_region" type="text" class="form-control"></p>
-        
+    
+    <div class="row">        
+        <div class="col-sm-6">            
+            <p>
+                <label data-tooltip="crear_proceso">Número exterior</label>
+                <input name="address_outdoornumber" type="text" class="form-control">
+            </p>
+        </div>     
+        <div class="col-sm-6">
+            <p>
+                <label data-tooltip="crear_proceso">Número interior</label>
+                <input name="address_interiornumber" type="text" class="form-control">
+            </p>
+        </div>
+    </div>
+
+    <p><label>Tipo de asentamiento</label>
+        <select name="address_typeofsettlement" class="form-control">
+            <option value="">- Seleccionar -</option>
+            <option value="aeropuerto">Aeropuerto</option>
+            <option value="ampliacion">Ampliación</option>
+            <option value="barrio">Barrio</option>
+            <option value="canton">Cantón</option>
+            <option value="ciudad">Ciudad</option>
+            <option value="ciudadIndustrial">Ciudad industrial</option>
+            <option value="colonia">Colonia</option>
+            <option value="condominio">Condominio</option>
+            <option value="conjuntoHabitacional">Conjunto habitacional</option>
+            <option value="corredorIndustrial">Corredor industrial</option>
+            <option value="coto">Coto</option>
+            <option value="cuartel">Cuartel</option>
+            <option value="ejido">Ejido</option>
+            <option value="exhacienda">Exhacienda</option>
+            <option value="fraccion">Fracción</option>
+            <option value="fraccionamiento">Fraccionamiento</option>
+            <option value="granja">Granja</option>
+            <option value="hacienda">Hacienda</option>
+            <option value="ingenio">Ingenio</option>
+            <option value="manzana">Manzana</option>
+            <option value="paraje">Paraje</option>
+            <option value="parqueIndustrial">Parque industrial</option>
+            <option value="privada">Privada</option>
+            <option value="prolongacion">Prolongación</option>
+            <option value="pueblo">Pueblo</option>
+            <option value="puerto">Puerto</option>
+            <option value="rancheria">Ranchería</option>
+            <option value="rancho">Rancho</option>
+            <option value="region">Región</option>
+            <option value="residencial">Residencial</option>
+            <option value="rinconada">Rinconada</option>
+            <option value="seccion">Sección</option>
+            <option value="sector">Sector</option>
+            <option value="supermanzana">Supermanzana</option>
+            <option value="unidad">Unidad</option>
+            <option value="unidadHabitacional">Unidad habitacional</option>
+            <option value="villa">Villa</option>
+            <option value="zonaFederal">Zona federal</option>
+            <option value="zonaIndustrial">Zona industrial</option>
+            <option value="zonaMilitar">Zona militar</option>
+            <option value="zonaNaval">Zona naval</option>
+        </select>
+    </p>
+
+    <p><label data-tooltip="crear_proceso">Nombre del asentamiento</label>
+        <input name="address_settlementname" type="text" class="form-control">
+    </p>
+
+
+    <p><label data-tooltip="crear_proceso" title='Entidad federativa. Por ejemplo, Ciudad de México.'>Entidad federativa<!--Address region--></label>
+        <select id="address_region" name="address_region" class="form-control">
+            <option value="">- Seleccionar -</option>
+        </select>
+    </p>
+    <!--<p><label data-tooltip="crear_proceso">Clave de la Entidad federativa</label>-->
+        <input id="address_regionkey" name="address_regionkey" type="hidden" class="form-control"></p>
+
+    <p><label data-tooltip="crear_proceso" disabled>Alcaldía o municipio</label>
+        <select disabled id="address_locality" name="address_locality" class="form-control">
+            <option value="">- Seleccionar -</option>
+        </select>
+
+    <!--<p><label data-tooltip="crear_proceso">Clave de la Alcaldía o Municipio</label>-->
+        <input id="address_alcaldiakey" name="address_alcaldiakey" type="hidden" class="form-control"></p>
+    
+    <p><label data-tooltip="crear_proceso">Nombre de la localidad</label>
+        <select disabled id="address_locationname" name="address_locationname" class="form-control">
+            <option value="">- Seleccionar -</option>
+        </select>
+    </p>
+    <!--<p><label data-tooltip="crear_proceso">Clave de la localidad</label>-->
+        <input id="address_localitykey" name="address_localitykey" type="hidden" class="form-control"></p>
+
+
     <p><label data-tooltip="crear_proceso" title='Código postal. Por ejemplo, 94043.'>
-    Código postal <!--Address postal code--></label>
-        <input name="address_postalcode" type="text" class="form-control"></p>
+        Código postal <!--Address postal code--></label>
+        <input name="address_postalcode" type="text" class="form-control" onChange="validarCodigo(this);"></p>
         
     <p><label data-tooltip="crear_proceso" title='País. Por ejemplo, México.'>
-    País<!--Address country name--></label>
+        País<!--Address country name--></label>
         <input name="address_countryname" type="text" class="form-control"></p>
+
+    <input id="region_text" name="region_text" type="hidden" class="form-control">
+    <input id="locality_text" name="locality_text" type="hidden" class="form-control">
+    <input id="locationname_text" name="locationname_text" type="hidden" class="form-control">
+
+    <hr>
+    
+    <h4>Domicilio en el extranjero</h4>
+
+    <p><label data-tooltip="crear_proceso">Calle</label>
+        <input name="address_streetabroad" type="text" class="form-control"></p>
+            
+    <p><label data-tooltip="crear_proceso">Número</label>
+        <input name="address_numberabroad" type="text" class="form-control"></p>
+            
+    <p><label data-tooltip="crear_proceso">Ciudad</label>
+        <input name="address_cityabroad" type="text" class="form-control"></p>
+
+    <p><label data-tooltip="crear_proceso">País</label>
+        <input name="address_countryabroad" type="text" class="form-control"></p>
+
     <hr>
     
     <label data-tooltip="crear_proceso" title='Persona o área administrativa que funge como punto de contacto en relación con este procedimiento de contratación.'>
@@ -207,19 +344,29 @@
 </form>
 
 <script>
-  function validarSiNumero(numero){
-    if (!/^([0-9])*$/.test(numero))
-      alert("Solo se permiten números");
-  }
+    function validarSiNumero(numero){
+        if (!/^([0-9])*$/.test(numero))
+        alert("Solo se permiten números");
+    }
   
-  function validarEmail( email ) {
-    expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if ( !expr.test(email) )
-        alert("La dirección de correo " + email + " no tiene el formato correcto.");
-}
+    function validarEmail( email ) {
+        expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        if ( !expr.test(email) )
+            alert("La dirección de correo " + email + " no tiene el formato correcto.");
+    }
 
     function validarVacio (input) {
         input.value = input.value.trim();
+    }
+
+    function validarCodigo(input){
+        input.value = input.value.trim();
+        if(input.value.length == 5){
+            //No modifica el dato
+        }else{
+            alert("La longitud del código postal no es correcta. Considere que en México el código postal se compone de 5 dígitos.")
+            input.value = "";
+        }
     }
 
     $('[name="identifier_scheme"], [name="identifier_id"]').on('change', function() {
@@ -231,4 +378,5 @@
         else
             $('[name="partyid"]').val(scheme + '-' + id);
     });
+
 </script>

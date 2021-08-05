@@ -72,7 +72,12 @@ let sendRegisters = async (cps, throwError) => {
         let requestingUnits =  (await edca_db.manyOrNone('select party_legal_name from planning_party_units where contractingprocess_id = $1 and requesting_unit = true order by id',[cp])) || {};
         let contractingUnits =  (await edca_db.manyOrNone('select party_legal_name from planning_party_units where contractingprocess_id = $1 and contracting_unit = true order by id',[cp])) || {};
         let responsibleUnits =  (await edca_db.manyOrNone('select party_legal_name from planning_party_units where contractingprocess_id = $1 and responsible_unit = true order by id',[cp])) || {};
-        let extras =  (await edca_db.oneOrNone('select fiscalYear as ejercicio from datapnt order by id desc limit 1')) || {};
+
+        // Domicilio fiscal de la empresa  contratista o proveedor
+        let procedureCharacter = (await edca_db.oneOrNone('select procedurecharacter from tender where contractingprocess_id = $1',[cp])) || {}; 
+        let domicilioFiscal = (await edca_db.manyOrNone('select parties.partyid, parties.address_typeofroad, parties.address_streetaddress, parties.address_outdoornumber, parties.address_interiornumber, parties.address_typeofsettlement, parties.address_settlementname, parties.address_localitykey, parties.address_locationname, parties.address_alcaldiakey, parties.address_locality, parties.address_regionkey, parties.address_region, parties.address_postalcode, parties.address_countryabroad, parties.address_cityabroad, parties.address_streetabroad, parties.address_numberabroad from parties inner join roles on roles.parties_id = parties.id where parties.contractingprocess_id = $1 and roles.supplier = true order by parties.id desc',[cp])) || {};
+
+        let extras = (await edca_db.oneOrNone('select fiscalYear as ejercicio from datapnt order by id desc limit 1')) || {};
         extras.fechaActualizacion = consulta.updatedate;
         extras.fechaValidacion = moment(consulta.valitationdate).format("YYYY-MM-DD");
         extras.dataresponsibleunit = consulta.dataresponsibleunit;
@@ -82,6 +87,10 @@ let sendRegisters = async (cps, throwError) => {
         extras.requestingUnits = requestingUnits;
         extras.contractingUnits = contractingUnits;
         extras.responsibleUnits = responsibleUnits;
+
+        extras.procedureCharacter = procedureCharacter.procedurecharacter;
+        extras.domicilioFiscal = domicilioFiscal;
+
         // preparar la entrada a enviar
         let entrada = formats[format](release,records, position, extras);
         let response;

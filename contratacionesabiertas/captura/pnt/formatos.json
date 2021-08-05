@@ -371,7 +371,7 @@
     },
     // A
     "43336": {
-        "titulo": "Resultados adjudicaciones, invitaciones y licitaciones_Procedimientos de licitación pública e invitación a cuando menos tres personas",
+        "titulo": "Procedimientos de licitación pública e invitación a cuando menos tres personas",
         "campos": [
             {
                 "idCampo": 334280,
@@ -409,7 +409,7 @@
             },
             {
                 "idCampo": 334304,
-                "etiqueta": "Materia (catálogo)",
+                "etiqueta": "Materia o tipo de contratación (catálogo)",
                 "tipoDato": "Catálogo",
                 "valor": [
                     {
@@ -431,6 +431,21 @@
                     {
                         "orden": 4,
                         "descripcion": "Servicios"
+                    }
+                ]
+            },
+            {
+                "idCampo": 563637,
+                "etiqueta": "Carácter del procedimiento (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 1,
+                        "descripcion": "Nacional"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Internacional"
                     }
                 ]
             },
@@ -461,7 +476,7 @@
                     },
                     {
                         "idCampo": 43321,
-                        "etiqueta": "RFC de los posibles contratantes ",
+                        "etiqueta": "RFC de los posibles contratantes",
                         "tipoDato": "Texto corto"
                     }
                 ]
@@ -478,7 +493,7 @@
             },
             {
                 "idCampo": 334332,
-                "etiqueta": "Fecha de la convocatoria o invitación ",
+                "etiqueta": "Fecha de la convocatoria o invitación",
                 "tipoDato": "Fecha"
             },
             {
@@ -624,9 +639,122 @@
             },
             {
                 "idCampo": 334325,
-                "etiqueta": "RFC de la persona física o moral contratista o proveedor ",
+                "etiqueta": "RFC de la persona física o moral contratista o proveedor",
                 "tipoDato": "Texto corto"
             },
+
+            {
+                "idCampo": 563638,
+                "etiqueta": "Domicilio fiscal de la empresa  contratista o proveedor Tipo de vialidad (catálogo)",
+                "tipoDato": "Catálogo",
+                "valor": [
+                    {
+                        "orden": 0,
+                        "descripcion": "Carretera"
+                    },
+                    {
+                        "orden": 1,
+                        "descripcion": "Privada"
+                    },
+                    {
+                        "orden": 2,
+                        "descripcion": "Eje vial"
+                    },
+                    {
+                        "orden": 3,
+                        "descripcion": "Circunvalación"
+                    },
+                    {
+                        "orden": 4,
+                        "descripcion": "Brecha"
+                        },
+                    {
+                        "orden": 5,
+                        "descripcion": "Diagonal"
+                    },
+                    {
+                        "orden": 6,
+                        "descripcion": "Calle"
+                    },
+                    {
+                        "orden": 7,
+                        "descripcion": "Corredor"
+                    },
+                    {
+                        "orden": 8,
+                        "descripcion": "Circuito"
+                    },
+                    {
+                        "orden": 9,
+                        "descripcion": "Pasaje"
+                    },
+                    {
+                        "orden": 10,
+                        "descripcion": "Vereda"
+                    },
+                    {
+                        "orden": 11,
+                        "descripcion": "Calzada"
+                    },
+                    {
+                        "orden": 12,
+                        "descripcion": "Viaducto"
+                    },
+                    {
+                        "orden": 13,
+                        "descripcion": "Prolongación"
+                    },
+                    {
+                        "orden": 14,
+                        "descripcion": "Boulevard"
+                    },
+                    {
+                        "orden": 15,
+                        "descripcion": "Peatonal"
+                    },
+                    {
+                        "orden": 16,
+                        "descripcion": "Retorno"
+                    },
+                    {
+                        "orden": 17,
+                        "descripcion": "Camino"
+                    },
+                    {
+                        "orden": 18,
+                        "descripcion": "Callejón"
+                    },
+                    {
+                        "orden": 19,
+                        "descripcion": "Cerrada"
+                    },
+                    {
+                        "orden": 20,
+                        "descripcion": "Ampliación"
+                    },
+                    {
+                        "orden": 21,
+                        "descripcion": "Continuación"
+                    },
+                    {
+                        "orden": 22,
+                        "descripcion": "Terracería"
+                    },
+                    {
+                        "orden": 23,
+                        "descripcion": "Andador"
+                    },
+                    {
+                        "orden": 24,
+                        "descripcion": "Periférico"
+                    },
+                    {
+                        "orden": 25,
+                        "descripcion": "Avenida"
+                    }
+                ]
+            },
+
             {
                 "idCampo": 334326,
                 "etiqueta": "Descripción de las razones que justifican su elección",

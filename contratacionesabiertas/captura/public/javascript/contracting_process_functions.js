@@ -542,6 +542,24 @@ module.exports = {
             });
         }
     },
+    getRecordPackages: async function(ids,host){
+        console.log(`### getRecordPackages`)
+        var arrayRecordPackage = new Array();
+        const start = async () => {
+            await asyncForEach(ids, async (id) => {
+                let record = require('../../io/record')(db_conf.edca_db);
+                let log = await db_conf.edca_db.oneOrNone(`select version,release_file from logs where contractingprocess_id in (${id.cpid}) order by id desc limit 1`);
+                if(log != null){
+                    var recordPackage = await record.getPackage(log.version, log.release_file, host);
+                    if(recordPackage !== undefined){
+                        arrayRecordPackage.push(recordPackage) 
+                    }
+                }
+            });
+            return  arrayRecordPackage;
+        };
+        return start();
+    },
 };
 
 async function deleteFiscalYears(fiscalYears){
@@ -909,4 +927,33 @@ function isNaturalPerson(arrayReleasePackage){
         });
     });
     return arrayReleasePackage;
+};
+
+async function generateRecordPackage(id,host){
+    console.log("························· id x2 "  + JSON.stringify(id));
+    var recordPackage;
+    try {
+        let record = require('../../io/record')(db_conf.edca_db);
+        return await db_conf.edca_db.oneOrNone(`select version,release_file from logs where contractingprocess_id in (${id}) order by id desc limit 1`).then(async log =>{
+            if(log != null){
+                return await record.getPackage(log.version, log.release_file, host).then(recordPackage =>{
+                    // recordPackage = recordPackage;
+                    return recordPackage;
+                })
+            }    
+        });
+        
+    } catch(e) {
+        console.log(e);
+        return res.json({
+            message: 'No se ha encontrado el record',
+            error: e.message
+        });
+    }
 }
+
+async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
+};

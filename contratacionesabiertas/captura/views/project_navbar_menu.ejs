@@ -19,10 +19,9 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Proyectos
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <!-- <li><a href="#"> <i class="fa fa-search"></i> Buscar</a></li> -->
+            <li><a href="#" data-toggle="modal" data-target="#genericModal" data-action="search_projects" data-user_id = "<%= user.id %>"> <i class="fa fa-search"></i> Buscar</a></li> <!-- Buscar proyectos -->
             <li id="create_project"><a href="#"><i class="fa fa-plus"></i> Nuevo</a></li>
-            <!-- <li role="separator" class="divider"></li> -->
-            <!-- <li><a href="#"><i class="fa fa-book"></i> Manual</a></li> -->
+        <!--  <li data-toggle="modal" data-action="validate_projects" data-target="#adminModal"><a href="#"><i class="fa fa-tasks"></i> Tablero de publicación</a></li>  -->
           </ul>
         </li>
         <% if (user.isAdmin === true){%>

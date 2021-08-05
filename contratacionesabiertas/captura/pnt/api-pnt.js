@@ -57,12 +57,14 @@ let registerInfo = async (format, email, registers) => {
     try{
         
         response = await axios.post(`sipot-web/spring/mantenimiento/agrega`,{
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             correoUnidadAdministrativa: email,
             registros: registers
         });
         console.log(JSON.stringify({
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             correoUnidadAdministrativa: email,
@@ -86,6 +88,7 @@ let registerInfo = async (format, email, registers) => {
 let updateInfo = async (format, email, registers) => {
     try{
         response = await axios.post(`sipot-web/spring/mantenimiento/actualiza`,{
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             correoUnidadAdministrativa: email,
@@ -93,6 +96,7 @@ let updateInfo = async (format, email, registers) => {
         });
 
         console.log(JSON.stringify({
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             correoUnidadAdministrativa: email,
@@ -116,6 +120,7 @@ let updateInfo = async (format, email, registers) => {
 let deleteInfo = async (format, email, registers) => {
     try{
         response = await axios.post(`sipot-web/spring/mantenimiento/elimina`,{
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             correoUnidadAdministrativa: email,
@@ -185,6 +190,7 @@ let getFormat = async (format) => {
 let getFields = async (format, cocentrator, code) => {
     try{
         response = await axios.post(`sipot-web/spring/informacionFormato/camposFormato`,{
+            ejercicio: 2021,
             token: token,
             idFormato: format,
             concentradora: cocentrator,

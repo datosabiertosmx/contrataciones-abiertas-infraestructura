@@ -8,7 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      point: {
+      latitude: {
+        type: Sequelize.FLOAT              
+      },
+      longitude: {
         type: Sequelize.FLOAT              
       },
       createdAt: {

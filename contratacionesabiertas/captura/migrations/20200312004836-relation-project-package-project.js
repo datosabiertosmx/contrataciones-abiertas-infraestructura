@@ -10,7 +10,7 @@ module.exports = {
           table: 'edcapi_project_packages',
           field: 'id',
         },
-        onDelete: 'no action',
+        onDelete: 'cascade',
         onUpdate: 'no action',
       }),
       await queryInterface.addConstraint('edcapi_project_package_projects', ['project_id'], {
@@ -20,7 +20,7 @@ module.exports = {
           table: 'edcapi_projects',
           field: 'id',
         },
-        onDelete: 'no action',
+        onDelete: 'cascade',
         onUpdate: 'no action',
       }),
     ]
