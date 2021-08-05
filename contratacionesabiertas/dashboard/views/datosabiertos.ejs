@@ -149,30 +149,13 @@
                         <div class="card-body">
                           <div class="d-flex font-weight-bold">
                               Parámetros
-                              <a id="primero" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo()">Consultar</a>
-                              <a id="segundo" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero()">Cancelar</a>
+                              <a id="primero" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo('primero','segundo','disabledSelect','yearProcurementMethod','ejecutar/limpiar')">Consultar</a>
+                              <a id="segundo" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero('primero','segundo','disabledSelect','yearProcurementMethod','ejecutar/limpiar')">Cancelar</a>
                           </div>
                         </div>
                       
                           <script type="text/javascript">
-                            function visualiza_primero() {
-                                document.getElementById('primero').style.visibility='visible';
-                                document.getElementById('primero').style.display='block';
-                                document.getElementById('segundo').style.visibility='hidden';
-                                document.getElementById('segundo').style.display='none';
-                                document.getElementById("disabledSelect").disabled = true;
-                                document.getElementById("yearProcurementMethod").disabled = true;
-                                document.getElementById("ejecutar/limpiar").hidden = true;
-                            };
-                            function visualiza_segundo() {
-                                document.getElementById('segundo').style.visibility='visible';
-                                document.getElementById('segundo').style.display='block';
-                                document.getElementById('primero').style.visibility='hidden';
-                                document.getElementById('primero').style.display='none';
-                                document.getElementById("disabledSelect").disabled = false;
-                                document.getElementById("yearProcurementMethod").disabled = false;
-                                document.getElementById("ejecutar/limpiar").hidden = false;
-                            };
+                            
                           </script>
 
                         <table class="table">
@@ -215,7 +198,7 @@
                                 <td colspan="2" style="border: white;"><button id="leyendo_1" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getProcurementMethod()">Consultar</button>
                                 <button id="leyendo_2" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
                                   Procesando ...</button></td>
-                                <td colspan="2" style="border: white;"><button id="clean" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean()" hidden>Limpiar</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean('procurementmethodRes','codeprocurementmethod','desprocurementmethod','clean','disabledSelect','yearProcurementMethod','leyendo_1','leyendo_2')" hidden>Limpiar</button></td>
                               </tr>
                               <tr>
                                 <th scope="row">Respuesta</th>
@@ -282,30 +265,13 @@
                           <div class="card-body">
                             <div class="d-flex font-weight-bold">
                                 Parámetros
-                                <a id="primero_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_2()">Consultar</a>
-                                <a id="segundo_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_2()">Cancelar</a>
+                                <a id="primero_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo('primero_2','segundo_2','disabledSelect_2','yearAdditionalProcurementCategories','ejecutar/limpiar_2')">Consultar</a>
+                                <a id="segundo_2" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero('primero_2','segundo_2','disabledSelect_2','yearAdditionalProcurementCategories','ejecutar/limpiar_2')">Cancelar</a>
                             </div>
                           </div>
                         
                             <script type="text/javascript">
-                              function visualiza_primero_2() {
-                                  document.getElementById('primero_2').style.visibility='visible';
-                                  document.getElementById('primero_2').style.display='block';
-                                  document.getElementById('segundo_2').style.visibility='hidden';
-                                  document.getElementById('segundo_2').style.display='none';
-                                  document.getElementById("disabledSelect_2").disabled = true;
-                                  document.getElementById("yearAdditionalProcurementCategories").disabled = true;
-                                  document.getElementById("ejecutar/limpiar_2").hidden = true;
-                              };
-                              function visualiza_segundo_2() {
-                                  document.getElementById('segundo_2').style.visibility='visible';
-                                  document.getElementById('segundo_2').style.display='block';
-                                  document.getElementById('primero_2').style.visibility='hidden';
-                                  document.getElementById('primero_2').style.display='none';
-                                  document.getElementById("disabledSelect_2").disabled = false;
-                                  document.getElementById("yearAdditionalProcurementCategories").disabled = false;
-                                  document.getElementById("ejecutar/limpiar_2").hidden = false;
-                              };
+                              
                             </script>
                           <table class="table">
                             <thead>
@@ -349,7 +315,7 @@
                                 <td colspan="2" style="border: white;"><button id="leyendo_3" type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getAdditionalProcurementCategories()">Consultar</button>
                                   <button id="leyendo_4" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
                                     Procesando ...</button></td>
-                                <td colspan="2" style="border: white;"><button id="clean_2" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean_2()" hidden>Limpiar</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_2" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean('additionalProcurementCategoriesRes','codeadditionalprocurementcategories','desadditionalprocurementcategories','clean_2','disabledSelect_2','yearAdditionalProcurementCategories','leyendo_3','leyendo_4')" hidden>Limpiar</button></td>
                               </tr>
                               <tr>
                                 <th scope="row">Respuesta</th>
@@ -420,28 +386,13 @@
                           <div class="card-body">
                             <div class="d-flex font-weight-bold">
                                 Parámetros
-                                <a id="primero_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo_3()">Consultar</a>
-                                <a id="segundo_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero_3()">Cancelar</a>
+                                <a id="primero_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo('primero_3','segundo_3',null,'yearContractingProcess​','ejecutar/limpiar_3')">Consultar</a>
+                                <a id="segundo_3" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero('primero_3','segundo_3',null,'yearContractingProcess​','ejecutar/limpiar_3')">Cancelar</a>
                             </div>
                           </div>
                         
                             <script type="text/javascript">
-                              function visualiza_primero_3() {
-                                  document.getElementById('primero_3').style.visibility='visible';
-                                  document.getElementById('primero_3').style.display='block';
-                                  document.getElementById('segundo_3').style.visibility='hidden';
-                                  document.getElementById('segundo_3').style.display='none';
-                                  document.getElementById("yearContractingProcess​").disabled = true;
-                                  document.getElementById("ejecutar/limpiar_3").hidden = true;
-                              };
-                              function visualiza_segundo_3() {
-                                  document.getElementById('segundo_3').style.visibility='visible';
-                                  document.getElementById('segundo_3').style.display='block';
-                                  document.getElementById('primero_3').style.visibility='hidden';
-                                  document.getElementById('primero_3').style.display='none';
-                                  document.getElementById("yearContractingProcess​").disabled = false;
-                                  document.getElementById("ejecutar/limpiar_3").hidden = false;
-                              };
+                              
                             </script>
   
                           <table class="table">
@@ -462,7 +413,7 @@
                                 <td colspan="2" style="border: white;"><button id="leyendo_5" type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getContractingProcess()">Consultar</button>
                                   <button id="leyendo_6" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
                                     Procesando ...</button></td>
-                                <td colspan="2" style="border: white;"><button id="clean_3" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean_3()" hidden>Limpiar</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_3" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean('contractingprocessRes','codecontractingprocess','descontractingprocess','clean_3',null,'yearContractingProcess​','leyendo_5','leyendo_6')" hidden>Limpiar</button></td>
                               </tr>
                               <tr>
                                 <th scope="row">Respuesta</th>
@@ -732,18 +683,21 @@
                 $('#yearProcurementMethod').append('<option value="'+element.year+'">'+element.year+'</option>');
                 $('#yearAdditionalProcurementCategories').append('<option value="'+element.year+'">'+element.year+'</option>');
                 $('#yearContractingProcess​').append('<option value="'+element.year+'">'+element.year+'</option>');
+                $('#yearRecordPackage').append('<option value="'+element.year+'">'+element.year+'</option>');
               count++;
             });
             if(arrayYears.length > 0){
               $('#aniosText').append(`Registros disponibles de los periodos: ${anios}`);
               $('#aniosText2').append(`Registros disponibles de los periodos: ${anios}`);
               $('#aniosText3').append(`Registros disponibles de los periodos: ${anios}`);
+              $('#aniosText4').append(`Registros disponibles de los periodos: ${anios}`);
             }
           },
           error: function(data) {
               $('#yearProcurementMethod').append('<option value=""> Not Found </option>');
               $('#yearAdditionalProcurementCategories').append('<option value=""> Not Found </option>');
               $('#yearContractingProcess​').append('<option value=""> Not Found </option>');
+              $('#yearRecordPackage').append('<option value=""> Not Found </option>');
           }
       });
     });
@@ -754,6 +708,7 @@
     var endPointProcurementMethod = '/edca/contractingprocess/procurementmethod/';
     var endPointAdditionalProcurementCategories = '/edca/contractingprocess/additionalprocurementcategories/';
     var endPointContractingProcess = '/edca/contractingprocess/';
+    var endPointRecordPackages = '/edca/recordPackages/';
     var arrayFilesCSV = new Array();
       function getProcurementMethod(){
         var parametro = $("#disabledSelect").val();
@@ -789,18 +744,7 @@
         document.getElementById('leyendo_1').style.display='none';
         document.getElementById('leyendo_2').hidden=false;        
       }
-      function clean() {
-        document.getElementById("procurementmethodRes").value = "";
-        $("#codeprocurementmethod").text(`Resultado`);
-        $("#desprocurementmethod").text(`Resultado`);
-        document.getElementById('clean').hidden=true;
-        document.getElementById("disabledSelect").selectedIndex=-1;
-        document.getElementById("yearProcurementMethod").selectedIndex=-1;
-        document.getElementById('leyendo_1').style.visibility='visible';
-        document.getElementById('leyendo_1').style.display='block';
-        document.getElementById('leyendo_2').style.visibility='hidden';
-        document.getElementById('leyendo_2').style.display='none';
-      }
+      
 
       function getAdditionalProcurementCategories(){
         var parametro = $("#disabledSelect_2").val();
@@ -836,18 +780,7 @@
         document.getElementById('leyendo_3').style.display='none';
         document.getElementById('leyendo_4').hidden=false; 
       }
-      function clean_2() {
-        document.getElementById("additionalProcurementCategoriesRes").value = "";
-        $("#codeadditionalprocurementcategories").text(`Resultado`);
-        $("#desadditionalprocurementcategories").text(`Resultado`);
-        document.getElementById('clean_2').hidden=true;
-        document.getElementById("disabledSelect_2").selectedIndex=-1;
-        document.getElementById("yearAdditionalProcurementCategories").selectedIndex=-1;
-        document.getElementById('leyendo_3').style.visibility='visible';
-        document.getElementById('leyendo_3').style.display='block';
-        document.getElementById('leyendo_4').style.visibility='hidden';
-        document.getElementById('leyendo_4').style.display='none';
-      }
+      
 
       function getContractingProcess(){
         var year = $("#yearContractingProcess​").val();
@@ -877,39 +810,64 @@
         document.getElementById('leyendo_5').style.display='none';
         document.getElementById('leyendo_6').hidden=false;
       }
-      function clean_3() {
-        document.getElementById("contractingprocessRes").value = "";
-        $("#codecontractingprocess").text(`Resultado`);
-        $("#descontractingprocess").text(`Resultado`);
-        document.getElementById('clean_3').hidden=true;
-        document.getElementById("yearContractingProcess​").selectedIndex=-1;
-        document.getElementById('leyendo_5').style.visibility='visible';
-        document.getElementById('leyendo_5').style.display='block';
-        document.getElementById('leyendo_6').style.visibility='hidden';
-        document.getElementById('leyendo_6').style.display='none';
+
+      function getRecordPackages(){
+        var year = $("#yearRecordPackage").val();
+        $.ajax({
+              url: `${uri}:${port}${endPointRecordPackages}${year}`,
+              type: 'GET',
+              success: function(data){ 
+                $("#recordPackagesRes").val('');
+                $("#recordPackagesRes").val(JSON.stringify(data, null, 4));
+                $("#coderecordpackages").text(200);
+                $("#desrecordpackages").text(`Success`);
+                document.getElementById('leyendo_7').hidden=true;
+                document.getElementById('clean_6').hidden=false;
+              },
+              error: function(data) {
+                $("#recordPackagesRes").val('Not Found');
+                $("#coderecordpackages").text(404);
+                $("#desrecordpackages").text(`Not Found`);
+                document.getElementById('leyendo_7').hidden=true;
+                document.getElementById('clean_6').hidden=false;
+              }
+          });
+
+        document.getElementById('leyendo_7').style.visibility='visible';
+        document.getElementById('leyendo_7').style.display='block';
+        document.getElementById('leyendo_8').style.visibility='hidden';
+        document.getElementById('leyendo_8').style.display='none';
+        document.getElementById('leyendo_7').hidden=false;
       }
+      
       
       function downloadJSON(endpoint){
         switch (endpoint) {
           case 'procurementmethod':
             var parametro = $("#disabledSelect").val();
             var year = $("#yearProcurementMethod").val();
-            var uri_endpoint = `${uri}:${port}${endPointProcurementMethod}${parametro}/${year}`;
             document.getElementById('downley').hidden=false;
             document.getElementById('downlo').hidden=true;
+            var uri_endpoint = `${uri}:${port}${endPointProcurementMethod}${parametro}/${year}`;
             break;
           case 'additionalprocurementcategories':
             var parametro = $("#disabledSelect_2").val();
             var year = $("#yearAdditionalProcurementCategories").val();
-            var uri_endpoint = `${uri}:${port}${endPointAdditionalProcurementCategories}${parametro}/${year}`;
             document.getElementById('downley_2').hidden=false;
             document.getElementById('downlo_2').hidden=true;
+            var uri_endpoint = `${uri}:${port}${endPointAdditionalProcurementCategories}${parametro}/${year}`;
             break;
           case 'contractingprocess':
             var year = $("#yearContractingProcess​").val();
-            var uri_endpoint = `${uri}:${port}${endPointContractingProcess}${year}`;
             document.getElementById('downley_3').hidden=false;
             document.getElementById('downlo_3').hidden=true;
+            var uri_endpoint = `${uri}:${port}${endPointContractingProcess}${year}`;
+            break;
+          case 'recordPackagesRes':
+            var year = $("#yearRecordPackage").val();
+            document.getElementById('downley_4').hidden=false;
+            document.getElementById('downlo_10').hidden=true;
+            var uri_endpoint = `${uri}:${port}${endPointRecordPackages}${year}`;
             break;
           default:
             break;
@@ -926,6 +884,8 @@
             document.getElementById('downlo_2').hidden=false;
             document.getElementById('downley_3').hidden=true;
             document.getElementById('downlo_3').hidden=false;
+            document.getElementById('downley_4').hidden=true;
+            document.getElementById('downlo_10').hidden=false;
         });
       }
       function downloadCSV(endpoint){
@@ -2515,7 +2475,7 @@
           const headers = {
             ocid: 'ocid',
             rationale: 'rationale',
-            hasquotes: 'hasquotes'
+            hasQuotes: 'hasquotes'
           };
           exportCSVFile(headers,data.arrayPlanning,'3000')
         }
@@ -3026,6 +2986,18 @@
       for (let i = 0; i < array.length; i++) {
         let line = "";
         for (let index in array[i]) {
+          if(index == 'parties/roles'){
+            const roles = (array[i][index]).split(',');
+            var resRoles = "";
+            roles.forEach(rol => {
+              if(resRoles == ""){
+                resRoles += resRoles+rol;
+              }else{
+                resRoles +=' | '+resRoles+rol;
+              }
+            });            
+            array[i][index] = resRoles;
+          }
           if (line != "") line += ",";
           line += validatesComas(array[i][index]);
         }
@@ -3080,6 +3052,60 @@
           return undefined;
         }
         
+      }
+      function visualiza_primero(primero,segundo,disabledSelect,metodo,limpiar) {
+          if(primero !== null)
+          document.getElementById(primero).style.visibility='visible';
+          if(primero !== null)
+          document.getElementById(primero).style.display='block';
+          if(segundo !== null)
+          document.getElementById(segundo).style.visibility='hidden';
+          if(segundo !== null)
+          document.getElementById(segundo).style.display='none';
+          if(disabledSelect !== null)
+          document.getElementById(disabledSelect).disabled = true;
+          if(metodo !== null)
+          document.getElementById(metodo).disabled = true;
+          if(limpiar !== null)
+          document.getElementById(limpiar).hidden = true;
+      };
+      function visualiza_segundo(primero,segundo,disabledSelect,metodo,limpiar) {
+          if(segundo !== null)
+          document.getElementById(segundo).style.visibility='visible';
+          if(segundo !== null)
+          document.getElementById(segundo).style.display='block';
+          if(primero !== null)
+          document.getElementById(primero).style.visibility='hidden';
+          if(primero !== null)
+          document.getElementById(primero).style.display='none';
+          if(disabledSelect !== null)
+          document.getElementById(disabledSelect).disabled = false;
+          if(metodo !== null)
+          document.getElementById(metodo).disabled = false;
+          if(limpiar !== null)
+          document.getElementById(limpiar).hidden = false;
+      };
+      function clean(metodo,resultado_1,resultado_2,clean,disabledSelect,year,leyendo_1,leyendo_2) {
+        if(metodo !== null)
+        document.getElementById(metodo).value = "";
+        if(resultado_1 !== null)
+        $(`#${resultado_1}`).text(`Resultado`);
+        if(resultado_2 !== null)
+        $(`#${resultado_2}`).text(`Resultado`);
+        if(clean !== null)
+        document.getElementById(clean).hidden=true;
+        if(disabledSelect !== null)
+        document.getElementById(disabledSelect).selectedIndex=-1;
+        if(year !== null)
+        document.getElementById(year).selectedIndex=-1;
+        if(leyendo_1 !== null)
+        document.getElementById(leyendo_1).style.visibility='visible';
+        if(leyendo_1 !== null)
+        document.getElementById(leyendo_1).style.display='block';
+        if(leyendo_2 !== null)
+        document.getElementById(leyendo_2).style.visibility='hidden';
+        if(leyendo_2 !== null)
+        document.getElementById(leyendo_2).style.display='none';
       }
     </script>
 

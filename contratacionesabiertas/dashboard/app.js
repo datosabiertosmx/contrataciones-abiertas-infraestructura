@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const cors = require('cors');
 
 var routes = require('./routes/index');
 
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/contratacionesabiertas/static',express.static(path.join(__dirname, 'public')));
+app.use(cors({origin: `http://104.192.4.109:4000`}));
 
 //app.use('/', routes);
 app.use('/contratacionesabiertas', routes);

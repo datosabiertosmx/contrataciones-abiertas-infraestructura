@@ -4,8 +4,9 @@ var BubbleChart, root,
             return fn.apply(me, arguments);
         };
     };
-
+console.log(`vis load`)
 BubbleChart = (function() {
+    console.log(`BubbleChart`)
     function BubbleChart(data) {
         this.do_filter = __bind(this.do_filter, this);
         this.use_filters = __bind(this.use_filters, this);
@@ -64,6 +65,7 @@ BubbleChart = (function() {
 
     // FUNCION PARA HACER LAS BUSQUEDAS
     BubbleChart.prototype.buscar = function(filterText) {
+        console.log(`buscar`)
         filterText = filterText.toLowerCase();
         if (filterText !== "") {
             var filtrados = this.data.filter(function(d) {
@@ -91,6 +93,7 @@ BubbleChart = (function() {
 
 
     BubbleChart.prototype.create_nodes = function() {
+        console.log(`create_nodes`)
         var _this = this;
         this.data.forEach(function(d, i) {
             var node;
@@ -108,6 +111,7 @@ BubbleChart = (function() {
     };
     // CREACIÓN DE LOS NODOS, AQUÍ ESTÁN LOS EVENTOS PARA MOSTRAR LA INFORMACIÓN EN CADA NODO
     BubbleChart.prototype.create_vis = function() {
+        console.log(`create_vis`)
         var that,
             _this = this;
         /*Tamaño de la gráfica Información general de contratos y proveedores*/
@@ -147,16 +151,19 @@ BubbleChart = (function() {
         });
     };
     BubbleChart.prototype.charge = function(d) {
+        console.log(`charge`)
         if (d.radius === 0) {
             return 0;
         }
         return -Math.pow(d.radius, 2);
     };
     BubbleChart.prototype.start = function() {
+        console.log(`start`)
         this.force = d3.layout.force().nodes(this.nodes).size([this.width, this.height]);
         return this.circles.call(this.force.drag); // Efecto de arrastrar
     };
     BubbleChart.prototype.display_group_all = function() {
+        console.log(`display_group_all`)
         var _this = this;
         this.hide_labels();
         this.force.gravity(this.layout_gravity).charge(this.charge).friction(0.8).on("tick", function(e) {
@@ -169,6 +176,7 @@ BubbleChart = (function() {
         this.force.start();
     };
     BubbleChart.prototype.move_towards_center = function(alpha) {
+        console.log(`move_towards_center`)
         var _this = this;
         return function(d) {
             d.x = d.x + (_this.center.x - d.x) * (_this.damper + 0.02) * alpha;
@@ -177,6 +185,7 @@ BubbleChart = (function() {
     };
     // FUNCIÓN PARA MAPAEAR LOS COLORES, SE PUEDEN CAMBIAR...
     BubbleChart.prototype.get_color_map_lookup_set = function(allValuesArray) {
+        console.log(`get_color_map_lookup_set`)
         var baseArray, color_map, index, value, _i, _len;
         baseArray = [
         	'#00cc99',  // Adjudicación directa                  (verde)  
@@ -205,16 +214,20 @@ BubbleChart = (function() {
         return color_map;
     };
     BubbleChart.prototype.get_color_map = function(allValuesArray) {
+        console.log(`get_color_map`)
         return this.get_color_map_lookup_set(allValuesArray);
     };
     BubbleChart.prototype.sort = function(allValuesArray) {
+        console.log(`sort`)
         allValuesArray.sort();
     };
     BubbleChart.prototype.remove_colors = function() {
+        console.log(`remove_colors`)
         this.circles.transition().duration(600).style("fill", "#00cc99");
         hide_color_chart();
     };
     BubbleChart.prototype.color_by = function(what_to_color_by) {
+        console.log(`color_by`)
         var allValuesArray, color_mapper,
             _this = this;
         this.what_to_color_by = what_to_color_by;
@@ -229,6 +242,7 @@ BubbleChart = (function() {
 
 
     BubbleChart.prototype.get_distinct_values = function(what) {
+        console.log(`get_distinct_values`)
         var allValues, allValuesArray, key, value,
             _this = this;
         allValues = {};
@@ -259,6 +273,7 @@ BubbleChart = (function() {
 
 
     BubbleChart.prototype.group_by = function(what_to_group_by) {
+        console.log(`group_by`)
         var allValuesArray, numCenters, position, total_slots,
             _this = this;
         this.what_to_group_by = what_to_group_by;
@@ -293,6 +308,7 @@ BubbleChart = (function() {
 
 
     BubbleChart.prototype.move_towards_group_center = function(alpha) {
+        console.log(`move_towards_group_center`)
         var _this = this;
         return function(d) {
             var target, value;
@@ -306,6 +322,7 @@ BubbleChart = (function() {
 
 
     BubbleChart.prototype.move_towards_group = function(alpha) {
+        console.log(`move_towards_group`)
         var _this = this;
         return function(d) {
             var target;
@@ -318,6 +335,7 @@ BubbleChart = (function() {
 //Etiquetas en la gráfica "Información general de contratos y proveedores", agrupando por procedimiento de contratación
     
     BubbleChart.prototype.display_labels = function() {
+        console.log(`display_labels`)
         var label_data, labels,
             _this = this;
         var group_labels = this.group_labels;
@@ -333,6 +351,7 @@ BubbleChart = (function() {
     };
 
     BubbleChart.prototype.hide_labels = function() {
+        console.log(`hide_labels`)
         var labels;
         labels = this.vis.selectAll(".top_labels").remove();
     };
@@ -340,6 +359,7 @@ BubbleChart = (function() {
 //Datos que muestra cada nodo
 
     BubbleChart.prototype.show_details = function(data, i, element) {
+        console.log(`show_details`)
         var content, key, title, value, _ref;
         d3.select(element).style("fill-opacity", 0.85).style("cursor", "pointer");
 		if (data.original['Proveedor'] !== null) {
@@ -353,11 +373,13 @@ BubbleChart = (function() {
     };
 
     BubbleChart.prototype.hide_details = function(data, i, element) {
+        console.log(`hide_details`)
         d3.select(element).style("fill-opacity", 0.55);
         this.tooltip.hideTooltip();
     };
 
     BubbleChart.prototype.use_filters = function(filters, targets) {
+        console.log(`use_filters`)
         var filteredCircles = this.nodes.filter(function(d) {
             var original = d.original;
             var flag = true;
@@ -376,6 +398,7 @@ BubbleChart = (function() {
     };
 
     BubbleChart.prototype.do_filter = function() {
+        console.log(`do_filter`)
         this.force.start();
         this.circles.transition().duration(2000).attr("r", function(d) {
             return d.radius
@@ -383,6 +406,7 @@ BubbleChart = (function() {
     };
 
     BubbleChart.prototype.getRadius = function(node) {
+        console.log(`getRadius`)
         return node.Monto.substr();
         
     };
@@ -393,6 +417,7 @@ root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
 
 $(function() {
+    console.log(`function`)
     var chart, render_chart, render_vis,
         _this = this;
     chart = null;
@@ -438,8 +463,9 @@ $(function() {
     };
 
     d3.xhr("/contratacionesabiertas/d3-bubble-chart-data").header("Content-Type", "application/json").post(JSON.stringify({
-        year: $('#metadataYear').val(),
+        year: 2018,
     }), function(error, res) {
+        console.log(`function post`)
         var result = JSON.parse(res.response);
         var data2 = [];
 
@@ -472,6 +498,7 @@ $(function() {
 
 
 function CustomTooltip(tooltipId, width){
+    console.log(`CustomTooltip`)
     var tooltipId = tooltipId;
     $("body").append("<div class='tooltipBubble' id='"+tooltipId+"'></div>");
 
