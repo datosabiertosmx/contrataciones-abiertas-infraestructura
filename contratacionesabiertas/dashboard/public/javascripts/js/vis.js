@@ -463,7 +463,7 @@ $(function() {
     };
 
     d3.xhr("/contratacionesabiertas/d3-bubble-chart-data").header("Content-Type", "application/json").post(JSON.stringify({
-        year: 2018,
+        year: $('#metadataYear').val(),
     }), function(error, res) {
         console.log(`function post`)
         var result = JSON.parse(res.response);
