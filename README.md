@@ -18,7 +18,6 @@
 · Lenguaje de programación: Nodejs v10
 · Servidor web: NGINX
 ```
-```
 #### Manuales
 
 · <a href="https://docs.google.com/document/d/16c5AHDYAWVCbxIYrgZDapEpNH4N9zQHlqEfXyP9-ook/edit">Manual de instalación de software base</a>
