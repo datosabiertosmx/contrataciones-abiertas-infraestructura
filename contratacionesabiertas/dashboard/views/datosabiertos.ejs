@@ -454,6 +454,97 @@
                 </div>
               </div>
 
+              <!--Todos los Record Packages-->
+              <div class="card">
+                <div class="card-header" id="headingSix">
+                  <h5 class="mb-0">
+                    <h4 class="collapsed" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="cursor: pointer;">
+                      Todos los procesos de contratación (Histórico) 
+                    </h4>
+                  </h5>
+                </div>
+                <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-1">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#parameters6" aria-expanded="false" aria-controls="parameters6">
+                          <a class="font-weight-bold">GET</a>
+                        </button>
+                      </div>
+                      <div class="col-md-11 font-weight-bold" data-toggle="collapse" href="#parameters6" aria-expanded="false" aria-controls="parameters6" style="cursor: pointer;">
+                        /edca/recordPackages/{year}
+                        <p>Método para obtener datos de las contrataciones públicas según el año de la fecha de firma del contrato. Este conjunto de datos contiene todas las liberaciones históricas y vigentes que han tenido los procesos de contratación de acuerdo al esquema del paquete de registros (record package) del EDCA-MX.</p>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <div class="collapse multi-collapse" id="parameters6">
+                          <div class="card-body">
+                            <div class="d-flex font-weight-bold">
+                                Parámetros
+                                <a id="primero_6" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:visible; display:block;" onclick="visualiza_segundo('primero_6','segundo_6',null,'yearRecordPackage','ejecutar/limpiar_6')">Consultar</a>
+                                <a id="segundo_6" href="#" class="btn btn-primary btn-sm ml-auto font-weight-bold" style="visibility:hidden; display:none; background-color:#FF0000;" onclick="visualiza_primero('primero_6','segundo_6',null,'yearRecordPackage','ejecutar/limpiar_6')">Cancelar</a>
+                            </div>
+                          </div>
+                      
+                          <table class="table">
+                            <tbody>
+                              <tr>
+                                <th >
+                                  <a class="font-weight-bold">year </a>
+                                  <a class="d-flex font-weight-bold" style="font-size:12px;">array[string]</a>
+                                  <i style="font-size:10px; font-weight: normal;">(path)</i></th>
+                                <td>
+                                  <p>Filtro que permite la consulta la información según el año de la fecha de firma del contrato. Este filtro es opcional, al incluirlo en la consulta el resultado mostrará solo los procesos que han sido formalizados. En caso de no seleccionar un año,  el resultado de la consulta contendrá todos los procesos publicados en este sitio, incluyendo aquellos que fueron declarados desiertos o cancelados, así como aquellos que aún no han sido formalizados.</p>
+                                  <p id="aniosText4"></p>
+                                  <select id="yearRecordPackage" name="year" class="custom-select" size="4" style="width: 350px;" multiple disabled></select>
+                                  <br><br>
+                                </td>
+                              </tr>
+                              <tr id="ejecutar/limpiar_6" hidden>
+                                <td colspan="2" style="border: white;"><button id="leyendo_8" type="button" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" onclick="getRecordPackages()">Consultar</button>
+                                  <button id="leyendo_7" class="btn btn-primary btn-lg btn-block" style="background-color:#4990e2;" hidden disabled><span class="spinner-border spinner-border-sm"></span>
+                                    Procesando ...</button></td>
+                                <td colspan="2" style="border: white;"><button id="clean_6" class="btn btn-primary btn-lg btn-block" style="background-color:#FF0000;" onclick="clean('recordPackagesRes','coderecordpackages','desrecordpackages','clean_6',null,'yearRecordPackage','leyendo_8','leyendo_7')" hidden>Limpiar</button></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Respuesta</th>
+                                <td>
+                                  <textarea id="recordPackagesRes" name="textarea" class="form-control" rows="10" cols="100" readonly></textarea>
+                                  <a id="downloadAnchorElem" style="display:none"></a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Formatos de descargas</th>
+                                <td>
+                                  <div class="container">
+                                    <div class="row">
+                                      <button class="btn btn-primary btn-sm font-weight-bold" style="visibility:visible; display:block;" onclick="copyResult('recordPackagesRes')">Copiar contenido</button>
+                                      <button id="downlo_10" class="btn btn-primary btn-sm ml-3 font-weight-bold" style="visibility:visible; display:block;" onclick="downloadJSON('recordPackagesRes')">Descargar JSON</button>
+                                  </div>
+                                  <div id="downley_4" class="spinner-border" role="status" hidden>
+                                    <span class="sr-only">Loading...</span>
+                                  </div>                                  
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">Código</th>
+                                <td class="font-weight-bold">Descripción</td>
+                              </tr>
+                              <tr>
+                                <td scope="row" id="coderecordpackages">Resultado</td>
+                                <td id="desrecordpackages">Resultado</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- <div class="card">
                 <div class="card-header" id="headingFour">
                   <h5 class="mb-0">

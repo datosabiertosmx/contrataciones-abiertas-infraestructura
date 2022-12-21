@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/contratacionesabiertas/static',express.static(path.join(__dirname, 'public')));
-app.use(cors({origin: `http://104.192.4.109:4000`}));
+app.use(cors({origin: `http://localhost:4000`}));
 
 //app.use('/', routes);
 app.use('/contratacionesabiertas', routes);
