@@ -21,13 +21,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       status: {
         type: Sequelize.STRING
       },
       purpose: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       sector: {
         type: Sequelize.ARRAY(Sequelize.TEXT)
@@ -37,6 +37,9 @@ module.exports = {
       },
       oc4idsIdentifier: {
         type: Sequelize.STRING
+      },
+      is_public: {
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

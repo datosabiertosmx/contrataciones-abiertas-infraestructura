@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       amount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       currency: {
         type: Sequelize.STRING

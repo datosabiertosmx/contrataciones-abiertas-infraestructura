@@ -13,11 +13,11 @@
     </div>
 
     <p><br><br><br>
-        <label>Nombre común<!--Name--></label>
-        <input name="name" type="text" class="form-control" value="<%= data.name %>"></p>
+        <label>Nombre común *<!--Name--></label>
+        <input name="name" type="text" class="form-control" value="<%= data.name %>" required></p>
 
     <p>
-        <label>Identificador del actor</label>
+        <label>Identificador del actor *</label>
         <input name="partyid" type="text" class="form-control" value="<%= data.partyid %>" readonly required>
     </p>
     
@@ -31,7 +31,7 @@
     
     <p>
         <label data-tooltip="crear_proceso">¿Es persona física?</label>
-        <select name="naturalperson" id="naturalperson" class="form-control" required
+        <select name="naturalperson" id="naturalperson" class="form-control"
         onchange="esPersonaFisica($('#naturalperson').val());">
 
             <option value="<%= data.naturalperson %>"
@@ -52,7 +52,7 @@
     		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
     		<h4>Persona moral</h4></label>
     		
-    		<p><label>Nombre o razón social<!--Identifier legal name--></label>
+    		<p><label>Nombre o razón social *<!--Identifier legal name--></label>
         <input id="identifier_legalname" name = "identifier_legalname" class="form-control" type="text" value="<%= data.identifier_legalname %>" required <%= data.naturalperson? 'disabled' : '' %>></p>
         
         </div>
@@ -61,18 +61,18 @@
 		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
     		<h4>Persona física</h4></label>
      <p>
-        <label>Nombre<!--Name--></label>
+        <label>Nombre *<!--Name--></label>
         <input id= "givenname" name="givenname" type="text" class="form-control" value="<%= data.givenname %>" required <%= !data.naturalperson ? 'disabled' : '' %>></p>
 
     <p>
     <p>
         <label>
-        Primer Apellido</label>
+        Primer Apellido *</label>
         <input id="surname" name="surname" type="text" class="form-control"  value="<%= data.surname %>" required <%= !data.naturalperson ? 'disabled' : '' %>>
     </p>
     <p>
         <label>
-        Segundo Apellido</label>
+        Segundo Apellido *</label>
         <input id="additionalsurname" name="additionalsurname" type="text" class="form-control" value="<%= data.additionalsurname %>" required <%= !data.naturalperson ? 'disabled' : '' %>>
     </p>
     </div>
@@ -80,7 +80,7 @@
 
 
 <!-- ########################################################################## MODIFICADO ##################################### -->
-    <p><label>Esquema <!--Identifier scheme--></label>
+    <p><label>Esquema *<!--Identifier scheme--></label>
         <select name="identifier_scheme" class="form-control" onChange="validarVacio(this);" id='identifier_scheme' required>
             <option value="" <%= '' == data.identifier_scheme ? 'selected' : '' %>>Seleccionar un esquema</option>
             <option value="MX-RFC" <%= 'MX-RFC' == data.identifier_scheme ? 'selected' : '' %>>MX-RFC</option>
@@ -291,7 +291,7 @@
         </ul>
     </div>
 <br><br><br>
-        <label>Papeles del actor</label>
+        <label>Papeles del actor *</label>
     <div class="well">
         <label class="checkbox-inline"><input name="contractingunit" type="checkbox"  <%= roles.contractingunit?'checked':'' %>>Área contratante</label><br>
         <label class="checkbox-inline"><input name="requestingunit" type="checkbox"  <%= roles.requestingunit?'checked':'' %>>Área requirente</label><br>

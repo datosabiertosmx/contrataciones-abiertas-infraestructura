@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const edcapi_project_budget_breakdown_budget_lines_measure = sequelize.define('edcapi_project_budget_breakdown_budget_lines_measure', {
     type: DataTypes.STRING,
-    amount: DataTypes.INTEGER,
+    amount: DataTypes.STRING,
     currency: DataTypes.STRING,
     date: DataTypes.STRING
   }, {});

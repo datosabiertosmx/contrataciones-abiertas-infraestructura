@@ -17,6 +17,9 @@ module.exports = {
       description: {
         type: Sequelize.STRING(900)
       },
+      icono: {
+        type: Sequelize.STRING(900)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

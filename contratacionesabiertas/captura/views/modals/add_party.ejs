@@ -4,13 +4,13 @@
 
     <p>
         <label data-tooltip="crear_proceso" title='Nombre común por el que se conoce a esta persona física o moral, o del área de la institución pública en el procedimiento de contratación. El apartado de identificación provee un espacio para registrar el nombre formal o razón social, por lo que éste puede repetir ese valor o puede referirse al nombre común por el cual es conocida la organización.'>
-        Nombre común<!--Name--></label>
+        Nombre común *<!--Name--></label>
         <input name="name" type="text" class="form-control" required>
     </p>
 
     <p>
         <label data-tooltip="crear_proceso" title='El identificador utilizado para hacer referencias cruzadas a este actor desde otras secciones del esquema. Este campo puede ser construido de acuerdo con la siguiente estructura: {identifier.scheme} - {identifier.id} (- {department-identifier}).'>
-        Identificador del actor</label>
+        Identificador del actor *</label>
         <input name="partyid" type="text" class="form-control" readonly required>
     </p>
     
@@ -66,7 +66,7 @@
     		<label data-tooltip="crear_proceso" title='El identificador principal de este actor. Los identificadores que señalan exclusivamente una entidad legal deben ser preferidos. Consulte la "Orientación del identificador de la organización" para el esquema preferido y el identificador a utilizar.'>
     		<h4>Persona moral</h4></label>
     		
-    		<p><label data-tooltip="crear_proceso" title='Nombre o razón social.'>Nombre o razón social<!--Identifier legal name--></label>
+    		<p><label data-tooltip="crear_proceso" title='Nombre o razón social.'>Nombre o razón social *<!--Identifier legal name--></label>
         	<input name="identifier_legalname" id="identifier_legalname" type="text" class="form-control" required></p>
     	</div>
     	
@@ -76,17 +76,17 @@
     		<h4>Persona física</h4></label>
     
     		<p>
-        	<label data-tooltip="crear_proceso">Nombre<!--Name--></label>
+        	<label data-tooltip="crear_proceso">Nombre *<!--Name--></label>
         	<input name="givenname" id="givenname" type="text" class="form-control" disabled required>
     		</p>
 
     		<p>
-        	<label>Primer Apellido</label>
+        	<label>Primer Apellido *</label>
         	<input name="surname" id="surname" type="text" class="form-control" disabled required>
 	    	</p>
 
     		<p>
-        	<label>Segundo Apellido</label>
+        	<label>Segundo Apellido *</label>
         	<input name="additionalsurname" id="additionalsurname" type="text" class="form-control" disabled required>
     		</p>
     	</div>
@@ -98,7 +98,7 @@
 
     <!-- ########################################################################## MODIFICADO ##################################### -->
     <p><label data-tooltip="crear_proceso" title='Los identificadores del actor deben extraerse de una lista de identificadores existente. El campo esquema se utiliza para indicar el nombre de la lista o registro del que se extrae el identificador. Este valor debe obtenerse de la lista de códigos "Esquema de identificación de la organización".'>
-    Esquema <!--Identifier scheme--></label>
+    Esquema *<!--Identifier scheme--></label>
         <select name="identifier_scheme" class="form-control" onChange="validarVacio(this);" id='identifier_scheme' required>
             <option value="">Seleccionar un esquema</option>
             <option value="MX-RFC">MX-RFC</option>
@@ -318,7 +318,7 @@
         
         <hr>
     <label data-tooltip="crear_proceso" title='El papel(es) que desempeña el actor involucrado en el procedimiento de contratación. Estos papeles deben ser tomados de la lista de códigos "Papeles de los actores". Los valores de la lista de códigos proporcionada deben usarse siempre que sea posible, aunque se pueden proporcionar otros valores si la lista de códigos no tiene uno pertinente.'>
-    Papeles del actor</label>
+    Papeles del actor *</label>
     
     <div class="well">
         <label class="checkbox-inline"><input name="contractingunit" type="checkbox">Área contratante</label><br>

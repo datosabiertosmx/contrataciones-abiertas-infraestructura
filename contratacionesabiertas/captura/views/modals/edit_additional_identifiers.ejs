@@ -1,17 +1,17 @@
 <form id="update_additional_identifiers_form">
     
     <label data-tooltip="crear_proceso" title='El nombre legalmente registrado de la organización.'>
-            Nombre o razón social</label>
+            Nombre o razón social *</label>
         <input type="text" name="additionalIdentifiers_legalName" class="form-control"  value = "<%= data.legalName %>" required>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='Los identificadores de la organización deben extraerse de una lista de identificadores de la organización existente. El campo del esquema se utiliza para indicar la lista o el registro del que se extrae el identificador. Este valor debe extraerse de la lista de códigos del esquema de identificación de la organización .'>
-            Esquema</label>
+            Esquema *</label>
         <input type="text" name="additionalIdentifiers_scheme" class="form-control"  value = "<%= data.scheme %>" required>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='El identificador de la organización en el esquema seleccionado.'>
-            Identificador</label>
+            Identificador *</label>
         <input type="text" name="additionalIdentifiers_id" class="form-control"  value = "<%= data.identifier %>" required>
     </p>
     <p>

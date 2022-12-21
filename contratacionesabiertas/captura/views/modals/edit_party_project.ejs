@@ -7,7 +7,7 @@
 
     <p>
         <label data-tooltip="crear_proceso" title='Nombre común por el que se conoce a esta persona física o moral, o del área de la institución pública en el procedimiento de contratación. El apartado de identificación provee un espacio para registrar el nombre formal o razón social, por lo que éste puede repetir ese valor o puede referirse al nombre común por el cual es conocida la organización.'>
-        Nombre común</label>
+        Nombre común *</label>
         <input name="parties_name" type="text" class="form-control" value = "<%= data.name %>" required>
     </p>
     <p>
@@ -24,12 +24,12 @@
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='Los identificadores de la organización deben extraerse de una lista de identificadores existente. El campo esquema se utiliza para indicar el nombre de la lista o registro del que se extrae el identificador. Este valor debe obtenerse de la lista de códigos Organization Identifier Scheme.'>
-        Esquema</label>
+        Esquema *</label>
         <input name="identifier_scheme" type="text" class="form-control" value = "<%= data.identifierR[0].scheme %>" required>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='El identificador de la dependencia, entidad, licitante, proveedor o contratista'>
-        Identificador</label>
+        Identificador *</label>
         <input name="identifier_id" type="text" class="form-control" value = "<%= data.identifierR[0].identifier %>" required>
     </p>
     <p>

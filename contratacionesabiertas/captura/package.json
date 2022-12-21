@@ -7,7 +7,7 @@
     "dev": "nodemon npm start "
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.26.1",
     "basic-ftp": "^3.6.0",
     "bcrypt-nodejs": "*.*",
     "bluebird": "^3.4.6",
@@ -26,13 +26,13 @@
     "iconv-lite": "^0.4.24",
     "js-sha3": "^0.5.4",
     "json-2-csv": "^3.7.8",
-    "jsonpath": "^1.0.0",
+    "jsonpath": "^1.1.1",
     "moment": "^2.26.0",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.6",
     "morgan": "~1.9.1",
     "multer": "^1.1.0",
-    "nodemailer": "^6.4.0",
+    "nodemailer": "^6.7.3",
     "passport": "*.*",
     "passport-local": "*.*",
     "pdfkit": "^0.8.3",
@@ -46,7 +46,7 @@
     "sequelize-cli": "^5.5.1",
     "serve-favicon": "^2.5.0",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4",
+    "swagger-ui-express": "^4.3.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

@@ -46,7 +46,7 @@
     </p>-->
 
     <p>
-        <label title="">Título</label>
+        <label title="">Título *</label>
         <input type="text" class="form-control" name="title" value="<%= request.title %>" required>
     </p>
 
@@ -62,20 +62,20 @@
     <div class="row">
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de inicio</label>
+                <label title="">Fecha de inicio *</label>
                 <input type="text" class="form-control" id="newquote_date1" name="period_startdate" value="<%= request.period_startdate_text %>" required>
             </p>
         </div>
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de término</label>
+                <label title="">Fecha de término *</label>
                 <input type="text" class="form-control" id="newquote_date2" name="period_enddate" value="<%= request.period_enddate_text %>" required>
             </p>
         </div>
     </div>
 
     <p>
-        <label title="">Proveedores invitados</label>
+        <label title="">Proveedores invitados *</label>
         <select class="form-control" name="invitedsuppliers" multiple required>
             <% for (var i = 0; i < suppliers.length; i++) { %>
             <option value="<%= suppliers[i].id %>" <%= invitedSuppliers.filter(function (e) { return e.parties_id == suppliers[i].id; }).length > 0 ? 'selected' : '' %>><%= suppliers[i].name %></option>
@@ -95,13 +95,13 @@
             <input type="hidden" name="items[<%= i %>].item" value="<%=items[i].item%>" />
             <div class="col-sm-8">
                 <p>
-                    <label title="">Bien o servicio</label>
+                    <label title="">Bien o servicio *</label>
                     <input type="text" class="form-control" name="items[<%= i %>].itemname" value="<%= items[i].itemname %>" required>
                 </p>
             </div>
             <div class="col-sm-3">
                 <p>
-                    <label title="">Cantidad</label>
+                    <label title="">Cantidad *</label>
                     <input type="number" class="form-control" name="items[<%= i %>].quantity" data-vregex="integer" min="0" step="1" value="<%= items[i].quantity %>" required>
                 </p>
             </div>
@@ -121,13 +121,13 @@
         <input type="hidden" name="items[0].itemid">
         <div class="col-sm-8">
             <p>
-                <label title="">Bien o servicio</label>
+                <label title="">Bien o servicio *</label>
                 <input type="text" class="form-control" name="items[0].itemname" required>
             </p>
         </div>
         <div class="col-sm-3">
             <p>
-                <label title="">Cantidad</label>
+                <label title="">Cantidad *</label>
                 <input type="number" class="form-control" name="items[0].quantity" data-vregex="integer" min="0" step="1" required>
             </p>
         </div>

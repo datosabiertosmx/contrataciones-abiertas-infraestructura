@@ -485,21 +485,24 @@ CREATE TABLE public.budgetclassifications (
     subfunction text,
     institutionalactivity text,
     budgetprogram text,
-    strategicobjective text,
-    requestingunit text,
-    specificactivity text,
     spendingobject text,
     spendingtype text,
     budgetsource text,
     region text,
     portfoliokey text,
     cve text,
-    approved numeric,
-    modified numeric,
-    executed numeric,
-    committed numeric,
-    reserved numeric,
-    trimester integer
+    branch_description text,
+    responsibleunit_description text,
+    finality_description text,
+    function_description text,
+    subfunction_description text,
+    institutionalactivity_description text,
+    budgetprogram_description text,
+    spendingobject_description text,
+    spendingtype_description text,
+    budgetsource_description text,
+    region_description text,
+    portfoliokey_description text
 );
 
 
@@ -3132,7 +3135,7 @@ COPY public.budgetbreakdown (id, contractingprocess_id, planning_id, budgetbreak
 -- Data for Name: budgetclassifications; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.budgetclassifications (id, budgetbreakdown_id, year, branch, responsibleunit, finality, function, subfunction, institutionalactivity, budgetprogram, strategicobjective, requestingunit, specificactivity, spendingobject, spendingtype, budgetsource, region, portfoliokey, cve, approved, modified, executed, committed, reserved, trimester) FROM stdin;
+COPY public.budgetclassifications (id, budgetbreakdown_id, year, branch, responsibleunit, finality, function, subfunction, institutionalactivity, budgetprogram, spendingobject, spendingtype, budgetsource, region, portfoliokey, cve, branch_description, responsibleunit_description, finality_description, function_description, subfunction_description, institutionalactivity_description, budgetprogram_description, spendingobject_description, spendingtype_description, budgetsource_description, region_description, portfoliokey_description) FROM stdin;
 \.
 
 

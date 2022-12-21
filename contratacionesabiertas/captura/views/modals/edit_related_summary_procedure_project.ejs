@@ -1,12 +1,22 @@
 <form id="update_related_summary_procedure_project_form">
     <p>
-        <label data-tooltip="crear_proceso" title='Un identificador para este proceso de contratación. Si a este proceso de contacto se le ha asignado un Identificador de Contratación Abierta (OCID) por una plataforma externa (por ejemplo, el sistema nacional de adquisiciones), esa OCID debe registrarse aquí. Si la información sobre este proceso de contratación se ha ingresado manualmente, o desde un sistema que no es OCDS, entonces los datos del sistema pueden crear un identificador, siguiendo la guía para crear identificadores del proceso de contratación.'>Identificador de Contrataciones Abiertas (OCID)</label>
+        <label data-tooltip="crear_proceso" title='Un identificador para este proceso de contratación. Si a este proceso de contacto se le ha asignado un Identificador de Contratación Abierta (OCID) por una plataforma externa (por ejemplo, el sistema nacional de adquisiciones), esa OCID debe registrarse aquí. Si la información sobre este proceso de contratación se ha ingresado manualmente, o desde un sistema que no es OCDS, entonces los datos del sistema pueden crear un identificador, siguiendo la guía para crear identificadores del proceso de contratación.'>Identificador de Contrataciones Abiertas (OCID) *</label>
         <input type="text" class="form-control" name="relatedprocedure_identifier" value="<%= contractingProcess.ocid %>" required>
     </p>
     
     <p>
         <label data-tooltip="crear_proceso" title='El nombre formal de este procedimiento de contratación. Esto puede desprenderse del título de liberación, de licitación, de adjudicación o del contrato. Una vez establecido, no debería ser cambiado.'>Título</label>
         <input type="text" class="form-control" name="title" value="<%= contractingProcess.title %>" readonly>
+    </p>
+
+    <p>
+        <label data-tooltip="crear_proceso" title='Este campo de tipo matriz debe registrar si este contrato está relacionado al diseño, construcción o supervisión. Más de un valor puede ser proporcionado en casos donde el contrato abarca el diseño y construcción, o el diseño y supervisión, etc.'>Naturaleza *</label>
+        <select class="form-control" name="nature" multiple required>
+            <option value="" <%= contractingProcess.nature == '' ? 'selected' : '' %>>Seleccione una opción</option>
+            <option value="construction" <%= contractingProcess.nature == 'construction' ? 'selected' : '' %>>Construcción</option>
+            <option value="design" <%= contractingProcess.nature == 'design' ? 'selected' : '' %>>Diseño</option>
+            <option value="supervision" <%= contractingProcess.nature == 'supervision' ? 'selected' : '' %>>Supervisión</option>
+        </select>
     </p>
 
     <input type="text" name="contracting_process_id" value = "<%= contractingProcessId %>" hidden>

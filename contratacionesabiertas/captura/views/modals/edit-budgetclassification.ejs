@@ -3,151 +3,205 @@
     <input type="hidden" name="budget_id" value="<%= classification.budgetbreakdown_id %>">
 
     <div class="row">
-        <div class="col-sm-6">
-            <p>
-                <label title="">Año</label>
-                <select class="form-control" name="year" required>
-                    <option value="" <%= classification.year == '' ? 'selected' : '' %>>Seleccione una opción</option>
-                    <% for (var i = 0; i < years.length; i++) { %>
-                    <option value="<%= years[i].value %>" <%= classification.year == years[i].value ? 'selected' : '' %>><%= years[i].name %></option>
-                    <% } %>
-                </select>
-            </p>
-        </div>
-        <div class="col-sm-6">
-            <p>
-                <label>Trimestre</label>
-                <input type="text" class="form-control" name="trimester" data-source="programaticstructure" value="<%= classification.trimester %>" readonly>
-            </p>
-        </div>
-    </div>
-
-    <div class="row">
-    	<div class="col-sm-6">
-            <p>
-                <label title="">Ramo</label>
-                <input type="text" class="form-control" name="branch" data-source="programaticstructure" value="<%= classification.branch %>" readonly>
-            </p>
-        </div>
-        <div class="col-sm-6">
-            <p>
-                <label title="">Unidad responsable</label>
-                <input type="text" class="form-control" name="responsibleunit" data-source="programaticstructure" value="<%= classification.responsibleunit %>" readonly>
-            </p>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <p>
-                <label title="">Finalidad</label>
-                <input type="text" class="form-control" name="finality" data-source="programaticstructure" value="<%= classification.finality %>" readonly>
-            </p>
-        </div>
-        <div class="col-sm-6">
-            <p>
-                <label title="">Función</label>
-                <input type="text" class="form-control" name="function" data-source="programaticstructure" value="<%= classification.function %>" readonly>
-            </p>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <p>
-                <label title="">Subfunción</label>
-                <input type="text" class="form-control" name="subfunction" data-source="programaticstructure" value="<%= classification.subfunction %>" readonly>
-            </p>
-        </div>
-        <div class="col-sm-6">
-            <p>
-                <label title="">Actividad institucional</label>
-                <input type="text" class="form-control" name="institutionalactivity" data-source="programaticstructure" value="<%= classification.institutionalactivity %>" readonly>
-            </p>
-        </div>
-    </div>
-
-    <div class="row">
-    	<div class="col-sm-6">
-            <p>
-                <label title="">Programa presupuestario</label>
-                <input type="text" class="form-control" name="budgetprogram" data-source="programaticstructure" value="<%= classification.budgetprogram %>" readonly>
-            </p>
-        </div>
-        <div class="col-sm-6">
-            <p>
-                <label title="">Objetivo estratégico</label>
-                <input type="text" class="form-control" name="strategicobjective" data-source="programaticstructure" value="<%= classification.strategicobjective %>" readonly>
-            </p>
-        </div>
-    </div>
-	<div class="row">
         <div class="col-sm-12">
             <p>
-                <label title="">Unidad requiriente</label>
-                <select class="form-control" name="requestingunit" required>
-                    <option value="" <%= classification.requestingunit == '' ? 'selected' : '' %>>Seleccione una opción</option>
-                    <% for (var i = 0; i < units.length; i++) { %>
-                    <option value="<%= units[i].value %>" <%= classification.requestingunit == units[i].value ? 'selected' : '' %>><%= units[i].name %></option>
-                    <% } %>
-                </select>
+                <label title="">Año *</label>
+                <input type="number" name="year" class="form-control" min="1" max="9999" pattern="^[0-9]+" value = "<%= classification.year %>" required>
             </p>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Actividad MIR</label>
-                <select class="form-control" name="specificactivity" required>
-                    <option value="" <%= classification.specificactivity == '' ? 'selected' : '' %>>Seleccione una opción</option>
-                    <% for (var i = 0; i < activities.length; i++) { %>
-                    <option value="<%= activities[i].value %>" <%= classification.specificactivity == activities[i].value ? 'selected' : '' %>><%= activities[i].name %></option>
-                    <% } %>
-                </select>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de ramo</label>
+                <input type="number" name="branch" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= classification.branch %>">
             </p>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Partida</label>
-                <select class="form-control" name="spendingobject" required>
-                    <option value="" <%= classification.spendingobject == '' ? 'selected' : '' %>>Seleccione una opción</option>
-                    <% for (var i = 0; i < departures.length; i++) { %>
-                    <option value="<%= departures[i].value %>" <%= classification.spendingobject == departures[i].value ? 'selected' : '' %> data-spendingtype="<%= departures[i].spendingtype %>" data-budgetsource="<%= departures[i].budgetsource %>"><%= departures[i].name %></option>
-                    <% } %>
-                </select>
+                <label data-tooltip="crear_proceso" title=''>
+                    Ramo</label>
+                <input type="text" name="branch_description" class="form-control" value = "<%= classification.branch_description %>">
             </p>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Tipo de gasto</label>
-                <input type="text" class="form-control" name="spendingtype" data-source="departure" value="<%= classification.spendingtype %>" readonly>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de unidad responsable</label>
+                <input type="number" name="responsibleunit" class="form-control" min="1" max="999" pattern="^[0-9]+" value = "<%= classification.responsibleunit %>">
             </p>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Fuente de financiamiento</label>
-                <input type="text" class="form-control" name="budgetsource" data-source="departure" value="<%= classification.budgetsource %>" readonly>
+                <label data-tooltip="crear_proceso" title=''>
+                    Unidad responsable</label>
+                <input type="text" name="responsibleunit_description" class="form-control" value = "<%= classification.responsibleunit_description %>">
             </p>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Entidad federativa</label>
-                <input type="text" class="form-control" name="region" data-source="programaticstructure" value="<%= classification.region %>" readonly>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de finalidad</label>
+                <input type="number" name="finality" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= classification.finality %>">
             </p>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-6">
             <p>
-                <label title="">Clave de cartera</label>
-                <input type="text" class="form-control" name="portfoliokey" data-source="programaticstructure" value="<%= classification.portfoliokey %>" readonly>
+                <label data-tooltip="crear_proceso" title=''>
+                    Finalidad</label>
+                <input type="text" name="finality_description" class="form-control" value = "<%= classification.finality_description %>">
             </p>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de función</label>
+                <input type="number" name="function" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= classification.function %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Función</label>
+                <input type="text" name="function_description" class="form-control" value = "<%= classification.function_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de subfunción</label>
+                <input type="number" name="subfunction" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= classification.subfunction %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Subfunción</label>
+                <input type="text" name="subfunction_description" class="form-control" value = "<%= classification.subfunction_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de actividad institucional</label>
+                <input type="number" name="institutionalactivity" class="form-control" min="1" max="999" pattern="^[0-9]+" value = "<%= classification.institutionalactivity %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Actividad institucional</label>
+                <input type="text" name="institutionalactivity_description" class="form-control" value = "<%= classification.institutionalactivity_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de programa presupuestario</label>
+                <input type="number" name="budgetprogram" class="form-control" min="1" max="9999" pattern="^[0-9]+" value = "<%= classification.budgetprogram %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Programa presupuestario</label>
+                <input type="text" name="budgetprogram_description" class="form-control" value = "<%= classification.budgetprogram_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de objeto del gasto</label>
+                <input type="number" name="spendingobject" class="form-control" min="1" max="99999" pattern="^[0-9]+" value = "<%= classification.spendingobject %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Objeto del gasto</label>
+                <input type="text" name="spendingobject_description" class="form-control" value = "<%= classification.spendingobject_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de tipo de gasto</label>
+                <input type="number" name="spendingtype" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= classification.spendingtype %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Tipo de gasto</label>
+                <input type="text" name="spendingtype_description" class="form-control" value = "<%= classification.spendingtype_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de fuente de financiamiento</label>
+                <input type="number" name="budgetsource" class="form-control" min="1" max="9" pattern="^[0-9]+" value = "<%= classification.budgetsource %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Fuente de financiamiento</label>
+                <input type="text" name="budgetsource_description" class="form-control" value = "<%= classification.budgetsource_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de entidad federativa</label>
+                <input type="number" name="region" class="form-control" min="1" max="99" pattern="^[0-9]+" value = "<%= classification.region %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Entidad federativa</label>
+                <input type="text" name="region_description" class="form-control" value = "<%= classification.region_description %>">
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Clave de cartera</label>
+                <input type="number" name="portfoliokey" class="form-control" min="1" max="99999999999" pattern="^[0-9]+" value = "<%= classification.portfoliokey %>">
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <label data-tooltip="crear_proceso" title=''>
+                    Cartera</label>
+                <input type="text" name="portfoliokey_description" class="form-control" value = "<%= classification.portfoliokey_description %>">
+            </p>
+        </div>
+    </div>
+    
     <button class="btn btn-primary">Guardar</button>
 </form>

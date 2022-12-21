@@ -9,7 +9,7 @@
     </p>
 
     <p>
-        <label title="">Forma de garantía</label>
+        <label title="">Forma de garantía *</label>
         <select class="form-control" name="type" required>
             <option value="" <%= guarantee.type == '' ? 'selected' : '' %>>Seleccione una opción</option>
             <option value="bail" <%= guarantee.type == 'bail' ? 'selected' : '' %>>Fianza</option>
@@ -21,12 +21,12 @@
     </p>
 
     <p>
-        <label title="">Fecha de la garantía</label>
+        <label title="">Fecha de la garantía *</label>
         <input type="text" class="form-control" id="newguarantee_date" name="date" value="<%= guarantee.date_text %>" required>
     </p>
 
     <p>
-        <label title="">Obligaciones garantizadas</label>
+        <label title="">Obligaciones garantizadas *</label>
         <select class="form-control" name="obligations" required>
             <option value="" <%= guarantee.obligations == '' ? 'selected' : '' %>>Seleccione una opción</option>
             <option value="fulfillment" <%= guarantee.obligations == 'fulfillment' ? 'selected' : '' %>>Cumplimiento</option>
@@ -39,13 +39,13 @@
 
     <div class="row">
         <p class="col-xs-6">
-            <label title="">Valor de la garantía</label>
+            <label title="">Valor de la garantía *</label>
             <input type="number" class="form-control" name="value" data-vregex="decimal" min="0" step="0.01" value="<%= guarantee.value %>" required>
         </p>
 
         <div class="col-xs-6">
                 <p>
-                    <label title="">Moneda</label>
+                    <label title="">Moneda *</label>
                     <select class="form-control" name="currency" required>
                         <option value="" <%= guarantee.currency == '' ? 'selected' : '' %>>Seleccione una opción</option>
                         <% for (var i = 0; i < currencies.length; i++) { %>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <p>
-        <label title="">Institución que expide la garantía</label>
+        <label title="">Institución que expide la garantía *</label>
         <select class="form-control" name="guarantor" required>
             <option value="" <%= guarantee.guarantor == '' ? 'selected' : '' %>>Seleccione una opción</option>
             <% for (var i = 0; i < guarantors.length; i++) { %>
@@ -72,13 +72,13 @@
     <div class="row">
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de inicio</label>
+                <label title="">Fecha de inicio *</label>
                 <input type="text" class="form-control" id="newguarantee_date1" name="guaranteePeriod_startdate" value="<%= guarantee.guaranteeperiod_startdate_text %>" required>
             </p>
         </div>
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de término</label>
+                <label title="">Fecha de término *</label>
                 <input type="text" class="form-control" id="newguarantee_date2" name="guaranteePeriod_enddate" value="<%= guarantee.guaranteeperiod_enddate_text %>" required>
             </p>
         </div>

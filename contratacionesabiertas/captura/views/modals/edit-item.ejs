@@ -54,8 +54,7 @@
     <input type="hidden" name="location_locality"  value="<%= item.location_locality %>">
 
     <p><label data-tooltip="crear_proceso" title='Descripción de las características de cada bien, o servicio, o de las especificaciones técnicas de la obra pública.'>
-            Descripción
-            <!--Description--></label>
+            Descripción *<!--Description--></label>
         <input class="form-control" type="text" name="description" value="<%= item.description %>" required></p>
     <hr>
 
@@ -80,8 +79,7 @@
     </p>
 
     <p><label data-tooltip="crear_proceso" title='Número que identifica al bien, servicio u obra pública objeto del procedimiento de contratación, obtenido del esquema o lista de códigos definidos. Cuando aplique, se registrará la clave CUCOP contenida en CompraNet.'>
-            Identificador
-            <!--Classification id--></label>
+            Identificador *<!--Classification id--></label>
             <input class="form-control" type="text" name="classification_id" value="<%= item.classification_id %>" onChange="validarIdentificador(this);" required></p>
 
     <p><label data-tooltip="crear_proceso" title='Descripción relacionada con la clave del bien, servicio u obra pública objeto del procedimiento de contratación, obtenido del esquema o lista de códigos definidos. Cuando aplique, se registrará la descripción de la clave CUCOP contenida en CompraNet.'>
@@ -96,8 +94,7 @@
     <hr>
 
     <p><label data-tooltip="crear_proceso" title='Cantidad en número de bienes, servicios u obra pública.'>
-            Cantidad por tipo de bien, servicio u obra pública
-            <!--Quantity--></label>
+            Cantidad por tipo de bien, servicio u obra pública *<!--Quantity--></label>
         <input class="form-control" type="number" name="quantity" value="<%= item.quantity %>" required></p>
 
     <hr>
@@ -119,15 +116,14 @@
         <div class="col-sm-4">
             <p>
                 <label data-tooltip="crear_proceso" title='Monto como número.'>
-                    Monto sin impuestos</label>
+                    Monto sin impuestos *</label>
                 <input class="form-control" type="number" name="unit_value_amountNet" step="0.01" value="<%= item.unit_value_amountnet %>" required>
             </p>
         </div>
         <div class="col-sm-4">
             <p>
                 <label data-tooltip="crear_proceso" title='Monto total con impuestos incluidos (en su caso).'>
-                    Monto total
-                    <!--Unit value amount--></label>
+                    Monto total *<!--Unit value amount--></label>
                 <input class="form-control" type="number" name="unit_value_amount" step="0.01" value="<%= item.unit_value_amount %>" required>
             </p>
         </div>

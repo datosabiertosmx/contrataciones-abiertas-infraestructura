@@ -5,12 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     identifier: DataTypes.STRING,
     updated: DataTypes.DATE,
     title: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     status: DataTypes.STRING,
-    purpose: DataTypes.STRING,
+    purpose: DataTypes.TEXT,
     sector: DataTypes.ARRAY(DataTypes.TEXT),
     type: DataTypes.STRING,
-    oc4idsIdentifier: DataTypes.STRING
+    oc4idsIdentifier: DataTypes.STRING,
+    is_public: DataTypes.BOOLEAN
   }, {});
   edcapi_project.associate = function(models) {
     edcapi_project.belongsToMany(models.edcapi_project_package, {

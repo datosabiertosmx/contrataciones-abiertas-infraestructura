@@ -2,7 +2,7 @@
     <input type="text" name="project_id" value = "<%= project_id %>" hidden>
     <p>
         <label data-tooltip="crear_proceso" title='Nombre común por el que se conoce a esta persona física o moral, o del área de la institución pública en el procedimiento de contratación. El apartado de identificación provee un espacio para registrar el nombre formal o razón social, por lo que éste puede repetir ese valor o puede referirse al nombre común por el cual es conocida la organización.'>
-        Nombre común</label>
+        Nombre común *</label>
         <input name="parties_name" type="text" class="form-control" required>
     </p>
     <p>
@@ -19,12 +19,12 @@
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='Los identificadores de la organización deben extraerse de una lista de identificadores existente. El campo esquema se utiliza para indicar el nombre de la lista o registro del que se extrae el identificador. Este valor debe obtenerse de la lista de códigos Organization Identifier Scheme.'>
-        Esquema</label>
+        Esquema *</label>
         <input name="identifier_scheme" type="text" class="form-control" required>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='El identificador de la dependencia, entidad, licitante, proveedor o contratista'>
-        Identificador</label>
+        Identificador *</label>
         <input name="identifier_id" type="text" class="form-control" required>
     </p>
     <p>
@@ -87,7 +87,7 @@
         <input name="contactPoint_url" pattern="^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$" title="Formato no permitido, debe ser un formato del tipo URL" type="text" class="form-control">
     </p>
     <label data-tooltip="crear_proceso" title='Los papeles que desempeña el actor dentro del proyecto. Los papeles deben ser tomados de la lista de códigos partyRole. Los valores de esta lista deberán ser utilizados cuando sea posible, aunque se pueden utilizar otros valores cuando la lista no contenga un código relevante.'>
-    Papeles del actor</label>
+    Papeles del actor *</label>
     <div class="well">
         <label class="checkbox-inline"><input name="buyer" type="checkbox">Área requirente</label><br>
         <label class="checkbox-inline"><input name="reviewBody" type="checkbox">Auditor</label><br>

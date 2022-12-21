@@ -63,12 +63,12 @@
                 <h4 id="actual-text"></h4>
 
                 <p><label data-tooltip="crear_proceso" title="El identificador del contrato. Debe ser único y no puede cambiar dentro del procedimiento de contratación abierto (definido por un solo ocid). Para más detalles ver la "Guía de identificador".">
-                	Identificador del contrato</label>
+                	Identificador del contrato *</label>
                     <input type="text" class="form-control" name="contractid" value="<%= contract.contractid %>" required>
                 </p>
                 
                 <p><label data-tooltip="crear_proceso" title='Identificador de la adjudicación en el cual se encuentra este contrato.'>
-                	Identificador de la adjudicación<!--Award ID--></label>
+                	Identificador de la adjudicación *<!--Award ID--></label>
                     <select name="awardid" class="form-control" required>
                         <option value="" <%= contract != null && contract.awardid == null ? 'selected' : '' %>>Seleccione una opción</option>
                         <% for(var i = 0; i < awards.length; i++) { %>
@@ -124,7 +124,7 @@
                 	<!--Value amountNet-->
                     <div class="col-sm-4">
                         <p>
-                    		<label data-tooltip="crear_proceso" title='Monto como número.'>Monto sin impuestos</label>
+                    		<label data-tooltip="crear_proceso" title='Monto como número.'>Monto sin impuestos *</label>
                     		<input type="number" step="0.01" class="form-control" name="value_amountnet" 
                     		value = "<%= (typeof contract != "undefined")? contract.value_amountnet:''%>" required>
                 		</p> 
@@ -142,7 +142,7 @@
 			 	
                     <div class="col-sm-4">
                         <p>
-                			<label data-tooltip="crear_proceso" title='Monto total del contrato con impuestos incluidos (en su caso).'>Monto total</label>
+                			<label data-tooltip="crear_proceso" title='Monto total del contrato con impuestos incluidos (en su caso).'>Monto total *</label>
                 			<input type="number" step="0.01" class="form-control" name="value_amount" id="value_amount" value = "<%= (typeof contract != "undefined")? contract.value_amount:''%>" required
                 			onChange="multiplicarMX();" >
                 		</p>
@@ -206,7 +206,7 @@
 		                    </div>
 		                    <div class="col-sm-4">
 		                        <p>
-		                			<label data-tooltip="crear_proceso" title=''>Monto en MXN</label>
+		                			<label data-tooltip="crear_proceso" title=''>Monto en MXN *</label>
 		                			<input type="hidden" class="form-control" name="exchangerate_amount" id="exchangerate_amount" 
 		                			value = "<%= (typeof contract != "undefined")?'selected':''%>" >		                			
 		                			<input class="form-control" id="exchangerate_amount_1" 

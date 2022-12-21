@@ -516,11 +516,16 @@ module.exports = {
                         var objBudgetBreakdownPeriod = new Object();
                         var objBudgetBreakdownSourceParty = new Object();
                         var arrayBudgetLines = new Array();
+                        var arrayComponentsID = new Array();
 
-                        if(element.id !== "" && element.id !== null)
-                        objBudgetBreakdown.id = String(element.id);
+                        //BudgetBreakdown_Id
+                        if(objBudgetBreakdown !== "" && objBudgetBreakdown !== null)
+                        objBudgetBreakdown.id = objBudgetBreakdown.id;
+                
+                        //BudgetBreakdown_Description
                         if(element.description !== "" && element.description !== null)
                         objBudgetBreakdown.description = element.description;
+                        //BudgetBreakdown_Uri
                         if(element.uri !== "" && element.uri !== null)
                         objBudgetBreakdown.uri = element.uri;
                         //BudgetBreakdown_Amount
@@ -558,6 +563,7 @@ module.exports = {
                                 if(budgetLine.c !== undefined){
                                     budgetLine.c.forEach(component => {
                                         var id= null;
+
                                         var arrayComponents = new Array();
                                         if(component.year !== "" ){
                                             var objComponent = new Object();
@@ -568,111 +574,147 @@ module.exports = {
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyBranch !== null && component.branch !== null){
+                                        // if(component.keyBranch !== null && component.branch !== null){
+                                        if(component.keyBranch !== null && component.kBranch !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "branch";
                                             objComponent.level = "2";
                                             objComponent.code = (component.kBranch === null ? '' : component.kBranch);
-                                            objComponent.description = (component.branch === null ? '' : component.branch);
+                                            if(component.branch !== null){
+                                                objComponent.description = component.branch;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyResponsibleUnit !== null && component.responsibleUnit !== null){
+                                        // if(component.keyResponsibleUnit !== null && component.responsibleUnit !== null){
+                                        if(component.keyResponsibleUnit !== null && component.kResponsibleUnit !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "responsibleUnit";
                                             objComponent.level = "3";
                                             objComponent.code = (component.kResponsibleUnit === null ? '' : component.kResponsibleUnit);
-                                            objComponent.description = (component.responsibleUnit === null ? '' : component.responsibleUnit);
+                                            if(component.responsibleUnit !== null){
+                                                objComponent.description = component.responsibleUnit;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyFinality !== null && component.finality !== null){
+                                        // if(component.keyFinality !== null && component.finality !== null){
+                                        if(component.keyFinality !== null && component.kFinality !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "finality";
                                             objComponent.level = "4";
                                             objComponent.code = (component.kFinality === null ? '' : component.kFinality);
-                                            objComponent.description = (component.finality === null ? '' : component.finality);
+                                            if(component.responsibleUnit !== null){
+                                                objComponent.description = component.finality;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyFunction !== null && component.function !== null){
+                                        // if(component.keyFunction !== null && component.function !== null){
+                                        if(component.keyFunction !== null && component.kFunction !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "function";
                                             objComponent.level = "5";
                                             objComponent.code = (component.kFunction === null ? '' : component.kFunction);
-                                            objComponent.description = (component.function === null ? '' : component.function);
+                                            if(component.function !== null){
+                                                objComponent.description = component.function;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keySubFunction !== null && component.subFunction !== null){
+                                        // if(component.keySubFunction !== null && component.subFunction !== null){
+                                        if(component.keySubFunction !== null && component.kSubFunction !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "subFunction";
                                             objComponent.level = "6";
                                             objComponent.code = (component.kSubFunction === null ? '' : component.kSubFunction);
-                                            objComponent.description = (component.subFunction === null ? '' : component.subFunction);
+                                            if(component.subFunction !== null){
+                                                objComponent.description = component.subFunction;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyInstAct !== null && component.instAct !== null){
+                                        // if(component.keyInstAct !== null && component.instAct !== null){
+                                        if(component.keyInstAct !== null && component.kInstAct !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "institutionalActivity";
                                             objComponent.level = "7";
                                             objComponent.code = (component.kInstAct === null ? '' : component.kInstAct);
-                                            objComponent.description = (component.instAct === null ? '' : component.instAct);
+                                            if(component.instAct !== null){
+                                                objComponent.description = (component.instAct === null ? '' : component.instAct);
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyBudgetProgram !== null && component.budgetProgram !== null){
+                                        // if(component.keyBudgetProgram !== null && component.budgetProgram !== null){
+                                        if(component.keyBudgetProgram !== null && component.kBudgetProgram !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "budgetProgram";
                                             objComponent.level = "8";
                                             objComponent.code = (component.kBudgetProgram === null ? '' : component.kBudgetProgram);
-                                            objComponent.description = (component.budgetProgram === null ? '' : component.budgetProgram);
+                                            if(component.budgetProgram !== null){
+                                                objComponent.description = component.budgetProgram;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keySpendingObject !== null && component.spendingObject !== null){
+                                        // if(component.keySpendingObject !== null && component.spendingObject !== null){
+                                        if(component.keySpendingObject !== null && component.kSpendingObject !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "spendingObject";
                                             objComponent.level = "9";
                                             objComponent.code = (component.kSpendingObject === null ? '' : component.kSpendingObject);
-                                            objComponent.description = (component.spendingObject === null ? '' : component.spendingObject);
+                                            if(component.spendingObject !== null){
+                                                objComponent.description = component.spendingObject;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keySpendingType !== null && component.spendingType !== null){
+                                        // if(component.keySpendingType !== null && component.spendingType !== null){
+                                        if(component.keySpendingType !== null && component.kSpendingType !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "spendingType";
                                             objComponent.level = "10";
                                             objComponent.code = (component.kSpendingType === null ? '' : component.kSpendingType);
-                                            objComponent.description = (component.spendingType === null ? '' : component.spendingType);
+                                            if(component.spendingType !== null){
+                                                objComponent.description = component.spendingType;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyBudgetSource !== null && component.budgetSource !== null){
+                                        // if(component.keyBudgetSource !== null && component.budgetSource !== null){
+                                        if(component.keyBudgetSource !== null && component.kBudgetSource !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "budgetSource";
                                             objComponent.level = "11";
                                             objComponent.code = (component.kBudgetSource === null ? '' : component.kBudgetSource);
-                                            objComponent.description = (component.budgetSource === null ? '' : component.budgetSource);
+                                            if(component.budgetSource !== null){
+                                                objComponent.description = component.budgetSource;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyRegion !== null && component.region !== null){
+                                        // if(component.keyRegion !== null && component.region !== null){
+                                        if(component.keyRegion !== null && component.kRegion !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "region";
                                             objComponent.level = "12";
                                             objComponent.code = (component.kRegion === null ? '' : component.kRegion);
-                                            objComponent.description = (component.region === null ? '' : component.region);
+                                            if(component.region !== null){
+                                                objComponent.description = component.region;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
-                                        if(component.keyPortfolio !== null && component.portfolio !== null){
+                                        // if(component.keyPortfolio !== null && component.portfolio !== null){
+                                        if(component.keyPortfolio !== null && component.kPortfolio !== null){
                                             var objComponent = new Object();
                                             objComponent.name = "portfolioKey";
                                             objComponent.level = "13";
                                             objComponent.code = (component.kPortfolio === null ? '' : component.kPortfolio);
-                                            objComponent.description = (component.portfolio === null ? '' : component.portfolio);
+                                            if(component.portfolio !== null){
+                                                objComponent.description = component.portfolio;
+                                            }
                                             id = id + objComponent.code;
                                             arrayComponents.push(objComponent)
                                         }
@@ -701,6 +743,26 @@ module.exports = {
                             if(arrayBudgetLines.length > 0)
                             objBudgetBreakdown.budgetLines = arrayBudgetLines;
                             arrayBudgetBreakdown.push(objBudgetBreakdown);
+                            arrayComponentsID.push(arrayBudgetLines);
+                        }
+                        if(arrayComponentsID !== null){
+                            var idC = "";
+                            arrayComponentsID.forEach(element => {
+                                if(element !== undefined){
+                                    element.forEach(element => {
+                                        if(element.id !== ""){
+                                            if (idC == ""){
+                                                idC = element.id;
+                                            }else{
+                                                idC = idC + "," + element.id;
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                            if(idC != '') {
+                            objBudgetBreakdown.id = idC;
+                            }
                         }
                     });
                 }
@@ -1681,12 +1743,25 @@ module.exports = {
     insertRelatedContractingProcessProject: async function(data){
         console.log("$$$$ insertRelatedContractingProcessProject")
         var obj = JSON.parse(data);
+
+        var arrayNature = new Array();
+            if(Array.isArray(obj.nature)){
+                console.log("si es un array")
+                arrayNature = obj.nature;
+            }else if(obj.nature === '') {
+                console.log("es vacio")
+            }else{
+                console.log("es un string")
+                arrayNature.push(obj.nature);
+            }
+
         var projectRelatedContractingProcess = new db.edcapi_project_related_contracting_process();
         var relProjectRelatedContractingProcess = new db.edcapi_project_related_contracting_process_project();
 
         projectRelatedContractingProcess = await db.edcapi_project_related_contracting_process.create({
             ocid: (obj.relatedprocedure_identifier === '' ? null : obj.relatedprocedure_identifier),
             title: (obj.title === '' ? null : obj.title),
+            nature: (arrayNature < 0 ? null : arrayNature),
             contractingProcessId: (obj.contractingprocess_id === '' ? null : obj.contractingprocess_id),
             tenderId: (obj.tender_id === '' ? null : obj.tender_id),
             createdAt : new Date(),
@@ -1706,10 +1781,21 @@ module.exports = {
     updateRelatedContractingProcessProject: async function(data){
         console.log("$$$$ updateRelatedContractingProcessProject")
         var obj = JSON.parse(data);
+
+        var arrayNature = new Array();
+            if(Array.isArray(obj.nature)){
+                arrayNature = obj.nature;
+            }else if(obj.nature === '') {
+
+            }else{
+                arrayNature.push(obj.nature);
+            }
+
         var related_contracting_process = await db.edcapi_project_related_contracting_process.findByPk(obj.contracting_process_id); 
         related_contracting_process.update({
             ocid: (obj.relatedprocedure_identifier === '' ? null : obj.relatedprocedure_identifier),
             title: (obj.title === '' ? null : obj.title),
+            nature: (arrayNature < 0 ? null : arrayNature),
             contractingProcessId: (obj.contractingprocess_id === '' ? null : obj.contractingprocess_id),
             tenderId: (obj.tender_id === '' ? null : obj.tender_id),
             updatedAt : new Date()
@@ -1730,6 +1816,7 @@ module.exports = {
                 value[0].projects[0].contractingProcesses.forEach(element => {
                     var objOcdsId = new Object();
                     objOcdsId.id = element.ocid;
+                    objOcdsId.nature = element.nature;
                     arrayOcdsIds.push(objOcdsId);  
                 });
             }
@@ -2059,6 +2146,14 @@ module.exports = {
             });
         }
         return project;
+    },
+    publishProject: async function(data){
+        console.log("%%%% publishProject " + JSON.stringify(data))
+        var project = await db.edcapi_project.findByPk(data.project_id);
+        return await project.update({
+            is_public : true,
+            updatedAt : new Date()
+        });
     }
 }
 

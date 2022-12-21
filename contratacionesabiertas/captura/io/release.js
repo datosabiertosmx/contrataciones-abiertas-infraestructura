@@ -415,7 +415,7 @@ function release(db) {
                 startDate: tender.awardperiod_startdate == null ? '' : moment(tender.awardperiod_startdate).format(),
                 endDate: tender.awardperiod_enddate == null ? '' : moment(tender.awardperiod_enddate).format()
             }),
-            numberOfTenderers: tender.numberoftenderers,
+            numberOfTenderers: tender.numberoftenderers == 0 ? '' : tender.numberoftenderers,
             tenderers: await generateOrganizationsReference('tenderer'),
             items: await generateItems('tenderitem'),
             documents: await generateDocuments('tenderdocuments'),

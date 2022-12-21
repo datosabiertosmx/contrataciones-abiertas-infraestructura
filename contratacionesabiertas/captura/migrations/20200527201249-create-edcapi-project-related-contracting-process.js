@@ -14,6 +14,9 @@ module.exports = {
       title: {
         type: Sequelize.STRING
       },
+      nature: {
+        type: Sequelize.ARRAY(Sequelize.TEXT)
+      },
       contractingProcessId: {
         type: Sequelize.INTEGER
       },

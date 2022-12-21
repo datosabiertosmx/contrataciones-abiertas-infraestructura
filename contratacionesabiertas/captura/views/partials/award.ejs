@@ -55,7 +55,7 @@
     <h4 id="actual-text"></h4>
 
     <p><label data-tooltip="crear_proceso" title='El identificador de esta adjudicación. Debe ser único y no puede cambiar dentro del procedimiento de contratación abierto del que forma parte (definido por un solo ocid). Para obtener más detalles, consulte la "guía de identificadores".'>
-            Identificador de la adjudicación</label>
+            Identificador de la adjudicación *</label>
         <input type="text" class="form-control" name="awardid" value="<%= award.awardid %>" required>
     </p>
 
@@ -78,16 +78,16 @@
     </p>
 
     <div style="position: relative">
-        <label data-tooltip="crear_proceso" title='Fecha del documento en que se determina la resolución de la adjudicación.'>Fecha
-            de la adjudicación
-            <!--Date--></label>
+        <label data-tooltip="crear_proceso" title='Fecha del documento en que se determina la resolución de la adjudicación.'>
+            Fecha de la adjudicación<!--Date--></label>
         <p>
             <input type="text" id="adju_date1" name="award_date" class="form-control" value="<%= award && award.award_date && award.award_date !== null ? getMString(award.award_date): '' %>" >
         </p>
     </div>
 
     <p>
-        <label data-tooltip="crear_proceso" title='Proveedores registrados en la contratación.'>Proveedor</label>
+        <label data-tooltip="crear_proceso" title='Proveedores registrados en la contratación.'>
+            Proveedor *</label>
         <select class="form-control" name="suppliers" multiple required>
             <% for(var i = 0; i < suppliers.length; i++) { %>
             <option value="<%= suppliers[i].id %>"  <%= award.suppliers.findIndex(x => x.id == suppliers[i].id) !== -1 ? 'selected' : '' %> >&lt;b&gt;Identificador: &lt;/b&gt; <%= suppliers[i].partyid %>  &lt;b&gt;Nombre común: &lt;/b&gt; <%= suppliers[i].name %></option>
@@ -102,14 +102,16 @@
         <!--Value amountNet-->
             <div class="col-sm-4">
                 <p>
-                <label data-tooltip="crear_proceso" title='Monto como número.'>Monto sin impuestos</label>
+                <label data-tooltip="crear_proceso" title='Monto como número.'>
+                    Monto sin impuestos *</label>
                 <input type="number" step="0.01" class="form-control" name="value_amountnet" value = "<%= (typeof award != "undefined")? award.value_amountnet:''%>" required>
                 </p> 
             </div>
         <!--Value amount-->
             <div class="col-sm-4">
                 <p>
-                <label data-tooltip="crear_proceso" title='Monto total de la adjudicación con impuestos incluidos (en su caso).'>Monto total</label>
+                <label data-tooltip="crear_proceso" title='Monto total de la adjudicación con impuestos incluidos (en su caso).'>
+                    Monto total *</label>
                 <input type="number" step="0.01" class="form-control" name="value_amount" value = "<%= (typeof award != "undefined")? award.value_amount:''%>" required>
                 </p> 
             </div>
@@ -117,7 +119,8 @@
             <div class="col-sm-4">
                 <p>
                 <label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>Moneda</label>
-                    <select class="form-control" name="value_currency">
+                    <input name="value_currency" value="MXN" hidden readonly></input>
+                    <select class="form-control" name="value_currency" disabled>
                         <% for ( var i = 0; i < currencies.length; i++){ %>
                         <option value = "<%= currencies[i].alphabetic_code %>"
                         <% if (award.value_currency == null && currencies[i].alphabetic_code=='MXN' ) {%>
@@ -141,8 +144,8 @@
     <div class="row">
         <div class="col-sm-6">
             <p>
-                <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo'>Fecha de inicio
-                    <!--Contract period start date--></label>
+                <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo'>
+                    Fecha de inicio<!--Contract period start date--></label>
                 <input type="text" id="adju_date2" name="contractperiod_startdate" class="form-control" <%if (typeof
                     award !="undefined" ){%>
                 value = "
@@ -152,8 +155,8 @@
         </div>
         <div class="col-sm-6">
             <p>
-                <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo'>Fecha fin
-                    <!--Contract period end date--></label>
+                <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo'>
+                    Fecha fin<!--Contract period end date--></label>
                 <input type="text" id="adju_date3" name="contractperiod_enddate" class="form-control" <%if(typeof award
                     !="undefined" ){%>
                 value = "

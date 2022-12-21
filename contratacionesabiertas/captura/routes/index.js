@@ -2456,7 +2456,6 @@ router.post('/editguarantee-fields', function (req, res) {
     });
 });
 
-
 router.post('/new-relatedprocedure', isAuthenticated, function (req, res) {
     let query = `insert into $1~ (relatedprocedure_id, relationship_type, title, identifier_scheme, relatedprocedure_identifier, url, contractingprocess_id)
         values ($2, $3, $4, $5, $6, $7, $8) returning id`;
@@ -2490,45 +2489,66 @@ router.post('/new-relatedprocedure', isAuthenticated, function (req, res) {
         console.log('ERROR', error);
     });
 });
+
 // insert related summary procedure project
-router.post('/insert-related-summary-procedure-project', isAuthenticated, function (req, res) {
+router.post('/insert-related-summary-procedure-project', isAuthenticated, async function (req, res) {
     console.log("######### /insert-related-summary-procedure-project BODY " + JSON.stringify(req.body, null,4))
-    console.log("######### /insert-related-summary-procedure-project USER " + JSON.stringify(req.user, null,4))
-    project.insertRelatedContractingProcessProject(JSON.stringify(req.body)).then(function (){
-        res.json({
-            status: 'Ok',
-            description: 'Se relacionó correctamente la contratación al proyecto.',
+    // console.log("######### /insert-related-summary-procedure-project USER " + JSON.stringify(req.user, null,4))
+    
+    existsCPR = await db_conf.edca_db.manyOrNone('select project_id, contractingprocessid from public.view_public_contractingprocesses_registered where contractingprocessid = $1', [req.body.contractingprocess_id ]);
+    
+    if(existsCPR == ''){
+        project.insertRelatedContractingProcessProject(JSON.stringify(req.body)).then(function (){
+            res.json({
+                status: 'Ok',
+                description: 'Se relacionó correctamente la contratación al proyecto.',
+            });
+            return true;
+        }).then(function(){
+            project.updatePublishedDate(req.body.project_id,req.user);
+        }).catch(function(err){
+            res.json({
+                status: 'Error',
+                description: 'Ha ocurrido un error al relacionar la contratación al proyecto.'
+            });
+            console.log("ERROR - /insert-related-summary-procedure-project " + err)
         });
-        return true;
-    }).then(function(){
-        project.updatePublishedDate(req.body.project_id,req.user);
-    }).catch(function(err){
+    } else {
         res.json({
             status: 'Error',
-            description: 'Ha ocurrido un error al relacionar la contratación al proyecto.'
+            description: 'El proceso de contratación seleccionado, ya se encuentra asociado a otro proyecto.'
         });
-        console.log("ERROR - /insert-related-summary-procedure-project " + err)
-    });
+    }
 });
 // update related summary procedure project
 router.post('/update-related-summary-procedure-project', isAuthenticated,async function (req, res) {
     console.log("######### /update-related-summary-procedure-project BODY " + JSON.stringify(req.body, null, 4))
     var relRelatedProjectProject = await db.edcapi_project_related_contracting_process_project.findAll({where: {edcapiProjectRelatedContractingProcessId: req.body.contracting_process_id}});
-    project.updateRelatedContractingProcessProject(JSON.stringify(req.body)).then(function (){
-        res.json({
-            status: 'Ok',
-            description: 'Se actualizó correctamente.',
+
+    existsCPR = await db_conf.edca_db.manyOrNone('select project_id, contractingprocessid from public.view_public_contractingprocesses_registered where contractingprocessid = $1', [req.body.contractingprocess_id ]);
+    
+    if(existsCPR == ''){
+        project.updateRelatedContractingProcessProject(JSON.stringify(req.body)).then(function (){
+            res.json({
+                status: 'Ok',
+                description: 'Se actualizó correctamente.',
+            });
+            return true;
+        }).then(function(){
+            project.updatePublishedDate(relRelatedProjectProject[0].project_id,req.user);
+        }).catch(function(err){
+            res.json({
+                status: 'Error',
+                description: 'Ha ocurrido un error al actualizar los datos.'
+            });
+            console.log("ERROR - /update-related-summary-procedure-project " + err)
         });
-        return true;
-    }).then(function(){
-        project.updatePublishedDate(relRelatedProjectProject[0].project_id,req.user);
-    }).catch(function(err){
+    } else {
         res.json({
             status: 'Error',
-            description: 'Ha ocurrido un error al actualizar los datos.'
+            description: 'El proceso de contratación seleccionado, ya se encuentra asociado a otro proyecto.'
         });
-        console.log("ERROR - /update-related-summary-procedure-project " + err)
-    });
+    }
 });
 // add location project
 router.post('/insert-location-project', isAuthenticated, function (req, res) {
@@ -2910,6 +2930,7 @@ router.post('/editcontactpoint-fields', isAuthenticated, function (req, res) {
     });
 });
 
+//new budget breakdown
 router.post('/new-budgetbreakdown', isAuthenticated, function (req, res) {
     let query = `insert into $1~ (description, amount, currency, url, budgetbreakdownPeriod_startdate, budgetbreakdownPeriod_enddate, source_id, contractingprocess_id, origin, fund_type)
         values ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id`;
@@ -2948,6 +2969,7 @@ router.post('/new-budgetbreakdown', isAuthenticated, function (req, res) {
         console.log('ERROR', error);
     });
 });
+
 //new aditional identifiers party project
 router.post('/1.1/new-additional-identifiers', isAuthenticated,async function (req, res) {
     console.log("######### /new-additional-identifiers BODY " + JSON.stringify(req.body, null, 4))
@@ -3051,6 +3073,7 @@ router.post('/newbudgetbreakdown-fields', isAuthenticated,async function (req, r
     });
 });
 
+//edit budget breakdown
 router.post('/edit-budgetbreakdown', isAuthenticated, async function (req, res) {
     let query = `update $1~ set budgetbreakdown_id = $3, description = $4, amount = $5, currency = $6, url = $7, budgetbreakdownPeriod_startdate = $8,
     budgetbreakdownPeriod_enddate = $9, source_id = $10, origin = $11, fund_type = $12 where id = $2 returning id`;
@@ -3111,22 +3134,20 @@ router.post('/editbudgetbreakdown-fields', isAuthenticated,async function (req, 
     });
 });
 
+//new budget classification
 router.post('/new-budgetclassification', isAuthenticated, async function (req, res) {
-    let query = `insert into $1~ (budgetbreakdown_id, year, trimester, branch, responsibleunit, finality, function, subfunction, institutionalactivity, budgetprogram, strategicobjective,
-        requestingunit, specificactivity, spendingobject, spendingtype, budgetsource, region, portfoliokey, cve, approved, modified, executed, committed, reserved)
-        values ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) returning id`;
+    let query = `insert into $1~ (budgetbreakdown_id, year, branch, responsibleunit, finality, function, subfunction, institutionalactivity, budgetprogram, spendingobject, spendingtype, budgetsource, 
+        region, portfoliokey, cve, branch_description, responsibleunit_description, finality_description, function_description, subfunction_description, institutionalactivity_description, 
+        budgetprogram_description, spendingobject_description, spendingtype_description, budgetsource_description, region_description, portfoliokey_description)
+        values ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) returning id`;
 
-    let measure = await db_conf.edca_db.oneOrNone(`select approvedamount, modifiedamount, executedamount, committedamount, reservedamount from programaticstructure where year = $1 and requestingunit = $2 and
-    specificactivity = $3 and spendingobject = $4 limit 1`, [req.body.year, req.body.requestingunit, req.body.specificactivity, req.body.spendingobject]);
-
-    let cve = `${(req.body.year || '').toString().padStart(4, '0')}${(req.body.branch || '').padStart(2, '0')}${(req.body.responsibleunit || '').padStart(3, '0')}${(req.body.finality || '').padStart(1, '0')}${(req.body.function || '').padStart(1, '0')}${(req.body.subfunction || '').padStart(2, '0')}${(req.body.institutionalactivity || '').padStart(3, '0')}${(req.body.budgetprogram || '').padStart(4, '0')}${(req.body.strategicobjective || '').padStart(3, '0')}${(req.body.requestingunit || '').padStart(3, '0')}${(req.body.specificactivity || '').padStart(5, '0')}${(req.body.spendingobject || '').padStart(5, '0')}${(req.body.spendingtype || '').padStart(1, '0')}${(req.body.budgetsource || '').padStart(1, '0')}${(req.body.region || '').padStart(2, '0')}${(req.body.portfoliokey || '').padStart(1, '0')}`;
+    let cve = `${(req.body.year || '').toString()}${(req.body.branch || '')}${(req.body.responsibleunit || '')}${(req.body.finality || '')}${(req.body.function || '')}${(req.body.subfunction || '')}${(req.body.institutionalactivity || '')}${(req.body.budgetprogram || '')}${(req.body.spendingobject || '')}${(req.body.spendingtype || '')}${(req.body.budgetsource || '')}${(req.body.region || '')}${(req.body.portfoliokey || '')}`;
 
     db_conf.edca_db.task(function (t) {
         return t.one(query, [
             'budgetclassifications',
             req.body.budget_id,
             req.body.year,
-            req.body.trimester,
             req.body.branch,
             req.body.responsibleunit,
             req.body.finality,
@@ -3134,23 +3155,27 @@ router.post('/new-budgetclassification', isAuthenticated, async function (req, r
             req.body.subfunction,
             req.body.institutionalactivity,
             req.body.budgetprogram,
-            req.body.strategicobjective,
-            req.body.requestingunit,
-            req.body.specificactivity,
             req.body.spendingobject,
             req.body.spendingtype,
             req.body.budgetsource,
             req.body.region,
             req.body.portfoliokey,
             cve,
-            numericCol(measure != null ? measure.approvedamount : null),
-            numericCol(measure != null ? measure.modifiedamount : null),
-            numericCol(measure != null ? measure.executedamount : null),
-            numericCol(measure != null ? measure.committedamount : null),
-            numericCol(measure != null ? measure.reservedamount : null)
+            req.body.branch_description,
+            req.body.responsibleunit_description,
+            req.body.finality_description,
+            req.body.function_description,
+            req.body.subfunction_description,
+            req.body.institutionalactivity_description,
+            req.body.budgetprogram_description,
+            req.body.spendingobject_description,
+            req.body.spendingtype_description,
+            req.body.budgetsource_description,
+            req.body.region_description,
+            req.body.portfoliokey_description
         ]);
     }).then(async function (data) {
-        await db_conf.edca_db.one(`update budgetbreakdown set budgetbreakdown_id = (select string_agg(cve, ',') from budgetclassifications where budgetbreakdown_id = $1), amount = (select round(sum(approved), 2) from budgetclassifications where budgetbreakdown_id = $1) where id = $1 returning id`, [req.body.budget_id]);
+        await db_conf.edca_db.one(`update budgetbreakdown set budgetbreakdown_id = (select string_agg(cve, ',') from budgetclassifications where budgetbreakdown_id = $1) where id = $1 returning id`, [req.body.budget_id]);
         let {cpid} = await db_conf.edca_db.oneOrNone('select contractingprocess_id cpid from budgetbreakdown where id = ${budget_id} limit 1', req.body);
         updateHisitory(cpid, req.user, Stages.planning, getHost(req));
 
@@ -3188,21 +3213,18 @@ router.post('/newbudgetclassification-fields', isAuthenticated, function (req, r
 });
 
 router.post('/edit-budgetclassification', isAuthenticated, async function (req, res) {
-    let query = `update $1~ set year = $3, trimester = $4, branch = $5, responsibleunit = $6, finality = $7, function = $8, subfunction = $9, institutionalactivity = $10, budgetprogram = $11,
-        strategicobjective = $12, requestingunit = $13, specificactivity = $14, spendingobject = $15, spendingtype = $16, budgetsource = $17, region = $18, portfoliokey = $19,
-        cve = $20, approved = $21, modified = $22, executed = $23, committed = $24, reserved = $25 where id = $2 returning id`;
+    let query = `update $1~ set year = $3, branch = $4, responsibleunit = $5, finality = $6, function = $7, subfunction = $8, institutionalactivity = $9, budgetprogram = $10,
+        spendingobject = $11, spendingtype = $12, budgetsource = $13, region = $14, portfoliokey = $15, cve = $16, branch_description = $17, responsibleunit_description = $18, finality_description = $19,
+        function_description = $20, subfunction_description = $21, institutionalactivity_description = $22, budgetprogram_description = $23, spendingobject_description = $24,
+        spendingtype_description = $25, budgetsource_description = $26, region_description = $27, portfoliokey_description = $28 where id = $2 returning id`;
     
-    let measure = await db_conf.edca_db.oneOrNone(`select approvedamount, modifiedamount, executedamount, committedamount, reservedamount from programaticstructure where year = $1 and requestingunit like $2 and
-    specificactivity like $3 and spendingobject like $4 limit 1`, [req.body.year, req.body.requestingunit, req.body.specificactivity, req.body.spendingobject]);
-
-    let cve = `${(req.body.year || '').toString().padStart(4, '0')}${(req.body.branch || '').padStart(2, '0')}${(req.body.responsibleunit || '').padStart(3, '0')}${(req.body.finality || '').padStart(1, '0')}${(req.body.function || '').padStart(1, '0')}${(req.body.subfunction || '').padStart(2, '0')}${(req.body.institutionalactivity || '').padStart(3, '0')}${(req.body.budgetprogram || '').padStart(4, '0')}${(req.body.strategicobjective || '').padStart(3, '0')}${(req.body.requestingunit || '').padStart(3, '0')}${(req.body.specificactivity || '').padStart(5, '0')}${(req.body.spendingobject || '').padStart(5, '0')}${(req.body.spendingtype || '').padStart(1, '0')}${(req.body.budgetsource || '').padStart(1, '0')}${(req.body.region || '').padStart(2, '0')}${(req.body.portfoliokey || '').padStart(1, '0')}`;
+    let cve = `${(req.body.year || '').toString()}${(req.body.branch || '')}${(req.body.responsibleunit || '')}${(req.body.finality || '')}${(req.body.function || '')}${(req.body.subfunction || '')}${(req.body.institutionalactivity || '')}${(req.body.budgetprogram || '')}${(req.body.spendingobject || '')}${(req.body.spendingtype || '')}${(req.body.budgetsource || '')}${(req.body.region || '')}${(req.body.portfoliokey || '')}`;
 
     db_conf.edca_db.task(function (t) {
         return t.one(query, [
             'budgetclassifications',
             req.body.id,
             req.body.year,
-            req.body.trimester,
             req.body.branch,
             req.body.responsibleunit,
             req.body.finality,
@@ -3210,23 +3232,27 @@ router.post('/edit-budgetclassification', isAuthenticated, async function (req, 
             req.body.subfunction,
             req.body.institutionalactivity,
             req.body.budgetprogram,
-            req.body.strategicobjective,
-            req.body.requestingunit,
-            req.body.specificactivity,
             req.body.spendingobject,
             req.body.spendingtype,
             req.body.budgetsource,
             req.body.region,
             req.body.portfoliokey,
             cve,
-            numericCol(measure != null ? measure.approvedamount : null),
-            numericCol(measure != null ? measure.modifiedamount : null),
-            numericCol(measure != null ? measure.executedamount : null),
-            numericCol(measure != null ? measure.committedamount : null),
-            numericCol(measure != null ? measure.reservedamount : null)
+            req.body.branch_description,
+            req.body.responsibleunit_description,
+            req.body.finality_description,
+            req.body.function_description,
+            req.body.subfunction_description,
+            req.body.institutionalactivity_description,
+            req.body.budgetprogram_description,
+            req.body.spendingobject_description,
+            req.body.spendingtype_description,
+            req.body.budgetsource_description,
+            req.body.region_description,
+            req.body.portfoliokey_description
         ]);
     }).then(async function (data) {
-        await db_conf.edca_db.one(`update budgetbreakdown set budgetbreakdown_id = (select string_agg(cve, ',') from budgetclassifications where budgetbreakdown_id = $1), amount = (select round(sum(approved), 2) from budgetclassifications where budgetbreakdown_id = $1) where id = $1 returning id`, [req.body.budget_id]);
+        await db_conf.edca_db.one(`update budgetbreakdown set budgetbreakdown_id = (select string_agg(cve, ',') from budgetclassifications where budgetbreakdown_id = $1) where id = $1 returning id`, [req.body.budget_id]);
         let {cpid} = await db_conf.edca_db.oneOrNone('select contractingprocess_id cpid  from budgetbreakdown where id in (select budgetbreakdown_id from budgetclassifications where id = ${id}) limit 1', req.body);
         updateHisitory(cpid, req.user, Stages.planning, getHost(req));
 
@@ -3413,7 +3439,6 @@ router.get('/manual', function (req, res) {
 router.post('/search_projects/', function (req, res) {
     res.render('modals/search_projects');
 });
-
 
 //get list of transactions
 router.post('/transaction-list',function (req, res) {
@@ -3641,7 +3666,7 @@ router.post('/budgetbreakdown-list', function (req, res) {
 });
 
 router.post('/budgetclassification-list', function (req, res) {
-    let sql = `select distinct $1~.*, requestingunit_desc as unitname from $1~ inner join programaticstructure on programaticstructure.requestingunit = $1~.requestingunit where $1~.budgetbreakdown_id = $2`;
+    let sql = `select * from $1~ where budgetbreakdown_id = $2`;
 
     db_conf.edca_db.manyOrNone(sql, [
         'budgetclassifications',
@@ -4531,9 +4556,9 @@ router.put('/1.1/party/', function (req,res) {
 });
 
 // new party project
-router.put('/1.1/party_project/', function (req,res) {
+router.put('/1.1/party_project/', async function (req,res) {
     console.log("######### /1.1/party_project/ BODY " + JSON.stringify(req.body, null, 4))
-    //regresar error si no se ha seleccionado al menos un rol
+    // regresar error si no se ha seleccionado al menos un rol
     if (!isChecked(req.body.buyer) &&
         !isChecked(req.body.reviewBody) &&
         !isChecked(req.body.publicAuthority) &&
@@ -4548,19 +4573,40 @@ router.put('/1.1/party_project/', function (req,res) {
             status: 'Error',
             description: 'Debes seleccionar al menos un rol'
         });
-    } 
-    else {
-        project.insertParties(JSON.stringify(req.body)).then(function(){
-            res.jsonp({
-                status: 'Ok',
-                description: "Parte registrada"
-            });
-            return true;
-        }).then(function(){
-            project.updatePublishedDate(req.body.project_id,req.user);
-        }).catch(function(err){console.log("ERROR - /1.1/party_project/ " + err)});
-    }
+    } else {
+        if (isChecked(req.body.publicAuthority)) {
+            existsPA = await db_conf.edca_db.manyOrNone('select project_id, publicauthorityon from public.view_public_authority_registered where project_id = $1', [req.body.project_id ]);
 
+            if(existsPA == ''){
+                project.insertParties(JSON.stringify(req.body)).then(function(){
+                    res.jsonp({
+                        status: 'Ok',
+                        description: "Parte registrada"
+                    });
+                    return true;
+                }).then(function(){
+                    project.updatePublishedDate(req.body.project_id,req.user);
+                }).catch(function(err){console.log("ERROR - /1.1/party_project/ " + err)});
+            }
+
+            if(existsPA[0].publicauthorityon != null ){
+                res.json({
+                    status: 'Error',
+                    description: 'Ya se encuentra registrado un Actor con el rol de Autoridad pública para este proyecto.'
+                });
+            } 
+        } else {
+            project.insertParties(JSON.stringify(req.body)).then(function(){
+                res.jsonp({
+                    status: 'Ok',
+                    description: "Parte registrada"
+                });
+                return true;
+            }).then(function(){
+                project.updatePublishedDate(req.body.project_id,req.user);
+            }).catch(function(err){console.log("ERROR - /1.1/party_project/ " + err)});
+        }
+    }
 });
 
 // add budget breakdown project
@@ -4641,7 +4687,7 @@ router.post('/1.1/edit_budget_line_measure.html',async function (req, res){
 });
 // Edit party project
 router.post('/1.1/edit_party_project.html', function (req, res){
-    console.log("######### /1.1/edit_party_project.html BODY " + JSON.stringify(req.body, null, 4))
+    console.log("######### edit_partyPROJECT /1.1/edit_party_project.html BODY " + JSON.stringify(req.body, null, 4))
     project.findParty(req.body.parties_id).then(value => {
         console.log("#### findParty: " + JSON.stringify(value[0]))
         res.render('modals/edit_party_project',{
@@ -4731,119 +4777,214 @@ router.post('/1.1/edit_related_projects.html', async function (req, res){
 
 //update party
 router.post('/1.1/party', function(req,res){
-
-    db_conf.edca_db.tx(function (t) {
-        return t.batch([
-            this.one('update parties set name=$1, partyid=$2, naturalperson=$3, position=$4, identifier_scheme=$5, identifier_id=$6,' +
-                ' identifier_legalname=$7, identifier_uri=$8, address_typeofroad=$9, address_streetaddress=$10, address_outdoornumber=$11, address_interiornumber=$12,' +
-                ' address_typeofsettlement=$13, address_settlementname=$14, address_locality=$15, address_region=$16, address_locationname=$17, address_localitykey=$18,' +
-                ' address_postalcode=$19, address_countryname=$20, address_streetabroad=$21, address_numberabroad=$22, address_cityabroad=$23, address_countryabroad=$24,' +
-                ' address_regionkey=$25, address_alcaldiakey=$26, contactpoint_name=$27, contactpoint_email=$28, contactpoint_telephone=$29, contactpoint_faxnumber=$30,' +
-                ' contactpoint_url=$31, surname = $33, additionalsurname= $34, contactpoint_surname = $35, contactpoint_additionalsurname= $36, givenname= $37,' +
-                ' contactpoint_givenname = $38, contactpoint_type = $39, contactpoint_language = $40 where id = $32 returning id',[
-                req.body.name, //  name
-                req.body.partyid,
-                (req.body.naturalperson==="true"),
-                req.body.position,
-                req.body.identifier_scheme,
-                req.body.identifier_id,
-                req.body.identifier_legalname,
-                req.body.identifier_uri,
-                req.body.address_typeofroad,
-                req.body.address_streetaddress,
-                req.body.address_outdoornumber,
-                req.body.address_interiornumber,
-                req.body.address_typeofsettlement,
-                req.body.address_settlementname,
-                req.body.locality_text,
-                req.body.region_text,
-                req.body.locationname_text,
-                req.body.address_localitykey,
-                req.body.address_postalcode,
-                req.body.address_countryname,
-                req.body.address_streetabroad,
-                req.body.address_numberabroad,
-                req.body.address_cityabroad,
-                req.body.address_countryabroad,
-                req.body.address_regionkey,
-                req.body.address_alcaldiakey,
-                `${req.body.contactpoint_givenname} ${req.body.contactpoint_surname} ${req.body.contactpoint_additionalsurname}`.trim(), // contactpoint name
-                req.body.contactpoint_email,
-                req.body.contactpoint_telephone,
-                req.body.contactpoint_faxnumber,
-                req.body.contactpoint_url,
-                req.body.parties_id,
-                req.body.surname,
-                req.body.additionalsurname,
-                req.body.contactpoint_surname,
-                req.body.contactpoint_additionalsurname,
-                req.body.givenname,
-                req.body.contactpoint_givenname,
-                req.body.contactpoint_type,
-                req.body.contactpoint_language && typeof req.body.contactpoint_language !== 'string' ? req.body.contactpoint_language.join(','): req.body.contactpoint_language
-            ]),
-            this.one('update roles set buyer=$2, procuringentity=$3, supplier=$4, tenderer=$5, guarantor=$6,' +
-                'enquirer=$7, payer=$8, payee=$9, reviewbody=$10, attendee=$11, ' +
-                'official=$12, invitedSupplier=$13, issuingSupplier=$14, requestingunit=$15, contractingunit=$16, technicalunit=$17, responsibleunit=$18  where parties_id = $1 returning id', [
-                req.body.parties_id,
-                isChecked(req.body.buyer),
-                isChecked(req.body.procuringEntity),
-                isChecked(req.body.supplier),
-                isChecked(req.body.tenderer),
-                isChecked(req.body.guarantor),
-                isChecked(req.body.enquirer),
-                isChecked(req.body.payer),
-                isChecked(req.body.payee),
-                isChecked(req.body.reviewBody),
-                isChecked(req.body.attendee),
-                isChecked(req.body.official),
-                isChecked(req.body.invitedSupplier),
-                isChecked(req.body.issuingSupplier),
-                isChecked(req.body.requestingunit),
-                isChecked(req.body.contractingunit),
-                isChecked(req.body.technicalunit),
-                isChecked(req.body.responsibleunit)
-            ]),
-            this.none('update tender set numberoftenderers = (select count(*) from roles where contractingprocess_id = $1 and tenderer = true) ' + 
-            'where contractingprocess_id = $1 ', [req.body.contractingprocess_id])
-        ]);
-    }).then(async function(data){
-        updateHisitory(req.body.contractingprocess_id, req.user, Stages.planning, getHost(req));
-
-        res.jsonp({
-            status: 'Ok',
-            description: "Los datos han sido actualizados",
-            total: await getNumberOfTenderes(req.body.contractingprocess_id)
+    //regresar error si no se ha seleccionado al menos un rol
+    if (!isChecked(req.body.buyer) &&
+        !isChecked(req.body.procuringEntity) &&
+        !isChecked(req.body.supplier) &&
+        !isChecked(req.body.tenderer) &&
+        !isChecked(req.body.guarantor) &&
+        !isChecked(req.body.enquirer) &&
+        !isChecked(req.body.payer) &&
+        !isChecked(req.body.payee) &&
+        !isChecked(req.body.reviewBody) &&
+        !isChecked(req.body.attendee) &&
+        !isChecked(req.body.official) &&
+        !isChecked(req.body.invitedSupplier) &&
+        !isChecked(req.body.issuingSupplier) &&
+        !isChecked(req.body.requestingunit) &&
+        !isChecked(req.body.responsibleunit) &&
+        !isChecked(req.body.contractingunit) &&
+        !isChecked(req.body.technicalunit) &&
+        !isChecked(req.body.responsibleunit)){
+        res.json({
+            status: 'Error',
+            description: 'Debes seleccionar al menos un rol'
         });
-    }).catch(function (error) {
-        console.log(error);
-        res.status(400).jsonp({
-            status : 'Error',
-            description: "Ocurrió un error al actualizar los datos",
-            error: error
-        });
-    });
-});
-//update party project
-router.post('/1.1/party_project',async function(req,res){
-    console.log("######### /1.1/party_project BODY " + JSON.stringify(req.body, null, 4))
-    var request = JSON.stringify(req.body);
-    var relPartyProject = await db.edcapi_project_party_project.findAll({where: {edcapiProjectPartyId: req.body.party_id}}); 
-    project.updateParty(request).then(async function(){
+    } else {
+        db_conf.edca_db.tx(function (t) {
+            return t.batch([
+                this.one('update parties set name=$1, partyid=$2, naturalperson=$3, position=$4, identifier_scheme=$5, identifier_id=$6,' +
+                    ' identifier_legalname=$7, identifier_uri=$8, address_typeofroad=$9, address_streetaddress=$10, address_outdoornumber=$11, address_interiornumber=$12,' +
+                    ' address_typeofsettlement=$13, address_settlementname=$14, address_locality=$15, address_region=$16, address_locationname=$17, address_localitykey=$18,' +
+                    ' address_postalcode=$19, address_countryname=$20, address_streetabroad=$21, address_numberabroad=$22, address_cityabroad=$23, address_countryabroad=$24,' +
+                    ' address_regionkey=$25, address_alcaldiakey=$26, contactpoint_name=$27, contactpoint_email=$28, contactpoint_telephone=$29, contactpoint_faxnumber=$30,' +
+                    ' contactpoint_url=$31, surname = $33, additionalsurname= $34, contactpoint_surname = $35, contactpoint_additionalsurname= $36, givenname= $37,' +
+                    ' contactpoint_givenname = $38, contactpoint_type = $39, contactpoint_language = $40 where id = $32 returning id',[
+                    req.body.name, //  name
+                    req.body.partyid,
+                    (req.body.naturalperson==="true"),
+                    req.body.position,
+                    req.body.identifier_scheme,
+                    req.body.identifier_id,
+                    req.body.identifier_legalname,
+                    req.body.identifier_uri,
+                    req.body.address_typeofroad,
+                    req.body.address_streetaddress,
+                    req.body.address_outdoornumber,
+                    req.body.address_interiornumber,
+                    req.body.address_typeofsettlement,
+                    req.body.address_settlementname,
+                    req.body.locality_text,
+                    req.body.region_text,
+                    req.body.locationname_text,
+                    req.body.address_localitykey,
+                    req.body.address_postalcode,
+                    req.body.address_countryname,
+                    req.body.address_streetabroad,
+                    req.body.address_numberabroad,
+                    req.body.address_cityabroad,
+                    req.body.address_countryabroad,
+                    req.body.address_regionkey,
+                    req.body.address_alcaldiakey,
+                    `${req.body.contactpoint_givenname} ${req.body.contactpoint_surname} ${req.body.contactpoint_additionalsurname}`.trim(), // contactpoint name
+                    req.body.contactpoint_email,
+                    req.body.contactpoint_telephone,
+                    req.body.contactpoint_faxnumber,
+                    req.body.contactpoint_url,
+                    req.body.parties_id,
+                    req.body.surname,
+                    req.body.additionalsurname,
+                    req.body.contactpoint_surname,
+                    req.body.contactpoint_additionalsurname,
+                    req.body.givenname,
+                    req.body.contactpoint_givenname,
+                    req.body.contactpoint_type,
+                    req.body.contactpoint_language && typeof req.body.contactpoint_language !== 'string' ? req.body.contactpoint_language.join(','): req.body.contactpoint_language
+                ]),
+                this.one('update roles set buyer=$2, procuringentity=$3, supplier=$4, tenderer=$5, guarantor=$6,' +
+                    'enquirer=$7, payer=$8, payee=$9, reviewbody=$10, attendee=$11, ' +
+                    'official=$12, invitedSupplier=$13, issuingSupplier=$14, requestingunit=$15, contractingunit=$16, technicalunit=$17, responsibleunit=$18  where parties_id = $1 returning id', [
+                    req.body.parties_id,
+                    isChecked(req.body.buyer),
+                    isChecked(req.body.procuringEntity),
+                    isChecked(req.body.supplier),
+                    isChecked(req.body.tenderer),
+                    isChecked(req.body.guarantor),
+                    isChecked(req.body.enquirer),
+                    isChecked(req.body.payer),
+                    isChecked(req.body.payee),
+                    isChecked(req.body.reviewBody),
+                    isChecked(req.body.attendee),
+                    isChecked(req.body.official),
+                    isChecked(req.body.invitedSupplier),
+                    isChecked(req.body.issuingSupplier),
+                    isChecked(req.body.requestingunit),
+                    isChecked(req.body.contractingunit),
+                    isChecked(req.body.technicalunit),
+                    isChecked(req.body.responsibleunit)
+                ]),
+                this.none('update tender set numberoftenderers = (select count(*) from roles where contractingprocess_id = $1 and tenderer = true) ' + 
+                'where contractingprocess_id = $1 ', [req.body.contractingprocess_id])
+            ]);
+        }).then(async function(data){
+            updateHisitory(req.body.contractingprocess_id, req.user, Stages.planning, getHost(req));
+
             res.jsonp({
                 status: 'Ok',
                 description: "Los datos han sido actualizados",
+                total: await getNumberOfTenderes(req.body.contractingprocess_id)
             });
-        }).then(function(){
-            project.updatePublishedDate(relPartyProject[0].project_id,req.user);
         }).catch(function (error) {
-            console.log("Error - /1.1/update_budgetbreakdown_project " + error);
+            console.log(error);
             res.status(400).jsonp({
                 status : 'Error',
                 description: "Ocurrió un error al actualizar los datos",
                 error: error
             });
         });
+    }
+});
+//update party project
+router.post('/1.1/party_project',async function(req,res){
+    console.log("######### party_project /1.1/party_project BODY " + JSON.stringify(req.body, null, 4))
+
+    //regresar error si no se ha seleccionado al menos un rol
+    if (!isChecked(req.body.buyer) &&
+        !isChecked(req.body.reviewBody) &&
+        !isChecked(req.body.publicAuthority) &&
+        !isChecked(req.body.payer) &&
+        !isChecked(req.body.procuringEntity) &&
+        !isChecked(req.body.funder) &&
+        !isChecked(req.body.tenderer) &&
+        !isChecked(req.body.enquirer) &&
+        !isChecked(req.body.supplier) &&
+        !isChecked(req.body.payee)){
+        res.json({
+            status: 'Error',
+            description: 'Debes seleccionar al menos un rol'
+        });
+    } else {
+
+        var request = JSON.stringify(req.body);
+        var relPartyProject = await db.edcapi_project_party_project.findAll({where: {edcapiProjectPartyId: req.body.party_id}}); 
+        var existsPA = await db_conf.edca_db.manyOrNone('select project_id, publicauthorityon, edcapiProjectPartyIdon from public.view_public_authority_registered where project_id = $1', [ relPartyProject[0].project_id ]);
+
+        console.log("request", request)
+        console.log("relPartyProject", relPartyProject)
+        console.log("existsPA", existsPA)
+
+        if(existsPA != ''){
+            if(existsPA.project_id == relPartyProject.project_id){
+                console.log("entro al primer if")
+                if(req.body.publicAuthority == 'on'){
+                    console.log("entro al segundo if")
+                    res.json({
+                        status: 'Error',
+                        description: 'Ya se encuentra registrado un Actor con el rol de Autoridad pública para este proyecto.'
+                    });
+                } else {
+                    project.updateParty(request).then(async function(){
+                        res.jsonp({
+                            status: 'Ok',
+                            description: "Los datos han sido actualizados",
+                        });
+                    }).then(function(){
+                        project.updatePublishedDate(relPartyProject[0].project_id,req.user);
+                    }).catch(function (error) {
+                        console.log("Error - /1.1/update_budgetbreakdown_project " + error);
+                        res.status(400).jsonp({
+                            status : 'Error',
+                            description: "Ocurrió un error al actualizar los datos",
+                            error: error
+                        });
+                    });
+                }
+            } else {
+                
+                project.updateParty(request).then(async function(){
+                    res.jsonp({
+                        status: 'Ok',
+                        description: "Los datos han sido actualizados",
+                    });
+                }).then(function(){
+                    project.updatePublishedDate(relPartyProject[0].project_id,req.user);
+                }).catch(function (error) {
+                    console.log("Error - /1.1/update_budgetbreakdown_project " + error);
+                    res.status(400).jsonp({
+                        status : 'Error',
+                        description: "Ocurrió un error al actualizar los datos",
+                        error: error
+                    });
+                });
+            }
+        } else {
+            project.updateParty(request).then(async function(){
+                res.jsonp({
+                    status: 'Ok',
+                    description: "Los datos han sido actualizados",
+                });
+            }).then(function(){
+                project.updatePublishedDate(relPartyProject[0].project_id,req.user);
+            }).catch(function (error) {
+                console.log("Error - /1.1/update_budgetbreakdown_project " + error);
+                res.status(400).jsonp({
+                    status : 'Error',
+                    description: "Ocurrió un error al actualizar los datos",
+                    error: error
+                });
+            });
+        }    
+    }
 });
 //update budget breakdown
 router.post('/1.1/update_budgetbreakdown_project',async function(req,res){
@@ -6974,6 +7115,24 @@ router.post('/validate-project-amount/',isAuthenticated, async (req, res) => {
     });    
 });
 
+router.post('/public_project/',isAuthenticated, async (req, res) => {
+    console.log("######### //public_project// BODY " + JSON.stringify(req.body, null, 4))
+    project.publishProject(req.body).then(function(projectUpdated){
+        if(projectUpdated.is_public){
+            res.json({
+                status: 'Ok',
+                description: `Se publico correctamente el Proyecto ${req.body.project_id}.`
+            });
+        }else{
+            res.json({
+                status: 500,
+                description: 'Error - no se pudo publicar el Proyecto.'
+            });
+        }
+        
+    })
+    
+}),
 
 // API METHODS FOR EDCAPI 
 router.get('/edcapi/projectPackage/:id', function(req, res){
@@ -6986,6 +7145,7 @@ router.get('/edcapi/projectPackage/:id', function(req, res){
             var arrayReleases  = new Array();
             arrayReleases.push(element.releases)
             objContractingProcess.id = element.id.id;
+            objContractingProcess.nature = element.id.nature;
             objContractingProcess.releases = arrayReleases;
             arrayContractingProcesses.push(objContractingProcess);
         });
@@ -6994,6 +7154,43 @@ router.get('/edcapi/projectPackage/:id', function(req, res){
         return res.json(projectPackage)    
     }).catch(function(err){
         console.log("ERROR /edcapi/project/:id - " + err)
+    });
+});
+
+// Descarga de json Instituciones por RFC
+router.get('/edcapi/projectAuthorityJson/:identifier',async function(req, res){
+    console.log("+++++++++++++ /edca/projectAuthorityJson/:identifier"  + JSON.stringify(req.params));
+    var descargaJSON = `SELECT
+                            p.id, pt.identifier as rfc, pt.name
+                        FROM 
+                            public.edcapi_projects p,
+                            public.edcapi_project_parties pt,
+                            public.edcapi_project_party_projects ppp,
+                            public.edcapi_project_parties_roles ppr,
+                            public.edcapi_project_parties_roles_parties pprp
+                        WHERE
+                            1 = 1
+                            AND p.is_public = true
+                            AND p.id = ppp.project_id
+                            AND pt.id = ppp."edcapiProjectPartyId"
+                            AND ppp."edcapiProjectPartyId" = pprp.party_id
+                            AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                            AND ppr."publicAuthority" = 'on'
+                            AND pt.identifier like '%${req.params.identifier}%'
+                        `;
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.manyOrNone(descargaJSON)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
     });
 });
 
@@ -7131,6 +7328,52 @@ router.get('/edca/cp/:id',async function(req, res){
             }
         )}
     })
+});
+
+// Descarga de json por RFC
+router.get('/edca/cpjson/:rfc',async function(req, res){
+    console.log("+++++++++++++ /edca/cpjson/:rfc "  + JSON.stringify(req.params));
+    var descargaJSON = `SELECT
+                            DISTINCT
+                                p.id, cp.id as cp_id, pt.partyid as rfc, name, pp."startDate"
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects ercpp,
+                                public.edcapi_project_related_contracting_processes as eprcp,
+                                public.contractingprocess as cp,
+                                public.parties as pt,
+                                public.award as a,
+                                public.awardsupplier as sa,
+                                public.edcapi_project_periods pp,
+                                public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = ercpp.project_id
+                                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                AND cp.id = eprcp."contractingProcessId"
+                                AND cp.id = pt.contractingprocess_id
+                                AND a.contractingprocess_id = cp.id
+                                AND a.id = sa.award_id 
+                                AND sa.parties_id = pt.id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pt.partyid like '%${req.params.rfc}%'
+                        `;
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.manyOrNone(descargaJSON)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
 });
 
 router.get('/edca/contractingprocess/csv/:year',async function(req, res){
@@ -7314,23 +7557,45 @@ router.get('/edca/amounts/',async function(req, res){
 
 });
 
+router.get('/edcapi/searchGeneral/:year', function(req, res){
+    // console.log("························· /edcapi/searchGeneral/ "  + JSON.stringify(req.params));
+    var queryListaProyectos = `SELECT * FROM public.view_info_proyectos`;
+    if(req.params.year != 0){
+        queryListaProyectos = `${queryListaProyectos} where view_info_proyectos."startDate" like '%${req.params.year}%'`;
+    }   
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.manyOrNone(queryListaProyectos)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
 router.get('/edcapi/homePage/:year',async function(req, res){
     console.log("························· /edcapi/homePage/ "  + JSON.stringify(req.params));
-    var queryMapa = `SELECT * FROM public.view_test_mapa`;
-    var queryProyectos = `SELECT * FROM public.view_test_proyectos`;
-    var queryContrataciones = `SELECT * FROM public.view_test_contrataciones`;
-    var queryContratistas = `SELECT * FROM public.view_test_contratistas`;
-    var queryLicitantes = `SELECT * FROM public.view_test_licitantes`;
-    var queryInstituciones = `SELECT * FROM public.view_test_instituciones`;
+    var queryMapa = `SELECT * FROM public.view_mapa`;
+    var queryProyectos = `SELECT * FROM public.view_total_proyectos`;
+    var queryContrataciones = `SELECT * FROM public.view_total_contrataciones`;
+    var queryContratistas = `SELECT * FROM public.view_total_contratistas`;
+    var queryLicitantes = `SELECT * FROM public.view_total_licitantes`;
+    var queryInstituciones = `SELECT * FROM public.view_total_instituciones`;
     if(req.params.year != 0){
-        console.log(`#### si trae year`)
-        queryMapa = `${queryMapa} where view_test_mapa."startDate" like '%${req.params.year}%'`
+        queryMapa = `${queryMapa} where view_mapa."startDate" like '%${req.params.year}%'`
         queryProyectos = `SELECT 
                             COUNT(*) AS totalprojects
                         FROM 
                             public.edcapi_projects p,public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
                         WHERE 
                         1 = 1
+                        AND p.is_public = true
                         AND p.id = ppp.project_id
                         AND pp.id = ppp.project_period_id
                         AND pp."startDate" like '%${req.params.year}%';`;
@@ -7342,12 +7607,13 @@ router.get('/edcapi/homePage/:year',async function(req, res){
                                 public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
                             WHERE 
                                 1 = 1 
+                                AND p.is_public = true
                                 AND p.id = rcpp.project_id
                                 AND p.id = ppp.project_id
                                 AND pp.id = ppp.project_period_id
                                 AND pp."startDate" like '%${req.params.year}%';`;
         queryContratistas = `SELECT 
-                                COUNT (*) AS totalsuppliers
+                                COUNT (DISTINCT pt.partyid) AS totalsuppliers
                             FROM 
                                 public.edcapi_projects p, 
                                 public.edcapi_project_related_contracting_processes rcp, 
@@ -7357,6 +7623,7 @@ router.get('/edcapi/homePage/:year',async function(req, res){
                                 public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
                             WHERE 
                                 1 = 1
+                                AND p.is_public = true
                                 AND p.id = rcpp.project_id
                                 AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
                                 AND rcp."contractingProcessId" = pt.contractingprocess_id
@@ -7366,7 +7633,7 @@ router.get('/edcapi/homePage/:year',async function(req, res){
                                 AND pp.id = ppp.project_period_id
                                 AND pp."startDate" like '%${req.params.year}%';`;
         queryLicitantes = `SELECT 
-                                COUNT (*) AS totaltenderers
+                                COUNT (distinct pt.partyid) AS totaltenderers
                             FROM 
                                 public.edcapi_projects p, 
                                 public.edcapi_project_related_contracting_processes rcp, 
@@ -7376,6 +7643,7 @@ router.get('/edcapi/homePage/:year',async function(req, res){
                                 public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
                             WHERE 
                                 1 = 1
+                                AND p.is_public = true
                                 AND p.id = rcpp.project_id
                                 AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
                                 AND rcp."contractingProcessId" = pt.contractingprocess_id
@@ -7385,21 +7653,24 @@ router.get('/edcapi/homePage/:year',async function(req, res){
                                 AND pp.id = ppp.project_period_id
                                 AND pp."startDate" like '%${req.params.year}%';`;
         queryInstituciones = `SELECT 
-                                COUNT (*) AS totalinstitutes
+                                COUNT (distinct (pt.identifier)) as totalinstitutes
                             FROM 
                                 public.edcapi_projects p,
+                                public.edcapi_project_parties pt,
                                 public.edcapi_project_party_projects ppp,
                                 public.edcapi_project_parties_roles ppr,
-                                public.edcapi_project_parties_roles_parties pprp, 
+                                public.edcapi_project_parties_roles_parties pprp,
                                 public.edcapi_project_periods pp, public.edcapi_project_period_projects eppp
                             WHERE
                                 1 = 1
+                                AND p.is_public = true
                                 AND p.id = ppp.project_id
+                                AND pt.id = ppp."edcapiProjectPartyId"
                                 AND ppp."edcapiProjectPartyId" = pprp.party_id
                                 AND ppr.id = pprp."edcapiProjectPartiesRoleId"
                                 AND ppr."publicAuthority" = 'on'
                                 AND p.id = eppp.project_id
-                                AND pp.id = eppp.project_period_id
+                                AND pp.id = eppp.project_period_id	
                                 AND pp."startDate" like '%${req.params.year}%';`;
     }   
     db_conf.edca_db.task(function (t) {
@@ -7423,544 +7694,2066 @@ router.get('/edcapi/homePage/:year',async function(req, res){
     });
 });
 
-router.get('/init/',async function(req, res){
-    console.log("························· /init/ "  + JSON.stringify(req.params));
-    var status = ['completed','completion','identification','implementation','cancelled','preparation'];
-    var sector = ['waterAndWaste','communications','cultureSportsAndRecreation','sports','economy','education','energy','governance','socialHousing','recreation','waste','health','transport','transport.air','transport.road','transport.rail','transport.water','transport.urban','security'];
-    var type = ['construction','rehabilitation','replacement','expansion'];
-    var moneda = ['MXN','EUR','USD'];
-    var locaciones = [
-        {//Ciudad de México
-            latitud: 19.42847,
-            longitud: -99.12766
-        },
-        {//Iztapalapa	19.35529, -99.06224
-            latitud:19.35529,
-            longitud:-99.06224
-        },
-        {//Guadalajara	20.66682, -103.39182
-            latitud:20.66682,
-            longitud:-103.39182
-        },
-        {//Puebla	19.03793, -98.20346
-            latitud:19.03793,
-            longitud:-98.20346
-        },
-        {//Tijuana	32.5027, -117.00371
-            latitud:32.5027,
-            longitud:-117.00371
-        },
-        {//Monterrey	25.67507, -100.31847
-            latitud:25.67507,
-            longitud:-100.31847
-        },
-        {//Ecatepec de Morelos	19.60492, -99.06064
-            latitud:19.60492,
-            longitud:-99.06064
-        },
-        {//Chihuahua	28.63528, -106.08889
-            latitud:28.63528,
-            longitud:-106.08889
-        },
-        {//Naucalpan de Juárez	19.47851, -99.23963
-            latitud:19.47851,
-            longitud:-99.23963
-        },
-        {//Mérida	20.97537, -89.61696
-            latitud:20.97537,
-            longitud:-89.61696
-        },
-        {//San Luis	22.14982, -100.97916
-            latitud:22.14982,
-            longitud:-100.97916
-        },
-        {//Hermosillo	29.1026, -110.97732
-            latitud:29.1026,
-            longitud:-110.97732
-        },
-        {//Saltillo	25.42321, -101.0053
-            latitud:25.42321,
-            longitud:-101.0053
-        },
-        {//Mexicali	32.62781, -115.45446
-            latitud:32.62781,
-            longitud:-115.45446
-        },
-        {//Guadalupe	25.67678, -100.25646
-            latitud:25.67678,
-            longitud:-100.25646
-        },
-        {//Paso del Norte	31.72024, -106.46084
-            latitud:31.72024,
-            longitud:-106.46084
-        },
-        {//Cancún	21.17429, -86.84656
-            latitud:21.17429,
-            longitud:-86.84656
-        },
-        {//Coyoacán	19.3467, -99.16174
-            latitud:19.3467,
-            longitud:-99.16174
-        },
-        {//León de los Aldama	21.12908, -101.67374
-            latitud:21.12908,
-            longitud:-101.67374
-        },
-        {//Morelia	19.70078, -101.18443
-            latitud:19.70078,
-            longitud:-101.18443
-        },
-        {//Gustavo Adolfo Madero 19.49392, -99.11075
-            latitud:19.49392,
-            longitud:-99.11075
-        },
-        {//Reynosa se encuentra en la latitud 26.08061 y longitud -98.28835
-            latitud:26.08061,
-            longitud:-98.28835
-        },
-        {//Tlalpan se encuentra en la latitud 19.29513 y longitud -99.16206
-            latitud:19.29513,
-            longitud:-99.16206
-        },
-        {//Zapopan se encuentra en la latitud 20.72356 y longitud -103.38479
-            latitud:20.72356,
-            longitud:-103.38479
-        },
-        {//Ciudad Nezahualcoyotl se encuentra en la latitud 19.40061 y longitud -99.01483
-            latitud:19.40061,
-            longitud:-99.01483
-        },
-        {//Cuauhtémoc se encuentra en la latitud 19.44506 y longitud -99.14612
-            latitud:19.44506,
-            longitud:-99.14612
-        },
-        {//Toluca se encuentra en la latitud 19.28786 y longitud -99.65324
-            latitud:19.28786,
-            longitud:-99.65324
-        },
-        {//Cuautitlán Izcalli se encuentra en la latitud 19.64388 y longitud -99.21598
-            latitud:19.64388,
-            longitud:-99.21598
-        },
-        {//San Nicolás de los Garza se encuentra en la latitud 25.74167 y longitud -100.30222
-            latitud:25.74167,
-            longitud:-100.30222
-        },
-        {//Venustiano Carranza se encuentra en la latitud 19.44361 y longitud -99.10499
-            latitud:19.44361,
-            longitud:-99.10499
-        },
-        {//Veracruz se encuentra en la latitud 19.18095 y longitud -96.1429
-            latitud:19.18095,
-            longitud:-96.1429
-        },
-        {//Azcapotzalco se encuentra en la latitud 19.48698 y longitud -99.18594
-            latitud:19.48698,
-            longitud:-99.18594
-        },
-        {//Tonalá se encuentra en la latitud 20.62445 y longitud -103.23423
-            latitud:20.62445,
-            longitud:-103.23423
-        },
-        {//Xochimilco se encuentra en la latitud 19.25465 y longitud -99.10356
-            latitud:19.25465,
-            longitud:-99.10356
-        },
-        {//Iztacalco se encuentra en la latitud 19.39528 y longitud -99.09778
-            latitud:19.39528,
-            longitud:-99.09778
-        },
-        {//Mazatlán se encuentra en la latitud 23.2329 y longitud -106.4062
-            latitud:23.2329,
-            longitud:-106.4062
-        },
-        {//Irapuato se encuentra en la latitud 20.67675 y longitud -101.35628
-            latitud:20.67675,
-            longitud:-101.35628
-        },
-        {//Nuevo Laredo se encuentra en la latitud 27.47629 y longitud -99.51639
-            latitud:27.47629,
-            longitud:-99.51639
-        },
-        {//Miguel Hidalgo se encuentra en la latitud 19.43411 y longitud -99.20024
-            latitud:19.43411,
-            longitud:-99.20024
-        },
-        {//Álvaro Obregón se encuentra en la latitud 19.35867 y longitud -99.20329
-            latitud:19.35867,
-            longitud:-99.20329
-        },
-        {//Aguascalientes se encuentra en la latitud 21.88234 y longitud -102.28259
-            latitud:21.88234,
-            longitud:-102.28259
-        },
-        {//Xico se encuentra en la latitud 19.27032 y longitud -98.95088
-            latitud:19.27032,
-            longitud:-98.95088
-        },
-        {//Villahermosa se encuentra en la latitud 17.98689 y longitud -92.93028
-            latitud:17.98689,
-            longitud:-92.93028
-        },
-        {//Celaya se encuentra en la latitud 20.52353 y longitud -100.8157
-            latitud:20.52353,
-            longitud:-100.8157
-        },
-        {//Cuernavaca se encuentra en la latitud 18.9261 y longitud -99.23075
-            latitud:18.9261,
-            longitud:-99.23075
-        },
-        {//Cuilacan se encuentra en la latitud 24.79032 y longitud -107.38782
-            latitud:24.79032,
-            longitud:-107.38782
-        },
-        {//Acapulco se encuentra en la latitud 16.84942 y longitud -99.90891
-            latitud:16.84942,
-            longitud:-99.90891
-        },
-        {//Tepic se encuentra en la latitud 21.50951 y longitud -104.89569
-            latitud:21.50951,
-            longitud:-104.89569
-        },
-        {//Tlalnepantla se encuentra en la latitud 19.54005 y longitud -99.19538
-            latitud:19.54005,
-            longitud:-99.19538
-        },
-        {//Ixtapaluca se encuentra en la latitud 19.31556 y longitud -98.88284
-            latitud:19.31556,
-            longitud:-98.88284
-        },
-        {//Santiago de Querétaro se encuentra en la latitud 20.58806 y longitud -100.38806
-            latitud:20.58806,
-            longitud:-100.38806
-        },
-        {//Tampico se encuentra en la latitud 22.28519 y longitud -97.87777
-            latitud:22.28519,
-            longitud:-97.87777
-        },
-        {//Santa María Chimalhuacán se encuentra en la latitud 19.42155 y longitud -98.95038
-            latitud:19.42155,
-            longitud:-98.95038
-        },
-        {//Ciudad Victoria se encuentra en la latitud 23.74174 y longitud -99.14599
-            latitud:23.74174,
-            longitud:-99.14599
-        },
-        {//Torreon se encuentra en la latitud 25.54389 y longitud -103.41898
-            latitud:25.54389,
-            longitud:-103.41898
-        },
-        {//Tlaquepaque se encuentra en la latitud 20.64091 y longitud -103.29327
-            latitud:20.64091,
-            longitud:-103.29327
-        },
-        {//Ensenada se encuentra en la latitud 31.87149 y longitud -116.60071
-            latitud:31.87149,
-            longitud:-116.60071
-        },
-        {//Coacalco se encuentra en la latitud 19.62923 y longitud -99.10689
-            latitud:19.62923,
-            longitud:-99.10689
-        },
-        {//Tuxtla se encuentra en la latitud 16.75973 y longitud -93.11308
-            latitud:16.75973,
-            longitud:-93.11308
-        },
-        {//Santa Catarina se encuentra en la latitud 25.67325 y longitud -100.45813
-            latitud:25.67325,
-            longitud:-100.45813
-        },
-        {//Uruapan se encuentra en la latitud 19.41116 y longitud -102.05644
-            latitud:19.41116,
-            longitud:-102.05644
-        },
-        {//Victoria de Durango se encuentra en la latitud 24.02032 y longitud -104.65756
-            latitud:24.02032,
-            longitud:-104.65756
-        },
-        {//Los Mochis se encuentra en la latitud 25.79302 y longitud -108.99808
-            latitud:25.79302,
-            longitud:-108.99808
-        },
-        {//Oaxaca se encuentra en la latitud 17.06542 y longitud -96.72365
-            latitud:17.06542,
-            longitud:-96.72365
-        },
-        {//Tehuacán se encuentra en la latitud 18.46422 y longitud -97.39735
-            latitud:18.46422,
-            longitud:-97.39735
-        },
-        {//Atizapan se encuentra en la latitud 19.55793 y longitud -99.25675
-            latitud:19.55793,
-            longitud:-99.25675
-        },
-        {//Magdalena Contreras se encuentra en la latitud 19.33212 y longitud -99.21118
-            latitud:19.33212,
-            longitud:-99.21118
-        },
-        {//Coatzacoalcos se encuentra en la latitud 18.14905 y longitud -94.4447
-            latitud:18.14905,
-            longitud:-94.4447
-        },
-        {//Ciudad Apodaca se encuentra en la latitud 25.78195 y longitud -100.18839
-            latitud:25.78195,
-            longitud:-100.18839
-        },
-        {//Heroica Matamoros se encuentra en la latitud 25.87972 y longitud -97.50417
-            latitud:25.87972,
-            longitud:-97.50417
-        },
-        {//Campeche se encuentra en la latitud 19.84386 y longitud -90.52554
-            latitud:19.84386,
-            longitud:-90.52554
-        },
-        {//Monclova se encuentra en la latitud 26.90687 y longitud -101.42056
-            latitud:26.90687,
-            longitud:-101.42056
-        },
-        {//La Paz se encuentra en la latitud 24.14437 y longitud -110.3005
-            latitud:24.14437,
-            longitud:-110.3005
-        },
-        {//Nogales se encuentra en la latitud 31.30862 y longitud -110.94217
-            latitud:31.30862,
-            longitud:-110.94217
-        },
-        {//Xalapa de Enríquez se encuentra en la latitud 19.53124 y longitud -96.91589
-            latitud:19.53124,
-            longitud:-96.91589
-        },
-        {//Puerto Vallarta se encuentra en la latitud 20.617 y longitud -105.23018
-            latitud:20.617,
-            longitud:-105.23018
-        },
-        {//Tapachula se encuentra en la latitud 14.90385 y longitud -92.25749
-            latitud:14.90385,
-            longitud:-92.25749
-        },
-        {//Ciudad Madero se encuentra en la latitud 22.27228 y longitud -97.83623
-            latitud:22.27228,
-            longitud:-97.83623
-        },
-        {//Benito Juárez se encuentra en la latitud 19.3727 y longitud -99.1564
-            latitud:19.3727,
-            longitud:-99.1564
-        },
-        {//Chilpancingo se encuentra en la latitud 17.5506 y longitud -99.50578
-            latitud:17.5506,
-            longitud:-99.50578
-        },
-        {//Poza Rica se encuentra en la latitud 20.53315 y longitud -97.45946
-            latitud:20.53315,
-            longitud:-97.45946
-        },
-        {//Benito Juarez se encuentra en la latitud 19.3984 y longitud -99.15766
-            latitud:19.3984,
-            longitud:-99.15766
-        },
-        {//Ciudad General Escobedo se encuentra en la latitud 25.79698 y longitud -100.31791
-            latitud:25.79698,
-            longitud:-100.31791
-        },
-        {//Ciudad del Carmen se encuentra en la latitud 18.64592 y longitud -91.82991
-            latitud:18.64592,
-            longitud:-91.82991
-        },
-        {//Jiutepec se encuentra en la latitud 18.88139 y longitud -99.17778
-            latitud:18.88139,
-            longitud:-99.17778
-        },
-        {//Salamanca se encuentra en la latitud 20.57196 y longitud -101.19154
-            latitud:20.57196,
-            longitud:-101.19154
-        },
-        {//San Luis se encuentra en la latitud 32.45612 y longitud -114.77186
-            latitud:32.45612,
-            longitud:-114.77186
-        },
-        {//San Cristobal se encuentra en la latitud 16.73176 y longitud -92.64126
-            latitud:16.73176,
-            longitud:-92.64126
-        },
-        {//San Pablo de las Salinas se encuentra en la latitud 19.66658 y longitud -99.09477
-            latitud:19.66658,
-            longitud:-99.09477
-        },
-        {//Cuautla se encuentra en la latitud 18.8106 y longitud -98.93525
-            latitud:18.8106,
-            longitud:-98.93525
-        },
-        {//Tláhuac se encuentra en la latitud 19.28689 y longitud -99.00507
-            latitud:19.28689,
-            longitud:-99.00507
-        },
-        {//Chetumal se encuentra en la latitud 18.51413 y longitud -88.30381
-            latitud:18.51413,
-            longitud:-88.30381
-        },
-        {//Piedras Negras se encuentra en la latitud 28.70007 y longitud -100.52353
-            latitud:28.70007,
-            longitud:-100.52353
-        },
-        {//Playa del Carmen se encuentra en la latitud 20.6274 y longitud -87.07987
-            latitud:20.6274,
-            longitud:-87.07987
-        },
-        {//Obregon se encuentra en la latitud 27.48642 y longitud -109.94083
-            latitud:27.48642,
-            longitud:-109.94083
-        },
-        {//Lagos de Moreno se encuentra en la latitud 21.35666 y longitud -101.93768
-            latitud:21.35666,
-            longitud:-101.93768
-        },
-        {//Temixco se encuentra en la latitud 18.85254 y longitud -99.22537
-            latitud:18.85254,
-            longitud:-99.22537
-        },
-        {//Zamora se encuentra en la latitud 19.9855 y longitud -102.28387
-            latitud:19.9855,
-            longitud:-102.28387
-        },
-        {//Nicolás Romero se encuentra en la latitud 19.64177 y longitud -99.3068
-            latitud:19.64177,
-            longitud:-99.3068
-        },
-        {//Córdoba se encuentra en la latitud 18.8842 y longitud -96.92559
-            latitud:18.8842,
-            longitud:-96.92559
-        },
-        {//Colima se encuentra en la latitud 19.24997 y longitud -103.72714
-            latitud:19.24997,
-            longitud:-103.72714
-        },
-        {//Cárdenas se encuentra en la latitud 18.00135 y longitud -93.37559
-            latitud:18.00135,
-            longitud:-93.37559
-        },
-        {//Ciudad Acuña se encuentra en la latitud 29.32322 y longitud -100.95217
-            latitud:29.32322,
-            longitud:-100.95217
-        },
-        {//Atlixco se encuentra en la latitud 18.90815 y longitud -98.43613
-            latitud:18.90815,
-            longitud:-98.43613
-        },
-        {//Manzanillo se encuentra en la latitud 19.11695 y longitud -104.34214
-            latitud:19.11695,
-            longitud:-104.34214
-        },
-        {//Zacatecas se encuentra en la latitud 22.76843 y longitud -102.58141
-            latitud:22.76843,
-            longitud:-102.58141
-        },
-        {//Gomez Palacio se encuentra en la latitud 25.56985 y longitud -103.49588
-            latitud:25.56985,
-            longitud:-103.49588
-        },
-        {//Pachuca de Soto se encuentra en la latitud 20.11697 y longitud -98.73329
-            latitud:20.11697,
-            longitud:-98.73329
-        },
-        {//Soledad de Graciano Sánchez se encuentra en la latitud 22.18912 y longitud -100.93792
-            latitud:22.18912,
-            longitud:-100.93792
-        },
-        {//Tlaxcala se encuentra en la latitud 19.31905 y longitud -98.19982
-            latitud:19.31905,
-            longitud:-98.19982
-        }
-    ]
-    var cps = await db_conf.edca_db.manyOrNone(`SELECT cp.ocid,t.title,cp.id,t.tenderid FROM public.contractingprocess cp, public.tender t WHERE 1=1 AND cp.id = t.contractingprocess_id	AND published = true order by cp.id;`);
-    console.log(`cps -> ${JSON.stringify(cps)}`)
-    console.log(`cps -> ${cps.length}`)
-    //inserts por proyecto cada indice es un nuevo proyecto con sus objetos hijos
-    for (let index = 1; index < 51; index++) {
-        console.log(`INDEX -> ${index}`)
-        
-        //llenado de arreglo para sector
-        var arraySector = new Array();
-        var sizeSector = Math.floor(Math.random()*19);
-        var locationId = Math.floor(Math.random()*110);
-        if(cps.length > 0){
-            var cpId = Math.floor(Math.random()*cps.length);
-        }
-        
-        for (let y = 0; y < sizeSector; y++) {
-            if(arraySector.length != undefined){
-                while(true){                    
-                    var sectorVal = sector[Math.floor(Math.random()*19)];
-                    if(!arraySector.includes(sectorVal)){
-                        arraySector.push(sectorVal);
-                        break;    
-                    }
-                }
-            }else{
-                arraySector.push(sector[Math.floor(Math.random()*19)]);
-            }
-            // console.log(`${JSON.stringify(arraySector)}`)
-        }
-        /** publisher, project package, project **/ 
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_publishers(id, name, scheme, uid, uri, "createdAt", "updatedAt")VALUES (${index}, 'Publisher ${index}', 'Scheme ${index}', 'uid ${index}', 'http://localhost:3000/edcapi/publisher/${index}', now(), now());`);
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_packages(id, uri, "publishedDate", version, license, "publicationPolicy", "createdAt", "updatedAt")VALUES (${index}, 'http://localhost:3000/edcapi/projectPackage/${index}', now(), '0.9.1', 'https://datos.gob.mx/libreusomx', 'http://bit.ly/politicadepublicacionINAI', now(), now());`);
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_projects(id, oc4ids, identifier, updated, title, description, status, purpose, sector, type, "oc4idsIdentifier", "createdAt", "updatedAt")VALUES (${index}, 'oc4ids', 'identificador', now(), 'Proyecto ${index}', 'Description proyecto ${index}', '${status[Math.floor(Math.random()*6)]}', 'proposito', '{${arraySector}}', '${type[Math.floor(Math.random()*4)]}', 'oc4ids-identificador', now(), now());`),
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_publisher_project_packages(id, "edcapiPublisherId", project_package_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`),
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_package_projects(id, project_package_id, project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
-        
-        // period 
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_periods(id, "startDate", "endDate", "maxExtentDate", "durationInDays", "createdAt", "updatedAt")VALUES (${index}, '20${Math.floor(Math.random()*(21-15+1)+15)}-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', '2021-06-${Math.floor(Math.random()*(30-28+1)+28)} 13:08:38', ${Math.ceil(Math.random()*31)}, now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_period_projects(id, project_id, project_period_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
-        
-        // asset life time
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_asset_lifetimes(id, "startDate", "endDate", "maxExtentDate", "durationInDays", "createdAt", "updatedAt")VALUES (${index}, '2021-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', '2021-06-${Math.floor(Math.random()*(30-28+1)+28)} 13:08:38', ${Math.ceil(Math.random()*31)}, now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_asset_lifetime_projects(id, project_id, "edcapiProjectAssetLifetimeId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
-        
-        // budget
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budgets(id, "requestDate", "approvalDate", "createdAt", "updatedAt")VALUES (${index}, '2021-06-${Math.floor(Math.random()*(16-1+1)+1)} 13:08:38', '2021-06-${Math.floor(Math.random()*(27-17+1)+17)} 13:08:38', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_projects(id, project_id, "edcapiBudgetId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+router.get('/edcapi/proyects/:year',async function(req, res){
+    console.log("························· /edcapi/proyects/ "  + JSON.stringify(req.params));
+    var queryMontoTotalProyectos = `SELECT * FROM public.view_monto_total_proyectos`;
+    var queryProyectos = `SELECT * FROM public.view_total_proyectos`;
+    var queryContrataciones = `SELECT * FROM public.view_total_contrataciones`;
+    var queryInfoProyectos = `SELECT * FROM public.view_info_proyectos`;
+    var queryTotalStatusProyectos = `SELECT * FROM public.view_total_status_proyectos`;
+    if(req.params.year != 0){
+        queryInfoProyectos = `${queryInfoProyectos} where view_info_proyectos."startDate" like '%${req.params.year}%'`;
+        queryMontoTotalProyectos = `SELECT 
+                                        SUM (CAST (ba.amount as double precision)) as monto_total_proyectos
+                                    FROM 
+                                        public.edcapi_projects p, 
+                                        public.edcapi_project_periods pp, 
+                                        public.edcapi_project_period_projects ppp,
+                                        public.edcapi_budget_projects bp, 
+                                        public.edcapi_budget_amount_budgets bab, 
+                                        public.edcapi_budget_amounts ba
+                                    WHERE 
+                                        1 = 1
+                                        AND p.is_public = true
+                                        AND p.id = bp.project_id
+                                        AND bp."edcapiBudgetId" = bab.budget_id
+                                        AND bab."edcapiBudgetAmountId" = ba.id
+                                        AND p.id = ppp.project_id
+                                        AND pp.id = ppp.project_period_id
+                                        AND pp."startDate" like '%${req.params.year}%'; `;
+        queryProyectos = `SELECT 
+                            COUNT(*) AS totalprojects
+                        FROM 
+                            public.edcapi_projects p,public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                        WHERE 
+                        1 = 1
+                        AND p.is_public = true
+                        AND p.id = ppp.project_id
+                        AND pp.id = ppp.project_period_id
+                        AND pp."startDate" like '%${req.params.year}%';`;
+        queryContrataciones =`SELECT 
+	                            COUNT(*) AS totalcontractingprocess
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = rcpp.project_id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        queryTotalStatusProyectos =`SELECT 
+                                p.status, count(p.status) as total_estatus
+                            FROM 
+                                public.edcapi_projects p,public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                            1 = 1
+                            AND p.is_public = true
+                            AND p.id = ppp.project_id
+                            AND pp.id = ppp.project_period_id
+                            AND pp."startDate" like '%${req.params.year}%'
+                            GROUP BY p.status;`;
+    }   
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryMontoTotalProyectos),
+            this.one(queryProyectos),
+            this.one(queryContrataciones),
+            this.manyOrNone(queryInfoProyectos),
+            this.manyOrNone(queryTotalStatusProyectos)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
 
-        // amount 
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_amounts(id, amount, currency, "createdAt", "updatedAt")VALUES (${index}, ${Math.ceil(Math.random()*999999)}, '${moneda[Math.floor(Math.random()*3)]}', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_budget_amount_budgets(id, budget_id, "edcapiBudgetAmountId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+router.get('/edcapi/contractings/:year',async function(req, res){
+    console.log("························· /edcapi/contractings/ "  + JSON.stringify(req.params));
+    var queryMontoContratadoContrataciones = `SELECT * FROM public.view_monto_contratado_contrataciones`;
+    var queryMontoEjercidoContrataciones = `SELECT * FROM public.view_monto_ejercido_contrataciones`;
+    var queryContrataciones = `SELECT * FROM public.view_total_contrataciones`;
+    var queryInfoContrataciones = `SELECT * FROM public.view_info_contrataciones`;
+    var queryInfoContratista = `SELECT * FROM public.view_info_contratistas_listas`;
+    if(req.params.year != 0){
 
-        // location
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_location_projects(id, description, type, "createdAt", "updatedAt")VALUES (${index}, 'Descripcion ${index}', 'Point', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_projects(id, "edcapiLocationProjectId", project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        queryInfoContrataciones = `${queryInfoContrataciones} where view_info_contrataciones."startDate" like '%${req.params.year}%'`;
+
+        queryMontoContratadoContrataciones = `SELECT 
+                                    SUM (c.value_amount) as monto_contratado
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_periods pp, 
+                                    public.edcapi_project_period_projects ppp,
+                                    public.edcapi_project_related_contracting_process_projects rcpp, 
+                                    public.edcapi_project_related_contracting_processes rcp,
+                                    public.contract c
+                                WHERE 
+                                    1 = 1 
+                                    AND p.is_public = true
+                                    AND p.id = rcpp.project_id
+                                    AND rcpp."edcapiProjectRelatedContractingProcessId" = rcp.id
+                                    AND rcp."contractingProcessId" = c.contractingprocess_id
+                                    AND p.id = ppp.project_id
+                                    AND pp.id = ppp.project_period_id
+                                    AND pp."startDate" like '%${req.params.year}%';`;
         
-        // adress, coordinate 
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_coordinates(id, latitude,longitude, "createdAt", "updatedAt")VALUES (${index}, ${locaciones[locationId].latitud}, ${locaciones[locationId].longitud}, now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_locations_coordinate_locations(id, "edcapiLocationProjectId", "edcapiProjectLocationCoordinateId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_location_addresses(id, "streetAddress", locality, region, "postalCode", "countryName", "createdAt", "updatedAt")VALUES (${index}, 'El Loto ${index}', 'Tultepec', 'Estado de México', '54987', 'México', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_locations_address_locations(id, "edcapiLocationProjectId", "edcapiProjectLocationAddressId", "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
+        queryMontoEjercidoContrataciones = `SELECT
+                                    SUM (it.value_amount) as monto_ejercido
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_periods pp, 
+                                    public.edcapi_project_period_projects ppp,
+                                    public.edcapi_project_related_contracting_process_projects rcpp, 
+                                    public.edcapi_project_related_contracting_processes rcp,
+                                    public.contract c,
+                                    public.implementation i,
+                                    public.implementationtransactions it
+                                WHERE 
+                                    1 = 1 
+                                    AND p.is_public = true
+                                    AND p.id = rcpp.project_id
+                                    AND rcpp."edcapiProjectRelatedContractingProcessId" = rcp.id
+                                    AND rcp."contractingProcessId" = c.contractingprocess_id
+                                    AND c.id = i.contract_id
+                                    AND i.id = it.implementation_id
+                                    AND p.id = ppp.project_id
+                                    AND pp.id = ppp.project_period_id
+                                    AND pp."startDate" like '%${req.params.year}%';`;
 
-        // contracting_processes
-        if(cps.length > 0){
-            await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_related_contracting_processes(id, ocid, title, "contractingProcessId", "tenderId", "createdAt", "updatedAt")VALUES (${index}, '${cps[cpId].ocid}', 'title', ${cps[cpId].id}, '${cps[cpId].tenderid}', now(), now());`)
-            await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_related_contracting_process_projects(id, "edcapiProjectRelatedContractingProcessId", project_id, "createdAt", "updatedAt")VALUES (${index}, ${index}, ${index}, now(), now());`)
-        }
+        queryContrataciones =`SELECT 
+	                            COUNT(*) AS totalcontractingprocess
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = rcpp.project_id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
         
-        //parties
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties(id, identifier, name, "createdAt", "updatedAt") VALUES (${index},'rfc-fghdfdfjhjdghj', 'Actor ${index}', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_party_projects(id, "edcapiProjectPartyId", project_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
+        queryInfoContratista = `SELECT
+                                    pt.contractingprocess_id, rcp.ocid, pxo.value as prefijoocid, pt.partyid, pt."name", pp."startDate"
+                                FROM 
+                                    public.edcapi_projects p, 
+                                    public.edcapi_project_related_contracting_processes rcp, 
+                                    public.edcapi_project_related_contracting_process_projects rcpp,
+                                    public.parties pt, 
+                                    public.roles r,
+                                    public.edcapi_project_periods pp, 
+                                    public.edcapi_project_period_projects ppp,
+                                    public.prefixocid pxo
+                                WHERE 
+                                    1 = 1
+                                    AND p.is_public = true
+                                    AND p.id = rcpp.project_id
+                                    AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                    AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                    AND pt.id = r.parties_id
+                                    AND p.id = ppp.project_id
+                                    AND pp.id = ppp.project_period_id
+                                    AND p.id = ppp.project_id
+                                    AND r.supplier = true
+                                    AND pp."startDate" like '%${req.params.year}%';`;
 
-        //identifier
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_identifiers(id, scheme, identifier, "legalName", uri, "createdAt", "updatedAt") VALUES (${index}, 'rfc', 'identifier', 'actor sa de cv', 'http://localhost:3000/project/party/${index}', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_identifier_projects(id, "edcapiProjectPartiesIdentifierId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
-
-        //addresses
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_addresses(id, "streetAddress", locality, region, "postalCode", "countryName", "createdAt", "updatedAt") VALUES (${index}, 'Sauces ${index}', 'Nezahualcoyotl', 'Edo de México', '57820', 'Mexico', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_address_parties(id, "edcapiProjectPartiesAddressId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)        
-
-        //contact_points
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_contact_points(id, name, email, telephone, "faxNumber", url, "createdAt", "updatedAt") VALUES (${index}, 'Jorge', 'jorge@prueba.com', '5566778899', '4444', 'http://prueba.com', now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_contact_point_parties(id, "edcapiProjectPartiesContactPointId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
-        
-        //roles
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_roles(id, buyer, "reviewBody", "publicAuthority", payer, "procuringEntity", funder, tenderer, enquirer, supplier, payee, "createdAt", "updatedAt") VALUES (${index}, null, null, 'on', null, null, null, null, null, null, null, now(), now());`)
-        await db_conf.edca_db.none(`INSERT INTO public.edcapi_project_parties_roles_parties(id, "edcapiProjectPartiesRoleId", party_id, "createdAt", "updatedAt") VALUES (${index}, ${index}, ${index}, now(), now());`)
-        
     }
-    return res.status(200).json({message:'todo ok'});
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryMontoContratadoContrataciones),
+            this.one(queryMontoEjercidoContrataciones),
+            this.one(queryContrataciones),
+            this.manyOrNone(queryInfoContrataciones),
+            this.manyOrNone(queryInfoContratista)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/contratacion/:tenderid',async function(req, res){
+    console.log("························· /edcapi/contratacion/:tenderid "  + JSON.stringify(req.params));
+    var queryGetInfoBanner = `
+        SELECT
+            DISTINCT 
+            ep.title as title_proyecto, eprcp."contractingProcessId", eprcp.ocid, cp.updated_date, t.title as title_contratacion, t.numberoftenderers, 
+            SUM (c.exchangerate_amount) as monto, count(c.contractingprocess_id) as contratos, t.tenderperiod_startdate, t.tenderperiod_enddate, t.description,
+            t.tenderid, t.status, t.value_amount, t.value_currency, t.procurementmethod, t.procurementmethod_details, t.mainprocurementcategory, t.procurementmethod_rationale,
+            t.awardcriteria, t.awardcriteria_details, t.eligibilitycriteria, t.tenderperiod_startdate, t.tenderperiod_enddate, t.submissionmethod, t.submissionmethod_details,
+            t.enquiryperiod_startdate, t.enquiryperiod_enddate, t.hasenquiries, t.awardperiod_startdate, t.awardperiod_enddate, t.numberoftenderers, p.rationale, 
+            (select
+                p.name as name_buyer
+            from 
+                public.parties as p,
+                public.roles as r
+            where 
+                1=1
+                AND r.parties_id = p.id
+                AND (r.buyer = true)
+                AND eprcp."contractingProcessId" = cp.id  
+                AND r.contractingprocess_id = eprcp."contractingProcessId"
+            limit 1),
+            (select
+                p.name as name_procuringEntity
+            from 
+                public.parties as p,
+                public.roles as r
+            where 
+                1=1
+                AND r.parties_id = p.id
+                AND (r.procuringentity = true)
+                AND eprcp."contractingProcessId" = cp.id  
+                AND r.contractingprocess_id = eprcp."contractingProcessId"
+            limit 1),
+            (SELECT 
+                count(*) as totalDocumentosAward
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.awarddocuments as ad
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = ad.contractingprocess_id
+				AND cp.ocid like '%${req.params.tenderid}%')
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.tender t,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.contract as c,
+				public.planning p
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND t.contractingprocess_id = eprcp."contractingProcessId"
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = c.contractingprocess_id
+                AND cp.id = p.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'
+            group by ep.id, eprcp."contractingProcessId", eprcp.ocid, cp.updated_date, t.title, t.numberoftenderers, t.tenderperiod_startdate, 
+            t.tenderperiod_enddate, t.description, name_buyer, name_procuringEntity, t.tenderid, t.status, t.value_amount, t.value_currency,
+            t.procurementmethod, t.procurementmethod_details, t.mainprocurementcategory, t.procurementmethod_rationale, t.awardcriteria, t.awardcriteria_details, t.eligibilitycriteria,
+            t.tenderperiod_startdate, t.tenderperiod_enddate, t.submissionmethod, t.submissionmethod_details, t.enquiryperiod_startdate, t.enquiryperiod_enddate, t.hasenquiries,
+            t.awardperiod_startdate, t.awardperiod_enddate, t.numberoftenderers, p.rationale`;
+
+    var queryGetInfoContratistas = `
+        select 
+            distinct
+                pt.contractingprocess_id, pt.name as contratista, pt.partyid
+            from 
+                public.edcapi_projects p,
+                public.edcapi_project_related_contracting_process_projects ercpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.parties as pt,
+                public.award as a,
+                public.awardsupplier as sa
+            where
+                1=1
+                AND p.id = ercpp.project_id
+                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"
+                AND cp.id = pt.contractingprocess_id
+                AND a.contractingprocess_id = cp.id
+                AND a.id = sa.award_id 
+                AND sa.parties_id = pt.id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoPlaneacion = `
+        SELECT
+            DISTINCT
+                pd.contractingprocess_id, pd.title, pd.description, pd.url, pd.date_published, pd.date_modified, pd.format
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.planningdocuments as pd
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = pd.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoCountDocumentsPlaneacion = `
+        SELECT 
+                count(*) as totalDocumentosPlaneacion
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.planningdocuments as pd
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = pd.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoItems = `
+        SELECT 
+                ti.contractingprocess_id, ti.classification_id, ti.classification_scheme, ti.classification_description, ti.quantity, ti.unit_name, ti.unit_value_amount, ti.unit_value_currency
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.tenderitem as ti
+            WHERE
+                1=1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = ti.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoCountItems = `
+        SELECT 
+                count(*) as totalItems
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.tenderitem as ti
+            WHERE
+                1=1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = ti.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoLicitantes = `
+        SELECT
+            DISTINCT
+                pt.name as licitante, pt.partyid as identificadorLicitante
+            FROM
+                public.contractingprocess as cp, 
+                public.parties as pt,
+                public.roles as r
+            where
+                1=1
+                AND cp.id = pt.contractingprocess_id
+                AND cp.id = r.contractingprocess_id
+                AND pt.id = r.parties_id
+                AND r.tenderer = true
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoCountDocumentsLicitacion = `
+        SELECT 
+                count(*) as totalDocumentosLicitacion
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.tenderdocuments as pd
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = pd.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoDocumentsLicitacion = `
+        SELECT
+            DISTINCT
+                td.contractingprocess_id, td.title, td.description, td.url, td.date_published, td.date_modified, td.format
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.tenderdocuments as td
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = td.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoCountHitosLicitacion = `
+        SELECT 
+            count(*) as totalHitosL
+        FROM 
+            public.edcapi_projects as ep,
+            public.edcapi_project_related_contracting_process_projects as eprcpp,
+            public.edcapi_project_related_contracting_processes as eprcp,
+            public.contractingprocess as cp,
+            public.edcapi_project_periods pp,
+            public.edcapi_project_period_projects ppp,
+            public.tendermilestone as tm
+        WHERE
+            1 = 1
+            AND ep.is_public = true
+            AND eprcpp.project_id = ep.id
+            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+            AND cp.id = eprcp."contractingProcessId"	
+            AND ep.id = ppp.project_id
+            AND pp.id = ppp.project_period_id
+            AND cp.id = tm.contractingprocess_id
+            AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoHitos = `
+        SELECT 
+            tm.contractingprocess_id, tm.title, tm.type, tm.description, tm.duedate, tm.date_modified, tm.status
+        FROM 
+            public.edcapi_projects as ep,
+            public.edcapi_project_related_contracting_process_projects as eprcpp,
+            public.edcapi_project_related_contracting_processes as eprcp,
+            public.contractingprocess as cp,
+            public.edcapi_project_periods pp,
+            public.edcapi_project_period_projects ppp,
+            public.tendermilestone as tm
+        WHERE
+            1 = 1
+            AND ep.is_public = true
+            AND eprcpp.project_id = ep.id
+            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+            AND cp.id = eprcp."contractingProcessId"	
+            AND ep.id = ppp.project_id
+            AND pp.id = ppp.project_period_id
+            AND cp.id = tm.contractingprocess_id
+            AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoDocumentsAward = `
+        SELECT
+            DISTINCT
+                a.awardid, ad.title, ad.description, ad.url, ad.date_published, ad.date_modified, ad.format
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+				public.award as a,
+                public.awarddocuments as ad
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND cp.id = a.contractingprocess_id
+				AND a.id = ad.award_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoAwards = `
+        SELECT
+            a.awardid as id_award, a.title as title_award, a.description as description_award, a.status as estatus_award, a.award_date as date_award, a.value_amount as monto_award, 
+            a.value_currency as currency_award, a.contractperiod_startdate as fechainicio_award, a.contractperiod_enddate as fechafin_award,
+            (SELECT 
+                count(*) as totalContratistasLicitacion
+            FROM
+                public.parties as pt,
+                public.awardsupplier as sa
+            WHERE
+                1 = 1
+                AND a.contractingprocess_id = cp.id
+                AND a.id = sa.award_id 
+                AND sa.parties_id = pt.id),
+            (SELECT 
+                count(*) as totalDocumentosAward
+            FROM
+                public.awarddocuments as ad
+            WHERE
+                1 = 1
+                AND cp.id = ad.contractingprocess_id
+                AND a.id = ad.award_id)
+        FROM
+            public.edcapi_projects as ep,
+            public.edcapi_project_related_contracting_process_projects as eprcpp,
+            public.edcapi_project_related_contracting_processes as eprcp,
+            public.contractingprocess as cp,
+            public.edcapi_project_periods pp,
+            public.edcapi_project_period_projects ppp,
+            public.award as a
+        WHERE
+            1 = 1
+            AND ep.is_public = true
+            AND eprcpp.project_id = ep.id
+            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+            AND cp.id = eprcp."contractingProcessId"	
+            AND ep.id = ppp.project_id
+            AND pp.id = ppp.project_period_id
+            AND cp.id = a.contractingprocess_id
+            AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryProyectosRelacionados = `
+        SELECT
+            DISTINCT 
+                ip.id,ip.oc4ids,ip.identifier,ip.updated,ip.title, ip.rfc, ip.publicAuthority, ip.monto,ip.moneda_budget, ip.sector,ip.type,ip."startDate",
+                ip."endDate",ip.status
+            FROM
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.view_info_proyectos as ip
+            WHERE
+                1 = 1
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"
+                AND ip.id = eprcpp.project_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryAdjudicacionesContratistas = `
+        SELECT 
+            a.awardid as id_award, pt.contractingprocess_id, pt.name as contratista, pt.partyid
+            FROM 
+                public.edcapi_projects p,
+                public.edcapi_project_related_contracting_process_projects ercpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.parties as pt,
+                public.award as a,
+                public.awardsupplier as sa
+            WHERE
+                1=1
+                AND p.id = ercpp.project_id
+                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"
+                AND cp.id = pt.contractingprocess_id
+                AND a.contractingprocess_id = cp.id
+                AND a.id = sa.award_id 
+                AND sa.parties_id = pt.id
+                AND cp.ocid like '%${req.params.tenderid}%'
+                group by id_award, pt.contractingprocess_id, contratista, pt.partyid`;
+
+    var queryGetInfoContracts = `
+        SELECT 
+            DISTINCT
+                c.contractingprocess_id, c.id as id, c.contractid, c.title, c.description, c.status, c.period_startdate, c.period_enddate, c.datesigned, 
+                c.exchangerate_amount, c.exchangerate_currency,
+                (SELECT 
+                        count(*) as totalItems
+                    FROM
+                        public.contractitem as ci
+                    WHERE
+                        1=1
+                        AND cp.id = ci.contractingprocess_id
+                        AND c.id = ci.contract_id),
+                (SELECT 
+                        count(*) as totalDocumentosContract
+                    FROM
+                        public.contractdocuments as cd
+                    WHERE
+                        1 = 1
+                        AND cp.id = cd.contractingprocess_id
+                        AND c.id = cd.contract_id),
+                (SELECT 
+                        im.status as statusImplementation
+                    FROM 
+                        public.implementation as im
+                    WHERE
+                        1 = 1
+                        AND cp.id = im.contractingprocess_id
+                        AND c.id = im.contract_id),
+                (SELECT
+                        count(*) as totaltransactions
+                    FROM
+                        public.implementation as i,
+                        public.implementationtransactions as its
+                    WHERE
+                        c.id = i.contract_id
+                        AND i.id = its.implementation_id),
+                (SELECT 
+                        count(*) as totalDocumentosImplementation
+                    FROM
+                        public.implementationdocuments as id,
+                        public.implementation as i
+                    WHERE
+                        c.id = i.contract_id
+                        AND i.id = id.implementation_id),
+                (SELECT 
+                        count(*) as totalModificaciones
+                    FROM
+                        public.contractamendmentchanges as cac
+                    WHERE
+                        1 = 1
+                        AND cp.id = cac.contractingprocess_id
+                        AND c.id = cac.contract_id)
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.edcapi_project_periods pp,
+                public.edcapi_project_period_projects ppp,
+                public.contract as c
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND ep.id = ppp.project_id
+                AND pp.id = ppp.project_period_id
+                AND cp.id = c.contractingprocess_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoItemsContratos = `
+        SELECT
+            DISTINCT
+                ci.contract_id as itemid, ci.classification_id, ci.classification_description, ci.quantity, ci.unit_name, ci.unit_value_amount, ci.unit_value_currency
+            FROM 
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.contract as c,
+                public.contractitem as ci
+            WHERE
+                1=1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND cp.id = ci.contractingprocess_id
+                AND c.id  = ci.contract_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoDocumentsContract = `
+        SELECT
+            DISTINCT
+                cd.contract_id as documentid, cd.title, cd.description, cd.url, cd.date_published, cd.date_modified, cd.format
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.contract as c,
+                public.contractdocuments as cd
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND cp.id = cd.contractingprocess_id
+                AND c.id  = cd.contract_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoImplementations = `
+        SELECT 
+            i.contract_id as idtransaction, it.transactionid, it.payee_name, it.payee_id, it.value_amount, it.value_currency, 
+            it.implementation_date, it.payer_name, it.payer_id
+        FROM
+            public.edcapi_projects as ep,
+            public.edcapi_project_related_contracting_process_projects as eprcpp,
+            public.edcapi_project_related_contracting_processes as eprcp,
+            public.contractingprocess as cp,
+            public.implementation as i,
+            public.implementationtransactions as it
+        WHERE
+            1 = 1
+            AND ep.is_public = true
+            AND eprcpp.project_id = ep.id
+            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+            AND cp.id = eprcp."contractingProcessId"
+            AND cp.id = i.contractingprocess_id
+            AND it.implementation_id = i.id
+            AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    var queryGetInfoDocumentsImplementation = `
+        SELECT
+            DISTINCT
+                i.contract_id as documentid, id.title, id.description, id.url, id.date_published, id.date_modified, id.format
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+				public.implementation as i,
+                public.implementationdocuments as id
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND cp.id = id.contractingprocess_id
+				AND i.id  = id.implementation_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+    
+    var queryGetInfoModificacionesContract = ` 
+        SELECT
+            DISTINCT
+                cac.contract_id as amendmentid, cac.amendments_id, cac.amendments_rationale, cac.amendments_description, cac.amendments_date
+            FROM
+                public.edcapi_projects as ep,
+                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                public.edcapi_project_related_contracting_processes as eprcp,
+                public.contractingprocess as cp,
+                public.contract as c,
+                public.contractamendmentchanges as cac
+            WHERE
+                1 = 1
+                AND ep.is_public = true
+                AND eprcpp.project_id = ep.id
+                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                AND cp.id = eprcp."contractingProcessId"	
+                AND cp.id = cac.contractingprocess_id
+                AND c.id  = cac.contract_id
+                AND cp.ocid like '%${req.params.tenderid}%'`;
+
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryGetInfoBanner),
+            this.manyOrNone(queryGetInfoContratistas),
+            this.manyOrNone(queryGetInfoPlaneacion),
+            this.one(queryGetInfoCountDocumentsPlaneacion),
+            this.manyOrNone(queryGetInfoItems),
+            this.one(queryGetInfoCountItems),
+            this.manyOrNone(queryGetInfoLicitantes),
+            this.one(queryGetInfoCountDocumentsLicitacion),
+            this.manyOrNone(queryGetInfoDocumentsLicitacion),
+            this.one(queryGetInfoCountHitosLicitacion),
+            this.manyOrNone(queryGetInfoHitos),
+            this.manyOrNone(queryGetInfoDocumentsAward),
+            this.manyOrNone(queryGetInfoAwards),
+            this.one(queryProyectosRelacionados),
+            this.manyOrNone(queryAdjudicacionesContratistas),
+            this.manyOrNone(queryGetInfoContracts),
+            this.manyOrNone(queryGetInfoItemsContratos),
+            this.manyOrNone(queryGetInfoDocumentsContract),
+            this.manyOrNone(queryGetInfoImplementations),
+            this.manyOrNone(queryGetInfoDocumentsImplementation),
+            this.manyOrNone(queryGetInfoModificacionesContract)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/contractors/:year',async function(req, res){
+    console.log("························· /edcapi/contractors/ "  + JSON.stringify(req.params));
+    var queryContratistas = `SELECT * FROM public.view_total_contratistas`;
+    var queryLicitantes = `SELECT * FROM public.view_total_licitantes`;
+    var queryInfoContratistas = `SELECT * FROM public.view_info_contratistas`;
+    var queryAwardsValue = `SELECT * FROM public.view_total_awards_valueamount`;
+    if(req.params.year != 0){
+
+        queryInfoContratistas = `${queryInfoContratistas} where view_info_contratistas."startDate" like '%${req.params.year}%'`;
+
+        queryContratistas = `SELECT 
+                                COUNT (DISTINCT pt.partyid) AS totalsuppliers
+                            FROM 
+                                public.edcapi_projects p,
+                                public.edcapi_project_periods pp, 
+                                public.edcapi_project_period_projects ppp, 
+                                public.edcapi_project_related_contracting_processes rcp, 
+                                public.edcapi_project_related_contracting_process_projects rcpp ,
+                                public.parties pt, 
+                                public.roles r
+                            WHERE 
+                                1 = 1
+                                AND p.is_public = true
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                AND pt.id = r.parties_id
+                                AND r.supplier = true
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        queryLicitantes = `SELECT
+                                COUNT (distinct pt.partyid) AS totaltenderers 
+                            FROM 
+                                public.edcapi_projects p,
+                                public.edcapi_project_periods pp, 
+                                public.edcapi_project_period_projects ppp, 
+                                public.edcapi_project_related_contracting_processes rcp, 
+                                public.edcapi_project_related_contracting_process_projects rcpp ,
+                                public.parties pt, 
+                                public.roles r
+                            WHERE 
+                                1 = 1
+                                AND p.is_public = true
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                AND pt.id = r.parties_id
+                                AND r.tenderer = true
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+
+        queryAwardsValue = `SELECT
+                                pt.partyid as rfc, round(coalesce(SUM(a.value_amount), 0)) as monto, COUNT(pt.partyid) as conteo
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects ercpp,
+                                public.edcapi_project_related_contracting_processes as eprcp,
+                                public.contractingprocess as cp,
+                                public.parties as pt,
+                                public.award as a,
+                                public.awardsupplier as sa,
+                                public.edcapi_project_periods pp,
+                                public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = ercpp.project_id
+                                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                AND cp.id = eprcp."contractingProcessId"
+                                AND cp.id = pt.contractingprocess_id
+                                AND a.contractingprocess_id = cp.id
+                                AND a.id = sa.award_id 
+                                AND sa.parties_id = pt.id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                            GROUP BY 
+                                pt.partyid;`;
+    }
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryContratistas),
+            this.one(queryLicitantes),
+            this.manyOrNone(queryInfoContratistas),
+            this.manyOrNone(queryAwardsValue)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/contratista/:partyid',async function(req, res){
+    console.log("························· /edcapi/contratista/:partyid "  + JSON.stringify(req.params));
+    var queryGetInfoBanner = `SELECT 
+                                DISTINCT on (pt.partyid)
+                                    p.id, pt.partyid, pt.identifier_id, pt.identifier_legalname as personaMoral, pt.name as personafisica, 
+                                    (SELECT 
+										DISTINCT 
+                                            array_to_string(array_agg(distinct sector::text), ', ') as sector
+										FROM
+											public.edcapi_projects p,
+											public.edcapi_project_related_contracting_process_projects ercpp,
+											public.edcapi_project_related_contracting_processes as eprcp,
+											public.contractingprocess as cp,
+											public.parties as pt,
+											public.award as a,
+											public.awardsupplier as sa
+										WHERE
+											1=1
+											AND p.is_public = true
+											AND p.id = ercpp.project_id
+											AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+											AND cp.id = eprcp."contractingProcessId"
+											AND cp.id = pt.contractingprocess_id
+											AND a.contractingprocess_id = cp.id
+											AND a.id = sa.award_id 
+											AND sa.parties_id = pt.id
+											AND pt.partyid like '${req.params.partyid}'), 
+                                    pt.address_streetaddress, pt.address_locality, 
+                                    pt.address_region, pt.address_postalcode, pt.address_countryname, pt.contactpoint_name, pt.contactpoint_email, pt.contactpoint_telephone, pt.contactpoint_url,
+                                    (SELECT
+                                        coalesce(SUM(it.value_amount),0) as montorecibido
+                                        FROM 
+                                            public.implementationtransactions as it
+                                        WHERE
+                                            it.payee_id = '${req.params.partyid}'
+                                    limit 1),
+                                    (SELECT DISTINCT
+                                            count(distinct pa.contractingprocess_id) as contratosParticipa
+                                        FROM
+                                            public.edcapi_projects as ep,
+                                            public.edcapi_project_related_contracting_process_projects as eprcpp,
+                                            public.edcapi_project_related_contracting_processes as eprcp,
+                                            public.award as a,
+                                            public.awardsupplier as sa,
+                                            public.parties as pa
+                                        WHERE
+                                            1 = 1
+                                            AND ep.is_public = true
+                                            AND eprcpp.project_id = ep.id
+                                            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                                            AND a.id = eprcp."contractingProcessId"	
+                                            and a.id = sa.award_id
+                                            and pa.id = sa.parties_id
+                                            AND pa.partyid like '${req.params.partyid}')
+                                FROM
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_related_contracting_process_projects ercpp,
+                                    public.edcapi_project_related_contracting_processes as eprcp,
+                                    public.contractingprocess as cp,
+                                    public.parties as pt,
+                                    public.award as a,
+                                    public.awardsupplier as sa
+                                WHERE
+                                    1=1
+                                    AND p.is_public = true
+                                    AND p.id = ercpp.project_id
+                                    AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                    AND cp.id = eprcp."contractingProcessId"
+                                    AND cp.id = pt.contractingprocess_id
+                                    AND a.contractingprocess_id = cp.id
+                                    AND a.id = sa.award_id 
+                                    AND sa.parties_id = pt.id
+                                    AND pt.partyid like '${req.params.partyid}';`;
+    
+    var queryInfoGrafica = `SELECT
+                                    pt.name as contratistaname, t.title as contratacionname, p.title as proyectoname,
+                                    (SELECT pt."name" as institucionname
+                                    FROM 
+                                        public.roles r,
+                                        public.parties pt
+                                    where 
+                                        1=1
+                                        AND r.parties_id = pt.id
+                                        AND (r.buyer = true)
+                                    limit 1)
+                            from 
+                                public.edcapi_projects p,
+                                public.edcapi_project_related_contracting_process_projects ercpp,
+                                public.edcapi_project_related_contracting_processes as eprcp,
+                                public.contractingprocess as cp,
+                                public.parties as pt,
+                                public.award as aw,
+                                public.awardsupplier as sa,
+                                public.tender t
+                            where
+                                1=1
+                                AND p.id = ercpp.project_id
+                                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                AND cp.id = eprcp."contractingProcessId"
+                                AND cp.id = pt.contractingprocess_id
+                                AND aw.contractingprocess_id = cp.id
+                                AND aw.id = sa.award_id 
+                                AND sa.parties_id = pt.id
+                                AND t.contractingprocess_id = cp.id
+                                AND pt.partyid like '${req.params.partyid}';`;
+
+    var queryContratacionesRelacionadas = `SELECT
+                                            ep.id, ep.identifier as identificadorProyecto, ep.title as title_proyectos, eprcp."contractingProcessId", eprcp.ocid, cp.ocid as idcontratacion,
+                                            cp.updated_date,t.status as tenderstatus, cp.awardstatus, cp.contractstatus, cp.implementationstatus,
+                                            t.title as title_contratacion, pxo.value as prefijoocid, replace(tenderid,'/','-') as tenderid, pp."startDate",
+                                            (select
+                                                exists (select * from public.view_info_instituciones as pru where pru.publicauthority = p.partyid) as registroedcapi
+                                                from 
+                                                    public.parties as p,
+                                                    public.roles as r
+                                                where 
+                                                    1=1
+                                                    AND r.parties_id = p.id
+                                                    AND (r.buyer = true)
+                                                    AND eprcp."contractingProcessId" = cp.id  
+                                                    AND r.contractingprocess_id = eprcp."contractingProcessId"),
+                                            (select
+                                                    p.partyid as rfc_buyer
+                                                from 
+                                                    public.parties as p,
+                                                    public.roles as r
+                                                where 
+                                                    1=1
+                                                    AND r.parties_id = p.id
+                                                    AND (r.buyer = true)
+                                                    AND eprcp."contractingProcessId" = cp.id  
+                                                    AND r.contractingprocess_id = eprcp."contractingProcessId"),
+                                            (select
+                                                    p.name as name_buyer
+                                                from 
+                                                    public.parties as p,
+                                                    public.roles as r
+                                                where 
+                                                    1=1
+                                                    AND r.parties_id = p.id
+                                                    AND (r.buyer = true)
+                                                    AND eprcp."contractingProcessId" = cp.id  
+                                                    AND r.contractingprocess_id = eprcp."contractingProcessId"),
+                                            (select
+                                                    round(coalesce(SUM(c.exchangerate_amount), 0)) as monto
+                                                from 
+                                                    public.contract as c
+                                                where 
+                                                    1=1
+                                                AND c.contractingprocess_id = eprcp."contractingProcessId"
+                                            )
+                                        FROM
+                                            public.edcapi_projects as ep,
+                                            public.edcapi_project_related_contracting_process_projects as eprcpp,
+                                            public.edcapi_project_related_contracting_processes as eprcp,
+                                            public.contractingprocess as cp,
+                                            public.tender t,
+                                            public.edcapi_project_periods pp,
+                                            public.edcapi_project_period_projects ppp,
+                                            public.parties as p,
+                                            public.roles as r,
+                                            public.prefixocid pxo
+                                        WHERE
+                                            1 = 1
+                                            AND ep.is_public = true
+                                            AND eprcpp.project_id = ep.id
+                                            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                                            AND cp.id = eprcp."contractingProcessId"	
+                                            AND t.contractingprocess_id = eprcp."contractingProcessId"
+                                            AND ep.id = ppp.project_id
+                                            AND pp.id = ppp.project_period_id
+                                            AND r.parties_id = p.id
+                                            AND (r.supplier = true)
+                                            AND eprcp."contractingProcessId" = cp.id  
+                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                            AND p.partyid like '${req.params.partyid}';`;
+
+    var queryInfoContratistas = `SELECT
+                                            pt.contractingprocess_id, pxo.value as prefijoocid, pt.partyid, pt."name", pp."startDate"
+                                        FROM 
+                                            public.edcapi_projects p, 
+                                            public.edcapi_project_related_contracting_processes rcp, 
+                                            public.edcapi_project_related_contracting_process_projects rcpp,
+                                            public.parties pt, 
+                                            public.roles r,
+                                            public.edcapi_project_periods pp, 
+                                            public.edcapi_project_period_projects ppp,
+                                            public.prefixocid pxo
+                                        WHERE 
+                                            1 = 1
+                                            AND p.is_public = true
+                                            AND p.id = rcpp.project_id
+                                            AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                            AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                            AND pt.id = r.parties_id
+                                            AND p.id = ppp.project_id
+                                            AND pp.id = ppp.project_period_id
+                                            AND p.id = ppp.project_id
+                                            AND r.supplier = true`;
+        
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryGetInfoBanner),
+            this.manyOrNone(queryContratacionesRelacionadas),
+            this.manyOrNone(queryInfoGrafica),
+            this.manyOrNone(queryInfoContratistas)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/institutions/:year',async function(req, res){
+    console.log("························· /edcapi/institutions/ "  + JSON.stringify(req.params));
+    var queryInstituciones = `SELECT * FROM public.view_total_instituciones`;
+    var queryProyectos = `SELECT * FROM public.view_total_proyectos`;
+    var queryContrataciones = `SELECT * FROM public.view_total_contrataciones`;
+    var queryInfoInstituciones = `SELECT * FROM public.view_info_instituciones`;
+    if(req.params.year != 0){
+
+        queryInfoInstituciones = `${queryInfoInstituciones} where view_info_instituciones."startDate" like '%${req.params.year}%'`;
+
+        queryInstituciones = `SELECT 
+                                    COUNT (distinct (pt.identifier)) as totalinstitutes
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_parties pt,
+                                    public.edcapi_project_party_projects ppp,
+                                    public.edcapi_project_parties_roles ppr,
+                                    public.edcapi_project_parties_roles_parties pprp,
+                                    public.edcapi_project_periods pp, public.edcapi_project_period_projects eppp
+                                WHERE
+                                    1 = 1
+                                    AND p.is_public = true
+                                    AND p.id = ppp.project_id
+                                    AND pt.id = ppp."edcapiProjectPartyId"
+                                    AND ppp."edcapiProjectPartyId" = pprp.party_id
+                                    AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                    AND ppr."publicAuthority" = 'on'
+                                    AND p.id = eppp.project_id
+                                    AND pp.id = eppp.project_period_id	
+                                    AND pp."startDate" like '%${req.params.year}%';`;
+
+        queryProyectos = `SELECT 
+                            COUNT(*) AS totalprojects
+                        FROM 
+                            public.edcapi_projects p,public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                        WHERE 
+                        1 = 1
+                        AND p.is_public = true
+                        AND p.id = ppp.project_id
+                        AND pp.id = ppp.project_period_id
+                        AND pp."startDate" like '%${req.params.year}%';`;
+    
+        queryContrataciones =`SELECT 
+                                COUNT(*) AS totalcontractingprocess
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_periods pp, public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = rcpp.project_id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                                AND pp."startDate" like '%${req.params.year}%';`;
+        }
+
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryInstituciones),
+            this.one(queryProyectos),
+            this.one(queryContrataciones),
+            this.manyOrNone(queryInfoInstituciones)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/institution/:partyid',async function(req, res){
+    console.log("························· /edcapi/institution/:partyid "  + JSON.stringify(req.params));
+    var queryGetInfoInstitucion = `SELECT
+                                    DISTINCT on (pt.identifier)
+                                        p.id, pt.identifier as rfc, ppi.identifier, ppi."legalName", ppcp."name", "streetAddress", locality, region, "postalCode", "countryName",
+                                        (SELECT
+                                            coalesce(SUM(c.exchangerate_amount),0) as montocontratado
+                                        FROM
+                                            public.edcapi_projects p,
+                                            public.edcapi_project_related_contracting_process_projects ercpp,
+                                            public.edcapi_project_related_contracting_processes eprcp,
+                                            public.contractingprocess cp,
+                                            public.contract c,
+                                            public.edcapi_project_party_projects ppp,
+                                            public.edcapi_project_parties pp
+                                        WHERE
+                                            1=1
+                                            AND p.is_public = true
+                                            AND p.id = ercpp.project_id
+                                            AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                            AND cp.id = eprcp."contractingProcessId"
+                                            AND cp.id = c.contractingprocess_id
+                                            AND p.id = ppp.project_id
+                                            AND ppp."edcapiProjectPartyId" = pp.id
+                                            AND pp.identifier = '${req.params.partyid}'
+                                        ),
+                                        (SELECT 
+                                            COUNT(*) AS totalprojects
+                                        FROM 
+                                            public.edcapi_projects p,
+                                            public.edcapi_project_party_projects ppp,
+                                            public.edcapi_project_parties pp
+                                        WHERE 
+                                            1 = 1
+                                            AND p.is_public = true
+                                            AND p.id = ppp.project_id
+                                            AND ppp."edcapiProjectPartyId" = pp.id 
+                                            AND pp.identifier = '${req.params.partyid}'),
+                                        (SELECT 
+                                            count (ercpp.project_id) as totalcontrataciones
+                                        FROM
+                                            public.edcapi_projects p,
+                                            public.edcapi_project_related_contracting_process_projects ercpp,
+                                            public.edcapi_project_related_contracting_processes eprcp,
+                                            public.edcapi_project_party_projects ppp,
+                                            public.edcapi_project_parties pp
+                                        WHERE
+                                            1=1
+                                            AND p.is_public = true
+                                            AND p.id = ercpp.project_id
+                                            AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                            AND p.id = ppp.project_id
+                                            AND ppp."edcapiProjectPartyId" = pp.id 
+                                            AND pp.identifier = '${req.params.partyid}'),
+                                        ppcp.email, ppcp.telephone, ppcp.url
+                                    FROM 
+                                        public.edcapi_projects p,
+                                        public.edcapi_project_parties pt,
+                                        public.edcapi_project_party_projects ppp,
+                                        public.edcapi_project_parties_roles ppr,
+                                        public.edcapi_project_parties_roles_parties pprp,
+                                        public.edcapi_project_parties_identifiers ppi,
+                                        public.edcapi_project_parties_identifier_projects ppip,
+                                        public.edcapi_project_parties_contact_points ppcp,
+                                        public.edcapi_project_parties_contact_point_parties ppcpp,
+                                        public.edcapi_project_parties_addresses ppa,
+                                        public.edcapi_project_parties_address_parties ppap
+                                    WHERE
+                                        1 = 1
+                                        AND p.is_public = true
+                                        AND p.id = ppp.project_id
+                                        AND pt.id = ppp."edcapiProjectPartyId"
+                                        AND ppp."edcapiProjectPartyId" = pprp.party_id
+                                        AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                        AND ppi.id = ppip."edcapiProjectPartiesIdentifierId"
+                                        AND ppip.party_id = pt.id
+                                        AND ppcp.id = ppcpp."edcapiProjectPartiesContactPointId"
+                                        AND ppcpp.party_id = pt.id
+                                        AND ppa.id = ppap."edcapiProjectPartiesAddressId"
+                                        AND ppap.party_id = pt.id
+                                        AND ppr."publicAuthority" = 'on'
+                                        AND pt.identifier = '${req.params.partyid}';`;
+
+    var queryInfoGraficaBuyer = `SELECT distinct
+                                        p.id, pp."name" as institucionname, p.title as proyectoname, pp.identifier, prcp."contractingProcessId", 
+                                        t.title as contratacionname, pts.name as contratistaname
+                                    FROM 
+                                        public.edcapi_projects p,
+                                        public.edcapi_project_parties pp,
+                                        public.edcapi_project_party_projects ppp,
+                                        public.edcapi_project_parties_roles ppr,
+                                        public.edcapi_project_parties_roles_parties pprp,
+                                        public.edcapi_project_related_contracting_process_projects prcpp,
+                                        public.edcapi_project_related_contracting_processes prcp,
+                                        public.contractingprocess cp,
+                                        public.tender t,
+                                        public.parties pts,
+                                        public.roles r,
+                                        public.awardsupplier aws
+                                    WHERE
+                                        1 = 1
+                                        AND p.is_public = true
+                                        AND p.id = ppp.project_id
+                                        AND ppp."edcapiProjectPartyId" = pp.id
+                                        AND pprp.party_id = pp.id
+                                        AND pprp."edcapiProjectPartiesRoleId" = ppr.id
+                                        AND ppr."publicAuthority" = 'on'
+                                        AND prcpp.project_id = p.id
+                                        AND prcpp."edcapiProjectRelatedContractingProcessId" = prcp.id
+                                        AND prcp."contractingProcessId" = cp.id
+                                        AND cp.id = t.id
+                                        AND pts.contractingprocess_id = cp.id
+                                        AND pts.id = r.parties_id
+                                        AND r.supplier = true
+                                        AND aws.parties_id = pts.id
+                                        AND pp.identifier like '${req.params.partyid}';`;
+    
+    var queryContratacionesRelacionadas = `SELECT
+                                                DISTINCT 
+                                                    ep.id, ep.identifier as identificadorProyecto, ep.title as title_proyectos, eprcp."contractingProcessId", eprcp.ocid, cp.ocid as idcontratacion,
+                                                    cp.updated_date,t.status as tenderstatus, cp.awardstatus, cp.contractstatus, cp.implementationstatus,
+                                                    t.title as title_contratacion, pxo.value as prefijoocid, replace(tenderid,'/','-') as tenderid, pp."startDate",
+                                                    (select
+                                                        exists (select * from public.view_info_instituciones as pru where pru.publicauthority = p.partyid) as registroedcapi
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.buyer = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"),
+                                                    (select
+                                                            p.id as id_institucion
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.buyer = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            p.id as id_contratista
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.supplier = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            p.partyid as rfc_buyer
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.buyer = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            p.name as name_buyer
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.buyer = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            p.partyid as rfc_supplier
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.supplier = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            p.name as name_supplier
+                                                        from 
+                                                            public.parties as p,
+                                                            public.roles as r
+                                                        where 
+                                                            1=1
+                                                            AND r.parties_id = p.id
+                                                            AND (r.supplier = true)
+                                                            AND eprcp."contractingProcessId" = cp.id  
+                                                            AND r.contractingprocess_id = eprcp."contractingProcessId"
+                                                    limit 1),
+                                                    (select
+                                                            round(coalesce(SUM(c.exchangerate_amount), 0)) as monto
+                                                        from 
+                                                            public.contract as c
+                                                        where 
+                                                            1=1
+                                                        AND c.contractingprocess_id = eprcp."contractingProcessId"
+                                                    ),
+                                                    ppts.identifier as autoridadpublica
+                                                FROM
+                                                    public.edcapi_projects as ep,
+                                                    public.edcapi_project_related_contracting_process_projects as eprcpp,
+                                                    public.edcapi_project_related_contracting_processes as eprcp,
+                                                    public.contractingprocess as cp,
+                                                    public.tender t,
+                                                    public.edcapi_project_periods pp,
+                                                    public.edcapi_project_period_projects ppp,
+                                                    public.edcapi_project_party_projects pppts,
+                                                    public.edcapi_project_parties ppts,
+                                                    public.edcapi_project_parties_roles ppr,
+                                                    public.edcapi_project_parties_roles_parties pprp,
+                                                    public.prefixocid pxo
+                                                WHERE
+                                                    1 = 1
+                                                    AND ep.is_public = true
+                                                    AND eprcpp.project_id = ep.id
+                                                    AND ppts.identifier like '${req.params.partyid}' 
+                                                    AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                                                    AND cp.id = eprcp."contractingProcessId"	
+                                                    AND t.contractingprocess_id = eprcp."contractingProcessId"
+                                                    AND ep.id = ppp.project_id
+                                                    AND pp.id = ppp.project_period_id
+                                                    AND eprcpp.project_id = pppts.project_id
+                                                    AND pppts."edcapiProjectPartyId" = ppts.id
+                                                    AND pppts."edcapiProjectPartyId" = pprp.party_id
+                                                    AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                                ORDER BY
+                                                    ep.id ASC;`;
+    
+    var queryInfoContratistasBuyer = `SELECT
+                                    pt.contractingprocess_id, pxo.value as prefijoocid, pt.partyid, pt."name", pp."startDate"
+                                FROM 
+                                    public.edcapi_projects p, 
+                                    public.edcapi_project_related_contracting_processes rcp, 
+                                    public.edcapi_project_related_contracting_process_projects rcpp,
+                                    public.parties pt, 
+                                    public.roles r,
+                                    public.edcapi_project_periods pp, 
+                                    public.edcapi_project_period_projects ppp,
+                                    public.prefixocid pxo
+                                WHERE 
+                                    1 = 1
+                                    AND p.is_public = true
+                                    AND p.id = rcpp.project_id
+                                    AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                    AND rcp."contractingProcessId" = pt.contractingprocess_id
+                                    AND pt.id = r.parties_id
+                                    AND p.id = ppp.project_id
+                                    AND pp.id = ppp.project_period_id
+                                    AND p.id = ppp.project_id
+                                    AND r.supplier = true`;
+
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryGetInfoInstitucion),
+            this.manyOrNone(queryContratacionesRelacionadas),
+            this.manyOrNone(queryInfoGraficaBuyer),
+            this.manyOrNone(queryInfoContratistasBuyer)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/proyect/:identifier',async function(req, res){
+    console.log("························· /edcapi/proyect/:identifier "  + JSON.stringify(req.params));
+    var queryGetInfoProyect = `SELECT DISTINCT
+                                    p.id as project_id,p.identifier,p.updated,p.title, p.description, p.sector,p.purpose as propositoproyecto,ps.title as status,pt.title as type,pp.name as public_authority,pp.identifier as rfc,ba.amount as monto,
+                                    ppe."startDate",ppe."endDate",ppe."durationInDays", b."approvalDate"
+                                    ,(SELECT 
+                                            coalesce(SUM(i.value_amount), 0) as monto
+                                        FROM 
+                                            public.edcapi_projects p,
+                                            public.edcapi_project_related_contracting_process_projects rcpp,
+                                            public.edcapi_project_related_contracting_processes rcp, 
+                                            public.contract c,
+                                            public.implementationtransactions i
+                                        WHERE 
+                                            1=1
+                                            AND p.id = rcpp.project_id
+                                            AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                            AND rcp."contractingProcessId" = c.contractingprocess_id
+                                            AND c.contractingprocess_id = i.contractingprocess_id
+                                            AND p.identifier = '${req.params.identifier}') as monto_ejercido,
+                                        (SELECT 
+                                            count(rcp.id)
+                                        FROM 
+                                            public.edcapi_projects po,
+                                            public.edcapi_project_related_contracting_processes rcp, 
+                                            public.edcapi_project_related_contracting_process_projects rcpp
+                                        WHERE 
+                                            1 = 1 
+                                            AND po.is_public = true
+                                            AND po.identifier = '${req.params.identifier}'
+                                            AND po.id = rcpp.project_id
+                                            AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId") as cuenta_contrataciones,
+                                        (SELECT                                
+                                                epc."endDate" as dateterminacion
+                                            FROM 
+                                                public.edcapi_projects p,
+                                                public.edcapi_project_completion_projects epcp,
+                                                public.edcapi_project_completions epc
+                                            WHERE 
+                                                1=1
+                                                AND p.id = epcp.project_id
+                                                AND epcp."edcapiProjectCompletionId" = epc.id
+                                                AND p.identifier = '${req.params.identifier}'),
+                                        (SELECT                                
+                                                epc.amount as montoterminacion
+                                            FROM 
+                                                public.edcapi_projects p,
+                                                public.edcapi_project_completion_projects epcp,
+                                                public.edcapi_project_completions epc
+                                            WHERE 
+                                                1=1
+                                                AND p.id = epcp.project_id
+                                                AND epcp."edcapiProjectCompletionId" = epc.id
+                                                AND p.identifier = '${req.params.identifier}')
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_party_projects ppp,
+                                    public.edcapi_project_parties pp,
+                                    public.edcapi_project_parties_roles_parties pprp,
+                                    public.edcapi_project_parties_roles ppr,
+                                    public.edcapi_budget_projects bp,
+                                    public.edcapi_budget_amounts ba,
+                                    public.edcapi_project_related_contracting_process_projects rcpp,
+                                    public.edcapi_project_related_contracting_processes rcp,
+                                    public.edcapi_project_period_projects eppp,
+                                    public.edcapi_project_periods ppe,
+                                    public.edcapi_project_statuses ps,
+									public.edcapi_project_types pt,
+									public.edcapi_budgets b
+                                WHERE 
+                                    1=1
+                                    AND p.id = ppp.project_id
+                                    AND pp.id = ppp."edcapiProjectPartyId"
+                                    AND pp.id = pprp.party_id
+                                    AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                    AND p.id = bp.project_id
+                                    AND ba.id = bp."edcapiBudgetId"
+                                    AND p.id = rcpp.project_id
+                                    AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                    AND ppr."publicAuthority" = 'on'
+                                    AND p.id = eppp.project_id
+                                    AND ppe.id = eppp.project_period_id
+                                    AND p.status = ps.code
+									AND p.type = pt.code
+                                    AND p.id = b.id
+                                    AND p.identifier = '${req.params.identifier}'`;   
+    var queryLocations = `SELECT 
+                            p.id as project_id
+                            ,plc.latitude,plc.longitude
+                            ,pla.region,pla."streetAddress",pla."postalCode",pla.locality,pla."countryName"
+                        FROM 
+                            public.edcapi_projects p,
+                            public.edcapi_project_location_projects plp, 
+                            public.edcapi_location_projects lp,
+                            public.edcapi_project_locations_coordinate_locations plcl, 
+                            public.edcapi_project_location_coordinates plc,
+                            public.edcapi_project_locations_address_locations plal, 
+                            public.edcapi_project_location_addresses pla
+                        WHERE 
+                            1=1
+                            AND p.is_public = true
+                            AND p.id = plp.project_id  
+                            AND lp.id = plp."edcapiLocationProjectId"
+                            AND lp.id = plcl."edcapiLocationProjectId"
+                            AND plcl."edcapiProjectLocationCoordinateId" = plc.id
+                            AND lp.id = plal."edcapiLocationProjectId"
+                            AND plal."edcapiProjectLocationAddressId" = pla.id 
+                            AND p.identifier = '${req.params.identifier}'`;
+
+    var queryContratacionRelacionada = `
+                        SELECT
+                        DISTINCT 
+                            ep.id, ep.title as title_proyectos, ep.identifier as identifierProyecto, eprcp."contractingProcessId", eprcp.ocid,
+                            cp.updated_date,t.status as tenderstatus, cp.awardstatus, cp.contractstatus, cp.implementationstatus,
+                            t.title as title_contratacion, t.procurementmethod, replace(tenderid,'/','-') as tenderid, pp."startDate",
+                            (select
+                                exists (select * from public.view_info_instituciones as pru where pru.publicauthority = p.partyid) as registroedcapi
+                                from 
+                                    public.parties as p,
+                                    public.roles as r
+                                where 
+                                    1=1
+                                    AND r.parties_id = p.id
+                                    AND (r.buyer = true)
+                                    AND eprcp."contractingProcessId" = cp.id  
+                                    AND r.contractingprocess_id = eprcp."contractingProcessId"),
+                            (select
+                                    p.id as id_institucion
+                                from 
+                                    public.parties as p,
+                                    public.roles as r
+                                where 
+                                    1=1
+                                    AND r.parties_id = p.id
+                                    AND (r.buyer = true)
+                                    AND eprcp."contractingProcessId" = cp.id  
+                                    AND r.contractingprocess_id = eprcp."contractingProcessId"
+                            limit 1),
+                            (select
+                                    p.id as id_contratista
+                                from 
+                                    public.parties as p,
+                                    public.roles as r
+                                where 
+                                    1=1
+                                    AND r.parties_id = p.id
+                                    AND (r.supplier = true)
+                                    AND eprcp."contractingProcessId" = cp.id  
+                                    AND r.contractingprocess_id = eprcp."contractingProcessId"
+                            limit 1),
+                            (select
+                                    p.partyid as rfc_buyer
+                                from 
+                                    public.parties as p,
+                                    public.roles as r
+                                where 
+                                    1=1
+                                    AND r.parties_id = p.id
+                                    AND (r.buyer = true)
+                                    AND eprcp."contractingProcessId" = cp.id  
+                                    AND r.contractingprocess_id = eprcp."contractingProcessId"
+                            limit 1),
+                            (select
+                                    p.name as name_buyer
+                                from 
+                                    public.parties as p,
+                                    public.roles as r
+                                where 
+                                    1=1
+                                    AND r.parties_id = p.id
+                                    AND (r.buyer = true)
+                                    AND eprcp."contractingProcessId" = cp.id  
+                                    AND r.contractingprocess_id = eprcp."contractingProcessId"
+                            limit 1),
+                            (select
+                                    round(coalesce(SUM(c.exchangerate_amount), 0)) as monto
+                                from 
+                                    public.contract as c
+                                where 
+                                    1=1
+                                AND c.contractingprocess_id = eprcp."contractingProcessId"
+                            )
+                        FROM
+                            public.edcapi_projects as ep,
+                            public.edcapi_project_related_contracting_process_projects as eprcpp,
+                            public.edcapi_project_related_contracting_processes as eprcp,
+                            public.contractingprocess as cp,
+                            public.tender t,
+                            public.edcapi_project_periods pp,
+                            public.edcapi_project_period_projects ppp
+                        WHERE
+                            1 = 1
+                            AND ep.is_public = true
+                            AND ep.identifier = '${req.params.identifier}'
+                            AND eprcpp.project_id = ep.id
+                            AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                            AND cp.id = eprcp."contractingProcessId"	
+                            AND t.contractingprocess_id = eprcp."contractingProcessId"
+                            AND ep.id = ppp.project_id
+                            AND pp.id = ppp.project_period_id
+                        ORDER BY
+                            ep.id ASC;`;
+    var queryContratistasRelacionados = `SELECT
+                                        DISTINCT on (rfc)
+                                            p.id, cp.id as cp_id, pxo.value as prefijoocid, pt.partyid as rfc,
+                                            (select 
+                                                round(coalesce(SUM(value_amount), 0)) as monto
+                                            from 
+                                                public.award as a,
+                                                public.awardsupplier as sa,
+                                                public.parties as pa
+                                            where
+                                                1=1
+                                                and a.id = sa.award_id
+                                                and pa.id = sa.parties_id
+                                                AND pa.partyid = pt.partyid
+                                            limit 1),
+                                            (select 
+                                                COUNT(pa.partyid) as conteo
+                                            from 
+                                                public.edcapi_projects p, 
+                                                public.edcapi_project_related_contracting_process_projects ercpp,
+                                                public.edcapi_project_related_contracting_processes as eprcp,
+                                                public.award as a,
+                                                public.awardsupplier as sa,
+                                                public.parties as pa
+                                            where
+                                                1=1
+                                                AND p.is_public = true
+                                                AND p.id = ercpp.project_id
+                                                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                                AND a.id = eprcp."contractingProcessId"
+                                                AND a.id = sa.award_id
+                                                AND pa.id = sa.parties_id
+                                                AND pa.partyid = pt.partyid),
+                                                p.id as id_contratista, name, address_locality, address_region, address_postalcode, contactpoint_url, pp."startDate"
+                                        FROM 
+                                            public.edcapi_projects p, 
+                                            public.edcapi_project_related_contracting_process_projects ercpp,
+                                            public.edcapi_project_related_contracting_processes as eprcp,
+                                            public.contractingprocess as cp,
+                                            public.parties as pt,
+                                            public.award as a,
+                                            public.awardsupplier as sa,
+                                            public.edcapi_project_periods pp,
+                                            public.edcapi_project_period_projects ppp,
+											public.prefixocid pxo
+                                        WHERE 
+                                            1 = 1 
+                                            AND p.is_public = true
+                                            AND p.identifier = '${req.params.identifier}'
+                                            AND p.id = ercpp.project_id
+                                            AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                            AND cp.id = eprcp."contractingProcessId"
+                                            AND cp.id = pt.contractingprocess_id
+                                            AND a.contractingprocess_id = cp.id
+                                            AND a.id = sa.award_id 
+                                            AND sa.parties_id = pt.id
+                                            AND p.id = ppp.project_id
+                                            AND pp.id = ppp.project_period_id
+                                        ORDER BY 
+                                            pt.partyid;`;
+    var queryProyectosRelacionados = `SELECT 
+                                        DISTINCT ep.id, ep.oc4ids, ep.identifier,ep.updated,ep.title, epp.identifier as rfc, epp.name as publicAuthority,
+                                        ba.amount as monto,ba.currency as moneda_budget, ep.sector,pt.title AS type,pp."startDate",pp."endDate",ps.title AS status
+                                    FROM 
+                                        public.edcapi_projects p,
+                                        public.edcapi_project_related_project_projects prpp,
+                                        public.edcapi_project_related_projects prp,
+                                        public.edcapi_projects ep,
+                                        public.edcapi_budget_projects bp, 
+                                        public.edcapi_budget_amount_budgets bab, 
+                                        public.edcapi_budget_amounts ba,
+                                        public.edcapi_project_statuses ps,
+                                        public.edcapi_project_types pt,
+                                        public.edcapi_project_periods pp, 
+                                        public.edcapi_project_period_projects ppp,
+                                        public.edcapi_project_party_projects pparty,
+                                        public.edcapi_project_parties epp,
+                                        public.edcapi_project_parties_roles ppr,
+                                        public.edcapi_project_parties_roles_parties pprp 
+                                    WHERE 
+                                        1=1
+                                        AND p.is_public = true
+                                        AND p.id = prpp.project_id
+                                        AND p.identifier = '${req.params.identifier}'
+                                        AND prp.id = prpp."edcapiProjectRelatedProjectId"
+                                        AND prp.title = ep."oc4idsIdentifier"
+                                        AND ep.id = bp.project_id
+                                        AND bp."edcapiBudgetId" = bab.budget_id
+                                        AND bab."edcapiBudgetAmountId" = ba.id 
+                                        AND ep.status = ps.code
+                                        AND ep.type = pt.code
+                                        AND ep.id = ppp.project_id
+                                        AND pp.id = ppp.project_period_id
+                                        AND ep.id = ppp.project_id
+                                        AND pparty.project_id = ep.id
+                                        AND pparty."edcapiProjectPartyId" = pprp.party_id
+                                        AND pparty."edcapiProjectPartyId" = epp.id
+                                        AND ppr.id = pprp."edcapiProjectPartiesRoleId"
+                                        AND ppr."publicAuthority" = 'on'`;
+
+    var queryDesglosePresupuesto = `SELECT id, identifier, string_agg(clavepresupuestaria, ', ') as clavepresupuestaria, name, amount, currency
+                                        FROM 
+                                            public.view_desglose_presupuesto_proyecto as vdpp
+                                        WHERE 
+                                            vdpp.identifier = '${req.params.identifier}'
+                                        group by 
+                                            vdpp.id, vdpp.identifier, vdpp.name, vdpp.amount, vdpp.currency
+                                        `;
+
+    var queryDocumentacion = `SELECT  
+                                p.identifier, pd."documentType", pd.title, pd.description, pd.format, pd."datePublished", pd."dateModified", pd.url
+                            FROM 
+                                public.edcapi_projects as p,
+                                public.edcapi_project_documents as pd,
+                                public.edcapi_project_document_projects as pdp
+                            WHERE 
+                                1=1
+                                AND p.is_public = true
+                                AND p.id = pdp.project_id
+                                AND pd.id = pdp."edcapiProjectDocumentId"
+                                AND p.identifier = '${req.params.identifier}'`;
+
+    var queryLineaTiempo = `SELECT 
+                                DISTINCT
+                                p.id as project_id,p.identifier,ppe."startDate",p.title,b."approvalDate",ba.amount as montobudget,ba.currency as currencybudget, 
+                            (SELECT                                  
+                                    epc."endDate" as enddatecompletion
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_completion_projects epcp,
+                                    public.edcapi_project_completions epc
+                                WHERE 
+                                    1=1
+                                    AND p.id = epcp.project_id
+                                    AND epcp."edcapiProjectCompletionId" = epc.id
+                                    AND p.identifier = '${req.params.identifier}'),
+                            (SELECT                                  
+                                    epc.amount as amountcompletion
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_completion_projects epcp,
+                                    public.edcapi_project_completions epc
+                                WHERE 
+                                    1=1
+                                    AND p.id = epcp.project_id
+                                    AND epcp."edcapiProjectCompletionId" = epc.id
+                                    AND p.identifier = '${req.params.identifier}'),
+                            (SELECT
+                                    epc.currency as currencycompletion
+                                FROM 
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_completion_projects epcp,
+                                    public.edcapi_project_completions epc
+                                WHERE 
+                                    1=1
+                                    AND p.id = epcp.project_id
+                                    AND epcp."edcapiProjectCompletionId" = epc.id
+                                    AND p.identifier = '${req.params.identifier}'),
+                                p.status
+                            FROM 
+                                public.edcapi_projects p,
+                                public.edcapi_project_party_projects ppp,
+                                public.edcapi_budget_projects bp,
+                                public.edcapi_budget_amounts ba,
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_related_contracting_processes rcp,
+                                public.edcapi_project_period_projects eppp,
+                                public.edcapi_project_periods ppe,
+                                public.edcapi_budgets b
+                            WHERE 
+                                1=1
+                                AND p.id = ppp.project_id
+                                AND p.id = bp.project_id
+                                AND ba.id = bp."edcapiBudgetId"
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND p.id = eppp.project_id
+                                AND ppe.id = eppp.project_period_id
+                                AND p.id = b.id
+                                AND p.identifier = '${req.params.identifier}'`;
+
+    var queryInfoTenderLinea = `SELECT 
+                                DISTINCT
+                                p.identifier, t.contractingprocess_id,
+                                t.tenderperiod_startdate as tenderstartdate, t.title as titletender, t.numberoftenderers
+                            FROM 
+                                public.edcapi_projects p,
+                                public.edcapi_project_party_projects ppp,
+                                public.edcapi_project_related_contracting_process_projects rcpp,
+                                public.edcapi_project_related_contracting_processes rcp,
+                                public.tender t
+                            WHERE 
+                                1=1
+                                AND p.id = ppp.project_id
+                                AND p.id = rcpp.project_id
+                                AND rcp.id = rcpp."edcapiProjectRelatedContractingProcessId"
+                                AND rcp."contractingProcessId" = t.contractingprocess_id
+                                AND p.identifier = '${req.params.identifier}'`;
+
+    var queryInfoAwards = `SELECT
+                                    p.identifier, a.awardid, string_agg(pt.name, ', ') as suppliersAward, a.award_date, a.value_amount, a.value_currency
+                                FROM
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_related_contracting_process_projects ercpp,
+                                    public.edcapi_project_related_contracting_processes as eprcp,
+                                    public.contractingprocess as cp,
+                                    public.parties as pt,
+                                    public.award as a,
+                                    public.awardsupplier as sa
+                                WHERE
+                                    1=1
+                                    AND p.id = ercpp.project_id
+                                    AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                    AND cp.id = eprcp."contractingProcessId"
+                                    AND cp.id = pt.contractingprocess_id
+                                    AND a.contractingprocess_id = cp.id
+                                    AND a.id = sa.award_id 
+                                    AND sa.parties_id = pt.id
+                                    AND p.identifier = '${req.params.identifier}'
+                                    group by a.awardid, p.identifier, a.award_date, a.value_amount, a.value_currency`;
+    
+    var queryAmountContracts = `SELECT
+                                    p.identifier, a.id, a.contractingprocess_id, a.awardid, string_agg(pt.name, ', ') as suppliersAward,
+                                    c.title as titlecontrato, coalesce(c.exchangerate_amount, 0) as montocontrato, c.exchangerate_currency as currencycontrato, c.datesigned
+                                FROM
+                                    public.edcapi_projects p,
+                                    public.edcapi_project_related_contracting_process_projects ercpp,
+                                    public.edcapi_project_related_contracting_processes as eprcp,
+                                    public.contractingprocess as cp,
+                                    public.parties as pt,
+                                    public.award as a,
+                                    public.awardsupplier as sa,
+                                    public.contract as c
+                                WHERE
+                                    1=1
+                                    AND p.id = ercpp.project_id
+                                    AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                    AND cp.id = eprcp."contractingProcessId"
+                                    AND cp.id = pt.contractingprocess_id
+                                    AND a.contractingprocess_id = cp.id
+                                    AND a.id = sa.award_id 
+                                    AND sa.parties_id = pt.id
+                                    AND (NULLIF(c.awardid, '')::int) = a.id
+                                    AND p.identifier = '${req.params.identifier}'
+                                    group by a.id, a.contractingprocess_id, a.awardid, p.identifier, titlecontrato, montocontrato, currencycontrato, c.datesigned`;
+    
+    var queryAwardsValue = `SELECT
+                                pt.partyid as rfc, round(coalesce(SUM(a.value_amount), 0)) as monto, COUNT(pt.partyid) as conteo
+                            FROM 
+                                public.edcapi_projects p, 
+                                public.edcapi_project_related_contracting_process_projects ercpp,
+                                public.edcapi_project_related_contracting_processes as eprcp,
+                                public.contractingprocess as cp,
+                                public.parties as pt,
+                                public.award as a,
+                                public.awardsupplier as sa,
+                                public.edcapi_project_periods pp,
+                                public.edcapi_project_period_projects ppp
+                            WHERE 
+                                1 = 1 
+                                AND p.is_public = true
+                                AND p.id = ercpp.project_id
+                                AND eprcp.id = ercpp."edcapiProjectRelatedContractingProcessId"
+                                AND cp.id = eprcp."contractingProcessId"
+                                AND cp.id = pt.contractingprocess_id
+                                AND a.contractingprocess_id = cp.id
+                                AND a.id = sa.award_id 
+                                AND sa.parties_id = pt.id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_period_id
+                            GROUP BY 
+                                pt.partyid;`;
+
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.one(queryGetInfoProyect),
+            this.manyOrNone(queryLocations),
+            this.manyOrNone(queryContratacionRelacionada),
+            this.manyOrNone(queryContratistasRelacionados),
+            this.manyOrNone(queryProyectosRelacionados),
+            this.manyOrNone(queryDesglosePresupuesto),
+            this.manyOrNone(queryDocumentacion),
+            this.one(queryLineaTiempo),
+            this.manyOrNone(queryInfoTenderLinea),
+            this.manyOrNone(queryInfoAwards),
+            this.manyOrNone(queryAmountContracts),
+            this.manyOrNone(queryAwardsValue)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
+});
+
+router.get('/edcapi/indicadores/:year',async function(req, res){
+    console.log("························· /edcapi/indicadores/:year "  + JSON.stringify(req.params));
+    var queryIndicadores = `SELECT * FROM public.view_total_indicadores`;
+    var queryIndicadoresContrataciones = `SELECT * FROM public.view_total_indicadores_contrataciones`;
+
+    if(req.params.year != 0){
+
+        queryIndicadores =`SELECT 
+                                p.id as proyecto_id, p.status, count(p.status) as total_estatus, sum(eba.amount) as monto, eba.currency, pp."startDate"
+                            FROM
+                                public.edcapi_budget_amounts as eba,
+                                public.edcapi_projects p,
+                                public.edcapi_project_periods pp, 
+                                public.edcapi_project_period_projects ppp
+                            WHERE
+                                1=1
+                                AND p.is_public = true
+                                AND p.id = eba.id
+                                AND p.id = ppp.project_id
+                                AND pp.id = ppp.project_id
+                                AND pp."startDate" like '%${req.params.year}%'
+                            GROUP BY 
+                                p.id, p.status, ppp.project_id, eba.currency, pp."startDate"
+                            ORDER BY
+                                p.id;`;
+        queryIndicadoresContrataciones = `SELECT
+                                            DISTINCT 
+                                                eprcp."contractingProcessId", t.status as statustender, cp.awardstatus as statusaward, cp.contractstatus as statuscontract, 
+                                                cp.implementationstatus as statusimplementation, t.procurementmethod_details as detalleprocedimiento, 
+                                                sum(exchangerate_amount) as monto, pxo.value as prefijoocid, pp."startDate"
+                                            FROM
+                                                public.edcapi_projects as ep,
+                                                public.edcapi_project_related_contracting_process_projects as eprcpp,
+                                                public.edcapi_project_related_contracting_processes as eprcp,
+                                                public.contractingprocess as cp,
+                                                public.tender t,
+                                                public.edcapi_project_periods pp,
+                                                public.edcapi_project_period_projects ppp,
+                                                public.prefixocid pxo,
+                                                public.contract c
+                                            WHERE
+                                                1 = 1
+                                                AND ep.is_public = true
+                                                AND eprcpp.project_id = ep.id
+                                                AND eprcp.id = eprcpp."edcapiProjectRelatedContractingProcessId"
+                                                AND cp.id = eprcp."contractingProcessId"	
+                                                AND t.contractingprocess_id = eprcp."contractingProcessId"
+                                                AND ep.id = ppp.project_id
+                                                AND pp.id = ppp.project_period_id
+                                                AND c.contractingprocess_id = eprcp."contractingProcessId"
+                                            GROUP BY
+                                                eprcp."contractingProcessId", t.status, cp.awardstatus, cp.contractstatus, cp.implementationstatus, pxo.value, 
+                                                t.procurementmethod_details, pp."startDate";`;
+    }
+
+    db_conf.edca_db.task(function (t) {
+        return this.batch([
+            this.manyOrNone(queryIndicadores),
+            this.manyOrNone(queryIndicadoresContrataciones)
+        ]);
+    }).then(function (data) {
+        console.log(JSON.stringify(data))
+        return res.status(200).json({data});
+    }).catch(function (error) {
+        console.log("ERROR: ", error);
+        return res.status(404).json({
+            status: 404,
+            message: `No se encontrarón resultados.`
+        })
+    });
 });
 
 module.exports = router;

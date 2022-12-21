@@ -25,7 +25,7 @@
         <div class="col-sm-12">
             <p>
                 <label data-tooltip="crear_proceso" title='Origen de los recursos públicos que serán utilizados para financiar la contratación. Tomado de la lista de códigos "Origen".'>Origen de los recursos públicos * </label>
-                <select class="form-control" name="origin" data-source="programaticstructure">
+                <select class="form-control" name="origin" data-source="programaticstructure" required>
                     <option value="">Seleccione una opción</option>
                     <% for (var i = 0; i < origins.length; i++) { %>
                     <option value="<%= origins[i].value %>"<%= budget.origin == origins[i].value ? 'selected' : '' %>><%= origins[i].value %></option>
@@ -48,7 +48,7 @@
         <div class="col-sm-6">
             <p>
                 <label title="">Monto</label>
-                <input type="number" class="form-control" name="amount" data-vregex="decimal" min="0" step="0.01" value="<%= budget.amount %>" required readonly>
+                <input type="number" class="form-control" name="amount" data-vregex="decimal" min="0" step="0.01" value="<%= budget.amount %>" required>
             </p>
         </div>
         <div class="col-sm-6">
@@ -76,20 +76,20 @@
     <div class="row">
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de inicio</label>
+                <label title="">Fecha de inicio *</label>
                 <input type="text" class="form-control" id="newbudgetbreakdown_date1" name="budgetbreakdownPeriod_startdate" value="<%= budget.budgetbreakdownperiod_startdate_text %>" required>
             </p>
         </div>
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de término</label>
+                <label title="">Fecha de término *</label>
                 <input type="text" class="form-control" id="newbudgetbreakdown_date2" name="budgetbreakdownPeriod_enddate" value="<%= budget.budgetbreakdownperiod_enddate_text %>" required>
             </p>
         </div>
     </div>
 
     <p>
-        <label title="">Fuente del presupuesto</label>
+        <label title="">Fuente del presupuesto *</label>
         <select class="form-control" name="source_id" required>
             <option value="" <%= budget.source_id == '' ? 'selected' : '' %>>Seleccione una opción</option>
             <% for (var i = 0; i < sources.length; i++) { %>

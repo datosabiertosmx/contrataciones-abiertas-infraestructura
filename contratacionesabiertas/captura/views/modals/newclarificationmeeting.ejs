@@ -6,11 +6,11 @@
         <input type="text" name="clarificationmeetingid" value="<%= clarificationmeetingid %>" class="form-control" required />
     </div>-->
      <div class="form-group">
-        <label title="La fecha en que se realizó esta junta de aclaraciones.">Fecha de realización de la junta</label>
+        <label title="La fecha en que se realizó esta junta de aclaraciones.">Fecha de realización de la junta *</label>
         <input type="text" name="date" value="<%= date_text %>" class="form-control" required />
     </div>
     <div class="form-group clearfix">
-        <label title="Los licitantes u otros actores asistentes a la junta de aclaraciones.">Asistentes a la junta</label>
+        <label title="Los licitantes u otros actores asistentes a la junta de aclaraciones.">Asistentes a la junta *</label>
         <select name="attenders" multiple="multiple" class="form-control">
             <%for(let i = 0, attender = listAttenders[i]; listAttenders && i < listAttenders.length; i++, attender = listAttenders[i]) { %>
                 <option value="<%= attender.id%>" <%= attenders.indexOf(attender.id) !== -1 ? 'selected' : '' %> >

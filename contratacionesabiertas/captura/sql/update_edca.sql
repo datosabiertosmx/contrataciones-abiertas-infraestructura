@@ -153,7 +153,7 @@ sequelize db:migrate
 sequelize db:seed:all 
 */
 
--- Ejecutar para eliminar project
+-- Ejecutar para eliminar tablas de project
 
 /*
 sequelize db:migrate:undo:all

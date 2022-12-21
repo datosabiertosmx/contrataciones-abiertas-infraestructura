@@ -44,14 +44,14 @@
         <div class="col-md-6">
             <p>
                 <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>
-                    Fecha de inicio </label>
+                    Fecha de inicio *</label>
                 <input type="text" id="budget_budgetBreakdown_period_startDate" class="form-control" name="budget_budgetBreakdown_period_startDate"  required>
             </p>
         </div>
         <div class="col-md-6">
             <p>
                 <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>
-                    Fecha de término </label>
+                    Fecha de término *</label>
                 <input type="text" id="budget_budgetBreakdown_period_endDate" class="form-control" name="budget_budgetBreakdown_period_endDate"  required>
             </p>
         </div>
@@ -74,7 +74,7 @@
     </div>
     <p>
         <label data-tooltip="crear_proceso" title='La organización u otro actor relacionado con este registro de presupuesto. Si el monto es positivo, indica que existe un flujo de recursos desde el actor al procedimiento de contratación. Si el monto es negativo, indica un pago desde el procedimiento de contratación hacia este actor.'>
-            Actor fuente</label>
+            Actor fuente *</label>
         <select class="form-control" name="budget_budgetBreakdown_sourceParty" required>
             <option value="">Seleccione una opción</option>
             <% for (var i = 0; i < parties.length; i++) { %>

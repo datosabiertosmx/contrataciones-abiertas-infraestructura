@@ -10,8 +10,7 @@
     <input type="hidden" name="id" value="<%= transaction.id %>">
 
     <p><label data-tooltip="crear_proceso" title='Fecha en que se realiza la transacción para el pago asociado con el contrato.'>
-            Fecha de la transacción
-            <!--Date--></label>
+            Fecha de la transacción *<!--Date--></label>
         <input class="form-control" id="newtrans_date1" name="implementation_date" value="<%= transaction.implementation_date_text %>" required></p>
 
     <label data-tooltip="crear_proceso" title='El valor económico de la transacción realizada relacionada con el pago asociado con el contrato.'>
@@ -23,23 +22,26 @@
         <div class="col-sm-4">
             <p>
                 <label data-tooltip="crear_proceso" title='Monto como número.'>
-                    Monto sin impuestos</label>
+                    Monto sin impuestos *</label>
                 <input type="number" class="form-control" step="0.01" name="value_amountNet" value="<%= transaction.value_amountnet %>" required>
             </p>
         </div>
         <div class="col-sm-4">
             <p>
                 <label data-tooltip="crear_proceso" title='Monto total de la transacción con impuestos incluidos (en su caso).'>
-                    Monto total</label>
+                    Monto total *</label>
                 <input type="number" class="form-control" step="0.01" name="value_amount" value="<%= transaction.value_amount %>" required>
             </p>
         </div>
+        <!--Value currency-->
         <div class="col-sm-4">
             <p>
                 <label data-tooltip="crear_proceso" title='La moneda en el formato ISO 4217 de 3 letras.'>
                     Moneda
-                    <!--Value currency--></label>
-                <select class="form-control" name="value_currency">
+                </label>
+
+                <input name="value_currency" value="MXN" hidden readonly></input>
+                <select class="form-control" name="value_currency" disabled>
                     <% for ( var i = 0; i < currencies.length; i++){ %>
                     <option value="<%= currencies[i].alphabetic_code %>" <%= currencies[i].alphabetic_code == transaction.value_currency ? 'selected' : '' %>>
                         <%= currencies[i].currency+' - '+currencies[i].alphabetic_code%>
@@ -69,7 +71,7 @@
     </label>
 
         <p>
-            <label data-tooltip="crear_proceso" title=''>Nombre común</label>
+            <label data-tooltip="crear_proceso" title=''>Nombre común *</label>
             <select name="payer_name" class="form-control" onchange="setIdentifier(this, 'payer_id', 'data-id')" required>
                 <option value="" data-id="" <%= transaction.payer_name == '' ? 'selected' : '' %>>Seleccione una opción</option>
                 <% for(var i = 0; i < transmitters.length; i++) { %>
@@ -89,7 +91,7 @@
     </label>
 
         <p>
-            <label data-tooltip="crear_proceso" title=''>Nombre común</label>
+            <label data-tooltip="crear_proceso" title=''>Nombre común *</label>
             <select name="payee_name" class="form-control" onchange="setIdentifier(this, 'payee_id', 'data-id')" required>
                 <option value="" data-id="" <%= transaction.payee_name == '' ? 'selected' : '' %>>Seleccione una opción</option>
                 <% for(var i = 0; i < receivers.length; i++) { %>

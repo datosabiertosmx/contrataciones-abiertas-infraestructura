@@ -56,7 +56,7 @@
 
     <p>
         <label data-tooltip="crear_proceso" title="Un nombre o descripción de esta ubicación. Esto puede incluir el nombre(s) de la ubicación(es), o puede proporcionar una descripción legible por humanos de la ubicación cubierta. Esta descripción puede ser usada en una interfaz de usuario.">
-            Descripción </label>
+            Descripción *</label>
         <textarea class="form-control" name="locations_description" rows="5" minlength="1" maxlength="900" value ="<%= data[0].description %>" required><%=(typeof data[0].description!= "undefined")? data[0].description : ''%></textarea>
     </p>
     

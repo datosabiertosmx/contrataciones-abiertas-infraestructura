@@ -2,7 +2,7 @@
     <input type="text" name="related_project_id" value = "<%= data.id %>" hidden>
 
     <p>
-        <label data-tooltip="crear_proceso" title='El tipo de relación, usando la lista de códigos abierta [relatedProjects].'>Relación</label>
+        <label data-tooltip="crear_proceso" title='El tipo de relación, usando la lista de códigos abierta [relatedProjects].'>Relación *</label>
             <select class="form-control" name="relatedProject_relationship" required>
                 <option value="">Seleccione una opción</option>
                 <% for (var i = 0; i < relatedProjects.length; i++) { %>
@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-md-12">
                 <label data-tooltip="crear_proceso" title='El título del proyecto relacionado, donde se hace referencia a una contratación abierta para un proyecto de infraestructura, este campo debe coincidir con el campo del título en el proyecto relacionado.'>
-                    Identificador</label>
+                    Identificador *</label>
                 <input type="text" name="relatedProject_title" class="form-control" value = "<%= data.title %>" required>
             </div>
         </div>

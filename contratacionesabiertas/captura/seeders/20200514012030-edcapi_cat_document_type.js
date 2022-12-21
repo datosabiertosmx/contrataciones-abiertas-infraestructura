@@ -61,7 +61,7 @@ module.exports = {
       },
       {
         code: 'environmentalImpact',
-        title: 'Impacto medioambiental',
+        title: 'Evaluación de Impacto Ambiental',
         description: 'Documentación de las evaluaciones de los impactos ambientales (por ejemplo, impactos sobre la flora, la fauna y los bosques, áreas de belleza natural, las emisiones de carbono, etc.) y medidas de mitigación (por ejemplo, control de la contaminación, soluciones de bajo carbono, madera sostenible, etc.) para este procedimiento de contratación o proyecto .',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -145,7 +145,7 @@ module.exports = {
       },
       {
         code: 'termination',
-        title: 'Terminación',
+        title: 'Certificado de terminación (informe de conclusión)',
         description: 'La información sobre la terminación del contrato.',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -173,7 +173,7 @@ module.exports = {
       },
       {
         code: 'landAndSettlementImpact',
-        title: 'Impacto sobre la tierra y los asentamientos',
+        title: 'Evaluación de suelos y de asentamientos',
         description: 'La cantidad de tierra y propiedad que fue adquirida por el proyecto (por ejemplo, 25 km 2 de tierra), y los impactos relacionados con el esquema (por ejemplo, temas arqueológicos (trasladaron sajón lugar de enterramiento), los asentamientos locales / indígenas (reubicados 5 pueblos indígenas de 500 aldeanos cada uno), impactos en las empresas locales, por ejemplo (30 propiedades comerciales comprados)).',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -199,6 +199,55 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        code: 'compensationAndRelocationPlan',
+        title: 'Plan de compensación y de reubicación',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'projectApprovalOpinion',
+        title: 'Dictamen de aprobación del proyecto',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'projectPlan',
+        title: 'Plan financiero',
+        description: 'Documentación de la planeación de proyecto para este proceso de contratación y, donde aplique, una copia del documento del plan de proyecto',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'projectPlanUpdate',
+        title: 'Actualización al plan financiero',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'executiveContractReport',
+        title: 'Informe ejecutivo de la ejecución de los contratos',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'progressionReport',
+        title: 'Reportes de progreso',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        code: 'socialEnvironmentalImpactAssessment',
+        title: 'Evaluaciones de impacto social y ambiental',
+        description: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
     ], {});
   },
 

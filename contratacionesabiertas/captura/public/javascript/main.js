@@ -8,34 +8,30 @@
 
 /* Date picker */
 $(function () {
-    $('#lici_date1, #lici_date2, #lici_date3, #lici_date4, #lici_date5, #lici_date6, #lici_date7').datetimepicker({
+    $('#lici_date1, #lici_date2, #lici_date3, #lici_date4, #lici_date5, #lici_date6').datetimepicker({
         locale: 'es',
-        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
-    });
-    $('#adju_date1, #adju_date2, #adju_date3, #adju_date4').datetimepicker({
-        locale: 'es',
-        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
-    });
-    $('#cont_date1, #cont_date2, #cont_date3, #cont_date4').datetimepicker({
-        locale: 'es',
-        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
-    });
-
-    $('#datetimepicker1').datetimepicker({
-        format: 'YYYY-MM-DD',
         useCurrent: false,
-        locale: 'es'
-    }).on("dp.change", function (e) {
-        $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
+    });
+    $('#adju_date1, #adju_date2, #adju_date3').datetimepicker({
+        locale: 'es',
+        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
+    });
+    $('#cont_date1, #cont_date2, #cont_date3').datetimepicker({
+        locale: 'es',
+        format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
     });
 
-    $('#datetimepicker2').datetimepicker({
-        format: 'YYYY-MM-DD',
-        useCurrent: true,
-        locale: 'es'
-    }).on("dp.change", function (e) {
-        $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+    $('#lici_date1').on('dp.change', function(e){
+        $('#lici_date2').data("DateTimePicker").minDate(e.date);
     });
+    $('#lici_date3').on('dp.change', function(e){
+        $('#lici_date4').data("DateTimePicker").minDate(e.date);
+    });
+    $('#lici_date5').on('dp.change', function(e){
+        $('#lici_date6').data("DateTimePicker").minDate(e.date);
+    });
+    
 
     $(document).on('keypress', '[data-vregex]', function (e) {
         var type = this.getAttribute('data-vregex').toLowerCase();
@@ -184,22 +180,26 @@ $( "#planning_form" ).submit(function(event) {
 //Update tender
 $("#tender_form").submit(function(event) {
     event.preventDefault();
+    var select = document.getElementById('statusLicitacion');
+    if (select.value != '') {
+        var form = $(this);
+        const cpid = form.find('[name="contractingprocess_id"]').val();
 
-    var form = $(this);
-    const cpid = form.find('[name="contractingprocess_id"]').val();
+        setTags(cpid, 2, function(tags) {
+            var params = form.serializeArray();
 
-    setTags(cpid, 2, function(tags) {
-        var params = form.serializeArray();
+            tags.forEach(element => {
+                params.push({ name: element.name, value: element.value });
+            });
 
-        tags.forEach(element => {
-            params.push({ name: element.name, value: element.value });
+            $.post('/update-tender/', params).done(function (data) {
+                alert(data);
+                location.reload();
+            });
         });
-
-        $.post('/update-tender/', params).done(function (data) {
-            alert(data);
-            location.reload();
-        });
-    });
+    } else {
+        alert("Debes seleccionar y guardar un Estatus");
+    }
 });
 
 // load award
@@ -249,6 +249,9 @@ let updateListAwards = (cpid, refresh, callback) => {
         useCurrent: false,
         locale: 'es'
     });
+    $('#adju_date2').on('dp.change', function(e){
+        $('#adju_date3').data("DateTimePicker").minDate(e.date);
+    });
 
     $('select[name="suppliers"]').multiselect({
         buttonContainer: '<div class="dropdown"></div>',
@@ -272,26 +275,31 @@ $('#list-awards a[data-actual="true"]:first').click();
 //Update award
 $("#award").on('submit', '#award_form',function(event){
     event.preventDefault();
-    
-    var form = $(this);
-    const cpid = form.find('[name="contractingprocess_id"]').val();
+    var select = document.getElementById('statusAdjudicacion');
 
-    setTags(cpid, 3, function(tags) {
-        var params = form.serializeArray();
+    if (select.value != '') {
+        var form = $(this);
+        const cpid = form.find('[name="contractingprocess_id"]').val();
 
-        tags.forEach(element => {
-            params.push({ name: element.name, value: element.value });
+        setTags(cpid, 3, function(tags) {
+            var params = form.serializeArray();
+
+            tags.forEach(element => {
+                params.push({ name: element.name, value: element.value });
+            });
+
+            $.post('/update-award/', params, data => {
+                alert(data.message);
+                updateListAwards(cpid, true);
+                location.reload();
+            }).fail(function (data) {
+                alert(data.responseJSON.message);
+            });
         });
-
-        $.post('/update-award/', params, data => {
-            alert(data.message);
-            updateListAwards(cpid, true);
-        }).fail(function (data) {
-            alert(data.responseJSON.message);
-        });
-    });
+    } else {
+        alert('Seleccionar y guardar un Estatus');
+    }
 });
-
 
 // delete award
 $("#award").on('click', '#btnDeleteAward', function(event){
@@ -372,6 +380,9 @@ let updateListContracts = (cpid, refresh, callback) => {
         useCurrent: false,
         locale: 'es'
     })
+    $('#cont_date1').on('dp.change', function(e){
+        $('#cont_date2').data("DateTimePicker").minDate(e.date);
+    });
 
     generateAwardSelector();
 
@@ -387,27 +398,32 @@ $('#list-contracts a[data-actual="true"]:first').click();
 //Update contracts
 $("#contract").on('submit', '#contract_form',function(event){
     event.preventDefault();
+    var select = document.getElementById('statusContratacion');
 
-    var form = $(this);
-    const cpid = form.find('[name="contractingprocess_id"]').val();
+    if (select.value != '') {
+        var form = $(this);
+        const cpid = form.find('[name="contractingprocess_id"]').val();
 
-    setTags(cpid, 4, function(tags) {
-        var params = form.serializeArray();
+        setTags(cpid, 4, function(tags) {
+            var params = form.serializeArray();
 
-        tags.forEach(element => {
-            params.push({ name: element.name, value: element.value });
+            tags.forEach(element => {
+                params.push({ name: element.name, value: element.value });
+            });
+
+            $.post('/update-contract/', params, data => {
+                alert(data.message);
+                updateListContracts(cpid, true);
+                updateListImplementations(cpid, true);
+                location.reload();
+            }).fail(function (data) {
+                alert(data.responseJSON.message);
+            });
         });
-
-        $.post('/update-contract/', params, data => {
-            alert(data.message);
-            updateListContracts(cpid, true);
-            updateListImplementations(cpid, true);
-        }).fail(function (data) {
-            alert(data.responseJSON.message);
-        });
-    });
+    } else {
+        alert('Seleccionar y guardar un Estatus');
+    }
 });
-
 
 // delete contract
 $("#contract").on('click', '#btnDeleteContract', function(event){
@@ -428,9 +444,6 @@ $("#contract").on('click', '#btnDeleteContract', function(event){
         });
     }
 });
-
-
-
 
 
 // load implementations
@@ -471,6 +484,15 @@ let updateListImplementations = (cpid, refresh, callback) => {
     $('#frmImplementationStatus [name="id"]').val($('#implementation_form [name="id"]').val());
     let textoStatus = $('#frmImplementationStatus select option:selected').text();
     $('#implementationStatus').text(textoStatus === 'Seleccione una opción' ? '' : textoStatus);
+}
+
+function validarEstatusEjecucion(){
+    var select = document.getElementById('statusEjecucion');
+
+    if (select.value == '') {
+        event.stopPropagation()
+        alert('Seleccionar y guardar un Estatus');
+    }
 }
 
 // load first implementation
@@ -618,7 +640,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
                             $.post('/1.1/party', $(this).serialize()).done(function (data) {
                                 alert( data.description );
                                 $('[name="numberoftenderers"]').val(data.total);
-                                if ( data.status === 'Ok'){ modal.modal('hide');}
+                                if ( data.status === 'Ok')
                                 location.reload();
                             });
                             e.preventDefault();
@@ -1236,9 +1258,23 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 fkname: button.data('fkname'),
                 fkid: button.data('fkid') }, function () {
                 //Date picker
-                $('#newdoc_date1, #newdoc_date2').datetimepicker({
+                // $('#newdoc_date1, #newdoc_date2').datetimepicker({
+                //     locale: 'es',
+                //     format: 'YYYY-MM-DD HH:mm:ss'
+                // });
+                modal.find('#newdoc_date1').datetimepicker({
+                    locale: 'es',
+                    useCurrent: false,
+                    format: 'YYYY-MM-DD HH:mm:ss'
+                }).on("dp.change", function (e) {
+                    modal.find('#newdoc_date2').data("DateTimePicker").minDate(e.date);
+                });
+
+                modal.find('#newdoc_date2').datetimepicker({
                     locale: 'es',
                     format: 'YYYY-MM-DD HH:mm:ss'
+                }).on("dp.change", function (e) {
+                    modal.find('#newdoc_date1').data("DateTimePicker").maxDate(e.date);
                 });
                 //submit new document event
                 $('#newdoc_form').submit(function (event) {
@@ -1330,7 +1366,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
             });
             break;
         case "new_quote_request":
-            modal.find('.modal-title').text('Solicitud de cotizacion');
+            modal.find('.modal-title').text('Solicitud de cotización');
             modal.find('#modal_content').html("");
             modal.find('#modal_content').load('/newquoterequest-fields', {
                 localid: button.data('contractingprocess_id')
@@ -1370,6 +1406,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
 
                 modal.find('#newquote_date1').datetimepicker({
                     locale: 'es',
+                    useCurrent: false,
                     format: 'YYYY-MM-DD HH:mm:ss'
                 }).on("dp.change", function (e) {
                     modal.find('#newquote_date2').data("DateTimePicker").minDate(e.date);
@@ -1511,6 +1548,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 
                 modal.find('#newquote_date1').datetimepicker({
                     locale: 'es',
+                    useCurrent: false,
                     format: 'YYYY-MM-DD HH:mm:ss'
                 }).on("dp.change", function (e) {
                     modal.find('#newquote_date2').data("DateTimePicker").minDate(e.date);
@@ -1646,16 +1684,17 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 
                 modal.find('#newguarantee_date1').datetimepicker({
                     locale: 'es',
+                    useCurrent: false,
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    // modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
+                    modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
                 });
 
                 modal.find('#newguarantee_date2').datetimepicker({
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    // modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
+                    modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
                 });
 
                 modal.find('#newguarantee_form').submit(function (event) {
@@ -1676,6 +1715,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
             }, function () {
                 modal.find('#newbudgetbreakdown_date1').datetimepicker({
                     locale: 'es',
+                    useCurrent: false,
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
                     modal.find('#newbudgetbreakdown_date2').data("DateTimePicker").minDate(e.date);
@@ -1777,6 +1817,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
                 });
             });
             break;
+        // Agregar contratación relacionada al proyecto
         case "add_related_summary_procedure_project":
             modal.find('.modal-title').text('Proceso de contratación');
             modal.find('#modal_content').html("");
@@ -2164,14 +2205,14 @@ $('#genericModal').on('show.bs.modal', function (event) {
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    // modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
+                    modal.find('#newguarantee_date2').data("DateTimePicker").minDate(e.date);
                 });
 
                 modal.find('#newguarantee_date2').datetimepicker({
                     locale: 'es',
                     format: 'YYYY-MM-DD'
                 }).on("dp.change", function (e) {
-                    // modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
+                    modal.find('#newguarantee_date1').data("DateTimePicker").maxDate(e.date);
                 });
 
                 modal.find('#editguarantee_form').submit(function (event) {
@@ -2419,7 +2460,7 @@ $('#genericModal').on('show.bs.modal', function (event) {
             });
             break;
         case "edit_quote_request":
-            modal.find('.modal-title').text('Editar solicitud de cotizacion');
+            modal.find('.modal-title').text('Editar solicitud de cotización');
             modal.find('#modal_content').html("");
             modal.find('#modal_content').load('/editquoterequest-fields', {
                 id: button.data('id'),
@@ -2754,12 +2795,26 @@ $('#genericModal').on('show.bs.modal', function (event) {
             modal.find('#modal_content').load('/editdoc-fields', { 
                 id: button.data('id'),
                 stage: button.data('stage'),
-                table: button.data('table'), function () {
-                setTimeout(() => {
+                table: button.data('table')
+            }, function () {
+                
                     //Date picker
-                    modal.find('#newdoc_date1, #newdoc_date2').datetimepicker({
+                    // modal.find('#newdoc_date1, #newdoc_date2').datetimepicker({
+                    //     locale: 'es',
+                    //     format: 'YYYY-MM-DD HH:mm:ss'
+                    // });
+                    modal.find('#newdoc_date1').datetimepicker({
                         locale: 'es',
                         format: 'YYYY-MM-DD HH:mm:ss'
+                    }).on("dp.change", function (e) {
+                        modal.find('#newdoc_date2').data("DateTimePicker").minDate(e.date);
+                    });
+    
+                    modal.find('#newdoc_date2').datetimepicker({
+                        locale: 'es',
+                        format: 'YYYY-MM-DD HH:mm:ss'
+                    }).on("dp.change", function (e) {
+                        modal.find('#newdoc_date1').data("DateTimePicker").maxDate(e.date);
                     });
 
                     //submit new document event
@@ -2770,8 +2825,8 @@ $('#genericModal').on('show.bs.modal', function (event) {
                         });
                         event.preventDefault();
                     });
-                }, 500);
-            }});
+                
+            });
             break;
         case "edit_documents":
             modal.find('.modal-title').text('Documentos');
@@ -3566,7 +3621,7 @@ $(document).on('hidden.bs.modal', '.modal', function () {
     $('.modal:visible').length && $(document.body).addClass('modal-open');
 });
 
-$('#frmTenderStatus, #frmAwardStatus, #frmImplementationStatus, #frmContractStatus').submit(function(e) {
+$('#frmTenderStatus, #frmAwardStatus, #frmContractStatus').submit(function(e) {
     e.preventDefault();
 
     var form = $(this);
@@ -3581,15 +3636,33 @@ $('#frmTenderStatus, #frmAwardStatus, #frmImplementationStatus, #frmContractStat
             params.push({ name: element.name, value: element.value });
         });
         
+        $.post('/process/status', params, res => {
+            alert(res);
+            // location.reload();
+        }).fail(res => alert(res.responseText));
+    });
+});
 
+$('#frmImplementationStatus').submit(function(e) {
+    e.preventDefault();
+
+    var form = $(this);
+    const cpid = form.find('[name="cpid"]').val();
+  
+    let stage = form.find('[name="stage"]').val();
+
+    setTags(cpid, stage, function(tags) {
+        var params = form.serializeArray();
+
+        tags.forEach(element => {
+            params.push({ name: element.name, value: element.value });
+        });
+        
         $.post('/process/status', params, res => {
             alert(res);
             location.reload();
         }).fail(res => alert(res.responseText));
     });
-
-
-   
 });
 
 $('#generatePackage').click(function(){
@@ -3658,3 +3731,9 @@ $('#testter').click(function(){
         modal.modal('show');
     });
 });
+
+$('#postProject').click(function(){
+    $.post('/public_project', {project_id:$("#project_id").val()}).done(function (data) {
+        alert(data.description);
+    });
+})

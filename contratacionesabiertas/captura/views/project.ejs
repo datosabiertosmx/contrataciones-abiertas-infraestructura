@@ -83,8 +83,8 @@
     <div id="all-contents" class="tab-content">
         <!--PRIMER PESTAÑA-->
         
-            <div id="informacionGeneral" class="tab-pane fade in active">
-                <form action="/project" method="POST" id="project_form">
+        <div id="informacionGeneral" class="tab-pane fade in active">
+            <form action="/project" method="POST" id="project_form">
                 <div class="well well-lg">
                     <label data-tooltip="crear_proceso" title=''>
                     <h3> INFORMACIÓN GENERAL </h3></label>
@@ -108,11 +108,11 @@
                         </ul>
                     </div>
                     <div class="btn-group col-md-4" style="margin-bottom: 4px; float: right;">
-                        <label data-tooltip="crear_proceso" title='La fase actual o estatus del proyecto, según la lista de códigos projectStatus.' class="col-xs-3 control-label">
-                            Estatus</label>
-                        <div class="col-md-9">
+                        <label style="padding-right: 0px;" data-tooltip="crear_proceso" title='La fase actual o estatus del proyecto, según la lista de códigos projectStatus.' class="col-xs-3 control-label">
+                            Estatus *</label>
+                        <div class="col-md-9" style="padding-left: 0px;">
                             <div class="input-group">
-                                 <select class="form-control" name="status">
+                                <select class="form-control" name="status" required>
                                     <option value="">Seleccione una opción</option>
                                     <% for (var i = 0; i < statuses.length; i++) { %>
                                         <option value="<%= statuses[i].code %>" <%= (statuses[i].code === status ) ? 'selected' : '' %> > <%= statuses[i].title%></option>
@@ -129,7 +129,7 @@
                         <div class="col-md-9">
                             <p>
                                 <label data-tooltip="crear_proceso" title='Un identificador único o número de referencia para este proyecto de infraestructura.'>
-                                    Identificador </label>
+                                    Identificador *</label>
                                 <input type="text" class="form-control" name="id" value="<%= identifier %>" minlength="1" maxlength="250" required >
                             </p>
                         </div>
@@ -145,8 +145,8 @@
                         <div class="col-md-9">
                             <p>
                                 <label data-tooltip="crear_proceso" title='El título del proyecto.'>
-                                    Título del proyecto </label>
-                                <input type="text" class="form-control" name="title" value="<%= title %>" minlength="1" maxlength="250" required>
+                                    Título del proyecto *</label>
+                                <input type="text" class="form-control" name="title" value="<%= title %>" minlength="1" maxlength="140" required>
                             </p>
                         </div>
                         <div class="col-md-3">
@@ -188,8 +188,8 @@
                         <div class="col-md-9">
                             <p>
                                 <label data-tooltip="crear_proceso" title='Una descripción de este proyecto. Esto no debería ser más largo que un párrafo.'>
-                                    Descripción del proyecto </label>
-                                <textarea class="form-control" name="description" value="<%= descriptionB %>" rows="5" minlength="1" maxlength="900" required><%=(typeof descriptionB!= "undefined")? descriptionB : ''%></textarea>
+                                    Descripción del proyecto *</label>
+                                <textarea class="form-control" name="description" value="<%= descriptionB %>" rows="5" minlength="1" maxlength="280" required><%=(typeof descriptionB!= "undefined")? descriptionB : ''%></textarea>
                             </p>
                         </div>
                         <div class="col-md-3">                        
@@ -203,7 +203,7 @@
                                 <div class="col-md-6">
                                     <p>
                                         <label data-tooltip="crear_proceso" title='Fecha de inicio del periodo.'>
-                                            Fecha de inicio </label>
+                                            Fecha de inicio *</label>
                                         <input type="text" id="period_startDate"  class="form-control" name="period_startDate" value="<%= startDate %>" required>
                                         
                                     </p>
@@ -211,7 +211,7 @@
                                 <div class="col-md-6">
                                     <p>
                                         <label data-tooltip="crear_proceso" title='Fecha de conclusión del periodo.'>
-                                            Fecha de fin </label>
+                                            Fecha de fin *</label>
                                         <input type="text" id="period_endDate" class="form-control" name="period_endDate" value="<%= endDate %>" required>
                                     </p>
                                 </div>
@@ -244,8 +244,8 @@
                         <div class="col-md-9">
                             <p>
                                 <label data-tooltip="crear_proceso" title='Se debe clasificar el tipo de proyecto del que se trate. Ya sea que el principal enfoque de este proyecto sea la construcción de un nuevo activo o la rehabilitación o reemplazo de uno existente'>
-                                    Tipo de proyecto </label>
-                                <select class="form-control" name="type">
+                                    Tipo de proyecto *</label>
+                                <select class="form-control" name="type" required>
                                     <option value="">Seleccione una opción</option>
                                     <% for (var i = 0; i < types.length; i++) { %>
                                     <option value="<%= types[i].code %>" <%= (types[i].code === type ) ? 'selected' : '' %> ><%= types[i].title%></option>
@@ -262,7 +262,7 @@
                         <div class="col-md-9">
                             <p>
                                 <label data-tooltip="crear_proceso" title='El principal sector al que este proyecto está relacionado. CoST sugiere que los países deben desarrollar una lista con sectores y sub-sectores relevantes para el país, basándose en la tabla PPPCert Type of Assets.'>
-                                    Sector del proyecto </label>
+                                    Sector del proyecto *</label>
                                 <select class="form-control custom-select" name="sector" multiple required>
                                     <option value="">Seleccione una opción</option>
                                     <% for (var i = 0; i < sectors.length; i++) { %>
@@ -284,7 +284,7 @@
                             <p>
                                 <label data-tooltip="crear_proceso" title='El propósito socioeconómico de este proyecto.'>
                                     Propósito del proyecto </label>
-                                <textarea class="form-control" value="<%= purposeB %>" name="purpose" rows="5"><%=(typeof purposeB!= "undefined")? descriptionB : ''%></textarea>
+                                <textarea class="form-control" value="<%= purposeB %>" name="purpose" rows="5" minlength="1" maxlength="280"><%=(typeof purposeB!= "undefined")? purposeB : ''%></textarea>
                             </p>
                         </div>
                         <div class="col-md-3">
@@ -361,15 +361,16 @@
                                 <div class="col-md-6">
                                     <p>
                                         <label data-tooltip="crear_proceso" title='Monto como número.'>
-                                            Monto </label>
-                                        <input type="number" class="form-control" name="budget_amount_amount" value="<%= amount %>" min="1" pattern="^[0-9]+">
+                                            Monto *</label>
+                                        <input type="number" step="0.01" class="form-control" name="budget_amount_amount" value="<%= amount %>" required>
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <p>
                                         <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>
                                             Moneda </label>
-                                        <select class="form-control" name="budget_amount_currency">
+                                        <input name="budget_amount_currency" value="MXN" hidden readonly></input>
+                                        <select class="form-control" name="budget_amount_currency" disabled>
                                             <option value="">Seleccione una opción</option>
                                             <%if (is_update === true){ %>
                                                 <% for (var i = 0; i < currencies.length; i++) { %>
@@ -411,12 +412,15 @@
                         <div class="col-md-3">
                         </div>
                     </div>
-                    <input type="hidden" name="project_id" value="<%= projectId %>">
+                    <input type="hidden" name="project_id" id="project_id" value="<%= projectId %>">
                     <input type="hidden" name="is_update" value="<%= is_update %>">
                     <button type="submit" class="btn btn-primary">Guardar</button>
+                    <%if (is_update & user.isAdmin === true){%>
+                        <input id="postProject" class="btn btn-success" type="button" value="Publicar">
+                    <%}%>
                 </div>
             </form>
-            </div>
+        </div>
         
         
         <!--SEGUNDA PESTAÑA-->
@@ -430,7 +434,7 @@
                         <div class="col-md-12">
                             <p>
                                 <label data-tooltip="crear_proceso" title='La fecha real de terminación de este proyecto (comparado con la "Fecha de fin" del proyecto).'>
-                                    Fecha de fin </label>
+                                    Fecha de fin *</label>
                                 <input type="text" id="completion_endDate"  class="form-control" name="completion_endDate" value="<%= completion_endDate %>" required>
                             </p>
                         </div>     
@@ -439,7 +443,7 @@
                         <div class="col-md-12">
                             <p>
                                 <label data-tooltip="crear_proceso" title='Detalles relacionados con la Fecha de fin. Puede ser una justificación sobre diferencia con la fecha original de terminación de los contratos.'>
-                                    Detalles sobre la fecha de fin </label>
+                                    Detalles sobre la fecha de fin *</label>
                                 <textarea class="form-control" name="completion_endDateDetails" value="<%= completion_endDateDetails %>" rows="5" minlength="1" maxlength="900" required><%=(typeof completion_endDateDetails != "undefined") ? completion_endDateDetails : ''%></textarea>
                             </p>
                         </div>     
@@ -450,7 +454,7 @@
                         <div class="col-md-6">
                             <p>
                                 <label data-tooltip="crear_proceso" title='Monto como número.'>
-                                    Monto </label>
+                                    Monto *</label>
                                 <input type="number" class="form-control" name="completion_finalValue_amount" value="<%= completion_amount %>" min="1" pattern="^[0-9]+" required>
                             </p>
                         </div>     
@@ -540,5 +544,15 @@
     $('#period_startDate, #period_endDate, #period_maxExtentDate, #assetLifetime_startDate, #assetLifetime_endDate, #assetLifetime_maxExtentDate, #budget_requestDate, #budget_approvalDate, #completion_endDate').datetimepicker({
         locale: 'es',
         format: 'YYYY-MM-DD HH:mm:ss'//'DD/MM/YYYY HH:mm:ss'
+    });
+
+    $('#period_startDate').on('dp.change', function(e){
+        $('#period_endDate').data("DateTimePicker").minDate(e.date);
+    });
+    $('#assetLifetime_startDate').on('dp.change', function(e){
+        $('#assetLifetime_endDate').data("DateTimePicker").minDate(e.date);
+    });
+    $('#budget_requestDate').on('dp.change', function(e){
+        $('#budget_approvalDate').data("DateTimePicker").minDate(e.date);
     });
 </script>

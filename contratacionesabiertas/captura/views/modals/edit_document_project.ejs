@@ -2,7 +2,7 @@
     <input type="text" name="document_id" value = "<%= data.id %>" hidden>
 
     <p>
-        <label data-tooltip="crear_proceso" title='Una clasificación del documento descrito de acuerdo con la documentType codelist. Los valores proporcionados de la lista de códigos deben usarse siempre que sea posible, aunque se pueden proporcionar valores adicionales cuando la lista de códigos no tiene uno necesario.'>Tipo de documento</label>
+        <label data-tooltip="crear_proceso" title='Una clasificación del documento descrito de acuerdo con la documentType codelist. Los valores proporcionados de la lista de códigos deben usarse siempre que sea posible, aunque se pueden proporcionar valores adicionales cuando la lista de códigos no tiene uno necesario.'>Tipo de documento *</label>
             <select class="form-control" name="documents_documentType" required>
                 <option value="">Seleccione una opción</option>
                 <% for (var i = 0; i < documentTypes.length; i++) { %>
@@ -13,17 +13,17 @@
     
 <p>
         <label data-tooltip="crear_proceso" title='Título del documento.'>
-        Título</label>
+        Título *</label>
         <input name="documents_title" type="text" class="form-control"  value = "<%= data.title %>" required>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title="Cuando se proporcione un hipervínculo al documento completo, la descripción debe incluir un resumen de 1 a 3 párrafos sobre la información que contiene el documento., y el campo 'Página de inicio' debe ser utilizado para asegurar que los lectores puedan encontrar la sección correcta de un documento que contiene más información. Cuando no exista un documento vinculado, este campo puede contener toda la información requerida por el 'Tipo de documento' seleccionado.">
-            Descripción </label>
+            Descripción *</label>
         <textarea class="form-control" name="documents_description" rows="5" minlength="1" maxlength="900" value ="<%= data.description %>" required><%=(typeof data.description!= "undefined")? data.description : ''%></textarea>
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='Esto debe ser un enlace directo al documento o a la página web donde la información descrita en "Tipo de documento" exista.'>
-            URL</label>
+            URL *</label>
         <input name="documents_url" type="url" class="form-control" value = "<%= data.url %>" required>
     </p>
     <div class="row">
@@ -45,7 +45,7 @@
 
     <p>
         <label data-tooltip="crear_proceso" title="El formato del documento tomado de la IANA Media Types codelist, con la incorporación de un valor adicional para 'offline / print', utilizado cuando ha sido incorporado un documento que no ha sido publicado en línea. Utilice los valores de la columna de plantilla. Los enlaces a las páginas web deben estar etiquetados como 'text / html'.">
-            Formato</label>
+            Formato *</label>
         <input name="documents_format" type="text" class="form-control" value = "<%= data.format %>" required>
     </p>
     <p>
@@ -54,7 +54,8 @@
         </label>
             <select class="form-control" name="documents_language">
                 <% for ( var i=0; i< languages.length ;i++){ %>
-                    <option value="<%= languages[i].name%>"  <%= (languages[i].name === data.language ) ? 'selected': '' %> > <%= languages[i].name +" - "+ languages[i].alpha2 %>
+                    <option value="<%= languages[i].alpha2%>"  <%= (languages[i].alpha2 === data.language ) ? 'selected': '' %> > 
+                        <%= languages[i].name +" - "+ languages[i].alpha2 %>
                     </option>
                 <%}%>
             </select>

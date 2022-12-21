@@ -3,8 +3,7 @@
     <input type="hidden" name="id" value="<%= milestone.id %>">
 
     <p><label data-tooltip="crear_proceso" title='Denominación general que se asigne al hito.'>
-            Título
-            <!--Title--></label>
+            Título *<!--Title--></label>
         <input type="text" class="form-control" name="title" value="<%= milestone.title %>" required></p>
 
     <p><label data-tooltip="crear_proceso" title='El tipo de hito extraído de la lista de códigos "Tipo de hito".'>
@@ -22,8 +21,7 @@
     </p>
 
     <p><label data-tooltip="crear_proceso" title='Descripción del hito.'>
-            Descripción
-            <!--Description--></label>
+            Descripción<!--Description--></label>
         <textarea class="form-control" name="description" rows="5" required><%= milestone.description %></textarea>
     </p>
 
@@ -31,24 +29,21 @@
         <div class="col-sm-6">
             <p>
                 <label data-tooltip="crear_proceso" title='Fecha en que se debe cumplir el hito.'>
-                    Fecha de vencimiento
-                    <!--Due date--></label>
+                    Fecha de vencimiento<!--Due date--></label>
                 <input type="text" id="newmilestone_date1" class="form-control" name="duedate" value="<%= milestone.duedate_text %>">
             </p>
         </div>
         <div class="col-sm-6">
             <p>
                 <label data-tooltip="crear_proceso" title='La fecha en que el hito fue revisado o modificado por última vez.'>
-                    Fecha de modificación
-                    <!--Date modified--></label>
+                    Fecha de modificación<!--Date modified--></label>
                 <input type="text" id="newmilestone_date2" class="form-control" name="date_modified" value="<%= milestone.date_modified_text %>">
             </p>
         </div>
     </div>
 
     <p><label data-tooltip="crear_proceso" title='El estado que se modificó o confirmó en la fecha definida en el campo "Fecha de modificación", de acuerdo con la lista de códigos de "Estatus del hito".'>
-            Estatus del hito
-            <!--Status--></label>
+            Estatus del hito<!--Status--></label>
 
         <select class="form-control" name="status">
             <option value="" <%= milestone.status == '' ? 'selected' : '' %>>Ninguno</option>

@@ -1,8 +1,8 @@
 <form id="add_budget_line_measure_form">
     <p>
         <label data-tooltip="crear_proceso" title='ID para identificar el momento de acumulación específico en el que se expresará el valor del presupuesto.'>
-            Tipo de momento presupuestario </label>
-        <select class="form-control" name="budget_budgetBreakdown_budgetLines_measures_type">
+            Tipo de momento presupuestario *</label>
+        <select class="form-control" name="budget_budgetBreakdown_budgetLines_measures_type" required>
             <option value="">Seleccione una opción</option>
             <% for (var i = 0; i < budgetTypes.length; i++) { %>
             <option value="<%= budgetTypes[i].code %>"><%= budgetTypes[i].title%></option>
@@ -15,7 +15,7 @@
     <p>
         <label data-tooltip="crear_proceso" title='Monto como número.'>
             Monto </label>
-        <input type="text" name="budget_budgetBreakdown_budgetLines_measures_amount" class="form-control" min="1" pattern="^[0-9]+">
+        <input type="number" step="0.01" name="budget_budgetBreakdown_budgetLines_measures_amount" class="form-control">
     </p>
     <p>
         <label data-tooltip="crear_proceso" title='La moneda de cada monto debe ser siempre especificada utilizado los códigos de tres letras mayúsculas del ISO4217.'>

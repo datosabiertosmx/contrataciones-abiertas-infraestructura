@@ -107,7 +107,7 @@ var estatusContrato = [
                     <textarea class="form-control" name="rationale" rows="5"><%=(typeof planning!= "undefined")? planning.rationale : ''%></textarea>
                 </p>
 				<p>
-                    <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si hubo cotizaciones.'>¿Hubo cotizaciones?</label>
+                    <label data-tooltip="crear_proceso" title='Campo Sí/No para indicar si hubo cotizaciones.'>¿Hubo cotizaciones? *</label>
                     <select class="form-control" name="hasquotes" required>
                     	<option value ="">Seleccione una opción</option>
                         <option value="true"
@@ -123,7 +123,7 @@ var estatusContrato = [
                     </select>
                 </p>
                 <p>
-                    <label data-tooltip="crear_proceso" title='La autoridad que en la dependencia o entidad solicita o requiere formalmente la adquisición o el arrendamiento de bienes o la provisión de servicios, o quién los usará'>Unidad administrativa requirente</label>
+                    <label data-tooltip="crear_proceso" title='La autoridad que en la dependencia o entidad solicita o requiere formalmente la adquisición o el arrendamiento de bienes o la provisión de servicios, o quién los usará'>Unidad administrativa requirente *</label>
                     <select class="form-control" name="requestingunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
                         <% for (var i = 0; i < requestingunit.length; i++) { %>
                             <%if (requestingunit_selected.includes(requestingunit[i].partyid +"-"+ requestingunit[i].name)){ %>
@@ -135,7 +135,7 @@ var estatusContrato = [
                     </select>
                 </p>
                 <p>
-                    <label data-tooltip="crear_proceso" title='La autorizada en la dependencia o entidad para llevar a cabo procedimientos de contratación con el fin de adquirir o arrendar bienes o contratar la prestación de servicios requeridos por la dependencia o entidad en cuestión.'>Unidad administrativa contratante</label>
+                    <label data-tooltip="crear_proceso" title='La autorizada en la dependencia o entidad para llevar a cabo procedimientos de contratación con el fin de adquirir o arrendar bienes o contratar la prestación de servicios requeridos por la dependencia o entidad en cuestión.'>Unidad administrativa contratante *</label>
                     <select class="form-control" name="contractingunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
                         <% for (var i = 0; i < contractingunit.length; i++) { %>
                             <%if (contractingunit_selected.includes(contractingunit[i].partyid +"-"+ contractingunit[i].name)){ %>
@@ -147,7 +147,7 @@ var estatusContrato = [
                     </select>
                 </p>
                 <p>
-                    <label data-tooltip="crear_proceso" title='Área responsable de la ejecución: El área responsable de la ejecución del contrato.'>Unidad administrativa responsable de la ejecución</label>
+                    <label data-tooltip="crear_proceso" title='Área responsable de la ejecución: El área responsable de la ejecución del contrato.'>Unidad administrativa responsable de la ejecución *</label>
                     <select class="form-control" name="responsibleunits" multiple required data-tooltip="crear_proceso" title='Seleccione opción/opciones'>
                         <% for (var i = 0; i < responsibleunit.length; i++) { %>
                             <%if (responsibleunit_selected.includes(responsibleunit[i].partyid +"-"+ responsibleunit[i].name)){ %>
@@ -196,10 +196,10 @@ var estatusContrato = [
                 <input type="hidden" name="cpid" value="<%= cp.id %>" />
                 <input type="hidden" name="type" value="tender" />
                 <input type="hidden" name="stage" value="2" />
-                <label data-tooltip="crear_proceso" title='El estado actual del procedimiento de contratación obtenido de la lista de códigos "Estatus de la licitación.' class="col-xs-3 control-label">Estatus</label>
-                <div class="col-sm-9 input-group">
-                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
-                        <option value ="" <%= (tender.status == null)?'selected':''%> >Seleccione una opción</option>
+                <label data-tooltip="crear_proceso" title='El estado actual del procedimiento de contratación obtenido de la lista de códigos "Estatus de la licitación.' class="col-sm-4 control-label">Estatus *</label>
+                <div class="col-sm-8 input-group">
+                    <select id="statusLicitacion" class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                        <option disabled="disabled" value ="" <%= (tender.status == null)?'selected':''%> >Seleccione una opción</option>
                         <option value="planning" <%= tender.status == 'planning'?'selected':''%> >En planeación</option>
                         <option value="planned" <%= tender.status == 'planned'?'selected':''%> >Planeada</option>
                         <option value="active" <%= tender.status == 'active'?'selected':''%> >Activa</option>
@@ -279,20 +279,20 @@ var estatusContrato = [
                 <p><label data-tooltip="crear_proceso" title='Identificador de la licitación.
 					En el caso de los procedimientos de contratación realizados a través de CompraNet, corresponde al código del expediente que asigna este sistema.
 					En el caso de procedimientos de contratación financiados con recursos de Organismos Financieros Internacionales, respecto de los procedimientos de lista corta, comparación de precios y adjudicación directa, se señala el número de procedimiento que le asigne la dependencia o entidad correspondiente.'><!--ID-->
-					Identificador de la licitación</label>
+					Identificador de la licitación *</label>
                     <br>
                     <input type="text" id="nombre-input" onchange="verificar()" class="form-control" name="tenderid" value="<%= tender.tenderid %>" required>
                 </p>
                 <p><label data-tooltip="crear_proceso" title='Denominación del procedimiento de contratación que las dependencias y entidades señalan en CompraNet, en su caso.
 					En el caso de procedimientos de contratación financiados con recursos de Organismos Financieros Internacionales, respecto de los procedimientos de lista corta, comparación de precios y adjudicación directa, se señala la denominación del procedimiento que le asigne la dependencia o entidad correspondiente.'>
-					Denominación de la licitación<!--Title--></label>
+					Denominación de la licitación *<!--Title--></label>
                     <br>
-                    <input type="text" class="form-control" name = "title" value="<%= (typeof tender != "undefined")? tender.title:''%>" required>
+                    <input type="text" class="form-control" name="title" value="<%= (typeof tender != "undefined")? tender.title:''%>" minlength="1" maxlength="140" required>
                 </p>
                 
-                <p><label data-tooltip="crear_proceso" title='Objeto de la licitación.'>Objeto de la licitación<!--Description--></label>
+                <p><label data-tooltip="crear_proceso" title='Objeto de la licitación.'>Objeto de la licitación *<!--Description--></label>
                     <br>
-                    <textarea class="form-control" name = "description" rows="5" required><%= (typeof tender != "undefined")? tender.description:''%></textarea>
+                    <textarea class="form-control" name = "description" rows="5" minlength="1" maxlength="280" required><%= (typeof tender != "undefined")? tender.description:''%></textarea>
                 </p>
                 	
                	<label data-tooltip="crear_proceso" title='El valor estimado de la contratación. En caso de contrataciones abiertas, se señala el presupuesto máximo que podría ejercerse en la ejecución del contrato.'>
@@ -301,7 +301,7 @@ var estatusContrato = [
                 <div class="row">
                 <!--Value amount-->
                     <div class="col-sm-6">
-                        <p><label data-tooltip="crear_proceso" title='Monto como número.'>Monto</label>
+                        <p><label data-tooltip="crear_proceso" title='Monto como número.'>Monto *</label>
                     	<br>
                     		<input type="number" step="0.01" class="form-control" name= "value_amount" value = "<%= (typeof tender != "undefined")? tender.value_amount:''%>" required>
                 		</p> 
@@ -359,7 +359,7 @@ var estatusContrato = [
 
 				<br>
 				<p>
-                    <label data-tooltip="crear_proceso" title='Especifica el método de contratación utilizando la lista de códigos "Método de contratación". Esta es una lista de códigos cerrada. Los tipos de procedimiento de contratación locales deberán relacionarse a uno de los valores de esta lista. La información más específica de los tipos de procedimiento de contratación locales, diferentes a los valores de la lista cerrada, deberán especificarse en el campo "Detalles del método de contratación".'>Método de contratación<!--Procurement method--></label>
+                    <label data-tooltip="crear_proceso" title='Especifica el método de contratación utilizando la lista de códigos "Método de contratación". Esta es una lista de códigos cerrada. Los tipos de procedimiento de contratación locales deberán relacionarse a uno de los valores de esta lista. La información más específica de los tipos de procedimiento de contratación locales, diferentes a los valores de la lista cerrada, deberán especificarse en el campo "Detalles del método de contratación".'>Método de contratación *<!--Procurement method--></label>
                     <br>
                     <input type="hidden" name="procurementmethod" value="<%= tender.procurementmethod %>">
                     <select name = "procurementmethod_select" class="form-control" required disabled>
@@ -404,7 +404,7 @@ var estatusContrato = [
                 
                 <br>
 				<p>
-                    <label data-tooltip="crear_proceso" title='Categoría primaria que describe el objeto principal del procedimiento de contratación.'>Categoría principal de la contratación</label>
+                    <label data-tooltip="crear_proceso" title='Categoría primaria que describe el objeto principal del procedimiento de contratación.'>Categoría principal de la contratación *</label>
                     <br>
                     <input type="hidden" name="mainprocurementcategory" value="<%= tender.mainprocurementcategory %>">
                     <select name = "mainprocurementcategory_select" class="form-control" required disabled>
@@ -416,7 +416,7 @@ var estatusContrato = [
                 </p>
 
                 <p>
-                    <label data-tooltip="crear_proceso" title='Cualquier categoría adicional que describa los objetos de este procedimiento de contratación.'>Categorías adicionales de contratación</label>
+                    <label data-tooltip="crear_proceso" title='Cualquier categoría adicional que describa los objetos de este procedimiento de contratación.'>Categorías adicionales de contratación *</label>
                     <br>
                     
                     <select name = "additionalprocurementcategories" class="form-control" onchange="setRelation(categoriaContratacion, this, 'mainprocurementcategory');" required>
@@ -560,7 +560,7 @@ var estatusContrato = [
                 </div>
 
                 <p>
-                    <label data-tooltip="crear_proceso" title='Número total de proposiciones recibidas en el procedimiento de licitación pública o de invitación a cuando menos tres personas.'>Número de licitantes <!--Number of tenderers--></label>
+                    <label data-tooltip="crear_proceso" title='Número total de proposiciones recibidas en el procedimiento de licitación pública o de invitación a cuando menos tres personas.'>Número de licitantes *<!--Number of tenderers--></label>
                     <input type="number" class="form-control" name="numberoftenderers" value = "<%= (typeof tender != "undefined")? tender.numberoftenderers:''%>" required readonly>
                 </p>
 				<br>
@@ -579,10 +579,10 @@ var estatusContrato = [
                 <input type="hidden" name="type" value="award" />
                 <input type="hidden" name="stage" value="3" />
                 <label data-tooltip="crear_proceso" title='El estado actual de la adjudicación obtenido de la lista de códigos "Estatus de la adjudicación".' class="col-xs-3 control-label">
-                    Estatus</label>
-                    <div class="col-xs-9">
-                     <div class="input-group">
-                        <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>> 
+                    Estatus *</label>
+                <div class="col-xs-9">
+                    <div class="input-group">
+                        <select id="statusAdjudicacion" class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>> 
                             <option value="">Seleccione una opción</option>
                             <option value="pending">Pendiente</option>
                             <option value="active">Activo</option>
@@ -593,7 +593,7 @@ var estatusContrato = [
                             <button class="btn btn-primary" <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>><span class="fa fa-save"></span></button>
                         </div>
                     </div>
-                    </div>
+                </div>
             </form> <!-- status global -->
 
             <label data-tooltip="crear_proceso" title='Una adjudicación para una contratación determinada. Puede haber más de una adjudicación por licitación, por ejemplo, porque se pueden adjudicar a varios proveedores.'>
@@ -607,7 +607,7 @@ var estatusContrato = [
                     <div id="list-awards" class="list-group">
                         <% for (var i=0; i < awards.length; i++){ %>
                         <a href="#" class="list-group-item" data-id="<%= awards[i].id %>" data-contractingprocess_id="<%= cp.id %>" data-actual="<%= awards[i].id === award.id%>">
-                            <span class="list-group-item-heading">Adjudicación  <%= i + 1 %></span>
+                            <div class="list-group-item-heading">Adjudicación  <%= i + 1 %></div>
                             <% if(awards[i].awardid){ %>
                             <div class="list-group-item-text">
                                 <%= awards[i].awardid %> <br>
@@ -631,9 +631,9 @@ var estatusContrato = [
                 <input type="hidden" name="id" />
                 <input type="hidden" name="type" value="contract" />
                 <input type="hidden" name="stage" value="4" />
-                <label data-tooltip="crear_proceso" title='Estado actual del contrato.' class="col-xs-3 control-label">Estatus</label>
+                <label data-tooltip="crear_proceso" title='Estado actual del contrato.' class="col-xs-3 control-label">Estatus *</label>
                 <div class="col-sm-9 input-group">
-                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                    <select id="statusContratacion" class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
                             <option value="">Seleccione una opción</option>
                             <option value="pending">Pendiente</option>
                             <option value="active">Activo</option>
@@ -679,9 +679,9 @@ var estatusContrato = [
                 <input type="hidden" name="id" />
                 <input type="hidden" name="type" value="implementation" />
                 <input type="hidden" name="stage" value="5" />
-                <label data-tooltip="crear_proceso" title='Estado actual de la ejecución.' class="col-xs-3 control-label">Estatus</label>
+                <label data-tooltip="crear_proceso" title='Estado actual de la ejecución.' class="col-xs-3 control-label">Estatus *</label>
                 <div class="col-sm-9 input-group">
-                    <select class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
+                    <select id="statusEjecucion" class="form-control" name="status" required <%= !(user.modificaEstatus || user.isAdmin) ? 'disabled' : '' %>>
                             <option value="">Seleccione una opción</option>
                             <option value="planning">En planeación</option>
                             <option value="ongoing">En progreso</option>

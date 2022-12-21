@@ -20,7 +20,7 @@
     </p>-->
 
     <p>
-        <label title="">Solicitud cotización</label>
+        <label title="">Solicitud cotización *</label>
         <select class="form-control" name="requestforquotes_id" required>
             <option value="">Seleccione una opción</option>
             <% for (var i = 0; i < quoteRequests.length; i++) { %>
@@ -35,7 +35,7 @@
     </p>
 
     <p>
-        <label title="">Fecha de la cotización</label>
+        <label title="">Fecha de la cotización *</label>
         <input type="text" class="form-control" id="newquote_date" name="date" required>
     </p>
 
@@ -48,7 +48,7 @@
             <button type="button" class="close" data-dismiss="item" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <div class="col-sm-8">
                 <p>
-                    <label title="">Bien o servicio</label>
+                    <label title="">Bien o servicio *</label>
                     <select class="form-control" name="items[0].itemid" required>
                         <option value="">Seleccione una opción</option>
                     </select>
@@ -56,7 +56,7 @@
             </div>
             <div class="col-sm-3">
                 <p>
-                    <label title="">Valor</label>
+                    <label title="">Valor *</label>
                     <input type="number" class="form-control" name="items[0].quantity" data-vregex="decimal" min="0" step="0.01" readonly required>
                 </p>
             </div>
@@ -79,20 +79,20 @@
     <div class="row">
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de inicio</label>
+                <label title="">Fecha de inicio *</label>
                 <input type="text" class="form-control" id="newquote_date1" name="quotePeriod_startdate" required>
             </p>
         </div>
         <div class="col-sm-6">
             <p>
-                <label title="">Fecha de término</label>
+                <label title="">Fecha de término *</label>
                 <input type="text" class="form-control" id="newquote_date2" name="quotePeriod_enddate" required>
             </p>
         </div>
     </div>
 
     <p>
-        <label title="">Proveedor emisor</label>
+        <label title="">Proveedor emisor *</label>
         <select class="form-control" name="issuingSupplier_id" required>
             <option value="">Seleccione una opción</option>
         </select>

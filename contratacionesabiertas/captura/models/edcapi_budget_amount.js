@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const edcapi_budget_amount = sequelize.define('edcapi_budget_amount', {
-    amount: DataTypes.STRING,
+    amount: DataTypes.NUMERIC,
     currency: DataTypes.STRING
   }, {});
   edcapi_budget_amount.associate = function(models) {

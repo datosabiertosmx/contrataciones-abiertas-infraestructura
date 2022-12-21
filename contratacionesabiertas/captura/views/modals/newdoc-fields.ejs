@@ -14,12 +14,12 @@
     </p>
     <!-- <p><label>ID</label>
         <input type="text" class="form-control" name = "documentid" required></p>-->
-    <p><label title='Titulo del documento.'>Título<!--Title--></label>
+    <p><label title='Titulo del documento.'>Título *<!--Title--></label>
         <input type="text" class="form-control" name = "title" required></p>
-    <p><label title='Descripción corta del documento. Se recomienda no exceder 250 palabras. En el caso que el documento no esté disponible en línea, el campo podrá utilizarse para describir el proceso para acceder a una copia del mismo.'>Descripción<!--Description--></label>
+    <p><label title='Descripción corta del documento. Se recomienda no exceder 250 palabras. En el caso que el documento no esté disponible en línea, el campo podrá utilizarse para describir el proceso para acceder a una copia del mismo.'>Descripción *<!--Description--></label>
         <br><textarea class="form-control" name = "description" rows="10" required></textarea></p>
     
-    <p><label title='Enlace directo al documento o archivo adjunto. El servidor que proporciona acceso a este documento debe estar configurado para proporcionar correctamente el tipo documento (MIME type).'>URL</label>
+    <p><label title='Enlace directo al documento o archivo adjunto. El servidor que proporciona acceso a este documento debe estar configurado para proporcionar correctamente el tipo documento (MIME type).'>URL *</label>
         <input type="url" class="form-control" name = "url" required></p>
     <div class="row">
         <div class="col-sm-6">
@@ -41,7 +41,7 @@
     <p><label title='Especifica el idioma del documento vinculado mediante la clasificación ISO639-1 o mediante una clasificación extendida de BCP47 language tags. Se recomienda el uso de códigos con dos letras en minúsculas de la clasificación ISO639-1, a menos que exista una clara necesidad del usuario de distinguir un subtipo de idioma.'>Idioma<!--Language--></label>
         <select class="form-control" name = "language">
             <% for ( var i=0; i< languages.length ;i++){ %>
-            <option value="<%= languages[i].name%>"  <%= languages[i].alpha2=='es'?'selected': null %>>
+            <option value="<%= languages[i].alpha2%>"  <%= languages[i].alpha2=='es'?'selected': null %>>
                 <%= languages[i].name +" - "+ languages[i].alpha2 %>
             </option>
             <%}%>
