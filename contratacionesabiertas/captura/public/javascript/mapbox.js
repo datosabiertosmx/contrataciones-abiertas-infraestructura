@@ -63,6 +63,7 @@
         if(!isNaN(lnglat.lng)) {
             addMarker(lnglat);
         }
+        coordenatas1();
     }
 
     /**
@@ -76,6 +77,17 @@
         map.setZoom(16);
     }
 
+    function coordenatas1(){
+        let lnglat = {
+            lng: document.querySelector('#longitude_project').value,
+            lat: document.querySelector('#latitude_project').value
+        }
+        if(!isNaN(lnglat.lng)) {
+            addMarker(lnglat);
+        }
+    }
+
+    
     /**
      * Despliega la lista de resultado de direcciones
      */

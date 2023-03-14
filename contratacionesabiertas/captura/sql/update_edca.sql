@@ -147,14 +147,19 @@ join public.contractingprocess as b on a.contractingprocess_id = b.id
 where b.published = true
 order by a.id;
 
+-- Ejecutar para instalar sequelize
+/*
+npm install -g sequelize-cli
+*/
+
 -- Ejecutar para crear tablas de project
 /*
 sequelize db:migrate
-sequelize db:seed:all 
+sequelize db:seed:all
 */
 
 -- Ejecutar para eliminar tablas de project
-
 /*
 sequelize db:migrate:undo:all
+sequelize db:seed:undo
 */
