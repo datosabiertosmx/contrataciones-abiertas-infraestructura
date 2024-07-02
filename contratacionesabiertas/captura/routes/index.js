@@ -5999,7 +5999,7 @@ router.post('/admin/catalog/:catalog/import', isAuthenticated,upload.single('dat
         let total = 0;
    
         // read file and parse to json
-        let records = await csvtojsonV2().fromStream(fs.createReadStream(req.file.path, {encoding: 'latin1'}));
+        let records = await csvtojsonV2().fromStream(fs.createReadStream(req.file.path, {encoding: 'utf8'}));
  
         if(req.body.clear === 'true') {
             await db_conf.edca_db.query(`delete from ${!catalog.faketable ? req.params.catalog : catalog.faketable}`);
